@@ -1,0 +1,5 @@
+.vs
+*.bak
+bin
+obj
+VHDLTest.out
