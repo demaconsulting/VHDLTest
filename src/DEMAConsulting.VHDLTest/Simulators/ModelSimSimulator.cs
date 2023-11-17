@@ -44,12 +44,20 @@ public sealed class ModelSimSimulator : Simulator
     /// <inheritdoc />
     public override RunResults Compile(Options options)
     {
+        // Log the start of the compile command
+        if (options.Verbose)
+            Console.WriteLine("Starting ModelSim compile...");
+
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("ModelSim Simulator not available");
+        if (options.Verbose)
+            Console.WriteLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ModelSim");
+        if (options.Verbose)
+            Console.WriteLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
             Directory.CreateDirectory(libDir);
 
@@ -63,14 +71,20 @@ public sealed class ModelSimSimulator : Simulator
         writer.AppendLine("exit -code 0");
 
         // Write the batch file
-        File.WriteAllText(
-            Path.Combine(libDir, "compile.do"),
-            writer.ToString());
+        var script = Path.Combine(libDir, "compile.do");
+        if (options.Verbose)
+            Console.WriteLine($"  Script File: {script}");
+        File.WriteAllText(script, writer.ToString());
 
         // Run the ModelSim compiler
+        var application = Path.Combine(simPath, "vsim");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Directory: {libDir}");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Command: {application} -c -do compile.do");
         return RunResults.Execute(
             CompileRules,
-            Path.Combine(simPath, "vsim"),
+            application,
             libDir,
             "-c",
             "-do",
@@ -80,12 +94,20 @@ public sealed class ModelSimSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Options options, string test)
     {
+        // Log the start of the compile command
+        if (options.Verbose)
+            Console.WriteLine($"Starting ModelSim test {test}...");
+
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("ModelSim Simulator not available");
+        if (options.Verbose)
+            Console.WriteLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ModelSim");
+        if (options.Verbose)
+            Console.WriteLine($"  Library Directory: {libDir}");
 
         // Build the batch file
         var writer = new StringBuilder();
@@ -97,14 +119,20 @@ public sealed class ModelSimSimulator : Simulator
         writer.AppendLine("exit -code 0");
 
         // Write the batch file
-        File.WriteAllText(
-            Path.Combine(libDir, "test.do"),
-            writer.ToString());
+        var script = Path.Combine(libDir, "test.do");
+        if (options.Verbose)
+            Console.WriteLine($"  Script File: {script}");
+        File.WriteAllText(script, writer.ToString());
 
         // Run the test
+        var application = Path.Combine(simPath, "vsim");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Directory: {libDir}");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Command: {application} -c -do test.do");
         var testRunResults = RunResults.Execute(
             TestRules,
-            Path.Combine(simPath, "vsim"),
+            application,
             libDir,
             "-c",
             "-do",

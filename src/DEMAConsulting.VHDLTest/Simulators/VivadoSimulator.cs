@@ -44,12 +44,20 @@ public sealed class VivadoSimulator : Simulator
     /// <inheritdoc />
     public override RunResults Compile(Options options)
     {
+        // Log the start of the compile command
+        if (options.Verbose)
+            Console.WriteLine("Starting Vivado compile...");
+
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("Vivado Simulator not available");
+        if (options.Verbose)
+            Console.WriteLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/Vivado");
+        if (options.Verbose)
+            Console.WriteLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
             Directory.CreateDirectory(libDir);
 
@@ -62,17 +70,23 @@ public sealed class VivadoSimulator : Simulator
             writer.AppendLine($"../../{file}");
 
         // Write the batch file
-        File.WriteAllText(
-            Path.Combine(libDir, "compile.do"),
-            writer.ToString());
+        var script = Path.Combine(libDir, "compile.do");
+        if (options.Verbose)
+            Console.WriteLine($"  Script File: {script}");
+        File.WriteAllText(script, writer.ToString());
 
         // Run the ModelSim compiler
+        var application = Path.Combine(simPath, "xvhdl");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Directory: {libDir}");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Command: cmd /c {application} -file compile.do");
         return RunResults.Execute(
             CompileRules,
             "cmd",
             libDir,
             "/c",
-            Path.Combine(simPath, "xvhdl"),
+            application,
             "-file",
             "compile.do");
     }
@@ -80,12 +94,20 @@ public sealed class VivadoSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Options options, string test)
     {
+        // Log the start of the compile command
+        if (options.Verbose)
+            Console.WriteLine($"Starting Vivado test {test}...");
+
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("Vivado Simulator not available");
+        if (options.Verbose)
+            Console.WriteLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/Vivado");
+        if (options.Verbose)
+            Console.WriteLine($"  Library Directory: {libDir}");
 
         // Build the batch file
         var writer = new StringBuilder();
@@ -95,18 +117,23 @@ public sealed class VivadoSimulator : Simulator
         writer.AppendLine(test);
 
         // Write the batch file
-        File.WriteAllText(
-            Path.Combine(libDir, "test.do"),
-            writer.ToString());
-
+        var script = Path.Combine(libDir, "test.do");
+        if (options.Verbose)
+            Console.WriteLine($"  Script File: {script}");
+        File.WriteAllText(script, writer.ToString());
 
         // Run the test
+        var application = Path.Combine(simPath, "xelab");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Directory: {libDir}");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Command: cmd /c {application} -file test.do");
         var testRunResults = RunResults.Execute(
             TestRules,
             "cmd",
             libDir,
             "/c",
-            Path.Combine(simPath, "xelab"),
+            application,
             "-file",
             "test.do");
 
