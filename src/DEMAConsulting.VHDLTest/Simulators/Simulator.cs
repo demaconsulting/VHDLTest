@@ -66,7 +66,12 @@ public abstract class Simulator
             return null;
 
         // Get all the paths and files to search
-        var searchPaths = searchPath.Split(Path.PathSeparator).Select(Path.GetFullPath).Distinct().ToList();
+        var searchPaths = searchPath
+            .Split(Path.PathSeparator)
+            .Where(IsPathLegal)
+            .Select(Path.GetFullPath)
+            .Distinct()
+            .ToList();
         var searchFiles = new List<string> {application};
 
         // Handle windows specifics
@@ -92,5 +97,20 @@ public abstract class Simulator
 
         // Not found
         return null;
+    }
+
+    /// <summary>
+    /// Test if a path is legal
+    /// </summary>
+    /// <param name="path">Path to test</param>
+    /// <returns>True if legal</returns>
+    private static bool IsPathLegal(string path)
+    {
+        // First check for null or white-space
+        if (string.IsNullOrWhiteSpace(path))
+            return false;
+
+        // Consider other sanity-checks
+        return true;
     }
 }
