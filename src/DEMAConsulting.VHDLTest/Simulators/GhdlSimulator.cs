@@ -52,12 +52,20 @@ public sealed class GhdlSimulator : Simulator
     /// <inheritdoc />
     public override RunResults Compile(Options options)
     {
+        // Log the start of the compile command
+        if (options.Verbose)
+            Console.WriteLine("Starting GHDL compile...");
+
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("GHDL Simulator not available");
+        if (options.Verbose)
+            Console.WriteLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
+        if (options.Verbose)
+            Console.WriteLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
             Directory.CreateDirectory(libDir);
 
@@ -67,14 +75,20 @@ public sealed class GhdlSimulator : Simulator
             writer.AppendLine(file);
 
         // Write the batch file
-        File.WriteAllText(
-            Path.Combine(libDir, "compile.rsp"),
-            writer.ToString());
+        var script = Path.Combine(libDir, "compile.rsp");
+        if (options.Verbose)
+            Console.WriteLine($"  Script File: {script}");
+        File.WriteAllText(script, writer.ToString());
 
         // Run the GHDL compiler
+        var application = Path.Combine(simPath, "ghdl");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Command: {application} -a --std=08 --workdir=VHDLTest.out/GHDL @VHDLTest.out/GHDL/compile.rsp");
         return RunResults.Execute(
             CompileRules,
-            Path.Combine(simPath, "ghdl"),
+            application,
             options.WorkingDirectory,
             "-a",
             "--std=08",
@@ -85,14 +99,30 @@ public sealed class GhdlSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Options options, string test)
     {
+        // Log the start of the compile command
+        if (options.Verbose)
+            Console.WriteLine($"Starting GHDL test {test}...");
+
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("GHDL Simulator not available");
+        if (options.Verbose)
+            Console.WriteLine($"  Simulator Path: {simPath}");
+
+        // Get the library directory
+        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ModelSim");
+        if (options.Verbose)
+            Console.WriteLine($"  Library Directory: {libDir}");
 
         // Run the test
+        var application = Path.Combine(simPath, "ghdl");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
+        if (options.Verbose)
+            Console.WriteLine($"  Run Command: {application} -r --std=08 --workdir=VHDLTest.out/GHDL {test}");
         var testRunResults = RunResults.Execute(
             TestRules,
-            Path.Combine(simPath, "ghdl"),
+            application,
             options.WorkingDirectory,
             "-r",
             "--std=08",
