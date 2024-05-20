@@ -16,12 +16,6 @@ jobs:
           6.x
           8.x
 
-    - name: Restore Tools
-      run: >
-        dotnet
-        tool
-        restore
-      
     - name: Restore Dependencies
       run: > 
         dotnet
