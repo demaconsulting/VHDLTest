@@ -27,3 +27,10 @@ jobs:
         build
         --no-restore
         --configuration Release
+
+    - name: Test
+      run: >
+        dotnet
+        test
+        --no-build
+        --configuration Release

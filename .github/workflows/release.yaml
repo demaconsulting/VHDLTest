@@ -38,6 +38,14 @@ jobs:
         --configuration Release
         --property:Version=${{ github.event.inputs.version }}
 
+    - name: Test
+      run: >
+        dotnet
+        test
+        --no-build
+        --configuration Release
+        --property:Version=${{ github.event.inputs.version }}
+
     - name: Create Dotnet Tool
       run: >
         dotnet
