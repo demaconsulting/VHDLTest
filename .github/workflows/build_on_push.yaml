@@ -1,0 +1,29 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup dotnet 6/8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          6.x
+          8.x
+
+    - name: Restore Dependencies
+      run: > 
+        dotnet
+        restore
+      
+    - name: Build
+      run: >
+        dotnet
+        build
+        --no-restore
+        --configuration Release
