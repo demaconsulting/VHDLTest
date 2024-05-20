@@ -40,7 +40,7 @@ public class Program
         Console.WriteLine();
 
         // Handle help request
-        if (args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
+        if (args.Length == 0 || args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
         {
             Options.PrintUsage();
             Environment.Exit(0);
