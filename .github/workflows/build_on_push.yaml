@@ -4,33 +4,7 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup dotnet 6/8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          6.x
-          8.x
-
-    - name: Restore Dependencies
-      run: > 
-        dotnet
-        restore
-      
-    - name: Build
-      run: >
-        dotnet
-        build
-        --no-restore
-        --configuration Release
-
-    - name: Test
-      run: >
-        dotnet
-        test
-        --no-build
-        --configuration Release
+    name: Build Artifacts
+    uses: ./.github/workflows/build.yaml
+    with:
+      version: 0.0.0-run.${{ github.run_number }}

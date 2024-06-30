@@ -1,0 +1,95 @@
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Setup dotnet 6/8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          6.x
+          8.x
+
+    - uses: nuget/setup-nuget@v2
+      with:
+        nuget-version: '6.x'
+
+    - name: Restore Tools
+      run: >
+        dotnet tool restore
+
+    - name: Restore Dependencies
+      run: > 
+        dotnet
+        restore
+      
+    - name: Build
+      run: >
+        dotnet
+        build
+        --no-restore
+        --configuration Release
+
+    - name: Test
+      run: >
+        dotnet
+        test
+        --no-build
+        --configuration Release
+
+    - name: Assemble
+      shell: bash
+      run: |
+        mkdir -p pack/contents/tools/net6.0/any
+        mkdir -p pack/contents/tools/net8.0/any
+        cp Icon.png pack/contents
+        cp README.md pack/contents
+        cp pack/DotnetToolSettings.xml pack/contents/tools/net6.0/any
+        cp pack/DotnetToolSettings.xml pack/contents/tools/net8.0/any
+        cp src/DEMAConsulting.VHDLTest/bin/Release/net6.0/*.dll pack/contents/tools/net6.0/any
+        cp src/DEMAConsulting.VHDLTest/bin/Release/net6.0/*.runtimeconfig.json pack/contents/tools/net6.0/any
+        cp src/DEMAConsulting.VHDLTest/bin/Release/net6.0/*.deps.json pack/contents/tools/net6.0/any
+        cp src/DEMAConsulting.VHDLTest/bin/Release/net8.0/*.dll pack/contents/tools/net8.0/any
+        cp src/DEMAConsulting.VHDLTest/bin/Release/net8.0/*.runtimeconfig.json pack/contents/tools/net8.0/any
+        cp src/DEMAConsulting.VHDLTest/bin/Release/net8.0/*.deps.json pack/contents/tools/net8.0/any
+
+    - name: Generate SBOM
+      run: >
+        dotnet sbom-tool generate
+        -b pack/contents
+        -bc src/DEMAConsulting.VHDLTest
+        -pn DemaConsulting.VHDLTest
+        -pv ${{ inputs.version }}
+        -ps DemaConsulting
+        -nsb https://DemaConsulting.com/VHDLTest
+        -li true
+        -pm true
+
+    - name: Enhance SBOM
+      shell: bash
+      run: |
+        dotnet spdx-tool run-workflow pack/spdx-tool.yaml
+
+    - name: Create Dotnet Tool
+      run: |
+        cd pack
+        nuget pack -Version ${{ inputs.version }}
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          pack/*.nupkg
+          pack/contents/_manifest/spdx_2.2/*.*
