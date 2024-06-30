@@ -1,0 +1,118 @@
+# This workflow enhances the VHDLTest SPDX SBOM
+
+
+# Workflow parameters
+parameters:
+  spdx: pack/contents/_manifest/spdx_2.2/manifest.spdx.json
+  summary: pack/contents/_manifest/spdx_2.2/sbom-summary.md
+
+
+# Workflow steps
+steps:
+
+  # Get the VHDLTest version
+- command: get-version
+  displayName: Get VHDLTest Version
+  inputs:
+    output: vhdltest-version
+    spdx: ${{ spdx }}
+    name: DemaConsulting.VHDLTest
+
+
+  # Rename the package ID for VHDLTest
+- command: rename-id
+  displayName: Rename VHDLTest Package ID
+  inputs:
+    spdx: ${{ spdx }}
+    old: SPDXRef-RootPackage
+    new: SPDXRef-Package-DemaConsulting-VHDLTest-${{ vhdltest-version }}
+
+
+  # Query for DotNet version
+- command: run-workflow
+  displayName: Query DotNet Version
+  inputs:
+    url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/GetDotNetVersion.yaml
+    outputs:
+      version: dotnet-version
+
+
+  # Add DotNet package
+- command: run-workflow
+  displayName: Add DotNet Package ${{ dotnet-version }}
+  inputs:
+    url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/AddDotNetPackage.yaml
+    parameters:
+      spdx: ${{ spdx }}
+      id: SPDXRef-Package-DotNet-${{ dotnet-version }}
+      version: ${{ dotnet-version }}
+
+
+  # Add DotNet relationships
+- command: add-relationship
+  displayName: Add DotNet Relationships
+  inputs:
+    spdx: ${{ spdx }}
+    id: SPDXRef-Package-DotNet-${{ dotnet-version }}
+    relationships:
+    - type: BUILD_TOOL_OF
+      element: SPDXRef-Package-DemaConsulting-VHDLTest-${{ vhdltest-version }}
+      comment: DemaConsulting.VHDLTest compiled by DotNet ${{ dotnet-version }}
+
+
+  # Query for NuGet version
+- command: run-workflow
+  displayName: Query NuGet Version
+  inputs:
+    url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/GetNugetVersion.yaml
+    outputs:
+      version: nuget-version
+
+
+  # Add NuGet package
+- command: run-workflow
+  displayName: Add NuGet Package ${{ nuget-version }}
+  inputs:
+    url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/AddNugetPackage.yaml
+    parameters:
+      spdx: ${{ spdx }}
+      id: SPDXRef-Package-NuGet-${{ nuget-version }}
+      version: ${{ nuget-version }}
+
+
+  # Add NuGet relationships
+- command: add-relationship
+  displayName: Add NuGet Relationships
+  inputs:
+    spdx: ${{ spdx }}
+    id: SPDXRef-Package-NuGet-${{ nuget-version }}
+    relationships:
+    - type: BUILD_TOOL_OF
+      element: SPDXRef-Package-DemaConsulting-VHDLTest-${{ vhdltest-version }}
+      comment: DemaConsulting.VHDLTest packaged by NuGet ${{ nuget-version }}
+
+
+  # Update the SPDX sha256
+- command: hash
+  displayName: Update Sha256
+  inputs:
+    operation: generate
+    algorithm: sha256
+    file: ${{ spdx }}
+
+
+  # Validate the SPDX
+- command: validate
+  displayName: Validate for NTIA Compliance
+  inputs:
+    spdx: ${{ spdx }}
+    ntia: true
+
+
+  # Generate Summary
+- command: to-markdown
+  displayName: Generate Summary
+  inputs:
+    spdx: ${{ spdx }}
+    markdown: ${{ summary }}
+    title: VHDLTest
