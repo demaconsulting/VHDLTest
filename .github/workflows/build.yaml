@@ -55,8 +55,8 @@ jobs:
         mkdir -p pack/contents/tools/net8.0/any
         cp Icon.png pack/contents
         cp README.md pack/contents
-        cp DotnetToolSettings.xml pack/contents/tools/net6.0/any
-        cp DotnetToolSettings.xml pack/contents/tools/net8.0/any
+        cp pack/DotnetToolSettings.xml pack/contents/tools/net6.0/any
+        cp pack/DotnetToolSettings.xml pack/contents/tools/net8.0/any
         cp src/DEMAConsulting.VHDLTest/bin/Release/net6.0/*.dll pack/contents/tools/net6.0/any
         cp src/DEMAConsulting.VHDLTest/bin/Release/net6.0/*.runtimeconfig.json pack/contents/tools/net6.0/any
         cp src/DEMAConsulting.VHDLTest/bin/Release/net6.0/*.deps.json pack/contents/tools/net6.0/any
