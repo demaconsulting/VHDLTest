@@ -8,3 +8,10 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       version: 0.0.0-run.${{ github.run_number }}
+
+  test:
+    name: Test on GHDL
+    needs: build
+    uses: ./.github/workflows/test_ghdl.yaml
+    with:
+      version: 0.0.0-run.${{ github.run_number }}

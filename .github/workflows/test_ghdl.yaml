@@ -1,0 +1,57 @@
+name: Test on GHDL
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  test-ghdl:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: Setup dotnet 6/8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.x
+
+    - uses: nuget/setup-nuget@v2
+      with:
+        nuget-version: '6.x'
+
+    - uses: msys2/setup-msys2@v2
+      if: matrix.os == 'windows-latest'
+      with:
+        msystem: MINGW64
+        update: true
+
+    - uses: ghdl/setup-ghdl-ci@nightly
+
+    - name: Download Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build-artifacts
+
+    - name: Install VHDLTest
+      shell: bash
+      run: |
+        dotnet tool install --global DemaConsulting.VHDLTest --add-source build-artifacts --version ${{ inputs.version }}
+        
+    - name: Run
+      working-directory: test/example
+      shell: bash
+      run: |
+        # Add GHDL to the path
+        PATH=$(dirname $GHDL):$PATH
+        
+        # Run the test
+        bash ./test.sh
