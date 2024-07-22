@@ -92,4 +92,5 @@ jobs:
         name: build-artifacts
         path: |
           pack/*.nupkg
+          pack/*.snupkg
           pack/contents/_manifest/spdx_2.2/*.*
