@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run VHDLTest and capture the output (should report 2 passes and 2 fails)
-vhdltest --config test.yaml --simulator ghdl > out.log
+vhdltest --config test.yaml --simulator $1 > out.log
 cat out.log
 
 # Check for passes

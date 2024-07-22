@@ -9,9 +9,16 @@ jobs:
     with:
       version: 0.0.0-run.${{ github.run_number }}
 
-  test:
+  test-ghdl:
     name: Test on GHDL
     needs: build
     uses: ./.github/workflows/test_ghdl.yaml
+    with:
+      version: 0.0.0-run.${{ github.run_number }}
+
+  test-nvc:
+    name: Test on NVC
+    needs: build
+    uses: ./.github/workflows/test_nvc.yaml
     with:
       version: 0.0.0-run.${{ github.run_number }}

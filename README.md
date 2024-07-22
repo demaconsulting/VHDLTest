@@ -28,6 +28,7 @@ The current list of supported simulators are:
 * [ModelSim](https://eda.sw.siemens.com/en-US/ic/modelsim/)
 * [Vivado](https://www.xilinx.com/products/design-tools/vivado.html)
 * [ActiveHDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl)
+* [NVC](https://www.nickg.me.uk/nvc)
 
 
 # Installing
@@ -81,6 +82,7 @@ This can be done through environment variables:
 * VHDLTEST_MODELSIM_PATH = path to ModelSim folder
 * VHDLTEST_VIVADO_PATH = path to Vivado folder
 * VHDLTEST_ACTIVEHDL_PATH = path to ActiveHDL folder
+* VHDLTEST_NVC_PATH = path to NVC folder
 
 
 To run the tests, execute VHDLTest with the name of the configuration file.
