@@ -7,6 +7,7 @@ jobs:
     name: Build Artifacts
     uses: ./.github/workflows/build.yaml
     with:
+      os: ubuntu-latest
       version: 0.0.0-run.${{ github.run_number }}
 
   test-ghdl:
