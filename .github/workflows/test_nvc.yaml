@@ -40,13 +40,16 @@ jobs:
     - name: Download Artifacts
       uses: actions/download-artifact@v4
       with:
-        name: build-artifacts
-        path: build-artifacts
+        name: artifacts-ubuntu-latest
+        path: artifacts
 
     - name: Install VHDLTest
       shell: bash
-      run: |
-        dotnet tool install --global DemaConsulting.VHDLTest --add-source build-artifacts --version ${{ inputs.version }}
+      run: >
+        dotnet tool install
+        --global DemaConsulting.VHDLTest
+        --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
+        --version ${{ inputs.version }}
         
     - name: Run
       working-directory: test/example

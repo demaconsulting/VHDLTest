@@ -22,12 +22,20 @@ jobs:
     name: Build Artifacts
     uses: ./.github/workflows/build.yaml
     with:
+      os: ubuntu-latest
       version: ${{ inputs.version }}
 
-  test:
+  test-ghdl:
     name: Test on GHDL
     needs: build
     uses: ./.github/workflows/test_ghdl.yaml
+    with:
+      version: ${{ inputs.version }}
+
+  test-nvc:
+    name: Test on NVC
+    needs: build
+    uses: ./.github/workflows/test_nvc.yaml
     with:
       version: ${{ inputs.version }}
 
@@ -38,7 +46,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    needs: [build, test]
+    needs: [build, test-ghdl, test-nvc]
 
     steps:
     - uses: actions/checkout@v4
@@ -50,14 +58,14 @@ jobs:
     - name: Download Artifacts
       uses: actions/download-artifact@v4
       with:
-        name: build-artifacts
-        path: build-artifacts
+        name: artifacts-ubuntu-latest
+        path: artifacts
       
     - name: Create release
       if: ${{ inputs.publish == 'release' || inputs.publish == 'publish' }}
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "build-artifacts/*.nupkg,build-artifacts/contents/_manifest/spdx_2.2/*.*"
+        artifacts: "artifacts/**/*"
         generateReleaseNotes: true
         tag: ${{ github.event.inputs.version }}
 
@@ -65,7 +73,7 @@ jobs:
       if: ${{ inputs.publish == 'publish' }}
       run: >
         dotnet nuget push
-        build-artifacts/*.nupkg
+        artifacts/src/DEMAConsulting.VHDLTest/bin/Release/*.nupkg
         --source "https://api.nuget.org/v3/index.json"
         --api-key "${{ secrets.DEMACONSULTINGNUGETKEY }}"
   
