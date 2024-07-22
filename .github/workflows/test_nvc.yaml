@@ -1,4 +1,4 @@
-name: Test on GHDL
+name: Test on NVC
 on:
   workflow_call:
     inputs:
@@ -7,7 +7,7 @@ on:
         type: string
 
 jobs:
-  test-ghdl:
+  test-nvc:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -33,7 +33,9 @@ jobs:
         msystem: MINGW64
         update: true
 
-    - uses: ghdl/setup-ghdl-ci@nightly
+    - uses: nickg/setup-nvc-ci@v1
+      with:
+        version: latest
 
     - name: Download Artifacts
       uses: actions/download-artifact@v4
@@ -50,8 +52,5 @@ jobs:
       working-directory: test/example
       shell: bash
       run: |
-        # Add GHDL to the path
-        PATH=$(dirname $GHDL):$PATH
-        
         # Run the test
-        bash ./test.sh ghdl
+        bash ./test.sh nvc

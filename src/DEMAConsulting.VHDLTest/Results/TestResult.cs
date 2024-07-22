@@ -2,7 +2,10 @@
 
 namespace DEMAConsulting.VHDLTest.Results;
 
-public class TestResult
+/// <summary>
+/// Test result class
+/// </summary>
+public sealed class TestResult
 {
     /// <summary>
     ///     Initializes a new instance of the TestResult class

@@ -13,7 +13,8 @@ public static class SimulatorFactory
         GhdlSimulator.Instance,
         ModelSimSimulator.Instance,
         VivadoSimulator.Instance,
-        ActiveHdlSimulator.Instance
+        ActiveHdlSimulator.Instance,
+        NvcSimulator.Instance
     };
 
     /// <summary>
@@ -25,10 +26,9 @@ public static class SimulatorFactory
     {
         // If the simulator is specified then use it
         if (name != null)
-            return Simulators.FirstOrDefault(
-                s => s.SimulatorName.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            return Array.Find(Simulators, s => s.SimulatorName.Equals(name, StringComparison.InvariantCultureIgnoreCase));
 
         // Return the first available
-        return Simulators.FirstOrDefault(s => s.Available());
+        return Array.Find(Simulators, s => s.Available());
     }
 }
