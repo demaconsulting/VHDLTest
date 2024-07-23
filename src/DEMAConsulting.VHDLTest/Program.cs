@@ -7,7 +7,7 @@ namespace DEMAConsulting.VHDLTest;
 /// <summary>
 ///     VHDLTest program class
 /// </summary>
-public class Program
+public static class Program
 {
     /// <summary>
     ///     Gets the version of this programs assembly
