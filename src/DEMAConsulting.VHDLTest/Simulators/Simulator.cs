@@ -88,11 +88,13 @@ public abstract class Simulator
 
         // Search every path and file
         foreach (var p in searchPaths)
-        foreach (var f in searchFiles)
         {
-            var fullName = Path.Combine(p, f);
-            if (File.Exists(fullName))
-                return fullName;
+            foreach (var f in searchFiles)
+            {
+                var fullName = Path.Combine(p, f);
+                if (File.Exists(fullName))
+                    return fullName;
+            }
         }
 
         // Not found

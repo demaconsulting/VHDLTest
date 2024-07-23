@@ -11,6 +11,11 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 public sealed class ActiveHdlSimulator : Simulator
 {
     /// <summary>
+    /// Simulation application
+    /// </summary>
+    private const string SimApp = "vsimsa";
+
+    /// <summary>
     ///     Text match rules when compiling
     /// </summary>
     private static readonly RunLineRule[] CompileRules =
@@ -85,7 +90,7 @@ public sealed class ActiveHdlSimulator : Simulator
         File.WriteAllText(script, writer.ToString());
 
         // Run the ActiveHDL compiler
-        var application = Path.Combine(simPath, "vsimsa");
+        var application = Path.Combine(simPath, SimApp);
         if (options.Verbose)
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
@@ -132,14 +137,14 @@ public sealed class ActiveHdlSimulator : Simulator
         File.WriteAllText(script, writer.ToString());
 
         // Run the test
-        var application = Path.Combine(simPath, "vsimsa");
+        var application = Path.Combine(simPath, SimApp);
         if (options.Verbose)
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/test.do");
         var testRunResults = RunResults.Execute(
             TestRules,
-            Path.Combine(simPath, "vsimsa"),
+            Path.Combine(simPath, SimApp),
             options.WorkingDirectory,
             "-do",
             "VHDLTest.out/ActiveHDL/test.do");
@@ -163,7 +168,7 @@ public sealed class ActiveHdlSimulator : Simulator
             return simPathEnv;
 
         // Find the path to the simulator application
-        var simPath = Where("vsimsa");
+        var simPath = Where(SimApp);
         if (simPath == null)
             return null;
 

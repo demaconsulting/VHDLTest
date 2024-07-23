@@ -96,16 +96,16 @@ public sealed class RunResults
             .Replace("\r\n", "\n")
             .Split('\n')
             .Select(line => new RunLine(
-                rules.FirstOrDefault(r => r.Pattern.IsMatch(line))?.Type ?? RunLineType.Text,
+                Array.Find(rules, r => r.Pattern.IsMatch(line))?.Type ?? RunLineType.Text,
                 line
             ))
             .ToArray();
 
         // Calculate the summary type
         var summary = exitCode != 0 ? RunLineType.Error : RunLineType.Text;
-        foreach (var line in lines)
-            if (line.Type > summary)
-                summary = line.Type;
+        foreach (var type in lines.Select(line => line.Type))
+            if (type > summary)
+                summary = type;
 
         return new RunResults(
             summary,
