@@ -1,5 +1,13 @@
 # VHDLTest
 
+![GitHub forks](https://img.shields.io/github/forks/demaconsulting/VHDLTest?style=plastic)
+![GitHub Repo stars](https://img.shields.io/github/stars/demaconsulting/VHDLTest?style=plastic)
+![GitHub contributors](https://img.shields.io/github/contributors/demaconsulting/VHDLTest?style=plastic)
+![GitHub](https://img.shields.io/github/license/demaconsulting/VHDLTest?style=plastic)
+![Build](https://github.com/demaconsulting/VHDLTest/actions/workflows/build_on_push.yaml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest)
+
 This tool runs VHDL test benches and generates standard test results files.
 
 
@@ -36,7 +44,7 @@ The current list of supported simulators are:
 VHDLTest is distributed as a dotnet tool through NuGet.org and can be installed globally:
 
 ```
-dotnet tool install -g DEMAConsulting.VHDLTest
+dotnet tool install -g DemaConsulting.VHDLTest
 
 VHDLTest --help
 ```
@@ -45,7 +53,7 @@ VHDLTest --help
 Additionally it can be installed as a local tool in the working folder:
 
 ```
-dotnet tool install DEMAConsulting.VHDLTest
+dotnet tool install DemaConsulting.VHDLTest
 
 dotnet VHDLTest --help
 ```
