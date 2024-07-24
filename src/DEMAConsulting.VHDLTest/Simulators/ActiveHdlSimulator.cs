@@ -1,5 +1,24 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
+﻿// Copyright (c) 2023 DEMA Consulting
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System.Text;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 
@@ -20,9 +39,9 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </summary>
     private static readonly RunLineRule[] CompileRules =
     {
-        new(RunLineType.Warning, new Regex(@"KERNEL:\s*Warning:")),
-        new(RunLineType.Error, new Regex("Error:")),
-        new(RunLineType.Error, new Regex(@"RUNTIME:\s*Fatal Error"))
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+        RunLineRule.Create(RunLineType.Error, "Error:"),
+        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
     };
 
     /// <summary>
@@ -30,17 +49,17 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </summary>
     private static readonly RunLineRule[] TestRules =
     {
-        new(RunLineType.Text, new Regex(@"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition")),
-        new(RunLineType.Text, new Regex(@"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options")),
-        new(RunLineType.Warning, new Regex(@"KERNEL:\s*Warning:")),
-        new(RunLineType.Warning, new Regex(@"KERNEL:\s*WARNING:")),
-        new(RunLineType.Info, new Regex(@"EXECUTION::\s*NOTE")),
-        new(RunLineType.Warning, new Regex(@"EXECUTION::\s*WARNING")),
-        new(RunLineType.Error, new Regex(@"EXECUTION::\s*ERROR")),
-        new(RunLineType.Error, new Regex(@"EXECUTION::\s*FAILURE")),
-        new(RunLineType.Error, new Regex(@"KERNEL:\s*ERROR")),
-        new(RunLineType.Error, new Regex(@"RUNTIME:\s*Fatal Error:")),
-        new(RunLineType.Error, new Regex(@"VSIM:\s*Error:"))
+        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
+        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
+        RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
+        RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
+        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
+        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
+        RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
+        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
+        RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
     };
 
     /// <summary>

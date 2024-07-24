@@ -1,5 +1,24 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
+﻿// Copyright (c) 2023 DEMA Consulting
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using System.Text;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 
@@ -15,10 +34,10 @@ public sealed class GhdlSimulator : Simulator
     /// </summary>
     private static readonly RunLineRule[] CompileRules =
     {
-        new(RunLineType.Warning, new Regex(@".*:\d+:\d+:warning:")),
-        new(RunLineType.Error, new Regex(@".*:\d+:\d+: ")),
-        new(RunLineType.Error, new Regex(".*:error:")),
-        new(RunLineType.Error, new Regex(".*: cannot open"))
+        RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
+        RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
+        RunLineRule.Create(RunLineType.Error, ".*:error:"),
+        RunLineRule.Create(RunLineType.Error, ".*: cannot open")
     };
 
     /// <summary>
@@ -26,15 +45,15 @@ public sealed class GhdlSimulator : Simulator
     /// </summary>
     private static readonly RunLineRule[] TestRules =
     {
-        new(RunLineType.Info, new Regex(@".*:\(assertion note\):")),
-        new(RunLineType.Info, new Regex(@".*:\(report note\):")),
-        new(RunLineType.Warning, new Regex(@".*:\(assertion warning\):")),
-        new(RunLineType.Warning, new Regex(@".*:\(report warning\):")),
-        new(RunLineType.Error, new Regex(@".*:\(assertion error\):")),
-        new(RunLineType.Error, new Regex(@".*:\(report error\):")),
-        new(RunLineType.Error, new Regex(@".*:\(assertion failure\):")),
-        new(RunLineType.Error, new Regex(@".*:\(report failure\):")),
-        new(RunLineType.Error, new Regex(".*:error:"))
+        RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
+        RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
+        RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
+        RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
+        RunLineRule.Create(RunLineType.Error, ".*:error:")
     };
 
     /// <summary>
