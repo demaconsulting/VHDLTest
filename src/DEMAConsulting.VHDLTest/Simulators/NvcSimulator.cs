@@ -1,6 +1,25 @@
-﻿using DEMAConsulting.VHDLTest.Run;
+﻿// Copyright (c) 2023 DEMA Consulting
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+using DEMAConsulting.VHDLTest.Run;
 using System.Text;
-using System.Text.RegularExpressions;
 using DEMAConsulting.VHDLTest.Results;
 
 namespace DEMAConsulting.VHDLTest.Simulators;
@@ -15,11 +34,11 @@ public sealed class NvcSimulator : Simulator
     /// </summary>
     private static readonly RunLineRule[] CompileRules =
     {
-        new(RunLineType.Info, new Regex(@".* Note:")),
-        new(RunLineType.Warning, new Regex(@".* Warning:")),
-        new(RunLineType.Error, new Regex(".* Error:")),
-        new(RunLineType.Error, new Regex(".* Failure:")),
-        new(RunLineType.Error, new Regex(".* Fatal:"))
+        RunLineRule.Create(RunLineType.Info, ".* Note:"),
+        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+        RunLineRule.Create(RunLineType.Error, ".* Error:"),
+        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
     };
 
     /// <summary>
@@ -27,11 +46,11 @@ public sealed class NvcSimulator : Simulator
     /// </summary>
     private static readonly RunLineRule[] TestRules =
     {
-        new(RunLineType.Info, new Regex(@".* Note:")),
-        new(RunLineType.Warning, new Regex(@".* Warning:")),
-        new(RunLineType.Error, new Regex(".* Error:")),
-        new(RunLineType.Error, new Regex(".* Failure:")),
-        new(RunLineType.Error, new Regex(".* Fatal:"))
+        RunLineRule.Create(RunLineType.Info, ".* Note:"),
+        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+        RunLineRule.Create(RunLineType.Error, ".* Error:"),
+        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
     };
 
     /// <summary>
