@@ -49,6 +49,7 @@ jobs:
         --no-build
         --configuration Release
         --property:Version=${{ inputs.version }}
+        --collect "Code Coverage"
 
     - name: Generate Tool SBOM
       run: >
