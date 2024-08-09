@@ -50,6 +50,7 @@ jobs:
         /o:"demaconsulting"
         /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
         /d:sonar.host.url="https://sonarcloud.io"
+        /d:sonar.cs.vscoveragexml.reportsPaths=**/*.cobertura.xml
 
     - name: Build
       run: >
@@ -64,7 +65,7 @@ jobs:
         --no-build
         --configuration Release
         --property:Version=${{ inputs.version }}
-        --collect "Code Coverage"
+        --collect "XPlat Code Coverage"
 
     - name: End Sonar Scanner
       env:
