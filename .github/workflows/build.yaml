@@ -40,13 +40,12 @@ jobs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: >
         dotnet dotnet-sonarscanner
         begin
         /k:"demaconsulting_VHDLTest"
         /o:"demaconsulting"
-        /d:sonar.token="$SONAR_TOKEN"
+        /d:sonar.token="${{ secrets.SONARTOKEN }}"
         /d:sonar.host.url="https://sonarcloud.io"
 
     - name: Build
@@ -68,11 +67,10 @@ jobs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: >
         dotnet dotnet-sonarscanner
         end
-        /d:sonar.token="$SONAR_TOKEN"
+        /d:sonar.token="${{ secrets.SONARTOKEN }}"
 
     - name: Generate Tool SBOM
       run: >
