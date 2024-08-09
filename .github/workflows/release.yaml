@@ -24,6 +24,8 @@ jobs:
     with:
       os: ubuntu-latest
       version: ${{ inputs.version }}
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   test-ghdl:
     name: Test on GHDL
