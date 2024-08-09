@@ -36,6 +36,15 @@ jobs:
       run: > 
         dotnet restore
       
+    - name: Start Sonar Scanner
+      run: >
+        dotnet dotnet-sonarscanner
+        begin
+        /k:"demaconsulting_VHDLTest"
+        /o:"demaconsulting"
+        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        /d:sonar.host.url="https://sonarcloud.io"
+
     - name: Build
       run: >
         dotnet build
@@ -50,6 +59,12 @@ jobs:
         --configuration Release
         --property:Version=${{ inputs.version }}
         --collect "Code Coverage"
+
+    - name: End Sonar Scanner
+      run: >
+        dotnet dotnet-sonarscanner
+        end
+        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
     - name: Generate Tool SBOM
       run: >
