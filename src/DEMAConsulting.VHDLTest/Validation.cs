@@ -54,6 +54,10 @@ public static class Validation
             if (exitCode != 0)
                 throw new InvalidOperationException($"Validation failed with exit code {exitCode}");
 
+            // Print output if requested
+            if (arguments.Verbose)
+                Console.WriteLine(output);
+
             // Analyze the validation results
             var results = AnalyzeValidation(start, 0.0, output);
 
@@ -123,7 +127,7 @@ public static class Validation
         var parameters = new List<string>
         {
             typeof(Validation).Assembly.Location,
-            "-c",
+            "--config",
             "validate.yaml",
             "--exit-0"
         };
@@ -131,11 +135,15 @@ public static class Validation
         // Add simulator if specified
         if (arguments.Simulator != null)
         {
-            parameters.Add("-s");
+            parameters.Add("--simulator");
             parameters.Add(arguments.Simulator);
         }
 
-        return RunProgram.Run(out output, "dotnet", validationDir, parameters.ToArray());
+        // Add verbose if specified
+        if (arguments.Verbose)
+            parameters.Add("--verbose");
+
+        return RunProgram.Run(out output, "dotnet", validationDir, [..parameters]);
     }
 
     /// <summary>
