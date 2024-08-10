@@ -18,8 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Diagnostics;
-
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
@@ -57,7 +55,7 @@ public class RunProcessor
         var start = DateTime.Now;
 
         // Run the application
-        var exitCode = Run(
+        var exitCode = RunProgram.Run(
             out var output,
             application,
             workingDirectory,
@@ -109,43 +107,6 @@ public class RunProcessor
             duration,
             exitCode,
             output,
-            lines);
-    }
-
-    /// <summary>
-    ///     Run a Program
-    /// </summary>
-    /// <param name="output">Output text</param>
-    /// <param name="application">Program name</param>
-    /// <param name="workingDirectory">Working directory</param>
-    /// <param name="arguments">Program arguments</param>
-    /// <returns>Program exit code</returns>
-    private static int Run(
-        out string output,
-        string application,
-        string workingDirectory = "",
-        params string[] arguments)
-    {
-        // Construct the process start information
-        var startInfo = new ProcessStartInfo(application)
-        {
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            WorkingDirectory = workingDirectory
-        };
-
-        foreach (var argument in arguments)
-            startInfo.ArgumentList.Add(argument);
-
-        // Launch the process
-        var p = new Process { StartInfo = startInfo };
-        p.Start();
-
-        // Collect all output
-        output = p.StandardOutput.ReadToEnd();
-        p.WaitForExit();
-
-        // Return the output
-        return p.ExitCode;
+            lines.AsReadOnly());
     }
 }

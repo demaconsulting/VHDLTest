@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.ObjectModel;
 using DEMAConsulting.VHDLTest.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests;
@@ -38,11 +39,10 @@ public class TestTestResult
                 5.0,
                 0,
                 "Test\nNo Issues",
-                new[]
-                {
+                new ReadOnlyCollection<RunLine>([
                     new RunLine(RunLineType.Text, "Test"),
                     new RunLine(RunLineType.Text, "No Issues")
-                }
+                ])
             ));
 
         Assert.AreEqual("test", result.ClassName);
@@ -65,11 +65,10 @@ public class TestTestResult
                 5.0,
                 0,
                 "Test\nError: Some Error",
-                new[]
-                {
+                new ReadOnlyCollection<RunLine>([
                     new RunLine(RunLineType.Text, "Test"),
                     new RunLine(RunLineType.Error, "Error: Some Error")
-                }
+                ])
             ));
 
         Assert.AreEqual("test", result.ClassName);

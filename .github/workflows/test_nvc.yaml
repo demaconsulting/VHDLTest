@@ -18,7 +18,7 @@ jobs:
 
     - uses: actions/checkout@v4
 
-    - name: Setup dotnet 6/8
+    - name: Setup dotnet 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.x
@@ -50,7 +50,12 @@ jobs:
         --global DemaConsulting.VHDLTest
         --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
         --version ${{ inputs.version }}
-        
+
+    - name: Validate VHDLTest
+      shell: bash
+      run: >
+        vhdltest --validate --simulator nvc
+
     - name: Run
       working-directory: test/example
       shell: bash

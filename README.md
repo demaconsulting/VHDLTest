@@ -19,6 +19,7 @@ Usage: VHDLTest [options] [tests]
 Options:
   -h|-?|--help                 Display help
   -v|--version                 Display version
+    |--validate                Validate operational
   -c|--config <config.yaml>    Specify configuration
     |--verbose                 Verbose output
   -r|--results <out.trx>       Specify test results file

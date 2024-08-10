@@ -33,21 +33,19 @@ public sealed class GhdlSimulator : Simulator
     /// Compile processor
     /// </summary>
     public static readonly RunProcessor CompileProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
             RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
             RunLineRule.Create(RunLineType.Error, ".*:error:"),
             RunLineRule.Create(RunLineType.Error, ".*: cannot open")
-        }
+        ]
     );
 
     /// <summary>
     /// Test processor
     /// </summary>
     public static readonly RunProcessor TestProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
             RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
             RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
@@ -57,7 +55,7 @@ public sealed class GhdlSimulator : Simulator
             RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
             RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
             RunLineRule.Create(RunLineType.Error, ".*:error:")
-        }
+        ]
     );
 
     /// <summary>

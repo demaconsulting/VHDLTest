@@ -18,37 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DEMAConsulting.VHDLTest.Simulators;
+namespace DEMAConsulting.VHDLTest.Tests;
 
-/// <summary>
-///     Simulator Factory Class
-/// </summary>
-public static class SimulatorFactory
+[TestClass]
+public class TestValidation
 {
-    /// <summary>
-    ///     Array of simulators
-    /// </summary>
-    private static readonly Simulator[] Simulators =
-    [
-        GhdlSimulator.Instance,
-        ModelSimSimulator.Instance,
-        VivadoSimulator.Instance,
-        ActiveHdlSimulator.Instance,
-        NvcSimulator.Instance
-    ];
-
-    /// <summary>
-    ///     Get a simulator
-    /// </summary>
-    /// <param name="name">Simulator name</param>
-    /// <returns>Simulator instance or null</returns>
-    public static Simulator? Get(string? name = null)
+    [TestMethod]
+    public void Test_Validate_BadSimulator()
     {
-        // If the simulator is specified then use it
-        if (name != null)
-            return Array.Find(Simulators, s => s.SimulatorName.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+        Assert.ThrowsException<InvalidOperationException>(() => Validation.Run(Arguments.Parse(["--validate", "--simulator", "bad"
+        ])));
+    }
 
-        // Return the first available
-        return Array.Find(Simulators, s => s.Available());
+    [TestMethod]
+    public void Test_Validate_Nvc()
+    {
+        Assert.AreEqual(0, Validation.Run(Arguments.Parse(["--validate", "--simulator", "nvc"])));
     }
 }

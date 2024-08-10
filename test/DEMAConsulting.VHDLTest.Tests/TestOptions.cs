@@ -23,21 +23,37 @@ namespace DEMAConsulting.VHDLTest.Tests;
 [TestClass]
 public class TestOptions
 {
+    /// <summary>
+    /// Configuration file name
+    /// </summary>
     private const string ConfigFile = "options-test.yaml";
 
-    private const string ConfigContent = 
-        "files:\n" +
-        "- file1.vhd\n" +
-        "- file2.vhd\n" +
-        "\n" +
-        "tests:\n" +
-        "- test1\n" +
-        "- test2\n";
+    /// <summary>
+    /// Configuration file contents
+    /// </summary>
+    private const string ConfigContent =
+        """
+        files:
+        - file1.vhd
+        - file2.vhd
+
+        tests:
+        - test1
+        - test2
+        """;
 
     [TestMethod]
-    public void Test_Options_None()
+    public void Test_Options_NoConfig()
     {
-        Assert.ThrowsException<InvalidOperationException>(() => Options.Parse(Array.Empty<string>()));
+        var arguments = Arguments.Parse([]);
+        Assert.ThrowsException<InvalidOperationException>(() => Options.Parse(arguments));
+    }
+
+    [TestMethod]
+    public void Test_Options_MissingConfig()
+    {
+        var arguments = Arguments.Parse(["-c", "missing-config.yaml"]);
+        Assert.ThrowsException<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
     [TestMethod]
@@ -49,20 +65,18 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile });
+            var arguments = Arguments.Parse(["-c", ConfigFile]);
+            var options = Options.Parse(arguments);
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.AreEqual(2, options.Config.Files.Count);
+            Assert.AreEqual(2, options.Config.Files.Length);
             Assert.AreEqual("file1.vhd", options.Config.Files[0]);
             Assert.AreEqual("file2.vhd", options.Config.Files[1]);
-            Assert.AreEqual(2, options.Config.Tests.Count);
+            Assert.AreEqual(2, options.Config.Tests.Length);
             Assert.AreEqual("test1", options.Config.Tests[0]);
             Assert.AreEqual("test2", options.Config.Tests[1]);
-            Assert.IsNull(options.TestResultsFile);
-            Assert.IsNull(options.Simulator);
             Assert.IsFalse(options.Verbose);
-            Assert.IsFalse(options.ExitZero);
             Assert.IsNull(options.CustomTests);
         }
         finally
@@ -71,58 +85,7 @@ public class TestOptions
             File.Delete(ConfigFile);
         }
     }
-
-    [TestMethod]
-    public void Test_Options_ResultsFile()
-    {
-        try
-        {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
-
-            // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile, "-r", "results.rtd" });
-
-            // Check the options
-            Assert.IsNotNull(options);
-            Assert.IsNull(options.Simulator);
-            Assert.IsFalse(options.Verbose);
-            Assert.IsFalse(options.ExitZero);
-            Assert.IsNull(options.CustomTests);
-        }
-        finally
-        {
-            // Delete the config file
-            File.Delete(ConfigFile);
-        }
-    }
-
-    [TestMethod]
-    public void Test_Options_Simulator()
-    {
-        try
-        {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
-
-            // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile, "-s", "GHDL" });
-
-            // Check the options
-            Assert.IsNotNull(options);
-            Assert.IsNull(options.TestResultsFile);
-            Assert.AreEqual("GHDL", options.Simulator);
-            Assert.IsFalse(options.Verbose);
-            Assert.IsFalse(options.ExitZero);
-            Assert.IsNull(options.CustomTests);
-        }
-        finally
-        {
-            // Delete the config file
-            File.Delete(ConfigFile);
-        }
-    }
-
+    
     [TestMethod]
     public void Test_Options_Verbose()
     {
@@ -132,40 +95,12 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile, "--verbose" });
+            var arguments = Arguments.Parse(["-c", ConfigFile, "--verbose"]);
+            var options = Options.Parse(arguments);
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.IsNull(options.TestResultsFile);
-            Assert.IsNull(options.Simulator);
             Assert.IsTrue(options.Verbose);
-            Assert.IsFalse(options.ExitZero);
-            Assert.IsNull(options.CustomTests);
-        }
-        finally
-        {
-            // Delete the config file
-            File.Delete(ConfigFile);
-        }
-    }
-
-    [TestMethod]
-    public void Test_Options_ExitZero()
-    {
-        try
-        {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
-
-            // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile, "-0" });
-
-            // Check the options
-            Assert.IsNotNull(options);
-            Assert.IsNull(options.TestResultsFile);
-            Assert.IsNull(options.Simulator);
-            Assert.IsFalse(options.Verbose);
-            Assert.IsTrue(options.ExitZero);
             Assert.IsNull(options.CustomTests);
         }
         finally
@@ -184,46 +119,15 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile, "custom_test" });
+            var arguments = Arguments.Parse(["-c", ConfigFile, "custom_test"]);
+            var options = Options.Parse(arguments);
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.IsNull(options.TestResultsFile);
-            Assert.IsNull(options.Simulator);
             Assert.IsFalse(options.Verbose);
-            Assert.IsFalse(options.ExitZero);
             Assert.IsNotNull(options.CustomTests);
             Assert.AreEqual(1, options.CustomTests.Count);
             Assert.AreEqual("custom_test", options.CustomTests[0]);
-        }
-        finally
-        {
-            // Delete the config file
-            File.Delete(ConfigFile);
-        }
-    }
-
-    [TestMethod]
-    public void Test_Options_CustomTests()
-    {
-        try
-        {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
-
-            // Parse the options
-            var options = Options.Parse(new[] { "-c", ConfigFile, "--", "custom_test1", "custom_test2" });
-
-            // Check the options
-            Assert.IsNotNull(options);
-            Assert.IsNull(options.TestResultsFile);
-            Assert.IsNull(options.Simulator);
-            Assert.IsFalse(options.Verbose);
-            Assert.IsFalse(options.ExitZero);
-            Assert.IsNotNull(options.CustomTests);
-            Assert.AreEqual(2, options.CustomTests.Count);
-            Assert.AreEqual("custom_test1", options.CustomTests[0]);
-            Assert.AreEqual("custom_test2", options.CustomTests[1]);
         }
         finally
         {
