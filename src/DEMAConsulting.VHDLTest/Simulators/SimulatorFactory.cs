@@ -29,13 +29,13 @@ public static class SimulatorFactory
     ///     Array of simulators
     /// </summary>
     private static readonly Simulator[] Simulators =
-    {
+    [
         GhdlSimulator.Instance,
         ModelSimSimulator.Instance,
         VivadoSimulator.Instance,
         ActiveHdlSimulator.Instance,
         NvcSimulator.Instance
-    };
+    ];
 
     /// <summary>
     ///     Get a simulator

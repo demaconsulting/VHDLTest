@@ -33,23 +33,21 @@ public sealed class VivadoSimulator : Simulator
     /// Compile processor
     /// </summary>
     public static readonly RunProcessor CompileProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Error, "Error: ")
-        }
+        ]
     );
 
     /// <summary>
     /// Test processor
     /// </summary>
     public static readonly RunProcessor TestProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Info, "Note: "),
             RunLineRule.Create(RunLineType.Warning, "Warning: "),
             RunLineRule.Create(RunLineType.Error, "Error: "),
             RunLineRule.Create(RunLineType.Error, "Failure: ")
-        }
+        ]
     );
 
     /// <summary>

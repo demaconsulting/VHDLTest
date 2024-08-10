@@ -23,28 +23,36 @@ namespace DEMAConsulting.VHDLTest.Tests;
 [TestClass]
 public class TestOptions
 {
+    /// <summary>
+    /// Configuration file name
+    /// </summary>
     private const string ConfigFile = "options-test.yaml";
 
-    private const string ConfigContent = 
-        "files:\n" +
-        "- file1.vhd\n" +
-        "- file2.vhd\n" +
-        "\n" +
-        "tests:\n" +
-        "- test1\n" +
-        "- test2\n";
+    /// <summary>
+    /// Configuration file contents
+    /// </summary>
+    private const string ConfigContent =
+        """
+        files:
+        - file1.vhd
+        - file2.vhd
+
+        tests:
+        - test1
+        - test2
+        """;
 
     [TestMethod]
     public void Test_Options_NoConfig()
     {
-        var arguments = Arguments.Parse(Array.Empty<string>());
+        var arguments = Arguments.Parse([]);
         Assert.ThrowsException<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
     [TestMethod]
     public void Test_Options_MissingConfig()
     {
-        var arguments = Arguments.Parse(new [] { "-c", "missing-config.yaml" });
+        var arguments = Arguments.Parse(["-c", "missing-config.yaml"]);
         Assert.ThrowsException<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
@@ -57,15 +65,15 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var arguments = Arguments.Parse(new[] { "-c", ConfigFile });
+            var arguments = Arguments.Parse(["-c", ConfigFile]);
             var options = Options.Parse(arguments);
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.AreEqual(2, options.Config.Files.Count);
+            Assert.AreEqual(2, options.Config.Files.Length);
             Assert.AreEqual("file1.vhd", options.Config.Files[0]);
             Assert.AreEqual("file2.vhd", options.Config.Files[1]);
-            Assert.AreEqual(2, options.Config.Tests.Count);
+            Assert.AreEqual(2, options.Config.Tests.Length);
             Assert.AreEqual("test1", options.Config.Tests[0]);
             Assert.AreEqual("test2", options.Config.Tests[1]);
             Assert.IsFalse(options.Verbose);
@@ -87,7 +95,7 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var arguments = Arguments.Parse(new[] { "-c", ConfigFile, "--verbose" });
+            var arguments = Arguments.Parse(["-c", ConfigFile, "--verbose"]);
             var options = Options.Parse(arguments);
 
             // Check the options
@@ -111,7 +119,7 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var arguments = Arguments.Parse(new[] { "-c", ConfigFile, "custom_test" });
+            var arguments = Arguments.Parse(["-c", ConfigFile, "custom_test"]);
             var options = Options.Parse(arguments);
 
             // Check the options

@@ -38,20 +38,18 @@ public sealed class ActiveHdlSimulator : Simulator
     /// Compile processor
     /// </summary>
     public static readonly RunProcessor CompileProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
             RunLineRule.Create(RunLineType.Error, "Error:"),
             RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
-        }
+        ]
     );
 
     /// <summary>
     /// Test processor
     /// </summary>
     public static readonly RunProcessor TestProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
             RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
             RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
@@ -63,7 +61,7 @@ public sealed class ActiveHdlSimulator : Simulator
             RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
             RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
             RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
-        }
+        ]
     );
 
     /// <summary>

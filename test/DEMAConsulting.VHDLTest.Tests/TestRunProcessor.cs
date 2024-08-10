@@ -30,15 +30,14 @@ public class TestRunProcessor
     {
         // Construct the processor
         var processor = new RunProcessor(
-            new[]
-            {
-                RunLineRule.Create(RunLineType.Error, "Error"),
-            });
+        [
+            RunLineRule.Create(RunLineType.Error, "Error")
+        ]);
 
         // Run unknown program
         try
         {
-            processor.Execute("unknown-program", "");
+            processor.Execute("unknown-program");
             Assert.Fail("Expected exception");
         }
         catch (Exception)
@@ -52,10 +51,9 @@ public class TestRunProcessor
     {
         // Construct the processor
         var processor = new RunProcessor(
-            new[]
-            {
-                RunLineRule.Create(RunLineType.Error, @"Error"),
-            });
+        [
+            RunLineRule.Create(RunLineType.Error, "Error")
+        ]);
 
         // Run dotnet with unknown command
         var result = processor.Execute("dotnet", "", "unknown-command");
@@ -69,10 +67,9 @@ public class TestRunProcessor
     {
         // Construct the processor
         var processor = new RunProcessor(
-            new[]
-            {
-                RunLineRule.Create(RunLineType.Info, @"Usage"),
-            });
+        [
+            RunLineRule.Create(RunLineType.Info, "Usage")
+        ]);
 
         // Run dotnet with help command
         var result = processor.Execute("dotnet", "", "help");

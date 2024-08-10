@@ -27,7 +27,7 @@ public class TestArguments
     public void Test_Arguments_None()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(Array.Empty<string>());
+        var arguments = Arguments.Parse([]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -44,14 +44,14 @@ public class TestArguments
     public void Test_Arguments_Unknown()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "--unknown" }));
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["--unknown"]));
     }
 
     [TestMethod]
     public void Test_Arguments_ConfigFile()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "-c", "config.json" });
+        var arguments = Arguments.Parse(["-c", "config.json"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -68,14 +68,14 @@ public class TestArguments
     public void Test_Arguments_ConfigFile_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "-c" }));
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-c"]));
     }
 
     [TestMethod]
     public void Test_Arguments_ResultsFile()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "-r", "results.trx" });
+        var arguments = Arguments.Parse(["-r", "results.trx"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -92,14 +92,14 @@ public class TestArguments
     public void Test_Arguments_ResultsFile_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "-r" }));
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-r"]));
     }
 
     [TestMethod]
     public void Test_Arguments_Simulator()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "-s", "GHDL" });
+        var arguments = Arguments.Parse(["-s", "GHDL"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -116,14 +116,14 @@ public class TestArguments
     public void Test_Arguments_Simulator_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "-s" }));
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-s"]));
     }
 
     [TestMethod]
     public void Test_Arguments_Verbose()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "--verbose" });
+        var arguments = Arguments.Parse(["--verbose"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -140,7 +140,7 @@ public class TestArguments
     public void Test_Arguments_ExitZero()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "--exit-0" });
+        var arguments = Arguments.Parse(["--exit-0"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -157,7 +157,7 @@ public class TestArguments
     public void Test_Arguments_Validate()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "--validate" });
+        var arguments = Arguments.Parse(["--validate"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -174,7 +174,7 @@ public class TestArguments
     public void Test_Arguments_CustomTest()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "custom_test" });
+        var arguments = Arguments.Parse(["custom_test"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -193,7 +193,7 @@ public class TestArguments
     public void Test_Arguments_CustomTests()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(new[] { "--", "custom_test1", "custom_test2" });
+        var arguments = Arguments.Parse(["--", "custom_test1", "custom_test2"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);

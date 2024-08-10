@@ -31,12 +31,12 @@ public class ConfigDocument
     /// <summary>
     ///     List of VHDL files
     /// </summary>
-    public List<string> Files { get; set; } = new();
+    public string[] Files { get; set; } = [];
 
     /// <summary>
     ///     List of tests
     /// </summary>
-    public List<string> Tests { get; set; } = new();
+    public string[] Tests { get; set; } = [];
 
     /// <summary>
     ///     Read the configuration document from file

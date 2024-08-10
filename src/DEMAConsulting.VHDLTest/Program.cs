@@ -71,9 +71,7 @@ public static class Program
             // Parse the arguments
             var arguments = Arguments.Parse(args);
             if (arguments.Validate)
-            {
                 Environment.Exit(Validation.Run(arguments));
-            }
 
             // Get the simulator
             var simulator = SimulatorFactory.Get(arguments.Simulator) ??

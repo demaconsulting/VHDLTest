@@ -33,28 +33,26 @@ public sealed class NvcSimulator : Simulator
     /// Compile processor
     /// </summary>
     public static readonly RunProcessor CompileProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Info, ".* Note:"),
             RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
             RunLineRule.Create(RunLineType.Error, ".* Error:"),
             RunLineRule.Create(RunLineType.Error, ".* Failure:"),
             RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-        }
+        ]
     );
 
     /// <summary>
     /// Test processor
     /// </summary>
     public static readonly RunProcessor TestProcessor = new(
-        new[]
-        {
+        [
             RunLineRule.Create(RunLineType.Info, ".* Note:"),
             RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
             RunLineRule.Create(RunLineType.Error, ".* Error:"),
             RunLineRule.Create(RunLineType.Error, ".* Failure:"),
             RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-        }
+        ]
     );
 
     /// <summary>

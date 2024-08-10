@@ -26,12 +26,13 @@ public class TestValidation
     [TestMethod]
     public void Test_Validate_BadSimulator()
     {
-        Assert.ThrowsException<InvalidOperationException>(() => Validation.Run(Arguments.Parse(new[] { "--validate", "--simulator", "bad" })));
+        Assert.ThrowsException<InvalidOperationException>(() => Validation.Run(Arguments.Parse(["--validate", "--simulator", "bad"
+        ])));
     }
 
     [TestMethod]
     public void Test_Validate_Nvc()
     {
-        Assert.AreEqual(0, Validation.Run(Arguments.Parse(new[] { "--validate", "--simulator", "nvc" })));
+        Assert.AreEqual(0, Validation.Run(Arguments.Parse(["--validate", "--simulator", "nvc"])));
     }
 }

@@ -25,63 +25,20 @@ namespace DEMAConsulting.VHDLTest.Run;
 /// <summary>
 ///     Run Results Class
 /// </summary>
-public sealed class RunResults
+/// <param name="Summary">Result summary</param>
+/// <param name="Start">Start time</param>
+/// <param name="Duration">Duration</param>
+/// <param name="ExitCode">Exit code</param>
+/// <param name="Output">Output text</param>
+/// <param name="Lines">Result lines</param>
+public sealed record RunResults(
+    RunLineType Summary,
+    DateTime Start,
+    double Duration,
+    int ExitCode,
+    string Output,
+    ReadOnlyCollection<RunLine> Lines)
 {
-    /// <summary>
-    ///     Initializes a new instance of the RunResults class
-    /// </summary>
-    /// <param name="summary">Result summary</param>
-    /// <param name="start">Start time</param>
-    /// <param name="duration">Duration</param>
-    /// <param name="exitCode">Exit code</param>
-    /// <param name="output">Output text</param>
-    /// <param name="lines">Result lines</param>
-    public RunResults(
-        RunLineType summary,
-        DateTime start,
-        double duration,
-        int exitCode,
-        string output,
-        RunLine[] lines)
-    {
-        Summary = summary;
-        Start = start;
-        Duration = duration;
-        ExitCode = exitCode;
-        Output = output;
-        Lines = new ReadOnlyCollection<RunLine>(lines);
-    }
-
-    /// <summary>
-    ///     Result classification
-    /// </summary>
-    public RunLineType Summary { get; init; }
-
-    /// <summary>
-    ///     Gets the start time
-    /// </summary>
-    public DateTime Start { get; init; }
-
-    /// <summary>
-    ///     Gets the run duration
-    /// </summary>
-    public double Duration { get; init; }
-
-    /// <summary>
-    ///     Gets the exit code
-    /// </summary>
-    public int ExitCode { get; init; }
-
-    /// <summary>
-    ///     Gets the raw output
-    /// </summary>
-    public string Output { get; init; }
-
-    /// <summary>
-    ///     Gets the result lines
-    /// </summary>
-    public ReadOnlyCollection<RunLine> Lines { get; init; }
-
     /// <summary>
     ///     Print the results to the console colorized
     /// </summary>

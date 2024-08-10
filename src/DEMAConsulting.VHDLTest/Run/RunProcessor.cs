@@ -107,6 +107,6 @@ public class RunProcessor
             duration,
             exitCode,
             output,
-            lines);
+            lines.AsReadOnly());
     }
 }

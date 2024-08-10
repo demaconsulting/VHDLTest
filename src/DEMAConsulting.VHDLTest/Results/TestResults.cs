@@ -69,7 +69,7 @@ public sealed class TestResults
     /// <summary>
     ///     Gets the tests
     /// </summary>
-    public List<TestResult> Tests { get; init; } = new();
+    public List<TestResult> Tests { get; init; } = [];
 
     /// <summary>
     ///     Gets the passed tests

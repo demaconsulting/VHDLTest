@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.ObjectModel;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 
@@ -93,7 +94,7 @@ public static class Validation
         foreach (var resource in resources)
         {
             // Get the file name
-            var name = resource.Substring(prefix.Length);
+            var name = resource[prefix.Length..];
             var target = Path.Combine(path, name);
 
             // Get the resource stream
@@ -119,7 +120,7 @@ public static class Validation
     private static int RunValidation(out string output, string validationDir, Arguments arguments)
     {
         // Construct the parameters
-        var parameters = new List<string>()
+        var parameters = new List<string>
         {
             typeof(Validation).Assembly.Location,
             "-c",
@@ -152,16 +153,16 @@ public static class Validation
         // Construct the results of the passes
         RunResults passResults;
         if (output.Contains("Passed full_adder_pass_tb") && output.Contains("Passed half_adder_pass_tb"))
-            passResults = new RunResults(RunLineType.Info, start, duration, 0, output, Array.Empty<RunLine>());
+            passResults = new RunResults(RunLineType.Info, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
         else
-            passResults = new RunResults(RunLineType.Error, start, duration, 0, output, Array.Empty<RunLine>());
+            passResults = new RunResults(RunLineType.Error, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
 
         // Construct the results of the passes
         RunResults failResults;
         if (output.Contains("Failed full_adder_fail_tb") && output.Contains("Failed half_adder_fail_tb"))
-            failResults = new RunResults(RunLineType.Info, start, duration, 0, output, Array.Empty<RunLine>());
+            failResults = new RunResults(RunLineType.Info, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
         else
-            failResults = new RunResults(RunLineType.Error, start, duration, 0, output, Array.Empty<RunLine>());
+            failResults = new RunResults(RunLineType.Error, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
 
         // Add the results to the test results
         results.Tests.Add(new TestResult("passes_reported", "passes_reported", passResults));

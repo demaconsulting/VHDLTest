@@ -26,19 +26,21 @@ public class TestConfigDocument
     /// <summary>
     /// Configuration file name
     /// </summary>
-    private static readonly string ConfigFile = "options-test.yaml";
+    private const string ConfigFile = "options-test.yaml";
 
     /// <summary>
     /// Configuration file contents
     /// </summary>
-    private static readonly string ConfigContent =
-        "files:\n" +
-        "- file1.vhd\n" +
-        "- file2.vhd\n" +
-        "\n" +
-        "tests:\n" +
-        "- test1\n" +
-        "- test2\n";
+    private const string ConfigContent =
+        """
+        files:
+        - file1.vhd
+        - file2.vhd
+
+        tests:
+        - test1
+        - test2
+        """;
 
     [TestMethod]
     public void Test_ConfigDocument_Missing()
@@ -59,10 +61,10 @@ public class TestConfigDocument
 
             // Check the content
             Assert.IsNotNull(config);
-            Assert.AreEqual(2, config.Files.Count);
+            Assert.AreEqual(2, config.Files.Length);
             Assert.AreEqual("file1.vhd", config.Files[0]);
             Assert.AreEqual("file2.vhd", config.Files[1]);
-            Assert.AreEqual(2, config.Tests.Count);
+            Assert.AreEqual(2, config.Tests.Length);
             Assert.AreEqual("test1", config.Tests[0]);
             Assert.AreEqual("test2", config.Tests[1]);
         }
