@@ -51,12 +51,14 @@ public static class Validation
             // Run the validation
             var start = DateTime.Now;
             var exitCode = RunValidation(out var output, validationDir, arguments);
+
+            // Print output on error, or if requested
+            if (arguments.Verbose || exitCode != 0)
+                Console.WriteLine(output);
+
+            // Fail on error
             if (exitCode != 0)
                 throw new InvalidOperationException($"Validation failed with exit code {exitCode}");
-
-            // Print output if requested
-            if (arguments.Verbose)
-                Console.WriteLine(output);
 
             // Analyze the validation results
             var results = AnalyzeValidation(start, 0.0, output);
