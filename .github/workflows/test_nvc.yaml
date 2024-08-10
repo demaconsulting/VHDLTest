@@ -54,7 +54,7 @@ jobs:
     - name: Validate VHDLTest
       shell: bash
       run: >
-        vhdltest --validate --simulator nvc --verbose
+        vhdltest --validate --simulator nvc
 
     - name: Run
       working-directory: test/example
