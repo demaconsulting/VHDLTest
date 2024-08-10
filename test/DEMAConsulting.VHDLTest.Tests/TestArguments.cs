@@ -65,6 +65,13 @@ public class TestArguments
     }
 
     [TestMethod]
+    public void Test_Arguments_ConfigFile_Missing()
+    {
+        // Verify the exception is thrown
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "-c" }));
+    }
+
+    [TestMethod]
     public void Test_Arguments_ResultsFile()
     {
         // Parse the arguments
@@ -82,6 +89,13 @@ public class TestArguments
     }
 
     [TestMethod]
+    public void Test_Arguments_ResultsFile_Missing()
+    {
+        // Verify the exception is thrown
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "-r" }));
+    }
+
+    [TestMethod]
     public void Test_Arguments_Simulator()
     {
         // Parse the arguments
@@ -96,6 +110,13 @@ public class TestArguments
         Assert.IsFalse(arguments.ExitZero);
         Assert.IsFalse(arguments.Validate);
         Assert.IsNull(arguments.CustomTests);
+    }
+
+    [TestMethod]
+    public void Test_Arguments_Simulator_Missing()
+    {
+        // Verify the exception is thrown
+        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(new[] { "-s" }));
     }
 
     [TestMethod]

@@ -32,6 +32,16 @@ jobs:
       with:
         nuget-version: '6.x'
 
+    - uses: msys2/setup-msys2@v2
+      if: inputs.os == 'windows-latest'
+      with:
+        msystem: MINGW64
+        update: true
+
+    - uses: nickg/setup-nvc-ci@v1
+      with:
+        version: latest
+
     - name: Restore Tools
       run: >
         dotnet tool restore
