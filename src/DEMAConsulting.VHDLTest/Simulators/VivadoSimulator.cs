@@ -30,23 +30,27 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 public sealed class VivadoSimulator : Simulator
 {
     /// <summary>
-    ///     Text match rules when compiling
+    /// Compile processor
     /// </summary>
-    private static readonly RunLineRule[] CompileRules =
-    {
-        RunLineRule.Create(RunLineType.Error, "Error: ")
-    };
+    public static readonly RunProcessor CompileProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Error, "Error: ")
+        }
+    );
 
     /// <summary>
-    ///     Text match rules when running a test
+    /// Test processor
     /// </summary>
-    private static readonly RunLineRule[] TestRules =
-    {
-        RunLineRule.Create(RunLineType.Info, "Note: "),
-        RunLineRule.Create(RunLineType.Warning, "Warning: "),
-        RunLineRule.Create(RunLineType.Error, "Error: "),
-        RunLineRule.Create(RunLineType.Error, "Failure: ")
-    };
+    public static readonly RunProcessor TestProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Info, "Note: "),
+            RunLineRule.Create(RunLineType.Warning, "Warning: "),
+            RunLineRule.Create(RunLineType.Error, "Error: "),
+            RunLineRule.Create(RunLineType.Error, "Failure: ")
+        }
+    );
 
     /// <summary>
     ///     Vivado simulator instance
@@ -100,8 +104,7 @@ public sealed class VivadoSimulator : Simulator
             Console.WriteLine($"  Run Directory: {libDir}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: cmd /c {application} -file compile.do");
-        return RunResults.Execute(
-            CompileRules,
+        return CompileProcessor.Execute(
             "cmd",
             libDir,
             "/c",
@@ -147,8 +150,7 @@ public sealed class VivadoSimulator : Simulator
             Console.WriteLine($"  Run Directory: {libDir}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: cmd /c {application} -file test.do");
-        var testRunResults = RunResults.Execute(
-            TestRules,
+        var testRunResults = TestProcessor.Execute(
             "cmd",
             libDir,
             "/c",
