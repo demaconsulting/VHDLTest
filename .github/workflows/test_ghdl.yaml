@@ -48,7 +48,12 @@ jobs:
         --global DemaConsulting.VHDLTest
         --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
         --version ${{ inputs.version }}
-        
+
+    - name: Validate VHDLTest
+      shell: bash
+      run: >
+        vhdltest --validate --simulator ghdl
+
     - name: Run
       working-directory: test/example
       shell: bash

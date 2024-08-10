@@ -139,9 +139,6 @@ public sealed class TestResults
             Console.WriteLine();
         }
 
-        // Print the results summary
-        results.PrintSummary();
-
         // Return the results
         return results;
     }
@@ -185,11 +182,7 @@ public sealed class TestResults
             output.Add(
                 new XElement(
                     _trxNameSpace + "StdOut",
-                    new XCData(
-                        string.Join(
-                            '\n',
-                            r.RunResults.Lines
-                                .Select(l => l.Text)))));
+                    new XCData(r.RunResults.Output)));
 
             // Add the optional error information
             if (r.Failed)
@@ -255,8 +248,8 @@ public sealed class TestResults
                 stdout.AppendLine(line.Text);
 
         // Add all test executions
-        foreach (var line in Tests.SelectMany(r => r.RunResults.Lines))
-            stdout.AppendLine(line.Text);
+        foreach (var line in Tests.Select(r => r.RunResults.Output))
+            stdout.AppendLine(line);
 
         // Construct the summary
         root.Add(

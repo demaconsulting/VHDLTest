@@ -35,6 +35,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ValidationFiles\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ValidationFiles\*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\..\Icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

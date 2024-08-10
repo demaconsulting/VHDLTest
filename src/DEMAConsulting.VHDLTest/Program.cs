@@ -62,28 +62,36 @@ public static class Program
         // Handle help request
         if (args.Length == 0 || args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
         {
-            Options.PrintUsage();
+            PrintUsage();
             Environment.Exit(0);
         }
 
         try
         {
-            // Parse the options
-            var options = Options.Parse(args);
+            // Parse the arguments
+            var arguments = Arguments.Parse(args);
+            if (arguments.Validate)
+            {
+                Environment.Exit(Validation.Run(arguments));
+            }
 
             // Get the simulator
-            var simulator = SimulatorFactory.Get(options.Simulator) ??
+            var simulator = SimulatorFactory.Get(arguments.Simulator) ??
                             throw new InvalidOperationException("Simulator not found");
 
             // Execute the build/test and get the results
+            var options = Options.Parse(arguments);
             var results = TestResults.Execute(options, simulator);
-            
+
+            // Print the results summary
+            results.PrintSummary();
+
             // Save the test results
-            if (options.TestResultsFile != null)
-                results.SaveToTrx(options.TestResultsFile);
+            if (arguments.ResultsFile != null)
+                results.SaveToTrx(arguments.ResultsFile);
 
             // If we got failures then exit with an error code
-            if (!options.ExitZero && results.Fails.Any())
+            if (!arguments.ExitZero && results.Fails.Any())
                 Environment.Exit(1);
         }
         catch (InvalidOperationException e)
@@ -100,5 +108,23 @@ public static class Program
             Console.ResetColor();
             throw;
         }
+    }
+
+    /// <summary>
+    ///     Print usage information
+    /// </summary>
+    private static void PrintUsage()
+    {
+        Console.WriteLine("Usage: VHDLTest [options] [tests]");
+        Console.WriteLine();
+        Console.WriteLine("Options:");
+        Console.WriteLine("  -h|-?|--help                 Display help");
+        Console.WriteLine("  -v|--version                 Display version");
+        Console.WriteLine("  -c|--config <config.yaml>    Specify configuration");
+        Console.WriteLine("    |--verbose                 Verbose output");
+        Console.WriteLine("  -r|--results <out.trx>       Specify test results file");
+        Console.WriteLine("  -s|--simulator <name>        Specify simulator");
+        Console.WriteLine("  -0|--exit-0                  Exit with code 0 if test fail");
+        Console.WriteLine("  --                           End of options");
     }
 }
