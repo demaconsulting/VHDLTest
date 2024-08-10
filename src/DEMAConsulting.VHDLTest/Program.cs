@@ -120,6 +120,7 @@ public static class Program
         Console.WriteLine("Options:");
         Console.WriteLine("  -h|-?|--help                 Display help");
         Console.WriteLine("  -v|--version                 Display version");
+        Console.WriteLine("    |--validate                Validate operational");
         Console.WriteLine("  -c|--config <config.yaml>    Specify configuration");
         Console.WriteLine("    |--verbose                 Verbose output");
         Console.WriteLine("  -r|--results <out.trx>       Specify test results file");
