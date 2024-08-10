@@ -55,31 +55,27 @@ public record Options(string WorkingDirectory,
         var verbose = false;
         var exitZero = false;
         var customTests = new List<string>();
-        for (var i = 0; i < args.Length;)
+
+        var e = args.AsEnumerable().GetEnumerator();
+        while (e.MoveNext())
         {
-            var arg = args[i++];
+            var arg = e.Current;
             switch (arg)
             {
                 case "-c":
                 case "--config":
-                    if (i >= args.Length)
-                        throw new InvalidOperationException("Missing configuration file name");
-                    configFile = args[i++];
+                    configFile = GetConfigurationFile(e);
                     config = ConfigDocument.ReadFile(configFile);
                     break;
 
                 case "-r":
                 case "--results":
-                    if (i >= args.Length)
-                        throw new InvalidOperationException("Missing results file name");
-                    testResultsFile = args[i++];
+                    testResultsFile = GetResultsFile(e);
                     break;
 
                 case "-s":
                 case "--simulator":
-                    if (i >= args.Length)
-                        throw new InvalidOperationException("Missing results file name");
-                    simulator = args[i++];
+                    simulator = GetSimulator(e);
                     break;
 
                 case "--verbose":
@@ -92,8 +88,8 @@ public record Options(string WorkingDirectory,
                     break;
 
                 case "--":
-                    customTests.AddRange(args.Skip(i).ToArray());
-                    i = args.Length;
+                    while (e.MoveNext())
+                        customTests.Add(e.Current);
                     break;
 
                 default:
@@ -141,5 +137,47 @@ public record Options(string WorkingDirectory,
         Console.WriteLine("  -s|--simulator <name>        Specify simulator");
         Console.WriteLine("  -0|--exit-0                  Exit with code 0 if test fail");
         Console.WriteLine("  --                           End of options");
+    }
+
+    /// <summary>
+    /// Get the configuration file argument
+    /// </summary>
+    /// <param name="enumerator">Argument enumerator</param>
+    /// <returns>Configuration file</returns>
+    /// <exception cref="InvalidOperationException">Thrown on missing argument</exception>
+    private static string GetConfigurationFile(IEnumerator<string> enumerator)
+    {
+        if (!enumerator.MoveNext())
+            throw new InvalidOperationException("Missing configuration file name");
+
+        return enumerator.Current;
+    }
+
+    /// <summary>
+    /// Get the results file argument
+    /// </summary>
+    /// <param name="enumerator">Argument enumerator</param>
+    /// <returns>Results file</returns>
+    /// <exception cref="InvalidOperationException">Thrown on missing argument</exception>
+    private static string GetResultsFile(IEnumerator<string> enumerator)
+    {
+        if (!enumerator.MoveNext())
+            throw new InvalidOperationException("Missing results file name");
+
+        return enumerator.Current;
+    }
+
+    /// <summary>
+    /// Get the simulator argument
+    /// </summary>
+    /// <param name="enumerator">Argument enumerator</param>
+    /// <returns>Simulator</returns>
+    /// <exception cref="InvalidOperationException">Thrown on missing argument</exception>
+    private static string GetSimulator(IEnumerator<string> enumerator)
+    {
+        if (!enumerator.MoveNext())
+            throw new InvalidOperationException("Missing simulator name");
+
+        return enumerator.Current;
     }
 }
