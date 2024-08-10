@@ -30,31 +30,35 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 public sealed class GhdlSimulator : Simulator
 {
     /// <summary>
-    ///     Text match rules when compiling
+    /// Compile processor
     /// </summary>
-    private static readonly RunLineRule[] CompileRules =
-    {
-        RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
-        RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
-        RunLineRule.Create(RunLineType.Error, ".*:error:"),
-        RunLineRule.Create(RunLineType.Error, ".*: cannot open")
-    };
+    public static readonly RunProcessor CompileProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
+            RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
+            RunLineRule.Create(RunLineType.Error, ".*:error:"),
+            RunLineRule.Create(RunLineType.Error, ".*: cannot open")
+        }
+    );
 
     /// <summary>
-    ///     Text match rules when running a test
+    /// Test processor
     /// </summary>
-    private static readonly RunLineRule[] TestRules =
-    {
-        RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
-        RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
-        RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
-        RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
-        RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
-        RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
-        RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
-        RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
-        RunLineRule.Create(RunLineType.Error, ".*:error:")
-    };
+    public static readonly RunProcessor TestProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
+            RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
+            RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
+            RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
+            RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
+            RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
+            RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
+            RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
+            RunLineRule.Create(RunLineType.Error, ".*:error:")
+        }
+    );
 
     /// <summary>
     ///     GHDL simulator instance
@@ -105,8 +109,7 @@ public sealed class GhdlSimulator : Simulator
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} -a --std=08 --workdir=VHDLTest.out/GHDL @VHDLTest.out/GHDL/compile.rsp");
-        return RunResults.Execute(
-            CompileRules,
+        return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
             "-a",
@@ -139,8 +142,7 @@ public sealed class GhdlSimulator : Simulator
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} -r --std=08 --workdir=VHDLTest.out/GHDL {test}");
-        var testRunResults = RunResults.Execute(
-            TestRules,
+        var testRunResults = TestProcessor.Execute(
             application,
             options.WorkingDirectory,
             "-r",

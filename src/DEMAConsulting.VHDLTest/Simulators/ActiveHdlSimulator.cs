@@ -35,32 +35,36 @@ public sealed class ActiveHdlSimulator : Simulator
     private const string SimApp = "vsimsa";
 
     /// <summary>
-    ///     Text match rules when compiling
+    /// Compile processor
     /// </summary>
-    private static readonly RunLineRule[] CompileRules =
-    {
-        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
-        RunLineRule.Create(RunLineType.Error, "Error:"),
-        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
-    };
+    public static readonly RunProcessor CompileProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+            RunLineRule.Create(RunLineType.Error, "Error:"),
+            RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
+        }
+    );
 
     /// <summary>
-    ///     Text match rules when running a test
+    /// Test processor
     /// </summary>
-    private static readonly RunLineRule[] TestRules =
-    {
-        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
-        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
-        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
-        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
-        RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
-        RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
-        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
-        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
-        RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
-        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
-        RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
-    };
+    public static readonly RunProcessor TestProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
+            RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
+            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
+            RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
+            RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
+            RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
+            RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
+            RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
+            RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
+            RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
+        }
+    );
 
     /// <summary>
     ///     Active-HDL simulator instance
@@ -114,8 +118,7 @@ public sealed class ActiveHdlSimulator : Simulator
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/compile.do");
-        return RunResults.Execute(
-            CompileRules,
+        return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
             "-do",
@@ -161,8 +164,7 @@ public sealed class ActiveHdlSimulator : Simulator
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/test.do");
-        var testRunResults = RunResults.Execute(
-            TestRules,
+        var testRunResults = TestProcessor.Execute(
             Path.Combine(simPath, SimApp),
             options.WorkingDirectory,
             "-do",

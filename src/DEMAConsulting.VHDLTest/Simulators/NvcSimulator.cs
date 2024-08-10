@@ -30,28 +30,32 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 public sealed class NvcSimulator : Simulator
 {
     /// <summary>
-    ///     Text match rules when compiling
+    /// Compile processor
     /// </summary>
-    private static readonly RunLineRule[] CompileRules =
-    {
-        RunLineRule.Create(RunLineType.Info, ".* Note:"),
-        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
-        RunLineRule.Create(RunLineType.Error, ".* Error:"),
-        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
-        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-    };
+    public static readonly RunProcessor CompileProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Info, ".* Note:"),
+            RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+            RunLineRule.Create(RunLineType.Error, ".* Error:"),
+            RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+            RunLineRule.Create(RunLineType.Error, ".* Fatal:")
+        }
+    );
 
     /// <summary>
-    ///     Text match rules when running a test
+    /// Test processor
     /// </summary>
-    private static readonly RunLineRule[] TestRules =
-    {
-        RunLineRule.Create(RunLineType.Info, ".* Note:"),
-        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
-        RunLineRule.Create(RunLineType.Error, ".* Error:"),
-        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
-        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-    };
+    public static readonly RunProcessor TestProcessor = new(
+        new[]
+        {
+            RunLineRule.Create(RunLineType.Info, ".* Note:"),
+            RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+            RunLineRule.Create(RunLineType.Error, ".* Error:"),
+            RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+            RunLineRule.Create(RunLineType.Error, ".* Fatal:")
+        }
+    );
 
     /// <summary>
     ///     NVC simulator instance
@@ -102,8 +106,7 @@ public sealed class NvcSimulator : Simulator
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} --std=08 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp");
-        return RunResults.Execute(
-            CompileRules,
+        return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
             "--std=08",
@@ -136,8 +139,7 @@ public sealed class NvcSimulator : Simulator
             Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
         if (options.Verbose)
             Console.WriteLine($"  Run Command: {application} --std=2008 --work=work:VHDLTest.out/NVC/lib -e {test} -r {test}");
-        var testRunResults = RunResults.Execute(
-            TestRules,
+        var testRunResults = TestProcessor.Execute(
             application,
             options.WorkingDirectory,
             "--std=2008",
