@@ -32,11 +32,12 @@ public class TestUsage
             "dotnet",
             "DEMAConsulting.VHDLTest.dll");
 
-        // Verify no error
-        Assert.AreEqual(0, exitCode);
+        // Verify error
+        Assert.AreNotEqual(0, exitCode);
 
         // Verify usage reported
-        Assert.IsTrue(output.Contains("Usage: VHDLTest"));
+        StringAssert.Contains(output, "No arguments specified");
+        StringAssert.Contains(output, "Usage: VHDLTest");
     }
 
     [TestMethod]
@@ -53,7 +54,7 @@ public class TestUsage
         Assert.AreEqual(0, exitCode);
 
         // Verify usage reported
-        Assert.IsTrue(output.Contains("Usage: VHDLTest"));
+        StringAssert.Contains(output, "Usage: VHDLTest");
     }
 
     [TestMethod]
@@ -70,7 +71,7 @@ public class TestUsage
         Assert.AreEqual(0, exitCode);
 
         // Verify usage reported
-        Assert.IsTrue(output.Contains("Usage: VHDLTest"));
+        StringAssert.Contains(output, "Usage: VHDLTest");
     }
 
 
@@ -88,6 +89,6 @@ public class TestUsage
         Assert.AreEqual(0, exitCode);
 
         // Verify usage reported
-        Assert.IsTrue(output.Contains("Usage: VHDLTest"));
+        StringAssert.Contains(output, "Usage: VHDLTest");
     }
 }

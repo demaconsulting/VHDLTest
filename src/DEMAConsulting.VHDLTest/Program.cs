@@ -56,11 +56,26 @@ public static class Program
         }
 
         // Print Banner
-        Console.WriteLine($"VHDL Test Bench Runner (VHDLTest) {version}");
-        Console.WriteLine();
+        Console.WriteLine(
+            $"""
+             VHDL Test Bench Runner (VHDLTest) {version}
+             
+             """);
+
+        // Handle no arguments
+        if (args.Length == 0)
+        {
+            Console.WriteLine(
+                """
+                No arguments specified
+
+                """);
+            PrintUsage();
+            Environment.Exit(1);
+        }
 
         // Handle help request
-        if (args.Length == 0 || args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
+        if (args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
         {
             PrintUsage();
             Environment.Exit(0);
