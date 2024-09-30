@@ -23,11 +23,14 @@ using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for NVC simulator
+/// </summary>
 [TestClass]
 public class TestNvcSimulator
 {
     /// <summary>
-    /// Check name of GHDL simulator
+    /// Check name of NVC simulator
     /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Name()
@@ -35,6 +38,9 @@ public class TestNvcSimulator
         Assert.AreEqual("NVC", NvcSimulator.Instance.SimulatorName);
     }
 
+    /// <summary>
+    /// Test NVC simulator compile with clean output
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Compile_Clean()
     {
@@ -56,6 +62,9 @@ public class TestNvcSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator compile with an info message
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Compile_Info()
     {
@@ -77,6 +86,9 @@ public class TestNvcSimulator
         Assert.AreEqual("Compile Note: Compile Note", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator compile with a warning message
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Compile_Warning()
     {
@@ -98,6 +110,9 @@ public class TestNvcSimulator
         Assert.AreEqual("Compile Warning: Compile Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator compile with an error message
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Compile_Error()
     {
@@ -119,6 +134,9 @@ public class TestNvcSimulator
         Assert.AreEqual("Compile Error: Compile Error", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator test with clean output
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Test_Clean()
     {
@@ -140,6 +158,9 @@ public class TestNvcSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator test with an info message
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Test_Info()
     {
@@ -161,6 +182,9 @@ public class TestNvcSimulator
         Assert.AreEqual("Test Note: Test Note", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator test with a warning message
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Test_Warning()
     {
@@ -182,6 +206,9 @@ public class TestNvcSimulator
         Assert.AreEqual("Test Warning: Test Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test NVC simulator test with an error message
+    /// </summary>
     [TestMethod]
     public void Test_NvcSimulator_Test_Error()
     {

@@ -32,12 +32,10 @@ public static class Program
     /// <summary>
     ///     Gets the version of this programs assembly
     /// </summary>
-    public static string Version =>
+    public static readonly string Version =
         typeof(Program).Assembly
-            .GetCustomAttributes()
-            .OfType<AssemblyInformationalVersionAttribute>()
-            .Select(x => x.InformationalVersion)
-            .FirstOrDefault() ?? "Unknown";
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion ?? "Unknown";
 
     /// <summary>
     ///     Application entry point
@@ -52,33 +50,25 @@ public static class Program
         if (args.Contains("-v") || args.Contains("--version"))
         {
             Console.WriteLine(version);
-            Environment.Exit(0);
+            return;
         }
 
         // Print Banner
-        Console.WriteLine(
-            $"""
-             VHDL Test Bench Runner (VHDLTest) {version}
-             
-             """);
+        Console.WriteLine($"VHDL Test Bench Runner (VHDLTest) {version}\n");
 
         // Handle no arguments
         if (args.Length == 0)
         {
-            Console.WriteLine(
-                """
-                No arguments specified
-
-                """);
+            ReportError("No arguments specified");
             PrintUsage();
-            Environment.Exit(1);
+            return;
         }
 
         // Handle help request
         if (args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
         {
             PrintUsage();
-            Environment.Exit(0);
+            return;
         }
 
         try
@@ -86,7 +76,10 @@ public static class Program
             // Parse the arguments
             var arguments = Arguments.Parse(args);
             if (arguments.Validate)
-                Environment.Exit(Validation.Run(arguments));
+            {
+                Environment.ExitCode = Validation.Run(arguments);
+                return;
+            }
 
             // Get the simulator
             var simulator = SimulatorFactory.Get(arguments.Simulator) ??
@@ -105,21 +98,15 @@ public static class Program
 
             // If we got failures then exit with an error code
             if (!arguments.ExitZero && results.Fails.Any())
-                Environment.Exit(1);
+                Environment.ExitCode = 1;
         }
         catch (InvalidOperationException e)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(e.Message);
-            Console.ResetColor();
-            Environment.Exit(1);
+            ReportError(e.Message);
         }
         catch (Exception e)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(e);
-            Console.ResetColor();
-            throw;
+            ReportError(e.ToString());
         }
     }
 
@@ -140,5 +127,21 @@ public static class Program
         Console.WriteLine("  -s|--simulator <name>        Specify simulator");
         Console.WriteLine("  -0|--exit-0                  Exit with code 0 if test fail");
         Console.WriteLine("  --                           End of options");
+    }
+
+    /// <summary>
+    /// Report an error
+    /// </summary>
+    /// <param name="message">Error message</param>
+    private static void ReportError(string message)
+    {
+        // Report the error
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Error: {message}");
+        Console.ResetColor();
+        Console.WriteLine();
+
+        // Set the exit code to 1 as an error has occurred.
+        Environment.ExitCode = 1;
     }
 }

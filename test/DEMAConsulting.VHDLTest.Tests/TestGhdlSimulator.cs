@@ -23,6 +23,9 @@ using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for GHDL simulator
+/// </summary>
 [TestClass]
 public class TestGhdlSimulator
 {
@@ -35,6 +38,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("GHDL", GhdlSimulator.Instance.SimulatorName);
     }
 
+    /// <summary>
+    /// Test GHDL simulator compile with clean output
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Compile_Clean()
     {
@@ -56,6 +62,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test GHDL simulator compile with an info message
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Compile_Warning()
     {
@@ -77,6 +86,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("Compile:1:1:warning: Compile Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test GHDL simulator compile with an error message
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Compile_Error()
     {
@@ -98,6 +110,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("Compile:error: Compile Error", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test GHDL simulator test with clean output
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Test_Clean()
     {
@@ -119,6 +134,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test GHDL simulator test with an info message
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Test_Info()
     {
@@ -140,6 +158,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("Test:(report note): Test Note", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test GHDL simulator test with a warning message
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Test_Warning()
     {
@@ -161,6 +182,9 @@ public class TestGhdlSimulator
         Assert.AreEqual("Test:(report warning): Test Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test GHDL simulator test with an error message
+    /// </summary>
     [TestMethod]
     public void Test_GhdlSimulator_Test_Error()
     {

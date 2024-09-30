@@ -22,9 +22,15 @@ using DEMAConsulting.VHDLTest.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for <see cref="RunProcessor"/> class.
+/// </summary>
 [TestClass]
 public class TestRunProcessor
 {
+    /// <summary>
+    /// Test running a missing program.
+    /// </summary>
     [TestMethod]
     public void Test_RunProcessor_Missing()
     {
@@ -46,6 +52,9 @@ public class TestRunProcessor
         }
     }
 
+    /// <summary>
+    /// Test running a program with an error.
+    /// </summary>
     [TestMethod]
     public void Test_RunProcessor_Error()
     {
@@ -62,6 +71,9 @@ public class TestRunProcessor
         Assert.AreEqual(RunLineType.Error, result.Summary);
     }
 
+    /// <summary>
+    /// Test running a program producing passing output.
+    /// </summary>
     [TestMethod]
     public void Test_RunProcessor_Pass()
     {

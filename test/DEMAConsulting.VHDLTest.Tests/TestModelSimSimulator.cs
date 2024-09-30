@@ -23,6 +23,9 @@ using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for ModelSim simulator
+/// </summary>
 [TestClass]
 public class TestModelSimSimulator
 {
@@ -35,6 +38,9 @@ public class TestModelSimSimulator
         Assert.AreEqual("ModelSim", ModelSimSimulator.Instance.SimulatorName);
     }
 
+    /// <summary>
+    /// Test ModelSim simulator compile with clean output
+    /// </summary>
     [TestMethod]
     public void Test_ModelSimSimulator_Compile_Clean()
     {
@@ -56,6 +62,9 @@ public class TestModelSimSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ModelSim simulator compile with an info message
+    /// </summary>
     [TestMethod]
     public void Test_ModelSimSimulator_Compile_Error()
     {
@@ -77,6 +86,9 @@ public class TestModelSimSimulator
         Assert.AreEqual("Error: Compile Error", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ModelSim simulator test with clean output
+    /// </summary>
     [TestMethod]
     public void Test_ModelSimSimulator_Test_Clean()
     {
@@ -98,6 +110,9 @@ public class TestModelSimSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ModelSim simulator test with an info message
+    /// </summary>
     [TestMethod]
     public void Test_ModelSimSimulator_Test_Info()
     {
@@ -119,6 +134,9 @@ public class TestModelSimSimulator
         Assert.AreEqual("Note: Test Note", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ModelSim simulator test with a warning message
+    /// </summary>
     [TestMethod]
     public void Test_ModelSimSimulator_Test_Warning()
     {
@@ -140,6 +158,9 @@ public class TestModelSimSimulator
         Assert.AreEqual("Warning: Test Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ModelSim simulator test with an error message
+    /// </summary>
     [TestMethod]
     public void Test_ModelSimSimulator_Test_Error()
     {

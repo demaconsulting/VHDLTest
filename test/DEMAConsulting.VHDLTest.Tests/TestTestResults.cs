@@ -18,30 +18,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+
+using System.Collections.ObjectModel;
+using DEMAConsulting.VHDLTest.Results;
+using DEMAConsulting.VHDLTest.Run;
+
 namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for validation
+/// Tests for <see cref="Results.TestResults"/> class.
 /// </summary>
 [TestClass]
-public class TestValidation
+public class TestTestResults
 {
     /// <summary>
-    /// Test validation failure with bad simulator
+    /// Test saving test results to a TRX file.
     /// </summary>
     [TestMethod]
-    public void Test_Validate_BadSimulator()
+    public void Test_TestResults_SaveToTrx()
     {
-        Assert.ThrowsException<InvalidOperationException>(() => Validation.Run(Arguments.Parse(["--validate", "--simulator", "bad"
-        ])));
-    }
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(
+            new Results.TestResult(
+                "TestClass", "TestName",
+                new RunResults(
+                    RunLineType.Info,
+                    new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+                    5.0,
+                    0,
+                    "Test\nNo Issues",
+                    new ReadOnlyCollection<RunLine>([
+                        new RunLine(RunLineType.Text, "Test"),
+                        new RunLine(RunLineType.Text, "No Issues")
+                    ])
+                )
+            )
+        );
 
-    /// <summary>
-    ///  Test validation succeeds with nvc simulator
-    /// </summary>
-    [TestMethod]
-    public void Test_Validate_Nvc()
-    {
-        Assert.AreEqual(0, Validation.Run(Arguments.Parse(["--validate", "--simulator", "nvc"])));
+        try
+        {
+            results.SaveToTrx("TestResults.trx");
+            Assert.IsTrue(File.Exists("TestResults.trx"));
+        }
+        finally
+        {
+            File.Delete("TestResults.trx");
+        }
     }
 }

@@ -20,6 +20,9 @@
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for parsing options
+/// </summary>
 [TestClass]
 public class TestOptions
 {
@@ -42,6 +45,9 @@ public class TestOptions
         - test2
         """;
 
+    /// <summary>
+    /// Test parsing options with no configuration file
+    /// </summary>
     [TestMethod]
     public void Test_Options_NoConfig()
     {
@@ -49,6 +55,9 @@ public class TestOptions
         Assert.ThrowsException<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
+    /// <summary>
+    /// Test parsing options with missing configuration file
+    /// </summary>
     [TestMethod]
     public void Test_Options_MissingConfig()
     {
@@ -56,6 +65,9 @@ public class TestOptions
         Assert.ThrowsException<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
+    /// <summary>
+    /// Test parsing options with configuration file
+    /// </summary>
     [TestMethod]
     public void Test_Options_ConfigFile()
     {
@@ -85,7 +97,10 @@ public class TestOptions
             File.Delete(ConfigFile);
         }
     }
-    
+
+    /// <summary>
+    /// Test parsing options with verbose flag
+    /// </summary>
     [TestMethod]
     public void Test_Options_Verbose()
     {
@@ -110,6 +125,9 @@ public class TestOptions
         }
     }
 
+    /// <summary>
+    /// Test parsing options with custom test
+    /// </summary>
     [TestMethod]
     public void Test_Options_CustomTest()
     {
