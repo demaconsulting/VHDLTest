@@ -22,6 +22,9 @@ using System.Text.RegularExpressions;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for program version
+/// </summary>
 [TestClass]
 public partial class TestVersion
 {
@@ -32,6 +35,9 @@ public partial class TestVersion
     [GeneratedRegex(@"\d+\.\d+\.\d+.*")]
     private static partial Regex VersionRegex();
 
+    /// <summary>
+    /// Test version information is reported when the '-v' parameter is specified
+    /// </summary>
     [TestMethod]
     public void VersionShort()
     {
@@ -49,6 +55,9 @@ public partial class TestVersion
         StringAssert.Matches(output, VersionRegex());
     }
 
+    /// <summary>
+    /// Test version information is reported when the '--version' parameter is specified
+    /// </summary>
     [TestMethod]
     public void VersionLong()
     {

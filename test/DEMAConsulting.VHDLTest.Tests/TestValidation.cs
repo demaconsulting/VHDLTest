@@ -20,9 +20,15 @@
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for validation
+/// </summary>
 [TestClass]
 public class TestValidation
 {
+    /// <summary>
+    /// Test validation failure with bad simulator
+    /// </summary>
     [TestMethod]
     public void Test_Validate_BadSimulator()
     {
@@ -30,6 +36,9 @@ public class TestValidation
         ])));
     }
 
+    /// <summary>
+    ///  Test validation succeeds with nvc simulator
+    /// </summary>
     [TestMethod]
     public void Test_Validate_Nvc()
     {

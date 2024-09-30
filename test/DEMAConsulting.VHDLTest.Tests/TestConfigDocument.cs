@@ -20,6 +20,9 @@
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for configuration documents
+/// </summary>
 [TestClass]
 public class TestConfigDocument
 {
@@ -42,12 +45,18 @@ public class TestConfigDocument
         - test2
         """;
 
+    /// <summary>
+    /// Test reading a missing configuration file
+    /// </summary>
     [TestMethod]
     public void Test_ConfigDocument_Missing()
     {
         Assert.ThrowsException<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
     }
 
+    /// <summary>
+    /// Test reading a valid configuration file
+    /// </summary>
     [TestMethod]
     public void Test_ConfigDocument_Valid()
     {

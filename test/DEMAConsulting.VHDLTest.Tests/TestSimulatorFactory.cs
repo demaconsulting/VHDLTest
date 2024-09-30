@@ -22,6 +22,9 @@ using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for <see cref="SimulatorFactory"/> class.
+/// </summary>
 [TestClass]
 public class TestSimulatorFactory
 {

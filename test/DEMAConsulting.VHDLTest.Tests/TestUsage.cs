@@ -20,11 +20,17 @@
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for program usage
+/// </summary>
 [TestClass]
 public class TestUsage
 {
+    /// <summary>
+    /// Test usage information is reported when no arguments are specified
+    /// </summary>
     [TestMethod]
-    public void UsageNoArguments()
+    public void Usage_NoArguments()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -40,8 +46,11 @@ public class TestUsage
         StringAssert.Contains(output, "Usage: VHDLTest");
     }
 
+    /// <summary>
+    /// Test usage information is reported when the '-h' parameter is specified
+    /// </summary>
     [TestMethod]
-    public void UsageShort()
+    public void Usage_Short()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -57,8 +66,11 @@ public class TestUsage
         StringAssert.Contains(output, "Usage: VHDLTest");
     }
 
+    /// <summary>
+    /// Test usage information is reported when the '-?' parameter is specified
+    /// </summary>
     [TestMethod]
-    public void UsageQuestionMark()
+    public void Usage_QuestionMark()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -74,9 +86,11 @@ public class TestUsage
         StringAssert.Contains(output, "Usage: VHDLTest");
     }
 
-
+    /// <summary>
+    /// Test usage information is reported when the '--help' parameter is specified
+    /// </summary>
     [TestMethod]
-    public void UsageLong()
+    public void Usage_Long()
     {
         // Run the application
         var exitCode = Runner.Run(

@@ -20,9 +20,15 @@
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for argument parsing
+/// </summary>
 [TestClass]
 public class TestArguments
 {
+    /// <summary>
+    /// Test parsing arguments with no arguments
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_None()
     {
@@ -40,6 +46,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with unknown argument
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_Unknown()
     {
@@ -47,6 +56,9 @@ public class TestArguments
         Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["--unknown"]));
     }
 
+    /// <summary>
+    /// Test parsing arguments with a config file
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_ConfigFile()
     {
@@ -64,6 +76,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with a missing config file
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_ConfigFile_Missing()
     {
@@ -71,6 +86,9 @@ public class TestArguments
         Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-c"]));
     }
 
+    /// <summary>
+    /// Test parsing arguments with a results file
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_ResultsFile()
     {
@@ -88,6 +106,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with a missing results file
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_ResultsFile_Missing()
     {
@@ -95,6 +116,9 @@ public class TestArguments
         Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-r"]));
     }
 
+    /// <summary>
+    /// Test parsing arguments with a specified simulator
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_Simulator()
     {
@@ -112,6 +136,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with a missing simulator
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_Simulator_Missing()
     {
@@ -119,6 +146,9 @@ public class TestArguments
         Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-s"]));
     }
 
+    /// <summary>
+    /// Test parsing arguments with verbose
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_Verbose()
     {
@@ -136,6 +166,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with exit-zero flag
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_ExitZero()
     {
@@ -153,6 +186,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with validate flag
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_Validate()
     {
@@ -170,6 +206,9 @@ public class TestArguments
         Assert.IsNull(arguments.CustomTests);
     }
 
+    /// <summary>
+    /// Test parsing arguments with a custom test
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_CustomTest()
     {
@@ -189,6 +228,9 @@ public class TestArguments
         Assert.AreEqual("custom_test", arguments.CustomTests[0]);
     }
 
+    /// <summary>
+    /// Test parsing arguments with multiple custom tests
+    /// </summary>
     [TestMethod]
     public void Test_Arguments_CustomTests()
     {

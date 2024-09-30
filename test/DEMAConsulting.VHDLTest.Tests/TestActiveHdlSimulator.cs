@@ -23,11 +23,14 @@ using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Test ActiveHDL simulator
+/// </summary>
 [TestClass]
 public class TestActiveHdlSimulator
 {
     /// <summary>
-    /// Check name of ActiveHDL simulator
+    /// Check name of ActiveHDL simulator name
     /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Name()
@@ -35,6 +38,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
     }
 
+    /// <summary>
+    /// Test ActiveHDL simulator compile with clean output
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Compile_Clean()
     {
@@ -56,6 +62,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ActiveHDL simulator compile with an info message
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Compile_Warning()
     {
@@ -77,6 +86,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("KERNEL: Warning: Compile Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ActiveHDL simulator compile with an error message
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Compile_Error()
     {
@@ -98,6 +110,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("KERNEL: Fatal Error: Compile Error", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// T
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Test_Clean()
     {
@@ -119,6 +134,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ActiveHDL simulator test with an info message
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Test_Info()
     {
@@ -140,6 +158,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("EXECUTION:: NOTE Test Note", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ActiveHDL simulator test with a warning message
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Test_Warning()
     {
@@ -161,6 +182,9 @@ public class TestActiveHdlSimulator
         Assert.AreEqual("EXECUTION:: WARNING Test Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test ActiveHDL simulator test with an error message
+    /// </summary>
     [TestMethod]
     public void Test_ActiveHdlSimulator_Test_Error()
     {

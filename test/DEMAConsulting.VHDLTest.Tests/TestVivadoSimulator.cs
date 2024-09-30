@@ -23,11 +23,14 @@ using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for Vivado simulator
+/// </summary>
 [TestClass]
 public class TestVivadoSimulator
 {
     /// <summary>
-    /// Check name of GHDL simulator
+    /// Check name of Vivado simulator
     /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Name()
@@ -35,6 +38,9 @@ public class TestVivadoSimulator
         Assert.AreEqual("Vivado", VivadoSimulator.Instance.SimulatorName);
     }
 
+    /// <summary>
+    /// Test Vivado simulator compile with clean output
+    /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Compile_Clean()
     {
@@ -56,6 +62,9 @@ public class TestVivadoSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test Vivado simulator compile with an error message
+    /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Compile_Error()
     {
@@ -77,6 +86,9 @@ public class TestVivadoSimulator
         Assert.AreEqual("Error: Compile Error", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test Vivado simulator test with clean output
+    /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Test_Clean()
     {
@@ -98,6 +110,9 @@ public class TestVivadoSimulator
         Assert.AreEqual("No Issues", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test Vivado simulator test with an info message
+    /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Test_Info()
     {
@@ -119,6 +134,9 @@ public class TestVivadoSimulator
         Assert.AreEqual("Note: Test Note", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test Vivado simulator test with a warning message
+    /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Test_Warning()
     {
@@ -140,6 +158,9 @@ public class TestVivadoSimulator
         Assert.AreEqual("Warning: Test Warning", results.Lines[1].Text);
     }
 
+    /// <summary>
+    /// Test Vivado simulator test with an error message
+    /// </summary>
     [TestMethod]
     public void Test_VivadoSimulator_Test_Error()
     {

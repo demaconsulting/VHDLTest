@@ -23,9 +23,15 @@ using DEMAConsulting.VHDLTest.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
+/// <summary>
+/// Tests for <see cref="Results.TestResult"/> class.
+/// </summary>
 [TestClass]
 public class TestTestResult
 {
+    /// <summary>
+    /// Test constructing a test result with info
+    /// </summary>
     [TestMethod]
     public void Test_TestResult_Info()
     {
@@ -52,6 +58,9 @@ public class TestTestResult
         Assert.IsFalse(result.Failed);
     }
 
+    /// <summary>
+    /// Test constructing a test result with error
+    /// </summary>
     [TestMethod]
     public void Test_TestResult_Error()
     {

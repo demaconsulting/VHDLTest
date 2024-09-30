@@ -56,19 +56,11 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     public void PrintSummary()
     {
         // Print the colored summary word
-        if (Passed)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Passed");
-        }
-        else
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Failed");
-        }
-
-        // Restore default color and print test name and duration
+        Console.ForegroundColor = Passed ? ConsoleColor.Green : ConsoleColor.Red;
+        Console.Write(Passed ? "Passed" : "Failed");
         Console.ResetColor();
+
+        // Print test name and duration
         Console.WriteLine($" {TestName} ({RunResults.Duration:F1} seconds)");
     }
 }
