@@ -68,22 +68,19 @@ public sealed class NvcSimulator : Simulator
     }
 
     /// <inheritdoc />
-    public override RunResults Compile(Options options)
+    public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
-        if (options.Verbose)
-            Console.WriteLine("Starting NVC compile...");
+        context.WriteVerboseLine("Starting NVC compile...");
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("NVC Simulator not available");
-        if (options.Verbose)
-            Console.WriteLine($"  Simulator Path: {simPath}");
+        context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
-        if (options.Verbose)
-            Console.WriteLine($"  Library Directory: {libDir}");
+        context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
             Directory.CreateDirectory(libDir);
 
@@ -94,16 +91,13 @@ public sealed class NvcSimulator : Simulator
 
         // Write the batch file
         var script = Path.Combine(libDir, "compile.rsp");
-        if (options.Verbose)
-            Console.WriteLine($"  Script File: {script}");
+        context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
         // Run the GHDL compiler
         var application = Path.Combine(simPath, "nvc");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Command: {application} --std=08 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp");
+        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
+        context.WriteVerboseLine($"  Run Command: {application} --std=08 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp");
         return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
@@ -114,29 +108,24 @@ public sealed class NvcSimulator : Simulator
     }
 
     /// <inheritdoc />
-    public override TestResult Test(Options options, string test)
+    public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the compile command
-        if (options.Verbose)
-            Console.WriteLine($"Starting NVC test {test}...");
+        context.WriteVerboseLine($"Starting NVC test {test}...");
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("NVC Simulator not available");
-        if (options.Verbose)
-            Console.WriteLine($"  Simulator Path: {simPath}");
+        context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
-        if (options.Verbose)
-            Console.WriteLine($"  Library Directory: {libDir}");
+        context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Run the test
         var application = Path.Combine(simPath, "nvc");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Command: {application} --std=2008 --work=work:VHDLTest.out/NVC/lib -e {test} -r {test}");
+        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
+        context.WriteVerboseLine($"  Run Command: {application} --std=2008 --work=work:VHDLTest.out/NVC/lib -e {test} -r {test}");
         var testRunResults = TestProcessor.Execute(
             application,
             options.WorkingDirectory,

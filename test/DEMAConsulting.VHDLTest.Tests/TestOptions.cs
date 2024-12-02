@@ -51,7 +51,7 @@ public class TestOptions
     [TestMethod]
     public void Test_Options_NoConfig()
     {
-        var arguments = Arguments.Parse([]);
+        var arguments = Context.Create([]);
         Assert.ThrowsException<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
@@ -61,7 +61,7 @@ public class TestOptions
     [TestMethod]
     public void Test_Options_MissingConfig()
     {
-        var arguments = Arguments.Parse(["-c", "missing-config.yaml"]);
+        var arguments = Context.Create(["-c", "missing-config.yaml"]);
         Assert.ThrowsException<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
@@ -77,7 +77,7 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var arguments = Arguments.Parse(["-c", ConfigFile]);
+            var arguments = Context.Create(["-c", ConfigFile]);
             var options = Options.Parse(arguments);
 
             // Check the options
@@ -88,8 +88,6 @@ public class TestOptions
             Assert.AreEqual(2, options.Config.Tests.Length);
             Assert.AreEqual("test1", options.Config.Tests[0]);
             Assert.AreEqual("test2", options.Config.Tests[1]);
-            Assert.IsFalse(options.Verbose);
-            Assert.IsNull(options.CustomTests);
         }
         finally
         {
@@ -110,13 +108,11 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var arguments = Arguments.Parse(["-c", ConfigFile, "--verbose"]);
+            var arguments = Context.Create(["-c", ConfigFile, "--verbose"]);
             var options = Options.Parse(arguments);
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.IsTrue(options.Verbose);
-            Assert.IsNull(options.CustomTests);
         }
         finally
         {
@@ -137,15 +133,11 @@ public class TestOptions
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Parse the options
-            var arguments = Arguments.Parse(["-c", ConfigFile, "custom_test"]);
+            var arguments = Context.Create(["-c", ConfigFile, "custom_test"]);
             var options = Options.Parse(arguments);
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.IsFalse(options.Verbose);
-            Assert.IsNotNull(options.CustomTests);
-            Assert.AreEqual(1, options.CustomTests.Count);
-            Assert.AreEqual("custom_test", options.CustomTests[0]);
         }
         finally
         {

@@ -42,7 +42,7 @@ public class TestUsage
         Assert.AreNotEqual(0, exitCode);
 
         // Verify usage reported
-        StringAssert.Contains(output, "No arguments specified");
+        StringAssert.Contains(output, "Error: Missing arguments");
         StringAssert.Contains(output, "Usage: VHDLTest");
     }
 

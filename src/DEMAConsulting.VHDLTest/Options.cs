@@ -18,8 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.ObjectModel;
-
 namespace DEMAConsulting.VHDLTest;
 
 /// <summary>
@@ -27,19 +25,15 @@ namespace DEMAConsulting.VHDLTest;
 /// </summary>
 /// <param name="WorkingDirectory">Working directory</param>
 /// <param name="Config">Configuration options</param>
-/// <param name="Verbose">Verbose flag</param>
-/// <param name="CustomTests">Optional custom tests</param>
 public record Options(string WorkingDirectory,
-    ConfigDocument Config,
-    bool Verbose,
-    ReadOnlyCollection<string>? CustomTests)
+    ConfigDocument Config)
 {
     /// <summary>
     ///     Parse options from command line arguments
     /// </summary>
     /// <param name="args">Command line arguments</param>
     /// <returns>Options</returns>
-    public static Options Parse(Arguments args)
+    public static Options Parse(Context args)
     {
         // Verify a configuration file was specified
         if (args.ConfigFile == null)
@@ -56,8 +50,6 @@ public record Options(string WorkingDirectory,
         // Return the new options object
         return new Options(
             workingDir,
-            config,
-            args.Verbose,
-            args.CustomTests);
+            config);
     }
 }

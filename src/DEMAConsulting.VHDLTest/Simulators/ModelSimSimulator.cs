@@ -63,22 +63,19 @@ public sealed class ModelSimSimulator : Simulator
     }
 
     /// <inheritdoc />
-    public override RunResults Compile(Options options)
+    public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
-        if (options.Verbose)
-            Console.WriteLine("Starting ModelSim compile...");
+        context.WriteVerboseLine("Starting ModelSim compile...");
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("ModelSim Simulator not available");
-        if (options.Verbose)
-            Console.WriteLine($"  Simulator Path: {simPath}");
+        context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ModelSim");
-        if (options.Verbose)
-            Console.WriteLine($"  Library Directory: {libDir}");
+        context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
             Directory.CreateDirectory(libDir);
 
@@ -93,16 +90,13 @@ public sealed class ModelSimSimulator : Simulator
 
         // Write the batch file
         var script = Path.Combine(libDir, "compile.do");
-        if (options.Verbose)
-            Console.WriteLine($"  Script File: {script}");
+        context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
         // Run the ModelSim compiler
         var application = Path.Combine(simPath, "vsim");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Directory: {libDir}");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Command: {application} -c -do compile.do");
+        context.WriteVerboseLine($"  Run Directory: {libDir}");
+        context.WriteVerboseLine($"  Run Command: {application} -c -do compile.do");
         return CompileProcessor.Execute(
             application,
             libDir,
@@ -112,22 +106,19 @@ public sealed class ModelSimSimulator : Simulator
     }
 
     /// <inheritdoc />
-    public override TestResult Test(Options options, string test)
+    public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the compile command
-        if (options.Verbose)
-            Console.WriteLine($"Starting ModelSim test {test}...");
+        context.WriteVerboseLine($"Starting ModelSim test {test}...");
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("ModelSim Simulator not available");
-        if (options.Verbose)
-            Console.WriteLine($"  Simulator Path: {simPath}");
+        context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ModelSim");
-        if (options.Verbose)
-            Console.WriteLine($"  Library Directory: {libDir}");
+        context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Build the batch file
         var writer = new StringBuilder();
@@ -140,16 +131,13 @@ public sealed class ModelSimSimulator : Simulator
 
         // Write the batch file
         var script = Path.Combine(libDir, "test.do");
-        if (options.Verbose)
-            Console.WriteLine($"  Script File: {script}");
+        context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
         // Run the test
         var application = Path.Combine(simPath, "vsim");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Directory: {libDir}");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Command: {application} -c -do test.do");
+        context.WriteVerboseLine($"  Run Directory: {libDir}");
+        context.WriteVerboseLine($"  Run Command: {application} -c -do test.do");
         var testRunResults = TestProcessor.Execute(
             application,
             libDir,
