@@ -28,23 +28,14 @@ namespace DEMAConsulting.VHDLTest.Results;
 /// <summary>
 ///     Test Results class
 /// </summary>
-public sealed class TestResults
+/// <param name="runName">Test Run Name</param>
+/// <param name="codeBase">Code Base</param>
+public sealed class TestResults(string runName, string codeBase)
 {
     /// <summary>
     ///     Namespace for TRX files
     /// </summary>
     private static readonly XNamespace TrxNamespace = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
-
-    /// <summary>
-    ///     Initializes a new instance of the TestResults class
-    /// </summary>
-    /// <param name="runName">Test Run Name</param>
-    /// <param name="codeBase">Code Base</param>
-    public TestResults(string runName, string codeBase)
-    {
-        RunName = runName;
-        CodeBase = codeBase;
-    }
 
     /// <summary>
     ///     Gets the Test Run ID
@@ -54,12 +45,12 @@ public sealed class TestResults
     /// <summary>
     ///     Gets the Test Run Name
     /// </summary>
-    public string RunName { get; init; }
+    public string RunName => runName;
 
     /// <summary>
     ///     Gets the Code Base
     /// </summary>
-    public string CodeBase { get; init; }
+    public string CodeBase => codeBase;
 
     /// <summary>
     ///     Gets or sets the build run information
@@ -84,12 +75,14 @@ public sealed class TestResults
     /// <summary>
     ///     Execute the requested tests
     /// </summary>
+    /// <param name="context">Program context</param>
     /// <param name="options">Test options</param>
     /// <param name="simulator">Simulator</param>
     /// <returns>Test results</returns>
-    public static TestResults Execute(Options options, Simulator simulator)
+    public static TestResults Execute(Context context, Options options, Simulator simulator)
     {
         return Execute(
+            context,
             $"{Environment.UserName}@{Environment.MachineName} {DateTime.Now}",
             options.WorkingDirectory,
             options,
@@ -99,44 +92,47 @@ public sealed class TestResults
     /// <summary>
     ///     Execute the requested tests
     /// </summary>
+    /// <param name="context">Program context</param>
     /// <param name="runName">Run name</param>
     /// <param name="codeBase">Code base</param>
     /// <param name="options">Test options</param>
     /// <param name="simulator">Simulator</param>
     /// <returns>Test results</returns>
-    public static TestResults Execute(string runName, string codeBase, Options options, Simulator simulator)
+    public static TestResults Execute(Context context, string runName, string codeBase, Options options, Simulator simulator)
     {
         // Construct the results
         var results = new TestResults(runName, codeBase);
 
         // Run the build
-        Console.WriteLine($"Building with {simulator.SimulatorName}...");
-        results.BuildResults = simulator.Compile(options);
-        results.BuildResults.Print(options.Verbose);
+        context.WriteLine($"Building with {simulator.SimulatorName}...");
+        results.BuildResults = simulator.Compile(context, options);
+        results.BuildResults.Print(context);
         if (results.BuildResults.Summary >= RunLineType.Error)
             throw new InvalidOperationException("Build Failed");
 
         // Report pass of build
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Build Passed");
-        Console.WriteLine();
-        Console.ResetColor();
+        context.Write(ConsoleColor.Green, 
+            """
+            Build Passed
+            
+            
+            """);
 
         // Execute the tests
-        var tests = options.CustomTests ?? options.Config.Tests.AsReadOnly();
+        var tests = context.CustomTests ?? options.Config.Tests.AsReadOnly();
         foreach (var test in tests)
         {
             // Report start of test
-            Console.WriteLine($"Starting {test}");
+            context.WriteLine($"Starting {test}");
 
             // Run the test
-            var testResult = simulator.Test(options, test);
-            testResult.RunResults.Print(options.Verbose);
+            var testResult = simulator.Test(context, options, test);
+            testResult.RunResults.Print(context);
             results.Tests.Add(testResult);
 
             // Print the result splash
-            testResult.PrintSummary();
-            Console.WriteLine();
+            testResult.PrintSummary(context);
+            context.WriteLine("");
         }
 
         // Return the results
@@ -261,13 +257,14 @@ public sealed class TestResults
     /// <summary>
     ///     Print test results summary
     /// </summary>
-    public void PrintSummary()
+    /// <param name="context">Program context</param>
+    public void PrintSummary(Context context)
     {
         // Print the summary table
-        Console.WriteLine("==== summary ===========================");
+        context.WriteLine("==== summary ===========================");
         foreach (var r in Tests)
-            r.PrintSummary();
-        Console.WriteLine("========================================");
+            r.PrintSummary(context);
+        context.WriteLine("========================================");
 
         // Get the totals
         var total = Tests.Count;
@@ -277,19 +274,15 @@ public sealed class TestResults
         // Print pass totals
         if (passed > 0)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Passed");
-            Console.ResetColor();
-            Console.WriteLine($" {passed} of {total} tests");
+            context.Write(ConsoleColor.Green, "Passed");
+            context.WriteLine($" {passed} of {total} tests");
         }
 
         // Print fail totals
         if (failed > 0)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Failed");
-            Console.ResetColor();
-            Console.WriteLine($" {failed} of {total} tests");
+            context.Write(ConsoleColor.Red, "Failed");
+            context.WriteLine($" {failed} of {total} tests");
         }
     }
 }

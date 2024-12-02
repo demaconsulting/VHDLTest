@@ -18,10 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.ObjectModel;
-using DEMAConsulting.VHDLTest.Results;
-using DEMAConsulting.VHDLTest.Run;
-
 namespace DEMAConsulting.VHDLTest;
 
 /// <summary>
@@ -30,53 +26,119 @@ namespace DEMAConsulting.VHDLTest;
 public static class Validation
 {
     /// <summary>
-    /// Run validation tests
+    ///     Run self-validation
     /// </summary>
-    /// <param name="arguments">Parsed program arguments</param>
-    /// <returns>Validation exit code</returns>
-    public static int Run(Arguments arguments)
+    /// <param name="context">Program context</param>
+    public static void Run(Context context)
     {
-        // Validation folder
-        var validationDir = Path.GetFullPath("VHDLTest.out/Validation");
+        // Write validation header
+        context.WriteLine(
+            $"""
+             {new string('#', context.Depth)} DEMAConsulting.VHDLTest
 
+             | Information         | Value                                              |
+             | :------------------ | :------------------------------------------------- |
+             | VHDLTest Version    | {Program.Version,-50} |
+             | Machine Name        | {Environment.MachineName,-50} |
+             | OS Version          | {Environment.OSVersion.VersionString,-50} |
+             | DotNet Runtime      | {Environment.Version,-50} |
+             | Time Stamp          | {DateTime.UtcNow,-50:u} |
+
+             Tests:
+              
+             """);
+
+        // Run validation tests
+        ValidateTestPasses(context);
+        ValidateTestFails(context);
+
+        // If all validations succeeded (no errors) then report validation passed
+        if (context.Errors == 0)
+            context.WriteLine("\nValidation Passed");
+    }
+
+    /// <summary>
+    ///     Validate test passes are reported
+    /// </summary>
+    /// <param name="context">Program context</param>
+    public static void ValidateTestPasses(Context context)
+    {
+        // Run the validation files
+        var exitCode = RunValidation(out var output, context.Simulator);
+
+        if (exitCode == 0 &&
+            output.Contains("Passed full_adder_pass_tb") &&
+            output.Contains("Passed half_adder_pass_tb"))
+        {
+            context.WriteLine("- Test-Passes: Passed");
+        }
+        else
+        {
+            context.WriteError("- Test-Passes: Failed");
+        }
+    }
+
+    /// <summary>
+    ///     Validate test fails are reported
+    /// </summary>
+    /// <param name="context">Program context</param>
+    public static void ValidateTestFails(Context context)
+    {
+        // Run the validation files
+        var exitCode = RunValidation(out var output, context.Simulator);
+
+        if (exitCode == 0 &&
+            output.Contains("Failed full_adder_fail_tb") &&
+            output.Contains("Failed half_adder_fail_tb"))
+        {
+            context.WriteLine("- Test-Fails: Passed");
+        }
+        else
+        {
+            context.WriteError("- Test-Fails: Failed");
+        }
+    }
+
+    /// <summary>
+    ///     Run the simulator
+    /// </summary>
+    /// <param name="results">Results output</param>
+    /// <param name="simulator">Simulator to use</param>
+    /// <returns>Exit code</returns>
+    public static int RunValidation(out string results, string? simulator)
+    {
         try
         {
-            // Create the validation directory
-            if (!Directory.Exists(validationDir))
-                Directory.CreateDirectory(validationDir);
+            // Create the temporary validation folder
+            Directory.CreateDirectory("validation.tmp");
 
             // Extract the validation resources
-            ExtractValidationFiles(validationDir);
+            ExtractValidationFiles("validation.tmp");
 
-            // Run the validation
-            var start = DateTime.Now;
-            var exitCode = RunValidation(out var output, validationDir, arguments);
+            // Construct the arguments
+            var args = new List<string>([
+                "--log", "output.log",
+                "--silent",
+                "--config", "validate.yaml",
+                "--exit-0"]);
+            if (simulator != null)
+                args.AddRange(["--simulator", simulator]);
 
-            // Print output on error, or if requested
-            if (arguments.Verbose || exitCode != 0)
-                Console.WriteLine(output);
+            // Run VhdlTest on the validation files
+            var exitCode = RunVhdlTest("validation.tmp", [..args]);
 
-            // Fail on error
-            if (exitCode != 0)
-                throw new InvalidOperationException($"Validation failed with exit code {exitCode}");
+            // Read the output
+            results = File.Exists("validation.tmp/output.log") ? 
+                File.ReadAllText("validation.tmp/output.log") : 
+                "";
 
-            // Analyze the validation results
-            var results = AnalyzeValidation(start, 0.0, output);
-
-            // Print the results summary
-            results.PrintSummary();
-
-            // Save the test results
-            if (arguments.ResultsFile != null)
-                results.SaveToTrx(arguments.ResultsFile);
-
-            // Select the exit code
-            return results.Fails.Any() ? 1 : 0;
+            // Return the exit code
+            return exitCode;
         }
         finally
         {
-            // Clean up the validation directory
-            Directory.Delete(validationDir, true);
+            // Delete the validation directory
+            Directory.Delete("validation.tmp", true);
         }
     }
 
@@ -104,11 +166,8 @@ public static class Validation
             var target = Path.Combine(path, name);
 
             // Get the resource stream
-            using var stream = typeof(Validation).Assembly.GetManifestResourceStream(resource);
-            if (stream == null)
-            {
+            using var stream = typeof(Validation).Assembly.GetManifestResourceStream(resource) ?? 
                 throw new InvalidOperationException($"Resource {resource} not found");
-            }
 
             // Copy the resource to the file
             using var file = File.Create(target);
@@ -117,68 +176,39 @@ public static class Validation
     }
 
     /// <summary>
-    /// Run the validation tests
+    ///     Run VhdlTest with the specified arguments
     /// </summary>
-    /// <param name="output">Output</param>
-    /// <param name="validationDir">Validation directory</param>
-    /// <param name="arguments">Arguments</param>
+    /// <param name="args">Arguments</param>
     /// <returns>Exit code</returns>
-    private static int RunValidation(out string output, string validationDir, Arguments arguments)
+    internal static int RunVhdlTest(string[] args)
     {
-        // Construct the parameters
-        var parameters = new List<string>
-        {
-            typeof(Validation).Assembly.Location,
-            "--config",
-            "validate.yaml",
-            "--exit-0"
-        };
+        // Create the context
+        using var context = Context.Create(args);
 
-        // Add simulator if specified
-        if (arguments.Simulator != null)
-        {
-            parameters.Add("--simulator");
-            parameters.Add(arguments.Simulator);
-        }
+        // Run VhdlTest
+        Program.Run(context);
 
-        // Add verbose if specified
-        if (arguments.Verbose)
-            parameters.Add("--verbose");
-
-        return RunProgram.Run(out output, "dotnet", validationDir, [..parameters]);
+        // Return the exit code
+        return context.ExitCode;
     }
 
     /// <summary>
-    /// Analyze the validation output
+    ///     Run VhdlTest in the specified folder with the specified arguments
     /// </summary>
-    /// <param name="start">Start time</param>
-    /// <param name="duration">Duration</param>
-    /// <param name="output">Output</param>
-    /// <returns>Results</returns>
-    private static TestResults AnalyzeValidation(DateTime start, double duration, string output)
+    /// <param name="workingFolder">Working folder</param>
+    /// <param name="args">Arguments</param>
+    /// <returns>Exit code</returns>
+    internal static int RunVhdlTest(string workingFolder, string[] args)
     {
-        // Construct the validation results
-        var results = new TestResults("validation", "validation");
-
-        // Construct the results of the passes
-        RunResults passResults;
-        if (output.Contains("Passed full_adder_pass_tb") && output.Contains("Passed half_adder_pass_tb"))
-            passResults = new RunResults(RunLineType.Info, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
-        else
-            passResults = new RunResults(RunLineType.Error, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
-
-        // Construct the results of the passes
-        RunResults failResults;
-        if (output.Contains("Failed full_adder_fail_tb") && output.Contains("Failed half_adder_fail_tb"))
-            failResults = new RunResults(RunLineType.Info, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
-        else
-            failResults = new RunResults(RunLineType.Error, start, duration, 0, output, ReadOnlyCollection<RunLine>.Empty);
-
-        // Add the results to the test results
-        results.Tests.Add(new TestResult("passes_reported", "passes_reported", passResults));
-        results.Tests.Add(new TestResult("fails_reported", "fails_reported", failResults));
-
-        // Return the test results
-        return results;
+        var cwd = Directory.GetCurrentDirectory();
+        try
+        {
+            Directory.SetCurrentDirectory(workingFolder);
+            return RunVhdlTest(args);
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(cwd);
+        }
     }
 }

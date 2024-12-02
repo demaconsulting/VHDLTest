@@ -42,18 +42,17 @@ public sealed record RunResults(
     /// <summary>
     ///     Print the results to the console colorized
     /// </summary>
-    public void Print(bool verbose)
+    public void Print(Context context)
     {
         // Write all lines
-        var currentColor = Console.ForegroundColor;
         foreach (var line in Lines)
         {
             // Skip text lines unless verbose requested
-            if (!verbose && line.Type == RunLineType.Text)
+            if (!context.Verbose && line.Type == RunLineType.Text)
                 continue;
 
             // Pick the desired color
-            var newColor = line.Type switch
+            var color = line.Type switch
             {
                 RunLineType.Info => ConsoleColor.White,
                 RunLineType.Warning => ConsoleColor.Yellow,
@@ -61,15 +60,9 @@ public sealed record RunResults(
                 _ => ConsoleColor.Gray
             };
 
-            // Switch colors if necessary
-            if (newColor != currentColor)
-                Console.ForegroundColor = currentColor = newColor;
-
             // Write the line
-            Console.WriteLine(line.Text);
+            context.Write(color, line.Text);
+            context.WriteLine("");
         }
-
-        // Reset colors
-        Console.ResetColor();
     }
 }

@@ -43,105 +43,121 @@ public static class Program
     /// <param name="args">Program arguments</param>
     public static void Main(string[] args)
     {
-        // Read the version
-        var version = Version;
+        try
+        {
+            using var context = Context.Create(args);
+            Run(context);
+            Environment.ExitCode = context.ExitCode;
+        }
+        catch (InvalidOperationException e)
+        {
+            // Report standard failure
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: {e.Message}");
+            Console.ResetColor();
+            Environment.Exit(1);
+        }
+        catch (Exception e)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: {e}");
+            Console.ResetColor();
+            throw;
+        }
+    }
 
+    /// <summary>
+    ///     Run the program context
+    /// </summary>
+    /// <param name="context">Program context</param>
+    public static void Run(Context context)
+    {
         // Handle version query
-        if (args.Contains("-v") || args.Contains("--version"))
+        if (context.Version)
         {
-            Console.WriteLine(version);
+            context.WriteLine(Version);
             return;
         }
 
-        // Print Banner
-        Console.WriteLine($"VHDL Test Bench Runner (VHDLTest) {version}\n");
+        // Print version banner
+        context.WriteLine($"VHDL Test Bench Runner (VHDLTest) {Version}\n");
 
-        // Handle no arguments
-        if (args.Length == 0)
+        // Handle help query
+        if (context.Help)
         {
-            ReportError("No arguments specified");
-            PrintUsage();
+            PrintUsage(context);
             return;
         }
 
-        // Handle help request
-        if (args.Contains("-h") || args.Contains("-?") || args.Contains("--help"))
+        // Handle self-validation
+        if (context.Validate)
         {
-            PrintUsage();
+            Validation.Run(context);
+            return;
+        }
+
+        // Handle missing arguments
+        if (context.ConfigFile == null)
+        {
+            context.WriteError("Error: Missing arguments");
+            PrintUsage(context);
             return;
         }
 
         try
         {
-            // Parse the arguments
-            var arguments = Arguments.Parse(args);
-            if (arguments.Validate)
-            {
-                Environment.ExitCode = Validation.Run(arguments);
-                return;
-            }
-
             // Get the simulator
-            var simulator = SimulatorFactory.Get(arguments.Simulator) ??
+            var simulator = SimulatorFactory.Get(context.Simulator) ??
                             throw new InvalidOperationException("Simulator not found");
 
             // Execute the build/test and get the results
-            var options = Options.Parse(arguments);
-            var results = TestResults.Execute(options, simulator);
+            var options = Options.Parse(context);
+            var results = TestResults.Execute(context, options, simulator);
 
             // Print the results summary
-            results.PrintSummary();
+            results.PrintSummary(context);
 
             // Save the test results
-            if (arguments.ResultsFile != null)
-                results.SaveToTrx(arguments.ResultsFile);
+            if (context.ResultsFile != null)
+                results.SaveToTrx(context.ResultsFile);
 
             // If we got failures then exit with an error code
-            if (!arguments.ExitZero && results.Fails.Any())
+            if (!context.ExitZero && results.Fails.Any())
                 Environment.ExitCode = 1;
         }
-        catch (InvalidOperationException e)
+        catch (InvalidOperationException ex)
         {
-            ReportError(e.Message);
+            // Report operation error
+            context.WriteError($"Error: {ex.Message}");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            ReportError(e.ToString());
+            // Report unknown exception
+            context.WriteError(ex.ToString());
         }
     }
 
     /// <summary>
     ///     Print usage information
     /// </summary>
-    private static void PrintUsage()
+    /// <param name="context">Program context</param>
+    private static void PrintUsage(Context context)
     {
-        Console.WriteLine("Usage: VHDLTest [options] [tests]");
-        Console.WriteLine();
-        Console.WriteLine("Options:");
-        Console.WriteLine("  -h|-?|--help                 Display help");
-        Console.WriteLine("  -v|--version                 Display version");
-        Console.WriteLine("    |--validate                Validate operational");
-        Console.WriteLine("  -c|--config <config.yaml>    Specify configuration");
-        Console.WriteLine("    |--verbose                 Verbose output");
-        Console.WriteLine("  -r|--results <out.trx>       Specify test results file");
-        Console.WriteLine("  -s|--simulator <name>        Specify simulator");
-        Console.WriteLine("  -0|--exit-0                  Exit with code 0 if test fail");
-        Console.WriteLine("  --                           End of options");
-    }
-
-    /// <summary>
-    /// Report an error
-    /// </summary>
-    /// <param name="message">Error message</param>
-    private static void ReportError(string message)
-    {
-        // Report the error
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"Error: {message}");
-        Console.ResetColor();
-        Console.WriteLine();
-
-        // Set the exit code to 1 as an error has occurred.
-        Environment.ExitCode = 1;
+        context.WriteLine(
+            """
+            Usage: VHDLTest [options] [tests]
+            
+            Options:
+              -h, --help                   Display help
+              -v, --version                Display version
+              --silent                     Silence console output
+              --verbose                    Verbose output
+              --validate                   Perform self-validation
+              -c, --config <config.yaml>   Specify configuration
+              -r, --results <out.trx>      Specify test results file
+              -s, --simulator <name>       Specify simulator
+              -0, --exit-0                 Exit with code 0 if test fail
+              --                           End of options
+            """);
     }
 }

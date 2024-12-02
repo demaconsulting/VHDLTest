@@ -53,14 +53,15 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     /// <summary>
     ///     Print a summary line to the console
     /// </summary>
-    public void PrintSummary()
+    /// <param name="context">Program context</param>
+    public void PrintSummary(Context context)
     {
         // Print the colored summary word
-        Console.ForegroundColor = Passed ? ConsoleColor.Green : ConsoleColor.Red;
-        Console.Write(Passed ? "Passed" : "Failed");
-        Console.ResetColor();
+        context.Write(
+            Passed ? ConsoleColor.Green : ConsoleColor.Red,
+            Passed ? "Passed" : "Failed");
 
         // Print test name and duration
-        Console.WriteLine($" {TestName} ({RunResults.Duration:F1} seconds)");
+        context.WriteLine($" {TestName} ({RunResults.Duration:F1} seconds)");
     }
 }

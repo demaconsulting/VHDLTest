@@ -27,21 +27,43 @@ namespace DEMAConsulting.VHDLTest.Tests;
 public class TestValidation
 {
     /// <summary>
-    /// Test validation failure with bad simulator
+    /// Test usage information is reported when no arguments are specified
     /// </summary>
     [TestMethod]
-    public void Test_Validate_BadSimulator()
+    public void Validation()
     {
-        Assert.ThrowsException<InvalidOperationException>(() => Validation.Run(Arguments.Parse(["--validate", "--simulator", "bad"
-        ])));
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--validate");
+
+        // Verify success
+        Assert.AreEqual(0, exitCode);
+
+        // Verify validation passed
+        StringAssert.Contains(output, "Validation Passed");
     }
 
     /// <summary>
-    ///  Test validation succeeds with nvc simulator
+    /// Test usage information is reported when no arguments are specified
     /// </summary>
     [TestMethod]
-    public void Test_Validate_Nvc()
+    public void Validation_Depth()
     {
-        Assert.AreEqual(0, Validation.Run(Arguments.Parse(["--validate", "--simulator", "nvc"])));
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--validate",
+            "--depth", "3");
+
+        // Verify success
+        Assert.AreEqual(0, exitCode);
+
+        // Verify validation depth
+        StringAssert.Contains(output, "### DEMAConsulting.VHDLTest");
     }
 }

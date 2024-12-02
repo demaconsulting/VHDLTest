@@ -23,22 +23,9 @@ namespace DEMAConsulting.VHDLTest.Run;
 /// <summary>
 /// Run Processor class
 /// </summary>
-public class RunProcessor
+/// <param name="rules">Processing rules</param>
+public class RunProcessor(RunLineRule[] rules)
 {
-    /// <summary>
-    /// Run processing rules
-    /// </summary>
-    private readonly RunLineRule[] _rules;
-
-    /// <summary>
-    /// Initialize a new instance of the RunProcessor class
-    /// </summary>
-    /// <param name="rules">Processing rules</param>
-    public RunProcessor(RunLineRule[] rules)
-    {
-        _rules = rules;
-    }
-
     /// <summary>
     /// Run a program and process the results
     /// </summary>
@@ -90,7 +77,7 @@ public class RunProcessor
             .Replace("\r\n", "\n")
             .Split('\n')
             .Select(line => new RunLine(
-                Array.Find(_rules, r => r.Pattern.IsMatch(line))?.Type ?? RunLineType.Text,
+                Array.Find(rules, r => r.Pattern.IsMatch(line))?.Type ?? RunLineType.Text,
                 line
             ))
             .ToArray();

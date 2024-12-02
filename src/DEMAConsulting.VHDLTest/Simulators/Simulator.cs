@@ -26,28 +26,19 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// <summary>
 ///     Simulator Interface
 /// </summary>
-public abstract class Simulator
+/// <param name="simulatorName">Simulator name</param>
+/// <param name="simulatorPath">Simulator path</param>
+public abstract class Simulator(string simulatorName, string? simulatorPath)
 {
-    /// <summary>
-    ///     Initializes a new instance of the Simulator class
-    /// </summary>
-    /// <param name="name">Simulator name</param>
-    /// <param name="path">Simulator path</param>
-    protected Simulator(string name, string? path)
-    {
-        SimulatorName = name;
-        SimulatorPath = path;
-    }
-
     /// <summary>
     ///     Gets the name of the simulator
     /// </summary>
-    public string SimulatorName { get; init; }
+    public string SimulatorName => simulatorName;
 
     /// <summary>
     ///     Gets the path to the simulator
     /// </summary>
-    public string? SimulatorPath { get; init; }
+    public string? SimulatorPath => simulatorPath;
 
     /// <summary>
     ///     Test if the simulator is available
@@ -61,17 +52,19 @@ public abstract class Simulator
     /// <summary>
     ///     Compile the simulator library
     /// </summary>
+    /// <param name="context">Program context</param>
     /// <param name="options">Options</param>
     /// <returns>Compile Results</returns>
-    public abstract RunResults Compile(Options options);
+    public abstract RunResults Compile(Context context, Options options);
 
     /// <summary>
     ///     Execute a test
     /// </summary>
+    /// <param name="context">Program context</param>
     /// <param name="options">Options</param>
     /// <param name="test">Test name</param>
     /// <returns>Test Results</returns>
-    public abstract TestResult Test(Options options, string test);
+    public abstract TestResult Test(Context context, Options options, string test);
 
     /// <summary>
     ///     Find the path of a potential application

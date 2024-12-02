@@ -1,4 +1,4 @@
-# VHDLTest
+# VHDLTest Tool
 
 ![GitHub forks](https://img.shields.io/github/forks/demaconsulting/VHDLTest?style=plastic)
 ![GitHub Repo stars](https://img.shields.io/github/stars/demaconsulting/VHDLTest?style=plastic)
@@ -11,25 +11,42 @@
 This tool runs VHDL test benches and generates standard test results files.
 
 
-# Options
+## Installation
+
+The following will add VHDLTest to a Dotnet tool manifest file:
+
+```
+dotnet new tool-manifest # if you are setting up this repo
+dotnet tool install --local DEMAConsulting.VHDLTest
+```
+
+The tool can then be executed by:
+
+```
+dotnet vhdltest <arguments>
+```
+
+
+## Options
 
 ```
 Usage: VHDLTest [options] [tests]
 
 Options:
-  -h|-?|--help                 Display help
-  -v|--version                 Display version
-    |--validate                Validate operational
-  -c|--config <config.yaml>    Specify configuration
-    |--verbose                 Verbose output
-  -r|--results <out.trx>       Specify test results file
-  -s|--simulator <name>        Specify simulator
-  -0|--exit-0                  Exit with code 0 if test fail
+  -h, --help                   Display help
+  -v, --version                Display version
+  --silent                     Silence console output
+  --verbose                    Verbose output
+  --validate                   Perform self-validation
+  -c, --config <config.yaml>   Specify configuration
+  -r, --results <out.trx>      Specify test results file
+  -s, --simulator <name>       Specify simulator
+  -0, --exit-0                 Exit with code 0 if test fail
   --                           End of options
 ```
 
 
-# Supported Simulators
+## Supported Simulators
 
 The current list of supported simulators are:
 
@@ -40,27 +57,7 @@ The current list of supported simulators are:
 * [NVC](https://www.nickg.me.uk/nvc)
 
 
-# Installing
-
-VHDLTest is distributed as a dotnet tool through NuGet.org and can be installed globally:
-
-```
-dotnet tool install -g DemaConsulting.VHDLTest
-
-VHDLTest --help
-```
-
-
-Additionally it can be installed as a local tool in the working folder:
-
-```
-dotnet tool install DemaConsulting.VHDLTest
-
-dotnet VHDLTest --help
-```
-
-
-# Configuration
+## Configuration
 
 VHDLTest needs a YAML configuration file specifying the VHDL files and test benches.
 
@@ -83,7 +80,7 @@ tests:
 ```
 
 
-# Running Tests
+## Running Tests
 
 Before running the tests, it may be necessary to configure where the simulators are installed.
 This can be done through environment variables:
@@ -105,3 +102,31 @@ A test results file can be generated when working in CI environments.
 ```
 dotnet VHDLTest --config test_suite.yaml --results test_results.trx
 ```
+
+
+## Self Validation
+
+Running self-validation produces a report containing the following information:
+
+```
+# DEMAConsulting.VHDLTest
+
+| Information         | Value                                              |
+| :------------------ | :------------------------------------------------- |
+| VHDLTest Version    | <version>                                          |
+| Machine Name        | <machine-name>                                     |
+| OS Version          | <os-version>                                       |
+| DotNet Runtime      | <dotnet-runtime-version>                           |
+| Time Stamp          | <timestamp>                                        |
+
+Tests:
+
+- Test-Passes: Passed
+- Test-Fails: Passed
+
+Validation Passed
+```
+
+On validation failure the tool will exit with a non-zero exit code.
+
+This report may be useful in regulated industries requiring evidence of tool validation.

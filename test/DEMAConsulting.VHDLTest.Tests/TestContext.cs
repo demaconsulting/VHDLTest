@@ -24,7 +24,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for argument parsing
 /// </summary>
 [TestClass]
-public class TestArguments
+public class TestContext
 {
     /// <summary>
     /// Test parsing arguments with no arguments
@@ -33,7 +33,7 @@ public class TestArguments
     public void Test_Arguments_None()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse([]);
+        var arguments = Context.Create([]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -53,7 +53,7 @@ public class TestArguments
     public void Test_Arguments_Unknown()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["--unknown"]));
+        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["--unknown"]));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class TestArguments
     public void Test_Arguments_ConfigFile()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["-c", "config.json"]);
+        var arguments = Context.Create(["-c", "config.json"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -83,7 +83,7 @@ public class TestArguments
     public void Test_Arguments_ConfigFile_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-c"]));
+        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["-c"]));
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ public class TestArguments
     public void Test_Arguments_ResultsFile()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["-r", "results.trx"]);
+        var arguments = Context.Create(["-r", "results.trx"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -113,7 +113,7 @@ public class TestArguments
     public void Test_Arguments_ResultsFile_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-r"]));
+        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["-r"]));
     }
 
     /// <summary>
@@ -123,7 +123,7 @@ public class TestArguments
     public void Test_Arguments_Simulator()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["-s", "GHDL"]);
+        var arguments = Context.Create(["-s", "GHDL"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -143,7 +143,7 @@ public class TestArguments
     public void Test_Arguments_Simulator_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Arguments.Parse(["-s"]));
+        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["-s"]));
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public class TestArguments
     public void Test_Arguments_Verbose()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["--verbose"]);
+        var arguments = Context.Create(["--verbose"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -173,7 +173,7 @@ public class TestArguments
     public void Test_Arguments_ExitZero()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["--exit-0"]);
+        var arguments = Context.Create(["--exit-0"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -193,7 +193,7 @@ public class TestArguments
     public void Test_Arguments_Validate()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["--validate"]);
+        var arguments = Context.Create(["--validate"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -213,7 +213,7 @@ public class TestArguments
     public void Test_Arguments_CustomTest()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["custom_test"]);
+        var arguments = Context.Create(["custom_test"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);
@@ -235,7 +235,7 @@ public class TestArguments
     public void Test_Arguments_CustomTests()
     {
         // Parse the arguments
-        var arguments = Arguments.Parse(["--", "custom_test1", "custom_test2"]);
+        var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);
 
         // Check the arguments
         Assert.IsNotNull(arguments);

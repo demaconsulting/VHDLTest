@@ -77,22 +77,19 @@ public sealed class ActiveHdlSimulator : Simulator
     }
 
     /// <inheritdoc />
-    public override RunResults Compile(Options options)
+    public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
-        if (options.Verbose)
-            Console.WriteLine("Starting ActiveHdl compile...");
+        context.WriteVerboseLine("Starting ActiveHdl compile...");
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("ActiveHdl Simulator not available");
-        if (options.Verbose)
-            Console.WriteLine($"  Simulator Path: {simPath}");
+        context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ActiveHdl");
-        if (options.Verbose)
-            Console.WriteLine($"  Library Directory: {libDir}");
+        context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
             Directory.CreateDirectory(libDir);
 
@@ -106,16 +103,13 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Write the batch file
         var script = Path.Combine(libDir, "compile.do");
-        if (options.Verbose)
-            Console.WriteLine($"  Script File: {script}");
+        context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
         // Run the ActiveHDL compiler
         var application = Path.Combine(simPath, SimApp);
-        if (options.Verbose)
-            Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/compile.do");
+        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
+        context.WriteVerboseLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/compile.do");
         return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
@@ -124,22 +118,19 @@ public sealed class ActiveHdlSimulator : Simulator
     }
 
     /// <inheritdoc />
-    public override TestResult Test(Options options, string test)
+    public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the compile command
-        if (options.Verbose)
-            Console.WriteLine($"Starting ActiveHDL test {test}...");
+        context.WriteVerboseLine($"Starting ActiveHDL test {test}...");
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("ActiveHDL Simulator not available");
-        if (options.Verbose)
-            Console.WriteLine($"  Simulator Path: {simPath}");
+        context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ActiveHDL");
-        if (options.Verbose)
-            Console.WriteLine($"  Library Directory: {libDir}");
+        context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Build the batch file
         var writer = new StringBuilder();
@@ -152,16 +143,13 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Write the batch file
         var script = Path.Combine(libDir, "test.do");
-        if (options.Verbose)
-            Console.WriteLine($"  Script File: {script}");
+        context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
         // Run the test
         var application = Path.Combine(simPath, SimApp);
-        if (options.Verbose)
-            Console.WriteLine($"  Run Directory: {options.WorkingDirectory}");
-        if (options.Verbose)
-            Console.WriteLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/test.do");
+        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
+        context.WriteVerboseLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/test.do");
         var testRunResults = TestProcessor.Execute(
             Path.Combine(simPath, SimApp),
             options.WorkingDirectory,
