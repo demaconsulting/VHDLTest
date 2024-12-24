@@ -167,8 +167,15 @@ public sealed class Context : IDisposable
     ///     Write an error message to output
     /// </summary>
     /// <param name="message">Error message to write</param>
-    public void WriteError(string message)
+    public void WriteError(string? message)
     {
+        // Increment the number of errors
+        Errors++;
+
+        // Skip writing if no message provided
+        if (message == null)
+            return;
+
         // Write to the console unless silent
         if (!Silent)
         {
@@ -179,9 +186,6 @@ public sealed class Context : IDisposable
 
         // Write to the log if specified
         _log?.WriteLine(message);
-
-        // Increment the number of errors
-        Errors++;
     }
 
     /// <summary>

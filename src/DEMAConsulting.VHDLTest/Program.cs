@@ -123,7 +123,7 @@ public static class Program
 
             // If we got failures then exit with an error code
             if (!context.ExitZero && results.Fails.Any())
-                Environment.ExitCode = 1;
+                context.WriteError(null);
         }
         catch (InvalidOperationException ex)
         {
