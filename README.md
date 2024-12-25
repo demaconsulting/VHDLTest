@@ -121,8 +121,8 @@ Running self-validation produces a report containing the following information:
 
 Tests:
 
-- Test-Passes: Passed
-- Test-Fails: Passed
+- TestPasses: Passed
+- TestFails: Passed
 
 Validation Passed
 ```

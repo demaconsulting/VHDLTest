@@ -37,6 +37,7 @@ public class TestValidation
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
+            "--simulator", "mock",
             "--validate");
 
         // Verify success
@@ -57,6 +58,7 @@ public class TestValidation
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
+            "--simulator", "mock",
             "--validate",
             "--depth", "3");
 
@@ -65,5 +67,41 @@ public class TestValidation
 
         // Verify validation depth
         StringAssert.Contains(output, "### DEMAConsulting.VHDLTest");
+    }
+
+    /// <summary>
+    /// Test validation results can be saved to file
+    /// </summary>
+    [TestMethod]
+    public void Validation_Results()
+    {
+        try
+        {
+            // Run the application
+            var exitCode = Runner.Run(
+                out _,
+                "dotnet",
+                "DEMAConsulting.VHDLTest.dll",
+                "--simulator", "mock",
+                "--validate",
+                "--results", "validation_results.trx");
+
+            // Verify success
+            Assert.AreEqual(0, exitCode);
+
+            // Verify results file written
+            Assert.IsTrue(File.Exists("validation_results.trx"));
+
+            // Read the results file.
+            var text = File.ReadAllText("validation_results.trx");
+            StringAssert.Contains(text, """<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestPasses" />""");
+            StringAssert.Contains(text, """<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestFails" />""");
+            StringAssert.Contains(text, """<Counters total="2" executed="2" passed="2" failed="0" />""");
+        }
+        finally
+        {
+            // Delete results file
+            File.Delete("validation_results.trx");
+        }
     }
 }
