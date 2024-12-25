@@ -18,6 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.ObjectModel;
+using DEMAConsulting.VHDLTest.Results;
+using DEMAConsulting.VHDLTest.Run;
+
 namespace DEMAConsulting.VHDLTest;
 
 /// <summary>
@@ -49,8 +53,13 @@ public static class Validation
              """);
 
         // Run validation tests
-        ValidateTestPasses(context);
-        ValidateTestFails(context);
+        var results = new TestResults("Validation", "VHDLTest");
+        ValidateTestPasses(context, results);
+        ValidateTestFails(context, results);
+
+        // Save results if requested
+        if (context.ResultsFile != null)
+            results.SaveToTrx(context.ResultsFile);
 
         // If all validations succeeded (no errors) then report validation passed
         if (context.Errors == 0)
@@ -61,42 +70,60 @@ public static class Validation
     ///     Validate test passes are reported
     /// </summary>
     /// <param name="context">Program context</param>
-    public static void ValidateTestPasses(Context context)
+    /// <param name="results">Test results</param>
+    public static void ValidateTestPasses(Context context, TestResults results)
     {
         // Run the validation files
+        var start = DateTime.UtcNow;
         var exitCode = RunValidation(out var output, context.Simulator);
+        var duration = (DateTime.UtcNow -  start).TotalSeconds;
 
-        if (exitCode == 0 &&
+        // Determine if the test succeeded
+        var succeeded =
+            exitCode == 0 &&
             output.Contains("Passed full_adder_pass_tb") &&
-            output.Contains("Passed half_adder_pass_tb"))
-        {
-            context.WriteLine("- Test-Passes: Passed");
-        }
-        else
-        {
-            context.WriteError("- Test-Passes: Failed");
-        }
+            output.Contains("Passed half_adder_pass_tb");
+
+        // Report result
+        ReportTestResult(
+            context,
+            results,
+            "TestPasses",
+            start,
+            duration,
+            exitCode,
+            output,
+            succeeded);
     }
 
     /// <summary>
     ///     Validate test fails are reported
     /// </summary>
     /// <param name="context">Program context</param>
-    public static void ValidateTestFails(Context context)
+    /// <param name="results">Test results</param>
+    public static void ValidateTestFails(Context context, TestResults results)
     {
         // Run the validation files
+        var start = DateTime.UtcNow;
         var exitCode = RunValidation(out var output, context.Simulator);
+        var duration = (DateTime.UtcNow - start).TotalSeconds;
 
-        if (exitCode == 0 &&
+        // Determine if the test succeeded
+        var succeeded =
+            exitCode == 0 &&
             output.Contains("Failed full_adder_fail_tb") &&
-            output.Contains("Failed half_adder_fail_tb"))
-        {
-            context.WriteLine("- Test-Fails: Passed");
-        }
-        else
-        {
-            context.WriteError("- Test-Fails: Failed");
-        }
+            output.Contains("Failed half_adder_fail_tb");
+
+        // Report result
+        ReportTestResult(
+            context,
+            results,
+            "TestFails",
+            start,
+            duration,
+            exitCode,
+            output,
+            succeeded);
     }
 
     /// <summary>
@@ -140,6 +167,55 @@ public static class Validation
             // Delete the validation directory
             Directory.Delete("validation.tmp", true);
         }
+    }
+
+    /// <summary>
+    ///     Report validation test results
+    /// </summary>
+    /// <param name="context">Program context</param>
+    /// <param name="results">Test results</param>
+    /// <param name="testName">Test name</param>
+    /// <param name="start">Test start time-stamp</param>
+    /// <param name="duration">Test duration</param>
+    /// <param name="exitCode">Program exit-code</param>
+    /// <param name="output">Output text</param>
+    /// <param name="succeeded">True if test succeeded</param>
+    private static void ReportTestResult(
+        Context context,
+        TestResults results,
+        string testName,
+        DateTime start,
+        double duration,
+        int exitCode,
+        string output,
+        bool succeeded)
+    {
+        // Report to the context
+        if (succeeded)
+            context.WriteLine($"- {testName}: Passed");
+        else
+            context.WriteError($"- {testName}: Failed");
+
+        // Get the line type
+        var line = succeeded
+            ? new RunLine(RunLineType.Info, $"{testName} Passed")
+            : new RunLine(RunLineType.Error, $"{testName} Failed");
+
+        // Report failure
+        results.Tests.Add(
+            new TestResult(
+                "VHDLTest.Validation",
+                $"VHDLTest_{testName}",
+                new RunResults(
+                    line.Type,
+                    start,
+                    duration,
+                    exitCode,
+                    output,
+                    new ReadOnlyCollection<RunLine>([line])
+                )
+            )
+        );
     }
 
     /// <summary>
