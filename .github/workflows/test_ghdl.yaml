@@ -33,7 +33,10 @@ jobs:
         msystem: MINGW64
         update: true
 
-    - uses: ghdl/setup-ghdl-ci@nightly
+    - uses: ghdl/setup-ghdl@v1
+      with:
+        version: nightly
+        backend: mcode
 
     - name: Download Artifacts
       uses: actions/download-artifact@v4
@@ -52,9 +55,6 @@ jobs:
     - name: Validate VHDLTest
       shell: bash
       run: >
-        # Add GHDL to the path
-        PATH=$(dirname $GHDL):$PATH
-        
         # Run the validation
         vhdltest --validate --simulator ghdl
 
@@ -62,8 +62,5 @@ jobs:
       working-directory: test/example
       shell: bash
       run: |
-        # Add GHDL to the path
-        PATH=$(dirname $GHDL):$PATH
-        
         # Run the test
         bash ./test.sh ghdl
