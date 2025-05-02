@@ -55,9 +55,6 @@ jobs:
     - name: Validate VHDLTest
       shell: bash
       run: >
-        # Add GHDL to the path
-        PATH=$(dirname $GHDL):$PATH
-        
         # Run the validation
         vhdltest --validate --simulator ghdl
 
@@ -65,8 +62,5 @@ jobs:
       working-directory: test/example
       shell: bash
       run: |
-        # Add GHDL to the path
-        PATH=$(dirname $GHDL):$PATH
-        
         # Run the test
         bash ./test.sh ghdl
