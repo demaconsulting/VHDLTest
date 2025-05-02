@@ -33,7 +33,10 @@ jobs:
         msystem: MINGW64
         update: true
 
-    - uses: ghdl/setup-ghdl-ci@nightly
+    - uses: ghdl/setup-ghdl@v1
+      with:
+        version: nightly
+        backend: mcode
 
     - name: Download Artifacts
       uses: actions/download-artifact@v4
