@@ -52,7 +52,7 @@ public class TestOptions
     public void Test_Options_NoConfig()
     {
         var arguments = Context.Create([]);
-        Assert.ThrowsException<InvalidOperationException>(() => Options.Parse(arguments));
+        Assert.ThrowsExactly<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class TestOptions
     public void Test_Options_MissingConfig()
     {
         var arguments = Context.Create(["-c", "missing-config.yaml"]);
-        Assert.ThrowsException<FileNotFoundException>(() => Options.Parse(arguments));
+        Assert.ThrowsExactly<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
     /// <summary>

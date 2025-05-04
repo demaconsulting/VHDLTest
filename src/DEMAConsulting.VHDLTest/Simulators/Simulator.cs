@@ -96,7 +96,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             // Update the files list considering the executable extensions
             var pathExt = Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD";
             var extensions = pathExt.Split(Path.PathSeparator);
-            searchFiles = extensions.Select(e => $"{application}{e}").ToList();
+            searchFiles = [..extensions.Select(e => $"{application}{e}")];
         }
 
         // Search every path and file

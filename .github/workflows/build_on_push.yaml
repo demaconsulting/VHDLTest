@@ -1,3 +1,4 @@
+---
 name: Build
 
 on: [push, workflow_dispatch]
@@ -5,6 +6,9 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     name: Build Artifacts
+    permissions:
+      contents: read       # To read repository contents
+      pull-requests: write # To write pull requests analysis results and artifacts
     uses: ./.github/workflows/build.yaml
     with:
       os: ubuntu-latest
@@ -14,6 +18,8 @@ jobs:
 
   test-ghdl:
     name: Test on GHDL
+    permissions:
+      contents: read       # To read repository contents
     needs: build
     uses: ./.github/workflows/test_ghdl.yaml
     with:
@@ -21,6 +27,8 @@ jobs:
 
   test-nvc:
     name: Test on NVC
+    permissions:
+      contents: read       # To read repository contents
     needs: build
     uses: ./.github/workflows/test_nvc.yaml
     with:
