@@ -53,7 +53,7 @@ public class TestContext
     public void Test_Arguments_Unknown()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["--unknown"]));
+        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--unknown"]));
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class TestContext
     public void Test_Arguments_ConfigFile_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["-c"]));
+        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-c"]));
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ public class TestContext
     public void Test_Arguments_ResultsFile_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["-r"]));
+        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-r"]));
     }
 
     /// <summary>
@@ -143,7 +143,7 @@ public class TestContext
     public void Test_Arguments_Simulator_Missing()
     {
         // Verify the exception is thrown
-        Assert.ThrowsException<InvalidOperationException>(() => Context.Create(["-s"]));
+        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-s"]));
     }
 
     /// <summary>

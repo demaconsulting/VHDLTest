@@ -1,3 +1,4 @@
+---
 on:
   workflow_call:
     inputs:
@@ -14,112 +15,115 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read       # To read repository contents
+      pull-requests: write # To write pull requests analysis results and artifacts
 
     runs-on: ${{ inputs.os }}
 
     steps:
 
-    - name: Checkout 
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup dotnet 8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-          8.x
+      - name: Setup dotnet 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.x
 
-    - uses: nuget/setup-nuget@v2
-      with:
-        nuget-version: '6.x'
+      - uses: nuget/setup-nuget@v2
+        with:
+          nuget-version: '6.x'
 
-    - uses: msys2/setup-msys2@v2
-      if: inputs.os == 'windows-latest'
-      with:
-        msystem: MINGW64
-        update: true
+      - uses: msys2/setup-msys2@v2
+        if: inputs.os == 'windows-latest'
+        with:
+          msystem: MINGW64
+          update: true
 
-    - uses: nickg/setup-nvc-ci@v1
-      with:
-        version: latest
+      - uses: nickg/setup-nvc-ci@v1
+        with:
+          version: latest
 
-    - name: Restore Tools
-      run: >
-        dotnet tool restore
+      - name: Restore Tools
+        run: >
+          dotnet tool restore
 
-    - name: Restore Dependencies
-      run: > 
-        dotnet restore
-      
-    - name: Start Sonar Scanner
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: >
-        dotnet dotnet-sonarscanner
-        begin
-        /k:"demaconsulting_VHDLTest"
-        /o:"demaconsulting"
-        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-        /d:sonar.host.url="https://sonarcloud.io"
-        /d:sonar.cs.opencover.reportsPaths=**/*.opencover.xml
-        /d:sonar.scanner.scanAll=false
+      - name: Restore Dependencies
+        run: >
+          dotnet restore
 
-    - name: Build
-      run: >
-        dotnet build
-        --no-restore
-        --configuration Release
-        --property:Version=${{ inputs.version }}
+      - name: Start Sonar Scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          dotnet dotnet-sonarscanner
+          begin
+          /k:"demaconsulting_VHDLTest"
+          /o:"demaconsulting"
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          /d:sonar.host.url="https://sonarcloud.io"
+          /d:sonar.cs.opencover.reportsPaths=**/*.opencover.xml
+          /d:sonar.scanner.scanAll=false
 
-    - name: Test
-      run: >
-        dotnet test
-        --no-build
-        --configuration Release
-        --property:Version=${{ inputs.version }}
-        --collect "XPlat Code Coverage;Format=opencover"
+      - name: Build
+        run: >
+          dotnet build
+          --no-restore
+          --configuration Release
+          --property:Version=${{ inputs.version }}
 
-    - name: End Sonar Scanner
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: >
-        dotnet dotnet-sonarscanner
-        end
-        /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: Test
+        run: >
+          dotnet test
+          --no-build
+          --configuration Release
+          --property:Version=${{ inputs.version }}
+          --collect "XPlat Code Coverage;Format=opencover"
 
-    - name: Generate Tool SBOM
-      run: >
-        dotnet sbom-tool generate
-        -b src/DEMAConsulting.VHDLTest/bin/Release
-        -bc src/DEMAConsulting.VHDLTest
-        -pn DemaConsulting.VHDLTest
-        -pv ${{ inputs.version }}
-        -ps DEMAConsulting
-        -nsb https://DemaConsulting.com/VHDLTest
-        -pm true
-        -li true
+      - name: End Sonar Scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          dotnet dotnet-sonarscanner
+          end
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
-    - name: Run SBOM Workflow
-      run: >
-        dotnet spdx-tool
-        run-workflow
-        spdx-workflow.yaml
+      - name: Generate Tool SBOM
+        run: >
+          dotnet sbom-tool generate
+          -b src/DEMAConsulting.VHDLTest/bin/Release
+          -bc src/DEMAConsulting.VHDLTest
+          -pn DemaConsulting.VHDLTest
+          -pv ${{ inputs.version }}
+          -ps DEMAConsulting
+          -nsb https://DemaConsulting.com/VHDLTest
+          -pm true
+          -li true
 
-    - name: Create Dotnet Tool
-      run: >
-        dotnet pack
-        --no-build
-        --no-restore
-        --property:PackageVersion=${{ inputs.version }}
+      - name: Run SBOM Workflow
+        run: >
+          dotnet spdx-tool
+          run-workflow
+          spdx-workflow.yaml
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: artifacts-${{ inputs.os }}
-        path: |
-          **/*.nupkg
-          **/*.snupkg
-          **/manifest.spdx.json
-          **/manifest.spdx.json.sha256
-          *summary.md
+      - name: Create Dotnet Tool
+        run: >
+          dotnet pack
+          --no-build
+          --no-restore
+          --property:PackageVersion=${{ inputs.version }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ inputs.os }}
+          path: |
+            **/*.nupkg
+            **/*.snupkg
+            **/manifest.spdx.json
+            **/manifest.spdx.json.sha256
+            *summary.md

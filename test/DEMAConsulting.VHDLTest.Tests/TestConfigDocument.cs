@@ -51,7 +51,7 @@ public class TestConfigDocument
     [TestMethod]
     public void Test_ConfigDocument_Missing()
     {
-        Assert.ThrowsException<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
+        Assert.ThrowsExactly<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
     }
 
     /// <summary>

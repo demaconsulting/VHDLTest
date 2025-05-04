@@ -8,6 +8,9 @@ on:
 
 jobs:
   test-nvc:
+    permissions:
+      contents: read       # To read repository contents
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -16,49 +19,49 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup dotnet 8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.x
+      - name: Setup dotnet 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
 
-    - uses: nuget/setup-nuget@v2
-      with:
-        nuget-version: '6.x'
+      - uses: nuget/setup-nuget@v2
+        with:
+          nuget-version: '6.x'
 
-    - uses: msys2/setup-msys2@v2
-      if: matrix.os == 'windows-latest'
-      with:
-        msystem: MINGW64
-        update: true
+      - uses: msys2/setup-msys2@v2
+        if: matrix.os == 'windows-latest'
+        with:
+          msystem: MINGW64
+          update: true
 
-    - uses: nickg/setup-nvc-ci@v1
-      with:
-        version: latest
+      - uses: nickg/setup-nvc-ci@v1
+        with:
+          version: latest
 
-    - name: Download Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: artifacts-ubuntu-latest
-        path: artifacts
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts-ubuntu-latest
+          path: artifacts
 
-    - name: Install VHDLTest
-      shell: bash
-      run: >
-        dotnet tool install
-        --global DemaConsulting.VHDLTest
-        --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
-        --version ${{ inputs.version }}
+      - name: Install VHDLTest
+        shell: bash
+        run: >
+          dotnet tool install
+          --global DemaConsulting.VHDLTest
+          --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
+          --version ${{ inputs.version }}
 
-    - name: Validate VHDLTest
-      shell: bash
-      run: >
-        vhdltest --validate --simulator nvc
+      - name: Validate VHDLTest
+        shell: bash
+        run: >
+          vhdltest --validate --simulator nvc
 
-    - name: Run
-      working-directory: test/example
-      shell: bash
-      run: |
-        # Run the test
-        bash ./test.sh nvc
+      - name: Run
+        working-directory: test/example
+        shell: bash
+        run: |
+          # Run the test
+          bash ./test.sh nvc

@@ -30,6 +30,11 @@ namespace DEMAConsulting.VHDLTest;
 public static class Validation
 {
     /// <summary>
+    /// Validation folder name
+    /// </summary>
+    private const string ValidationFolder = "validation.tmp";
+    
+    /// <summary>
     ///     Run self-validation
     /// </summary>
     /// <param name="context">Program context</param>
@@ -137,10 +142,10 @@ public static class Validation
         try
         {
             // Create the temporary validation folder
-            Directory.CreateDirectory("validation.tmp");
+            Directory.CreateDirectory(ValidationFolder);
 
             // Extract the validation resources
-            ExtractValidationFiles("validation.tmp");
+            ExtractValidationFiles(ValidationFolder);
 
             // Construct the arguments
             var args = new List<string>([
@@ -152,11 +157,11 @@ public static class Validation
                 args.AddRange(["--simulator", simulator]);
 
             // Run VhdlTest on the validation files
-            var exitCode = RunVhdlTest("validation.tmp", [..args]);
+            var exitCode = RunVhdlTest(ValidationFolder, [..args]);
 
             // Read the output
-            results = File.Exists("validation.tmp/output.log") ? 
-                File.ReadAllText("validation.tmp/output.log") : 
+            results = File.Exists($"{ValidationFolder}/output.log") ? 
+                File.ReadAllText($"{ValidationFolder}/output.log") : 
                 "";
 
             // Return the exit code
@@ -165,7 +170,7 @@ public static class Validation
         finally
         {
             // Delete the validation directory
-            Directory.Delete("validation.tmp", true);
+            Directory.Delete(ValidationFolder, true);
         }
     }
 
