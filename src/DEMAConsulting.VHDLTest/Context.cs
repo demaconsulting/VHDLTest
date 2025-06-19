@@ -267,6 +267,7 @@ public sealed class Context : IDisposable
                     break;
 
                 case "-r":
+                case "--result":
                 case "--results":
                     // Handle results file
                     resultsFile = GetArgument(e, "Missing results file name");
