@@ -55,7 +55,7 @@ public class TestVivadoSimulator
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
         Assert.AreEqual("Compile\nNo Issues", results.Output);
-        Assert.AreEqual(2, results.Lines.Count);
+        Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Compile", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
@@ -79,7 +79,7 @@ public class TestVivadoSimulator
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(1, results.ExitCode);
         Assert.AreEqual("Compile\nError: Compile Error", results.Output);
-        Assert.AreEqual(2, results.Lines.Count);
+        Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Compile", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
@@ -103,7 +103,7 @@ public class TestVivadoSimulator
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
         Assert.AreEqual("Test\nNo Issues", results.Output);
-        Assert.AreEqual(2, results.Lines.Count);
+        Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
@@ -127,7 +127,7 @@ public class TestVivadoSimulator
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
         Assert.AreEqual("Test\nNote: Test Note", results.Output);
-        Assert.AreEqual(2, results.Lines.Count);
+        Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
@@ -151,7 +151,7 @@ public class TestVivadoSimulator
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
         Assert.AreEqual("Test\nWarning: Test Warning", results.Output);
-        Assert.AreEqual(2, results.Lines.Count);
+        Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
@@ -175,7 +175,7 @@ public class TestVivadoSimulator
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(1, results.ExitCode);
         Assert.AreEqual("Test\nError: Test Error", results.Output);
-        Assert.AreEqual(2, results.Lines.Count);
+        Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
