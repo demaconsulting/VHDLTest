@@ -24,19 +24,17 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup dotnet 8
-        uses: actions/setup-dotnet@v4
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8.x
-
-      - uses: nuget/setup-nuget@v2
-        with:
-          nuget-version: '6.x'
+            9.x
+            10.x
 
       - uses: msys2/setup-msys2@v2
         if: inputs.os == 'windows-latest'
@@ -118,7 +116,7 @@ jobs:
           --property:PackageVersion=${{ inputs.version }}
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: artifacts-${{ inputs.os }}
           path: |
