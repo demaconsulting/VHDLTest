@@ -70,10 +70,10 @@ public class TestConfigDocument
 
             // Check the content
             Assert.IsNotNull(config);
-            Assert.AreEqual(2, config.Files.Length);
+            Assert.HasCount(2, config.Files);
             Assert.AreEqual("file1.vhd", config.Files[0]);
             Assert.AreEqual("file2.vhd", config.Files[1]);
-            Assert.AreEqual(2, config.Tests.Length);
+            Assert.HasCount(2, config.Tests);
             Assert.AreEqual("test1", config.Tests[0]);
             Assert.AreEqual("test2", config.Tests[1]);
         }

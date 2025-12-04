@@ -82,10 +82,10 @@ public class TestOptions
 
             // Check the options
             Assert.IsNotNull(options);
-            Assert.AreEqual(2, options.Config.Files.Length);
+            Assert.HasCount(2, options.Config.Files);
             Assert.AreEqual("file1.vhd", options.Config.Files[0]);
             Assert.AreEqual("file2.vhd", options.Config.Files[1]);
-            Assert.AreEqual(2, options.Config.Tests.Length);
+            Assert.HasCount(2, options.Config.Tests);
             Assert.AreEqual("test1", options.Config.Tests[0]);
             Assert.AreEqual("test2", options.Config.Tests[1]);
         }

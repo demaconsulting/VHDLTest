@@ -224,7 +224,7 @@ public class TestContext
         Assert.IsFalse(arguments.ExitZero);
         Assert.IsFalse(arguments.Validate);
         Assert.IsNotNull(arguments.CustomTests);
-        Assert.AreEqual(1, arguments.CustomTests.Count);
+        Assert.HasCount(1, arguments.CustomTests);
         Assert.AreEqual("custom_test", arguments.CustomTests[0]);
     }
 
@@ -246,7 +246,7 @@ public class TestContext
         Assert.IsFalse(arguments.ExitZero);
         Assert.IsFalse(arguments.Validate);
         Assert.IsNotNull(arguments.CustomTests);
-        Assert.AreEqual(2, arguments.CustomTests.Count);
+        Assert.HasCount(2, arguments.CustomTests);
         Assert.AreEqual("custom_test1", arguments.CustomTests[0]);
         Assert.AreEqual("custom_test2", arguments.CustomTests[1]);
     }

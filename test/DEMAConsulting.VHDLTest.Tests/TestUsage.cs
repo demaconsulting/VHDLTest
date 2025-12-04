@@ -42,8 +42,8 @@ public class TestUsage
         Assert.AreNotEqual(0, exitCode);
 
         // Verify usage reported
-        StringAssert.Contains(output, "Error: Missing arguments");
-        StringAssert.Contains(output, "Usage: VHDLTest");
+        Assert.Contains("Error: Missing arguments", output);
+        Assert.Contains("Usage: VHDLTest", output);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class TestUsage
         Assert.AreEqual(0, exitCode);
 
         // Verify usage reported
-        StringAssert.Contains(output, "Usage: VHDLTest");
+        Assert.Contains("Usage: VHDLTest", output);
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class TestUsage
         Assert.AreEqual(0, exitCode);
 
         // Verify usage reported
-        StringAssert.Contains(output, "Usage: VHDLTest");
+        Assert.Contains("Usage: VHDLTest", output);
     }
 
     /// <summary>
@@ -103,6 +103,6 @@ public class TestUsage
         Assert.AreEqual(0, exitCode);
 
         // Verify usage reported
-        StringAssert.Contains(output, "Usage: VHDLTest");
+        Assert.Contains("Usage: VHDLTest", output);
     }
 }

@@ -52,7 +52,7 @@ public partial class TestVersion
         Assert.AreEqual(0, exitCode);
 
         // Verify version reported
-        StringAssert.Matches(output, VersionRegex());
+        Assert.MatchesRegex(VersionRegex(), output);
     }
 
     /// <summary>
@@ -72,6 +72,6 @@ public partial class TestVersion
         Assert.AreEqual(0, exitCode);
 
         // Verify version reported
-        StringAssert.Matches(output, VersionRegex());
+        Assert.MatchesRegex(VersionRegex(), output);
     }
 }

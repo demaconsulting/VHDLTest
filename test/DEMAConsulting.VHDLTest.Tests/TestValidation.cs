@@ -44,7 +44,7 @@ public class TestValidation
         Assert.AreEqual(0, exitCode);
 
         // Verify validation passed
-        StringAssert.Contains(output, "Validation Passed");
+        Assert.Contains("Validation Passed", output);
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class TestValidation
         Assert.AreEqual(0, exitCode);
 
         // Verify validation depth
-        StringAssert.Contains(output, "### DEMAConsulting.VHDLTest");
+        Assert.Contains("### DEMAConsulting.VHDLTest", output);
     }
 
     /// <summary>
@@ -94,9 +94,9 @@ public class TestValidation
 
             // Read the results file.
             var text = File.ReadAllText("validation_results.trx");
-            StringAssert.Contains(text, """<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestPasses" />""");
-            StringAssert.Contains(text, """<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestFails" />""");
-            StringAssert.Contains(text, """<Counters total="2" executed="2" passed="2" failed="0" />""");
+            Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestPasses" />""", text);
+            Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestFails" />""", text);
+            Assert.Contains("""<Counters total="2" executed="2" passed="2" failed="0" />""", text);
         }
         finally
         {
