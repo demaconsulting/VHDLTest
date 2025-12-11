@@ -32,7 +32,7 @@ public sealed class NvcSimulator : Simulator
     /// <summary>
     /// Compile processor
     /// </summary>
-    public static readonly RunProcessor CompileProcessor = new(
+    public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, ".* Note:"),
             RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
@@ -45,7 +45,7 @@ public sealed class NvcSimulator : Simulator
     /// <summary>
     /// Test processor
     /// </summary>
-    public static readonly RunProcessor TestProcessor = new(
+    public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, ".* Note:"),
             RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
@@ -58,7 +58,7 @@ public sealed class NvcSimulator : Simulator
     /// <summary>
     ///     NVC simulator instance
     /// </summary>
-    public static readonly NvcSimulator Instance = new();
+    public static NvcSimulator Instance { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the NVC simulator

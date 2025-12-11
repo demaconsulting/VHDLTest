@@ -32,7 +32,7 @@ public sealed class ModelSimSimulator : Simulator
     /// <summary>
     /// Compile processor
     /// </summary>
-    public static readonly RunProcessor CompileProcessor = new(
+    public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Error, ".*Error: ")
         ]
@@ -41,7 +41,7 @@ public sealed class ModelSimSimulator : Simulator
     /// <summary>
     /// Test processor
     /// </summary>
-    public static readonly RunProcessor TestProcessor = new(
+    public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, ".*Note: "),
             RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
@@ -53,7 +53,7 @@ public sealed class ModelSimSimulator : Simulator
     /// <summary>
     ///     ModelSim simulator instance
     /// </summary>
-    public static readonly ModelSimSimulator Instance = new();
+    public static ModelSimSimulator Instance { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the ModelSim simulator
