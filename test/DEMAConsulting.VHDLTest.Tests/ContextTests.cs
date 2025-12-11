@@ -24,7 +24,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for argument parsing
 /// </summary>
 [TestClass]
-public class TestContext
+public class ContextTests
 {
     /// <summary>
     /// Test parsing arguments with no arguments

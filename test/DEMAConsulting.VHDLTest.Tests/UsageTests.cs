@@ -21,87 +21,88 @@
 namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for validation
+/// Tests for program usage
 /// </summary>
 [TestClass]
-public class TestValidation
+public class UsageTests
 {
     /// <summary>
     /// Test usage information is reported when no arguments are specified
     /// </summary>
     [TestMethod]
-    public void Validation()
+    public void Usage_NoArguments()
+    {
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll");
+
+        // Verify error
+        Assert.AreNotEqual(0, exitCode);
+
+        // Verify usage reported
+        Assert.Contains("Error: Missing arguments", output);
+        Assert.Contains("Usage: VHDLTest", output);
+    }
+
+    /// <summary>
+    /// Test usage information is reported when the '-h' parameter is specified
+    /// </summary>
+    [TestMethod]
+    public void Usage_Short()
     {
         // Run the application
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
-            "--simulator", "mock",
-            "--validate");
+            "-h");
 
-        // Verify success
+        // Verify no error
         Assert.AreEqual(0, exitCode);
 
-        // Verify validation passed
-        Assert.Contains("Validation Passed", output);
+        // Verify usage reported
+        Assert.Contains("Usage: VHDLTest", output);
     }
 
     /// <summary>
-    /// Test usage information is reported when no arguments are specified
+    /// Test usage information is reported when the '-?' parameter is specified
     /// </summary>
     [TestMethod]
-    public void Validation_Depth()
+    public void Usage_QuestionMark()
     {
         // Run the application
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
-            "--simulator", "mock",
-            "--validate",
-            "--depth", "3");
+            "-?");
 
-        // Verify success
+        // Verify no error
         Assert.AreEqual(0, exitCode);
 
-        // Verify validation depth
-        Assert.Contains("### DEMAConsulting.VHDLTest", output);
+        // Verify usage reported
+        Assert.Contains("Usage: VHDLTest", output);
     }
 
     /// <summary>
-    /// Test validation results can be saved to file
+    /// Test usage information is reported when the '--help' parameter is specified
     /// </summary>
     [TestMethod]
-    public void Validation_Results()
+    public void Usage_Long()
     {
-        try
-        {
-            // Run the application
-            var exitCode = Runner.Run(
-                out _,
-                "dotnet",
-                "DEMAConsulting.VHDLTest.dll",
-                "--simulator", "mock",
-                "--validate",
-                "--results", "validation_results.trx");
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--help");
 
-            // Verify success
-            Assert.AreEqual(0, exitCode);
+        // Verify no error
+        Assert.AreEqual(0, exitCode);
 
-            // Verify results file written
-            Assert.IsTrue(File.Exists("validation_results.trx"));
-
-            // Read the results file.
-            var text = File.ReadAllText("validation_results.trx");
-            Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestPasses" />""", text);
-            Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestFails" />""", text);
-            Assert.Contains("""<Counters total="2" executed="2" passed="2" failed="0" />""", text);
-        }
-        finally
-        {
-            // Delete results file
-            File.Delete("validation_results.trx");
-        }
+        // Verify usage reported
+        Assert.Contains("Usage: VHDLTest", output);
     }
 }

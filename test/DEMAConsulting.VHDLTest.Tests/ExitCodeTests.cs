@@ -24,7 +24,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for exit code
 /// </summary>
 [TestClass]
-public class TestExitCode
+public class ExitCodeTests
 {
     /// <summary>
     /// Test non-zero exit code with compile errors

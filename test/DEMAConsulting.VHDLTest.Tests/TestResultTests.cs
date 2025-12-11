@@ -27,7 +27,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for <see cref="Results.TestResult"/> class.
 /// </summary>
 [TestClass]
-public class TestTestResult
+public class TestResultTests
 {
     /// <summary>
     /// Test constructing a test result with info

@@ -26,7 +26,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for <see cref="SimulatorFactory"/> class.
 /// </summary>
 [TestClass]
-public class TestSimulatorFactory
+public class SimulatorFactoryTests
 {
     /// <summary>
     /// Test querying the simulator factory for GHDL

@@ -24,27 +24,27 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for Vivado simulator
+/// Tests for GHDL simulator
 /// </summary>
 [TestClass]
-public class TestVivadoSimulator
+public class GhdlSimulatorTests
 {
     /// <summary>
-    /// Check name of Vivado simulator
+    /// Check name of GHDL simulator
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Name()
+    public void Test_GhdlSimulator_Name()
     {
-        Assert.AreEqual("Vivado", VivadoSimulator.Instance.SimulatorName);
+        Assert.AreEqual("GHDL", GhdlSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
-    /// Test Vivado simulator compile with clean output
+    /// Test GHDL simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Compile_Clean()
+    public void Test_GhdlSimulator_Compile_Clean()
     {
-        var results = VivadoSimulator.CompileProcessor.Parse(
+        var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nNo Issues",
@@ -63,36 +63,60 @@ public class TestVivadoSimulator
     }
 
     /// <summary>
-    /// Test Vivado simulator compile with an error message
+    /// Test GHDL simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Compile_Error()
+    public void Test_GhdlSimulator_Compile_Warning()
     {
-        var results = VivadoSimulator.CompileProcessor.Parse(
+        var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Compile\nError: Compile Error",
+            "Compile\nCompile:1:1:warning: Compile Warning",
+            0);
+
+        Assert.AreEqual(RunLineType.Warning, results.Summary);
+        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.AreEqual(5.0, results.Duration, 0.1);
+        Assert.AreEqual(0, results.ExitCode);
+        Assert.AreEqual("Compile\nCompile:1:1:warning: Compile Warning", results.Output);
+        Assert.HasCount(2, results.Lines);
+        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
+        Assert.AreEqual("Compile", results.Lines[0].Text);
+        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
+        Assert.AreEqual("Compile:1:1:warning: Compile Warning", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator compile with an error message
+    /// </summary>
+    [TestMethod]
+    public void Test_GhdlSimulator_Compile_Error()
+    {
+        var results = GhdlSimulator.CompileProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Compile\nCompile:error: Compile Error",
             1);
 
         Assert.AreEqual(RunLineType.Error, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nError: Compile Error", results.Output);
+        Assert.AreEqual("Compile\nCompile:error: Compile Error", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Compile", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Error: Compile Error", results.Lines[1].Text);
+        Assert.AreEqual("Compile:error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test Vivado simulator test with clean output
+    /// Test GHDL simulator test with clean output
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Test_Clean()
+    public void Test_GhdlSimulator_Test_Clean()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNo Issues",
@@ -111,74 +135,74 @@ public class TestVivadoSimulator
     }
 
     /// <summary>
-    /// Test Vivado simulator test with an info message
+    /// Test GHDL simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Test_Info()
+    public void Test_GhdlSimulator_Test_Info()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Test\nNote: Test Note",
+            "Test\nTest:(report note): Test Note",
             0);
 
         Assert.AreEqual(RunLineType.Info, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNote: Test Note", results.Output);
+        Assert.AreEqual("Test\nTest:(report note): Test Note", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Note: Test Note", results.Lines[1].Text);
+        Assert.AreEqual("Test:(report note): Test Note", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test Vivado simulator test with a warning message
+    /// Test GHDL simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Test_Warning()
+    public void Test_GhdlSimulator_Test_Warning()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Test\nWarning: Test Warning",
+            "Test\nTest:(report warning): Test Warning",
             0);
 
         Assert.AreEqual(RunLineType.Warning, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nWarning: Test Warning", results.Output);
+        Assert.AreEqual("Test\nTest:(report warning): Test Warning", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Warning: Test Warning", results.Lines[1].Text);
+        Assert.AreEqual("Test:(report warning): Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test Vivado simulator test with an error message
+    /// Test GHDL simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void Test_VivadoSimulator_Test_Error()
+    public void Test_GhdlSimulator_Test_Error()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Test\nError: Test Error",
+            "Test\nTest:(report error): Test Error",
             1);
 
         Assert.AreEqual(RunLineType.Error, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nError: Test Error", results.Output);
+        Assert.AreEqual("Test\nTest:(report error): Test Error", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Error: Test Error", results.Lines[1].Text);
+        Assert.AreEqual("Test:(report error): Test Error", results.Lines[1].Text);
     }
 }
