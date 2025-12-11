@@ -32,7 +32,7 @@ public sealed class MockSimulator : Simulator
     /// <summary>
     /// Compile processor
     /// </summary>
-    public static readonly RunProcessor CompileProcessor = new(
+    public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, "Info:"),
             RunLineRule.Create(RunLineType.Warning, "Warning:"),
@@ -43,7 +43,7 @@ public sealed class MockSimulator : Simulator
     /// <summary>
     /// Test processor
     /// </summary>
-    public static readonly RunProcessor TestProcessor = new(
+    public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, "Info:"),
             RunLineRule.Create(RunLineType.Warning, "Warning:"),
@@ -55,7 +55,7 @@ public sealed class MockSimulator : Simulator
     /// <summary>
     ///     Mock simulator instance
     /// </summary>
-    public static readonly MockSimulator Instance = new();
+    public static MockSimulator Instance { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the Mock simulator

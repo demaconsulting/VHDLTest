@@ -32,7 +32,7 @@ public static class Program
     /// <summary>
     ///     Gets the version of this programs assembly
     /// </summary>
-    public static readonly string Version =
+    public static string Version { get; } =
         typeof(Program).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion ?? "Unknown";

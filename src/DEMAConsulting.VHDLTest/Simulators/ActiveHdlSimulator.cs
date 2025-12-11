@@ -37,7 +37,7 @@ public sealed class ActiveHdlSimulator : Simulator
     /// <summary>
     /// Compile processor
     /// </summary>
-    public static readonly RunProcessor CompileProcessor = new(
+    public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
             RunLineRule.Create(RunLineType.Error, "Error:"),
@@ -48,7 +48,7 @@ public sealed class ActiveHdlSimulator : Simulator
     /// <summary>
     /// Test processor
     /// </summary>
-    public static readonly RunProcessor TestProcessor = new(
+    public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
             RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
@@ -67,7 +67,7 @@ public sealed class ActiveHdlSimulator : Simulator
     /// <summary>
     ///     Active-HDL simulator instance
     /// </summary>
-    public static readonly ActiveHdlSimulator Instance = new();
+    public static ActiveHdlSimulator Instance { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the ActiveHdl simulator

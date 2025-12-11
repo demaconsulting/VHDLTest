@@ -32,7 +32,7 @@ public sealed class GhdlSimulator : Simulator
     /// <summary>
     /// Compile processor
     /// </summary>
-    public static readonly RunProcessor CompileProcessor = new(
+    public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
             RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
@@ -44,7 +44,7 @@ public sealed class GhdlSimulator : Simulator
     /// <summary>
     /// Test processor
     /// </summary>
-    public static readonly RunProcessor TestProcessor = new(
+    public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
             RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
@@ -61,7 +61,7 @@ public sealed class GhdlSimulator : Simulator
     /// <summary>
     ///     GHDL simulator instance
     /// </summary>
-    public static readonly GhdlSimulator Instance = new();
+    public static GhdlSimulator Instance { get; } = new();
 
     /// <summary>
     ///     Initializes a new instance of the GHDL simulator
