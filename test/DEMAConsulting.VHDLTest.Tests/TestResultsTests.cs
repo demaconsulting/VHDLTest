@@ -29,7 +29,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for <see cref="Results.TestResults"/> class.
 /// </summary>
 [TestClass]
-public class TestTestResults
+public class TestResultsTests
 {
     /// <summary>
     /// Test saving test results to a TRX file.

@@ -27,7 +27,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for ModelSim simulator
 /// </summary>
 [TestClass]
-public class TestModelSimSimulator
+public class ModelSimSimulatorTests
 {
     /// <summary>
     /// Check name of GHDL simulator

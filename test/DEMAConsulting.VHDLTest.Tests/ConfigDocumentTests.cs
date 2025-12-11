@@ -24,7 +24,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for configuration documents
 /// </summary>
 [TestClass]
-public class TestConfigDocument
+public class ConfigDocumentTests
 {
     /// <summary>
     /// Configuration file name

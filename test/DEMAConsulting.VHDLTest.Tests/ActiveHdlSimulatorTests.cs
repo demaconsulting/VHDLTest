@@ -24,27 +24,27 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for NVC simulator
+/// Tests for the ActiveHDL simulator
 /// </summary>
 [TestClass]
-public class TestNvcSimulator
+public class ActiveHdlSimulatorTests
 {
     /// <summary>
-    /// Check name of NVC simulator
+    /// Check name of ActiveHDL simulator name
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Name()
+    public void Test_ActiveHdlSimulator_Name()
     {
-        Assert.AreEqual("NVC", NvcSimulator.Instance.SimulatorName);
+        Assert.AreEqual("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
-    /// Test NVC simulator compile with clean output
+    /// Test ActiveHDL simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Clean()
+    public void Test_ActiveHdlSimulator_Compile_Clean()
     {
-        var results = NvcSimulator.CompileProcessor.Parse(
+        var results = ActiveHdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nNo Issues",
@@ -63,84 +63,60 @@ public class TestNvcSimulator
     }
 
     /// <summary>
-    /// Test NVC simulator compile with an info message
+    /// Test ActiveHDL simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Info()
+    public void Test_ActiveHdlSimulator_Compile_Warning()
     {
-        var results = NvcSimulator.CompileProcessor.Parse(
+        var results = ActiveHdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Compile\nCompile Note: Compile Note",
-            0);
-
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile Note: Compile Note", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Compile Note: Compile Note", results.Lines[1].Text);
-    }
-
-    /// <summary>
-    /// Test NVC simulator compile with a warning message
-    /// </summary>
-    [TestMethod]
-    public void Test_NvcSimulator_Compile_Warning()
-    {
-        var results = NvcSimulator.CompileProcessor.Parse(
-            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
-            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Compile\nCompile Warning: Compile Warning",
+            "Compile\nKERNEL: Warning: Compile Warning",
             0);
 
         Assert.AreEqual(RunLineType.Warning, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile Warning: Compile Warning", results.Output);
+        Assert.AreEqual("Compile\nKERNEL: Warning: Compile Warning", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Compile", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Compile Warning: Compile Warning", results.Lines[1].Text);
+        Assert.AreEqual("KERNEL: Warning: Compile Warning", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test NVC simulator compile with an error message
+    /// Test ActiveHDL simulator compile with an error message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Error()
+    public void Test_ActiveHdlSimulator_Compile_Error()
     {
-        var results = NvcSimulator.CompileProcessor.Parse(
+        var results = ActiveHdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Compile\nCompile Error: Compile Error",
+            "Compile\nKERNEL: Fatal Error: Compile Error",
             1);
 
         Assert.AreEqual(RunLineType.Error, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile Error: Compile Error", results.Output);
+        Assert.AreEqual("Compile\nKERNEL: Fatal Error: Compile Error", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Compile", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Compile Error: Compile Error", results.Lines[1].Text);
+        Assert.AreEqual("KERNEL: Fatal Error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test NVC simulator test with clean output
+    /// T
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Clean()
+    public void Test_ActiveHdlSimulator_Test_Clean()
     {
-        var results = NvcSimulator.TestProcessor.Parse(
+        var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNo Issues",
@@ -159,74 +135,74 @@ public class TestNvcSimulator
     }
 
     /// <summary>
-    /// Test NVC simulator test with an info message
+    /// Test ActiveHDL simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Info()
+    public void Test_ActiveHdlSimulator_Test_Info()
     {
-        var results = NvcSimulator.TestProcessor.Parse(
+        var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Test\nTest Note: Test Note",
+            "Test\nEXECUTION:: NOTE Test Note",
             0);
 
         Assert.AreEqual(RunLineType.Info, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nTest Note: Test Note", results.Output);
+        Assert.AreEqual("Test\nEXECUTION:: NOTE Test Note", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Test Note: Test Note", results.Lines[1].Text);
+        Assert.AreEqual("EXECUTION:: NOTE Test Note", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test NVC simulator test with a warning message
+    /// Test ActiveHDL simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Warning()
+    public void Test_ActiveHdlSimulator_Test_Warning()
     {
-        var results = NvcSimulator.TestProcessor.Parse(
+        var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Test\nTest Warning: Test Warning",
+            "Test\nEXECUTION:: WARNING Test Warning",
             0);
 
         Assert.AreEqual(RunLineType.Warning, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nTest Warning: Test Warning", results.Output);
+        Assert.AreEqual("Test\nEXECUTION:: WARNING Test Warning", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Test Warning: Test Warning", results.Lines[1].Text);
+        Assert.AreEqual("EXECUTION:: WARNING Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
-    /// Test NVC simulator test with an error message
+    /// Test ActiveHDL simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Error()
+    public void Test_ActiveHdlSimulator_Test_Error()
     {
-        var results = NvcSimulator.TestProcessor.Parse(
+        var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
-            "Test\nTest Error: Test Error",
+            "Test\nEXECUTION:: ERROR Test Error",
             1);
 
         Assert.AreEqual(RunLineType.Error, results.Summary);
         Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.AreEqual(5.0, results.Duration, 0.1);
         Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nTest Error: Test Error", results.Output);
+        Assert.AreEqual("Test\nEXECUTION:: ERROR Test Error", results.Output);
         Assert.HasCount(2, results.Lines);
         Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
         Assert.AreEqual("Test", results.Lines[0].Text);
         Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Test Error: Test Error", results.Lines[1].Text);
+        Assert.AreEqual("EXECUTION:: ERROR Test Error", results.Lines[1].Text);
     }
 }

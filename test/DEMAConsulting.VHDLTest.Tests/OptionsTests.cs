@@ -24,7 +24,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for parsing options
 /// </summary>
 [TestClass]
-public class TestOptions
+public class OptionsTests
 {
     /// <summary>
     /// Configuration file name

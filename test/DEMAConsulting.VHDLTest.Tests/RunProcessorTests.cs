@@ -26,7 +26,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for <see cref="RunProcessor"/> class.
 /// </summary>
 [TestClass]
-public class TestRunProcessor
+public class RunProcessorTests
 {
     /// <summary>
     /// Test running a missing program.

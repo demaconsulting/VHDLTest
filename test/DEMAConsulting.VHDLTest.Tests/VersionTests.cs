@@ -26,7 +26,7 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// Tests for program version
 /// </summary>
 [TestClass]
-public partial class TestVersion
+public partial class VersionTests
 {
     /// <summary>
     /// Regular expression to check for version
