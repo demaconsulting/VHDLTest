@@ -106,7 +106,7 @@ public class ValidationTests
     }
 
     /// <summary>
-    /// Test validation output contains OS information
+    /// Test validation output contains OS Version field in the information table
     /// </summary>
     [TestMethod]
     public void Validation_OSVersion()
