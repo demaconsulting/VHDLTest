@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 
@@ -49,7 +50,7 @@ public static class Validation
              | :------------------ | :------------------------------------------------- |
              | VHDLTest Version    | {Program.Version,-50} |
              | Machine Name        | {Environment.MachineName,-50} |
-             | OS Version          | {Environment.OSVersion.VersionString,-50} |
+             | OS Version          | {RuntimeInformation.OSDescription,-50} |
              | DotNet Runtime      | {Environment.Version,-50} |
              | Time Stamp          | {DateTime.UtcNow,-50:u} |
 
