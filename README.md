@@ -130,3 +130,23 @@ Validation Passed
 On validation failure the tool will exit with a non-zero exit code.
 
 This report may be useful in regulated industries requiring evidence of tool validation.
+
+
+## Code Quality
+
+This project maintains high code quality standards through:
+
+* **Static Analysis**: StyleCop.Analyzers and Microsoft.CodeAnalysis.NetAnalyzers provide comprehensive code analysis
+* **Code Coverage**: Coverlet tracks test coverage during builds
+* **SonarCloud**: Continuous code quality and security analysis
+* **EditorConfig**: Consistent code formatting across all editors
+* **Centralized Configuration**: `Directory.Build.props` ensures consistent build settings
+
+### For Contributors
+
+The project includes:
+* `.editorconfig` - Formatting rules for all editors
+* `VHDLTest.ruleset` - Code analysis rule configuration
+* `stylecop.json` - StyleCop analyzer settings
+
+Build with `dotnet build` to see code quality feedback. Many rules are informational to guide improvements without blocking development.

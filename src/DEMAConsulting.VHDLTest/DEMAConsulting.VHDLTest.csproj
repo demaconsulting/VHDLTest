@@ -5,8 +5,7 @@
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Nullable, TreatWarningsAsErrors, and GenerateDocumentationFile are now in Directory.Build.props -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>vhdl</PackageTags>
     <PackAsTool>True</PackAsTool>
@@ -22,7 +21,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageId>DemaConsulting.VHDLTest</PackageId>
     <Product>DemaConsulting.VHDLTest</Product>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>

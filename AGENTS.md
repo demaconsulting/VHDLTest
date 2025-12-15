@@ -64,6 +64,38 @@ Use these commands to perform common development tasks:
 * Use nullable reference types (`#nullable enable`).
 * Warnings are treated as errors (`<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`).
 * Avoid public fields; prefer properties.
+* Follow the formatting guidelines in `.editorconfig`.
+* Private fields should be prefixed with underscore (`_fieldName`).
+
+
+## Code Quality and Analysis
+
+The project uses several tools to maintain code quality:
+
+* **EditorConfig** (`.editorconfig`): Defines consistent coding styles across editors and IDEs.
+* **StyleCop.Analyzers**: Enforces C# style and consistency rules.
+* **Microsoft.CodeAnalysis.NetAnalyzers**: Provides additional static analysis for performance, security, and reliability.
+* **Directory.Build.props**: Centralizes build configuration and analyzer settings across all projects.
+* **VHDLTest.ruleset**: Configures which analyzer rules are enforced as errors, warnings, or informational messages.
+* **stylecop.json**: Customizes StyleCop analyzer behavior.
+
+### Running Code Analysis
+
+Code analysis runs automatically during build:
+
+```bash
+dotnet build
+```
+
+Many code quality issues are reported as informational messages to guide improvements without blocking the build. Critical issues are reported as errors.
+
+### Quality Tools in CI/CD
+
+The CI/CD pipeline includes:
+* SonarCloud analysis for code quality metrics
+* Code coverage reporting with Coverlet
+* SBOM (Software Bill of Materials) generation
+* Security scanning
 
 
 ## Boundaries and Guardrails
