@@ -20,5 +20,5 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-// Enable test parallelization at class level
-[assembly: Parallelize(Scope = ExecutionScope.ClassLevel)]
+// Disable test parallelization to prevent file collisions
+[assembly: DoNotParallelize]

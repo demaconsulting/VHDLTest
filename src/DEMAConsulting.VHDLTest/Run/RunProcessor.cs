@@ -84,9 +84,12 @@ public class RunProcessor(RunLineRule[] rules)
 
         // Calculate the summary type
         var summary = exitCode != 0 ? RunLineType.Error : RunLineType.Text;
-        foreach (var type in lines.Select(line => line.Type))
-            if (type > summary)
-                summary = type;
+        if (lines.Length > 0)
+        {
+            var maxLineType = lines.Max(line => line.Type);
+            if (maxLineType > summary)
+                summary = maxLineType;
+        }
 
         return new RunResults(
             summary,
