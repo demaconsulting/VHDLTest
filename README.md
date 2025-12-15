@@ -1,12 +1,13 @@
 # VHDLTest Tool
 
-![GitHub forks](https://img.shields.io/github/forks/demaconsulting/VHDLTest?style=plastic)
-![GitHub Repo stars](https://img.shields.io/github/stars/demaconsulting/VHDLTest?style=plastic)
-![GitHub contributors](https://img.shields.io/github/contributors/demaconsulting/VHDLTest?style=plastic)
-![GitHub](https://img.shields.io/github/license/demaconsulting/VHDLTest?style=plastic)
-![Build](https://github.com/demaconsulting/VHDLTest/actions/workflows/build_on_push.yaml/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest)
+[![NuGet][nuget-badge]][nuget-url]
+![GitHub forks][github-forks-badge]
+![GitHub Repo stars][github-stars-badge]
+![GitHub contributors][github-contributors-badge]
+![GitHub][github-license-badge]
+![Build][github-build-badge]
+[![Quality Gate Status][sonarcloud-quality-badge]][sonarcloud-quality-url]
+[![Security Rating][sonarcloud-security-badge]][sonarcloud-security-url]
 
 This tool runs VHDL test benches and generates standard test results files.
 
@@ -47,11 +48,11 @@ Options:
 
 The current list of supported simulators are:
 
-* [GHDL](https://github.com/ghdl/ghdl)
-* [ModelSim](https://eda.sw.siemens.com/en-US/ic/modelsim/)
-* [Vivado](https://www.xilinx.com/products/design-tools/vivado.html)
-* [ActiveHDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl)
-* [NVC](https://www.nickg.me.uk/nvc)
+* [GHDL][ghdl-url]
+* [ModelSim][modelsim-url]
+* [Vivado][vivado-url]
+* [ActiveHDL][activehdl-url]
+* [NVC][nvc-url]
 
 ## Configuration
 
@@ -147,3 +148,32 @@ The project includes:
 * `.markdownlint.json` - Markdown linting rules
 
 Build with `dotnet build` to see code quality feedback.
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines][contributing-url] for details on how to submit
+pull requests, report issues, and contribute to the project.
+
+## Code of Conduct
+
+This project adheres to a [Code of Conduct][code-of-conduct-url] to ensure a welcoming environment for all contributors.
+
+<!-- Link References -->
+[nuget-badge]: https://img.shields.io/nuget/v/DemaConsulting.VHDLTest?style=plastic
+[nuget-url]: https://www.nuget.org/packages/DemaConsulting.VHDLTest
+[github-forks-badge]: https://img.shields.io/github/forks/demaconsulting/VHDLTest?style=plastic
+[github-stars-badge]: https://img.shields.io/github/stars/demaconsulting/VHDLTest?style=plastic
+[github-contributors-badge]: https://img.shields.io/github/contributors/demaconsulting/VHDLTest?style=plastic
+[github-license-badge]: https://img.shields.io/github/license/demaconsulting/VHDLTest?style=plastic
+[github-build-badge]: https://github.com/demaconsulting/VHDLTest/actions/workflows/build_on_push.yaml/badge.svg
+[sonarcloud-quality-badge]: https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=alert_status
+[sonarcloud-quality-url]: https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest
+[sonarcloud-security-badge]: https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=security_rating
+[sonarcloud-security-url]: https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest
+[ghdl-url]: https://github.com/ghdl/ghdl
+[modelsim-url]: https://eda.sw.siemens.com/en-US/ic/modelsim/
+[vivado-url]: https://www.xilinx.com/products/design-tools/vivado.html
+[activehdl-url]: https://www.aldec.com/en/products/fpga_simulation/active-hdl
+[nvc-url]: https://www.nickg.me.uk/nvc
+[contributing-url]: https://github.com/demaconsulting/VHDLTest/blob/main/CONTRIBUTING.md
+[code-of-conduct-url]: https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md
