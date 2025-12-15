@@ -136,17 +136,20 @@ This report may be useful in regulated industries requiring evidence of tool val
 
 This project maintains high code quality standards through:
 
-* **Static Analysis**: StyleCop.Analyzers and Microsoft.CodeAnalysis.NetAnalyzers provide comprehensive code analysis
+* **Static Analysis**: Microsoft.CodeAnalysis.NetAnalyzers provides comprehensive code analysis
 * **Code Coverage**: Coverlet tracks test coverage during builds
 * **SonarCloud**: Continuous code quality and security analysis
 * **EditorConfig**: Consistent code formatting across all editors
-* **Centralized Configuration**: `Directory.Build.props` ensures consistent build settings
+* **Spell Checking**: cspell configuration for documentation quality
+* **Markdown Linting**: markdownlint for consistent documentation formatting
+* **Automated Checks**: Quality checks workflow with spell checking and markdown linting
+* **Dependency Management**: Dependabot for weekly dependency updates
 
 ### For Contributors
 
 The project includes:
 * `.editorconfig` - Formatting rules for all editors
-* `VHDLTest.ruleset` - Code analysis rule configuration
-* `stylecop.json` - StyleCop analyzer settings
+* `.cspell.json` - Spell checking configuration
+* `.markdownlint.json` - Markdown linting rules
 
-Build with `dotnet build` to see code quality feedback. Many rules are informational to guide improvements without blocking development.
+Build with `dotnet build` to see code quality feedback.

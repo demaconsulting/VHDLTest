@@ -56,10 +56,9 @@ The project includes an `.editorconfig` file that configures code formatting rul
 
 The project uses:
 
-* **StyleCop.Analyzers** - Enforces C# style guidelines
 * **Microsoft.CodeAnalysis.NetAnalyzers** - Provides performance, security, and reliability analysis
 
-Run `dotnet build` to see analyzer feedback. Many rules are informational and won't block the build, but following them improves code quality.
+Run `dotnet build` to see analyzer feedback.
 
 ### Testing
 

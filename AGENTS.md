@@ -73,11 +73,9 @@ Use these commands to perform common development tasks:
 The project uses several tools to maintain code quality:
 
 * **EditorConfig** (`.editorconfig`): Defines consistent coding styles across editors and IDEs.
-* **StyleCop.Analyzers**: Enforces C# style and consistency rules.
-* **Microsoft.CodeAnalysis.NetAnalyzers**: Provides additional static analysis for performance, security, and reliability.
-* **Directory.Build.props**: Centralizes build configuration and analyzer settings across all projects.
-* **VHDLTest.ruleset**: Configures which analyzer rules are enforced as errors, warnings, or informational messages.
-* **stylecop.json**: Customizes StyleCop analyzer behavior.
+* **Microsoft.CodeAnalysis.NetAnalyzers**: Provides static analysis for performance, security, and reliability.
+* **.cspell.json**: Spell checking configuration with project-specific dictionary.
+* **.markdownlint.json**: Markdown linting rules configuration.
 
 ### Running Code Analysis
 
@@ -87,15 +85,15 @@ Code analysis runs automatically during build:
 dotnet build
 ```
 
-Many code quality issues are reported as informational messages to guide improvements without blocking the build. Critical issues are reported as errors.
-
 ### Quality Tools in CI/CD
 
 The CI/CD pipeline includes:
+* Quality Checks (spell checking, markdown linting)
 * SonarCloud analysis for code quality metrics
 * Code coverage reporting with Coverlet
 * SBOM (Software Bill of Materials) generation
 * Security scanning
+* Dependabot for weekly dependency updates
 
 
 ## Boundaries and Guardrails
