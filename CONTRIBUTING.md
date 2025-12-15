@@ -1,6 +1,7 @@
 # Contributing to VHDLTest
 
-Thank you for your interest in contributing to VHDLTest! This document provides guidelines and information to help you contribute effectively.
+Thank you for your interest in contributing to VHDLTest! This document provides guidelines and information to help you
+contribute effectively.
 
 ## Getting Started
 
@@ -45,7 +46,8 @@ This project maintains high code quality through automated analysis and testing.
 
 ### EditorConfig
 
-The project includes an `.editorconfig` file that configures code formatting rules. Most modern editors will automatically apply these rules. Key settings include:
+The project includes an `.editorconfig` file that configures code formatting rules. Most modern editors will
+automatically apply these rules. Key settings include:
 
 * Indent with 4 spaces
 * Use CRLF line endings on Windows, LF on Unix
@@ -81,7 +83,7 @@ Run `dotnet build` to see analyzer feedback.
 
 Use clear, descriptive commit messages:
 
-```
+```text
 Add support for additional VHDL simulators
 
 - Implement XYZ simulator interface

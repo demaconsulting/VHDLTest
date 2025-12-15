@@ -4,7 +4,8 @@ This document provides an overview of the VHDLTest tool architecture, design dec
 
 ## Overview
 
-VHDLTest is a command-line tool written in C# that executes VHDL test benches using various HDL simulators and generates standardized test reports. The tool follows a modular architecture with clear separation of concerns.
+VHDLTest is a command-line tool written in C# that executes VHDL test benches using various HDL simulators and
+generates standardized test reports. The tool follows a modular architecture with clear separation of concerns.
 
 ## Design Goals
 
@@ -19,6 +20,7 @@ VHDLTest is a command-line tool written in C# that executes VHDL test benches us
 ### 1. Entry Point (`Program.cs`)
 
 The main entry point handles:
+
 - Command-line argument parsing
 - Exception handling and error reporting
 - Version information display
@@ -27,6 +29,7 @@ The main entry point handles:
 ### 2. Context (`Context.cs`)
 
 The Context class manages:
+
 - Parsed command-line arguments
 - Output configuration (silent, verbose, logging)
 - Exit code management
@@ -35,11 +38,13 @@ The Context class manages:
 ### 3. Configuration (`ConfigDocument.cs`, `Options.cs`)
 
 Configuration management includes:
+
 - YAML configuration file parsing using YamlDotNet
 - Working directory resolution
 - File and test bench enumeration
 
 Configuration file format:
+
 ```yaml
 files:
   - source1.vhd
@@ -55,10 +60,12 @@ tests:
 The simulator layer provides a common interface for HDL simulators:
 
 #### Base Classes
+
 - **`Simulator`**: Abstract base class defining the compile/test interface
 - **`SimulatorFactory`**: Factory for creating simulator instances
 
 #### Concrete Simulators
+
 - **`GhdlSimulator`**: GHDL (open-source VHDL simulator)
 - **`ModelSimSimulator`**: ModelSim (Mentor Graphics)
 - **`VivadoSimulator`**: Vivado Simulator (Xilinx)
@@ -67,6 +74,7 @@ The simulator layer provides a common interface for HDL simulators:
 - **`MockSimulator`**: Mock for testing purposes
 
 Each simulator implementation:
+
 1. Generates appropriate compilation scripts
 2. Executes the simulator
 3. Parses simulator output
@@ -77,6 +85,7 @@ Each simulator implementation:
 The test execution layer processes simulator output:
 
 #### Components
+
 - **`RunProgram`**: Executes external processes (simulators)
 - **`RunProcessor`**: Parses simulator output using configurable rules
 - **`RunLineRule`**: Defines patterns for parsing output lines
@@ -84,7 +93,9 @@ The test execution layer processes simulator output:
 - **`RunResults`**: Aggregates execution results
 
 #### Output Classification
+
 Lines are classified as:
+
 - **Info**: General information
 - **Report**: Test status messages
 - **Warning**: Non-fatal issues
@@ -104,6 +115,7 @@ Test results are managed and reported through:
 ### 7. Validation (`Validation.cs`)
 
 Self-validation capabilities for regulated industries:
+
 - Embedded test resources
 - Version information reporting
 - Environment information capture
@@ -112,15 +124,19 @@ Self-validation capabilities for regulated industries:
 ## Key Design Patterns
 
 ### Factory Pattern
+
 `SimulatorFactory` creates simulator instances based on name or environment detection.
 
 ### Strategy Pattern
+
 Each simulator implementation provides a different strategy for compilation and testing.
 
 ### Template Method Pattern
+
 `Simulator` base class defines the overall workflow while concrete implementations provide specific steps.
 
 ### Builder Pattern
+
 Simulators build command scripts dynamically based on configuration.
 
 ## Data Flow
@@ -152,6 +168,7 @@ Simulators build command scripts dynamically based on configuration.
 ## Environment Variables
 
 Simulators are located using environment variables:
+
 - `VHDLTEST_GHDL_PATH`: Path to GHDL installation
 - `VHDLTEST_MODELSIM_PATH`: Path to ModelSim installation
 - `VHDLTEST_VIVADO_PATH`: Path to Vivado installation
@@ -188,6 +205,7 @@ Extend `RunLineRule` with new patterns for simulator-specific output formats.
 ## Build and Deployment
 
 The tool is distributed as a .NET tool package:
+
 - NuGet package: `DemaConsulting.VHDLTest`
 - Command name: `vhdltest`
 - Cross-platform support via .NET runtime

@@ -10,26 +10,24 @@
 
 This tool runs VHDL test benches and generates standard test results files.
 
-
 ## Installation
 
 The following will add VHDLTest to a Dotnet tool manifest file:
 
-```
+```bash
 dotnet new tool-manifest # if you are setting up this repo
 dotnet tool install --local DEMAConsulting.VHDLTest
 ```
 
 The tool can then be executed by:
 
-```
+```bash
 dotnet vhdltest <arguments>
 ```
 
-
 ## Options
 
-```
+```text
 Usage: VHDLTest [options] [tests]
 
 Options:
@@ -45,7 +43,6 @@ Options:
   --                           End of options
 ```
 
-
 ## Supported Simulators
 
 The current list of supported simulators are:
@@ -55,7 +52,6 @@ The current list of supported simulators are:
 * [Vivado](https://www.xilinx.com/products/design-tools/vivado.html)
 * [ActiveHDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl)
 * [NVC](https://www.nickg.me.uk/nvc)
-
 
 ## Configuration
 
@@ -79,36 +75,34 @@ tests:
  - half_adder_fail_tb
 ```
 
-
 ## Running Tests
 
 Before running the tests, it may be necessary to configure where the simulators are installed.
 This can be done through environment variables:
+
 * VHDLTEST_GHDL_PATH = path to GHDL folder
 * VHDLTEST_MODELSIM_PATH = path to ModelSim folder
 * VHDLTEST_VIVADO_PATH = path to Vivado folder
 * VHDLTEST_ACTIVEHDL_PATH = path to ActiveHDL folder
 * VHDLTEST_NVC_PATH = path to NVC folder
 
-
 To run the tests, execute VHDLTest with the name of the configuration file.
 
-```
+```bash
 dotnet VHDLTest --config test_suite.yaml
 ```
 
 A test results file can be generated when working in CI environments.
 
-```
+```bash
 dotnet VHDLTest --config test_suite.yaml --results test_results.trx
 ```
-
 
 ## Self Validation
 
 Running self-validation produces a report containing the following information:
 
-```
+```text
 # DEMAConsulting.VHDLTest
 
 | Information         | Value                                              |
@@ -131,7 +125,6 @@ On validation failure the tool will exit with a non-zero exit code.
 
 This report may be useful in regulated industries requiring evidence of tool validation.
 
-
 ## Code Quality
 
 This project maintains high code quality standards through:
@@ -148,6 +141,7 @@ This project maintains high code quality standards through:
 ### For Contributors
 
 The project includes:
+
 * `.editorconfig` - Formatting rules for all editors
 * `.cspell.json` - Spell checking configuration
 * `.markdownlint.json` - Markdown linting rules

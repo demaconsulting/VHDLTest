@@ -3,11 +3,9 @@
 This file provides specific context and instructions for AI coding agents to
 interact effectively with this C# project.
 
-
 ## Project Overview
 
 VHDLTest is a C# .NET tool for running VHDL unit tests and generating test reports.
-
 
 ## Technologies and Dependencies
 
@@ -15,7 +13,6 @@ VHDLTest is a C# .NET tool for running VHDL unit tests and generating test repor
 * **.NET Frameworks**: .NET 8, 9, and 10
 * **Primary Dependencies**: [YamlDotNet]
 * **HDL Simulators**: [GHDL, ModelSim, Vivado, ActiveHDL, NVC]
-
 
 ## Project Structure
 
@@ -28,26 +25,27 @@ The repository is organized as follows:
 * `/test/example/`: Contains example VHDL modules and unit tests.
 * `/DEMAConsulting.VHDLTest.sln`: The main Visual Studio solution file.
 
-
 ## Development Commands
 
 Use these commands to perform common development tasks:
 
 * **Restore DotNet Tools**:
+
   ```bash
   dotnet tool restore
   ```
 
 * **Build the Project**:
+
   ```bash
   dotnet build
   ```
 
 * **Run All Tests**:
+
   ```bash
   dotnet test
   ```
-
 
 ## Testing Guidelines
 
@@ -57,16 +55,14 @@ Use these commands to perform common development tasks:
 * The build must pass all tests and static analysis warnings before merging.
 * Tests should be written using the AAA (Arrange, Act, Assert) pattern.
 
-
 ## Code Style and Conventions
 
 * Follow standard C# naming conventions (PascalCase for classes/methods/properties, camelCase for local variables).
-* Use nullable reference types (`#nullable enable`).
+* Use nullable reference types (`<Nullable>enable</Nullable>` in csproj files).
 * Warnings are treated as errors (`<TreatWarningsAsErrors>true</TreatWarningsAsErrors>`).
 * Avoid public fields; prefer properties.
 * Follow the formatting guidelines in `.editorconfig`.
 * Private fields should be prefixed with underscore (`_fieldName`).
-
 
 ## Code Quality and Analysis
 
@@ -88,13 +84,13 @@ dotnet build
 ### Quality Tools in CI/CD
 
 The CI/CD pipeline includes:
+
 * Quality Checks (spell checking, markdown linting)
 * SonarCloud analysis for code quality metrics
 * Code coverage reporting with Coverlet
 * SBOM (Software Bill of Materials) generation
 * Security scanning
 * Dependabot for weekly dependency updates
-
 
 ## Boundaries and Guardrails
 
