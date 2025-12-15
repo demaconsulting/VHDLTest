@@ -1,6 +1,5 @@
 # VHDLTest Tool
 
-[![NuGet][nuget-badge]][nuget-url]
 ![GitHub forks][github-forks-badge]
 ![GitHub Repo stars][github-stars-badge]
 ![GitHub contributors][github-contributors-badge]
@@ -8,6 +7,7 @@
 ![Build][github-build-badge]
 [![Quality Gate Status][sonarcloud-quality-badge]][sonarcloud-quality-url]
 [![Security Rating][sonarcloud-security-badge]][sonarcloud-security-url]
+[![NuGet][nuget-badge]][nuget-url]
 
 This tool runs VHDL test benches and generates standard test results files.
 
