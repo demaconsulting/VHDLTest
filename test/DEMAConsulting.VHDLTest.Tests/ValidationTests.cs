@@ -104,4 +104,25 @@ public class ValidationTests
             File.Delete("validation_results.trx");
         }
     }
+
+    /// <summary>
+    /// Test validation output contains OS Version field in the information table
+    /// </summary>
+    [TestMethod]
+    public void Validation_OSVersion()
+    {
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--simulator", "mock",
+            "--validate");
+
+        // Verify success
+        Assert.AreEqual(0, exitCode);
+
+        // Verify OS Version field is present in output
+        Assert.Contains("| OS Version", output);
+    }
 }
