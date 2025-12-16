@@ -232,8 +232,8 @@ For security vulnerabilities, always use the
 
 ### .NET Security Resources
 
-* [.NET Security Guidelines](https://docs.microsoft.com/en-us/dotnet/standard/security/)
-* [Secure Coding Guidelines for .NET](https://docs.microsoft.com/en-us/dotnet/standard/security/secure-coding-guidelines)
+* [.NET Security Guidelines](https://learn.microsoft.com/en-us/dotnet/standard/security/)
+* [Secure Coding Guidelines for .NET](https://learn.microsoft.com/en-us/dotnet/standard/security/secure-coding-guidelines)
 * [.NET Security Announcements](https://github.com/dotnet/announcements/labels/security)
 
 ### Project Resources
