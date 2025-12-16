@@ -37,26 +37,15 @@ When reporting a vulnerability, please include:
 
 ## What to Expect
 
-### Initial Response
+After reporting a vulnerability, the following process will be followed:
 
-* You will receive an acknowledgment of your report within **48 hours**
+* You will receive an acknowledgment of your report
 * We will confirm receipt and begin our assessment
-
-### Status Updates
-
-* We will provide regular updates on the status of your report
-* Updates will be provided at least every **7 days** during the investigation
+* Regular updates will be provided on the status of your report during the investigation
 * You will be informed when the vulnerability is confirmed or dismissed
-
-### Resolution Timeline
-
-* **Critical vulnerabilities**: Addressed within 7 days
-* **High severity vulnerabilities**: Addressed within 30 days
-* **Medium/Low severity vulnerabilities**: Addressed in the next planned release
-
-### Credit
-
-* We believe in giving credit where credit is due
+* Security fixes will be prioritized based on severity
+* Critical and high-severity vulnerabilities will be addressed as soon as possible
+* Lower severity vulnerabilities will be addressed in a planned release
 * If you discover a security vulnerability, you will be credited in:
   * The security advisory (unless you prefer to remain anonymous)
   * Our Security Hall of Fame (see below)
@@ -188,18 +177,10 @@ VHDLTest employs multiple security tools and practices:
 We follow responsible disclosure practices:
 
 * **Coordinated Disclosure**: We work with security researchers to coordinate public disclosure
-* **Reasonable Timeline**: We aim to fix and disclose vulnerabilities within 90 days
+* **Reasonable Timeline**: We aim to fix and disclose vulnerabilities as quickly as possible
 * **Private Discussion**: Vulnerabilities are discussed privately until patched
 * **Public Advisory**: After fixes are released, we publish detailed security advisories
 * **CVE Assignment**: We request CVE identifiers for significant vulnerabilities when appropriate
-
-### Our Commitment
-
-* We will not pursue legal action against security researchers who:
-  * Report vulnerabilities responsibly through proper channels
-  * Avoid accessing or modifying user data
-  * Do not disrupt or degrade our services
-  * Do not publicly disclose vulnerabilities before a fix is available
 
 ## Security Hall of Fame
 
@@ -243,7 +224,5 @@ For security vulnerabilities, always use the
 * [License](https://github.com/demaconsulting/VHDLTest/blob/main/LICENSE)
 
 ---
-
-**Last Updated**: December 2024
 
 Thank you for helping keep VHDLTest and its users safe!
