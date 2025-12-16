@@ -158,6 +158,11 @@ pull requests, report issues, and contribute to the project.
 
 This project adheres to a [Code of Conduct][code-of-conduct-url] to ensure a welcoming environment for all contributors.
 
+## Security
+
+Security is a top priority for this project. If you discover a security vulnerability, please review our
+[Security Policy][security-url] for information on how to report it responsibly.
+
 <!-- Link References -->
 [nuget-badge]: https://img.shields.io/nuget/v/DemaConsulting.VHDLTest?style=plastic
 [nuget-url]: https://www.nuget.org/packages/DemaConsulting.VHDLTest
@@ -177,3 +182,4 @@ This project adheres to a [Code of Conduct][code-of-conduct-url] to ensure a wel
 [nvc-url]: https://www.nickg.me.uk/nvc
 [contributing-url]: https://github.com/demaconsulting/VHDLTest/blob/main/CONTRIBUTING.md
 [code-of-conduct-url]: https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md
+[security-url]: https://github.com/demaconsulting/VHDLTest/blob/main/SECURITY.md
