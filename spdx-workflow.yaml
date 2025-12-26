@@ -5,9 +5,7 @@
 # Workflow Parameters
 parameters:
   dotnet-version: unknown
-  spdx: >-
-    src/DEMAConsulting.VHDLTest/bin/Release/_manifest/spdx_2.2/
-    manifest.spdx.json
+  spdx: src/DEMAConsulting.VHDLTest/bin/Release/_manifest/spdx_2.2/manifest.spdx.json
   summary-md: vhdltest-summary.md
 
 # Steps
@@ -31,9 +29,7 @@ steps:
   - command: run-workflow
     displayName: Query DotNet Version
     inputs:
-      url: >-
-        https://raw.githubusercontent.com/demaconsulting/
-        SpdxWorkflows/main/GetDotNetVersion.yaml
+      url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/GetDotNetVersion.yaml
       outputs:
         version: dotnet-version
 
@@ -41,9 +37,7 @@ steps:
   - command: run-workflow
     displayName: Add DotNet Package ${{ dotnet-version }}
     inputs:
-      url: >-
-        https://raw.githubusercontent.com/demaconsulting/
-        SpdxWorkflows/main/AddDotNetPackage.yaml
+      url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/AddDotNetPackage.yaml
       parameters:
         spdx: ${{ spdx }}
         id: SPDXRef-Package-DotNet-${{ dotnet-version }}
@@ -58,9 +52,7 @@ steps:
       relationships:
         - type: BUILD_TOOL_OF
           element: SPDXRef-Package-DemaConsulting-VHDLTest-${{ version }}
-          comment: >-
-            DemaConsulting.VHDLTest compiled by DotNet
-            ${{ dotnet-version }}
+          comment: DemaConsulting.VHDLTest compiled by DotNet ${{ dotnet-version }}
 
   # Update the Sha256 digest on the VHDLTest SBOM
   - command: hash
