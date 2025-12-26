@@ -37,11 +37,7 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint.yaml
-          file_or_dir: |
-            .github/workflows/
-            spdx-workflow.yaml
-            test/example/test.yaml
-            src/DEMAConsulting.VHDLTest/ValidationFiles/validate.yaml
+          file_or_dir: .
 
   build:
     name: Build Artifacts
