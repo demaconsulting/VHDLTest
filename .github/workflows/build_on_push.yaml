@@ -1,7 +1,11 @@
 ---
+# Main build workflow that runs on all pushes
+# This workflow performs quality checks, builds, and tests
 name: Build
 
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   quality-checks:
@@ -29,11 +33,22 @@ jobs:
           config: .markdownlint.json
           globs: '**/*.md'
 
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint.yaml
+          file_or_dir: |
+            .github/workflows/
+            spdx-workflow.yaml
+            test/example/test.yaml
+            src/DEMAConsulting.VHDLTest/ValidationFiles/validate.yaml
+
   build:
     name: Build Artifacts
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
-      pull-requests: write # To write pull requests analysis results and artifacts
+      contents: read        # To read repository contents
+      pull-requests: write  # To write pull requests analysis
     uses: ./.github/workflows/build.yaml
     with:
       os: ubuntu-latest
@@ -43,8 +58,9 @@ jobs:
 
   test-ghdl:
     name: Test on GHDL
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
+      contents: read  # To read repository contents
     needs: build
     uses: ./.github/workflows/test_ghdl.yaml
     with:
@@ -52,8 +68,9 @@ jobs:
 
   test-nvc:
     name: Test on NVC
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
+      contents: read  # To read repository contents
     needs: build
     uses: ./.github/workflows/test_nvc.yaml
     with:

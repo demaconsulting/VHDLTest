@@ -1,4 +1,6 @@
 ---
+# Reusable workflow for building VHDLTest artifacts
+# This workflow is called by other workflows to build the project
 on:
   workflow_call:
     inputs:
@@ -15,9 +17,10 @@ on:
 
 jobs:
   build:
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
-      pull-requests: write # To write pull requests analysis results and artifacts
+      contents: read        # To read repository contents
+      pull-requests: write  # To write pull requests analysis
 
     runs-on: ${{ inputs.os }}
 

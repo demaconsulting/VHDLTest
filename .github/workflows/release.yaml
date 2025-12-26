@@ -1,4 +1,6 @@
 ---
+# Release workflow for creating and publishing releases
+# This workflow is manually triggered
 name: Release
 
 on:
@@ -14,16 +16,17 @@ on:
         default: 'publish'
         type: choice
         options:
-        - none
-        - release
-        - publish
+          - none
+          - release
+          - publish
 
 jobs:
   build:
     name: Build Artifacts
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
-      pull-requests: write # To write pull requests analysis results and artifacts
+      contents: read        # To read repository contents
+      pull-requests: write  # To write pull requests analysis
     uses: ./.github/workflows/build.yaml
     with:
       os: ubuntu-latest
@@ -33,8 +36,9 @@ jobs:
 
   test-ghdl:
     name: Test on GHDL
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
+      contents: read  # To read repository contents
     needs: build
     uses: ./.github/workflows/test_ghdl.yaml
     with:
@@ -42,16 +46,18 @@ jobs:
 
   test-nvc:
     name: Test on NVC
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
+      contents: read  # To read repository contents
     needs: build
     uses: ./.github/workflows/test_nvc.yaml
     with:
       version: ${{ inputs.version }}
 
   release:
+    # Permissions for this job
     permissions:
-      contents: write # To create releases
+      contents: write  # To create releases
 
     runs-on: ubuntu-latest
 
