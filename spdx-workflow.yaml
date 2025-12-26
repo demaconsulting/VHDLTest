@@ -1,6 +1,6 @@
+---
 # This workflow annotates the SBOM for the DemaConsulting.VHDLTest with
 # build tools, and generates a summary markdown.
-
 
 # Workflow Parameters
 parameters:
@@ -10,69 +10,68 @@ parameters:
 
 # Steps
 steps:
-
   # Get the version of SpdxTool
-- command: get-version
-  inputs:
-    output: version
-    spdx: ${{ spdx }}
-    name: DemaConsulting.VHDLTest
+  - command: get-version
+    inputs:
+      output: version
+      spdx: ${{ spdx }}
+      name: DemaConsulting.VHDLTest
 
   # Rename the package ID for VHDLTest
-- command: rename-id
-  displayName: Rename VHDLTest Package ID
-  inputs:
-    spdx: ${{ spdx }}
-    old: SPDXRef-RootPackage
-    new: SPDXRef-Package-DemaConsulting-VHDLTest-${{ version }}
+  - command: rename-id
+    displayName: Rename VHDLTest Package ID
+    inputs:
+      spdx: ${{ spdx }}
+      old: SPDXRef-RootPackage
+      new: SPDXRef-Package-DemaConsulting-VHDLTest-${{ version }}
 
   # Query for DotNet version
-- command: run-workflow
-  displayName: Query DotNet Version
-  inputs:
-    url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/GetDotNetVersion.yaml
-    outputs:
-      version: dotnet-version
+  - command: run-workflow
+    displayName: Query DotNet Version
+    inputs:
+      url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/GetDotNetVersion.yaml
+      outputs:
+        version: dotnet-version
 
   # Add DotNet package
-- command: run-workflow
-  displayName: Add DotNet Package ${{ dotnet-version }}
-  inputs:
-    url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/AddDotNetPackage.yaml
-    parameters:
-      spdx: ${{ spdx }}
-      id: SPDXRef-Package-DotNet-${{ dotnet-version }}
-      version: ${{ dotnet-version }}
+  - command: run-workflow
+    displayName: Add DotNet Package ${{ dotnet-version }}
+    inputs:
+      url: https://raw.githubusercontent.com/demaconsulting/SpdxWorkflows/main/AddDotNetPackage.yaml
+      parameters:
+        spdx: ${{ spdx }}
+        id: SPDXRef-Package-DotNet-${{ dotnet-version }}
+        version: ${{ dotnet-version }}
 
   # Add DotNet relationships
-- command: add-relationship
-  displayName: Add DotNet Relationships
-  inputs:
-    spdx: ${{ spdx }}
-    id: SPDXRef-Package-DotNet-${{ dotnet-version }}
-    relationships:
-    - type: BUILD_TOOL_OF
-      element: SPDXRef-Package-DemaConsulting-VHDLTest-${{ version }}
-      comment: DemaConsulting.VHDLTest compiled by DotNet ${{ dotnet-version }}
+  - command: add-relationship
+    displayName: Add DotNet Relationships
+    inputs:
+      spdx: ${{ spdx }}
+      id: SPDXRef-Package-DotNet-${{ dotnet-version }}
+      relationships:
+        - type: BUILD_TOOL_OF
+          element: SPDXRef-Package-DemaConsulting-VHDLTest-${{ version }}
+          comment: DemaConsulting.VHDLTest compiled by DotNet ${{ dotnet-version }}
 
   # Update the Sha256 digest on the VHDLTest SBOM
-- command: hash
-  displayName: Update VHDLTest Sha256
-  inputs:
-    operation: generate
-    algorithm: sha256
-    file: ${{ spdx }}
+  - command: hash
+    displayName: Update VHDLTest Sha256
+    inputs:
+      operation: generate
+      algorithm: sha256
+      file: ${{ spdx }}
 
   # Validate the VHDLTest SBOM
-- command: validate
-  displayName: Validate VHDLTest SBOM
-  inputs:
-    spdx: ${{ spdx }}
+  - command: validate
+    displayName: Validate VHDLTest SBOM
+    inputs:
+      spdx: ${{ spdx }}
 
   # Generate the VHDLTest summary
-- command: to-markdown
-  displayName: Generate VHDLTest SBOM Summary
-  inputs:
-    spdx: ${{ spdx }}
-    markdown: ${{ summary-md }}
-    title: 'VHDLTest Package'
+  - command: to-markdown
+    displayName: Generate VHDLTest SBOM Summary
+    inputs:
+      spdx: ${{ spdx }}
+      markdown: ${{ summary-md }}
+      title: 'VHDLTest Package'

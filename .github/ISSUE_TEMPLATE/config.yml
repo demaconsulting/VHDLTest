@@ -1,3 +1,6 @@
+---
+# GitHub issue template configuration
+# Controls issue creation and provides helpful links
 blank_issues_enabled: false
 contact_links:
   - name: 💬 GitHub Discussions

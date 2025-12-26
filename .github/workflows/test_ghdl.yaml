@@ -1,3 +1,6 @@
+---
+# Test workflow for GHDL simulator
+# This workflow is called by other workflows to test on GHDL
 name: Test on GHDL
 on:
   workflow_call:
@@ -8,8 +11,9 @@ on:
 
 jobs:
   test-ghdl:
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
+      contents: read  # To read repository contents
 
     strategy:
       matrix:

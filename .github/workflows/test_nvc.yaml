@@ -1,3 +1,6 @@
+---
+# Test workflow for NVC simulator
+# This workflow is called by other workflows to test on NVC
 name: Test on NVC
 on:
   workflow_call:
@@ -8,8 +11,9 @@ on:
 
 jobs:
   test-nvc:
+    # Permissions for this job
     permissions:
-      contents: read       # To read repository contents
+      contents: read  # To read repository contents
 
     strategy:
       matrix:

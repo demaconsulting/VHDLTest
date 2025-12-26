@@ -72,6 +72,7 @@ The project uses several tools to maintain code quality:
 * **Microsoft.CodeAnalysis.NetAnalyzers**: Provides static analysis for performance, security, and reliability.
 * **.cspell.json**: Spell checking configuration with project-specific dictionary.
 * **.markdownlint.json**: Markdown linting rules configuration.
+* **.yamllint.yaml**: YAML linting configuration for maintaining consistent YAML file formatting.
 
 ### Running Code Analysis
 
@@ -85,7 +86,7 @@ dotnet build
 
 The CI/CD pipeline includes:
 
-* Quality Checks (spell checking, markdown linting)
+* Quality Checks (spell checking, markdown linting, YAML linting)
 * SonarCloud analysis for code quality metrics
 * Code coverage reporting with Coverlet
 * SBOM (Software Bill of Materials) generation

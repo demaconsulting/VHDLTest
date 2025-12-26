@@ -1,3 +1,6 @@
+---
+# Bug report issue template for VHDLTest
+# Used to collect structured information about bugs
 name: 🐛 Bug Report
 description: Report a bug or unexpected behavior in VHDLTest
 title: "[Bug]: "
@@ -6,7 +9,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug! Please fill out the form below to help us investigate and fix the issue.
+        Thanks for taking the time to report a bug! Please fill out
+        the form below to help us investigate and fix the issue.
 
   - type: textarea
     id: description
@@ -113,7 +117,9 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md)
+      description: >
+        By submitting this issue, you agree to follow our
+        [Code of Conduct](https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md)
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
