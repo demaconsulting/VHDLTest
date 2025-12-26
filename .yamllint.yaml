@@ -9,17 +9,17 @@ rules:
   truthy:
     allowed-values: ['true', 'false', 'on', 'off']
     check-keys: true
-  
+
   # Allow longer lines for URLs and complex expressions
   line-length:
     max: 80
     level: error
-  
+
   # Ensure proper indentation
   indentation:
     spaces: 2
     indent-sequences: true
-  
+
   # Ensure proper comment formatting
   comments:
     min-spaces-from-content: 2
