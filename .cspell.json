@@ -44,7 +44,22 @@
     "dotnettool",
     "spdxtool",
     "pandoctool",
-    "weasyprinttool"
+    "weasyprinttool",
+    "tracematrix",
+    "vsimsa",
+    "alib",
+    "worklib",
+    "acom",
+    "asim",
+    "endsim",
+    "vlib",
+    "vcom",
+    "vsim",
+    "PATHEXT",
+    "nolog",
+    "xvhdl",
+    "runall",
+    "xelab"
   ],
   "ignorePaths": [
     "node_modules",
