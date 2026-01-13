@@ -22,37 +22,16 @@ on:
 
 jobs:
   build:
-    name: Build Artifacts
+    name: Build and Test
     # Permissions for this job
     permissions:
       contents: read        # To read repository contents
       pull-requests: write  # To write pull requests analysis
     uses: ./.github/workflows/build.yaml
     with:
-      os: ubuntu-latest
       version: ${{ inputs.version }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  test-ghdl:
-    name: Test on GHDL
-    # Permissions for this job
-    permissions:
-      contents: read  # To read repository contents
-    needs: build
-    uses: ./.github/workflows/test_ghdl.yaml
-    with:
-      version: ${{ inputs.version }}
-
-  test-nvc:
-    name: Test on NVC
-    # Permissions for this job
-    permissions:
-      contents: read  # To read repository contents
-    needs: build
-    uses: ./.github/workflows/test_nvc.yaml
-    with:
-      version: ${{ inputs.version }}
 
   release:
     # Permissions for this job
@@ -61,15 +40,21 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    needs: [build, test-ghdl, test-nvc]
+    needs: build
 
     steps:
       - uses: actions/checkout@v6
 
-      - name: Download Artifacts
+      - name: Download Build Artifacts
         uses: actions/download-artifact@v7
         with:
           name: artifacts-ubuntu-latest
+          path: artifacts
+
+      - name: Download Document Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: documents
           path: artifacts
 
       - name: Create release

@@ -1,0 +1,25 @@
+---
+# Pandoc document definition for VHDLTest User Guide
+
+# Resource paths for finding files and templates
+resource-path:
+  - docs/guide
+  - docs/template
+
+# Input files in order
+input-files:
+  - title.txt
+  - guide.md
+
+# Template configuration
+template: template.html
+
+# Table of contents settings
+toc: true
+toc-depth: 3
+
+# Enable numbered sections
+number-sections: true
+
+# Standalone document
+standalone: true

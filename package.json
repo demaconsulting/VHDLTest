@@ -1,0 +1,10 @@
+{
+  "name": "vhdltest",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VHDLTest documentation build tools",
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "11.12.0",
+    "mermaid-filter": "1.4.7"
+  }
+}
