@@ -30,7 +30,9 @@
     "opencover",
     "msys",
     "mingw",
-    "dotnet"
+    "dotnet",
+    "dorny",
+    "mstest"
   ],
   "ignorePaths": [
     "node_modules",

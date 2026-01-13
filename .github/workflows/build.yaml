@@ -286,42 +286,42 @@ jobs:
   build-docs:
     name: Build Documents
     runs-on: windows-latest
-    
+
     needs: [build, test-ghdl, test-nvc]
-    
+
     permissions:
       contents: read
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      
+
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
-      
+
       - name: Restore Tools
         run: dotnet tool restore
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-      
+
       - name: Install npm dependencies
         run: npm install
-      
+
       - name: Build PDF with Pandoc
         shell: pwsh
         run: |
           dotnet pandoc-tool --defaults docs/guide/definition.yaml -o docs/temp.html
-      
+
       - name: Convert HTML to PDF with Weasyprint
         shell: pwsh
         run: |
           dotnet weasyprint-tool docs/temp.html "docs/VHDLTest User Guide.pdf"
-      
+
       - name: Upload Document Artifacts
         uses: actions/upload-artifact@v6
         with:
