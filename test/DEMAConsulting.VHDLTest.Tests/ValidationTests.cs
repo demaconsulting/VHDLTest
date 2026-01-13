@@ -30,7 +30,7 @@ public class ValidationTests
     /// Test usage information is reported when no arguments are specified
     /// </summary>
     [TestMethod]
-    public void Program_Run_WithValidate_PerformsValidationAndReturnsSuccess()
+    public void IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -51,7 +51,7 @@ public class ValidationTests
     /// Test usage information is reported when no arguments are specified
     /// </summary>
     [TestMethod]
-    public void Program_Run_WithValidateAndDepth_PerformsValidationWithDepth()
+    public void IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -73,7 +73,7 @@ public class ValidationTests
     /// Test validation results can be saved to file
     /// </summary>
     [TestMethod]
-    public void Program_Run_WithValidateAndResultsFile_SavesValidationResults()
+    public void IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults()
     {
         try
         {
@@ -109,7 +109,7 @@ public class ValidationTests
     /// Test validation output contains OS Version field in the information table
     /// </summary>
     [TestMethod]
-    public void Program_Run_WithValidate_IncludesOSVersionInReport()
+    public void IntegrationTest_ValidateFlag_IncludesOSVersionInReport()
     {
         // Run the application
         var exitCode = Runner.Run(

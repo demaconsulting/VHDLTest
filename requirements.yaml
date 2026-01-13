@@ -7,65 +7,65 @@ sections:
           - id: "CLI-001"
             title: "The tool shall display usage information when run without arguments."
             tests:
-              - "Program_Run_NoArguments_DisplaysUsageAndReturnsError"
+              - "IntegrationTest_NoArguments_DisplaysUsageAndReturnsError"
 
           - id: "CLI-002"
             title: "The tool shall display version information when requested."
             tests:
-              - "Program_Run_WithVersionShort_DisplaysVersionAndReturnsSuccess"
-              - "Program_Run_WithVersionLong_DisplaysVersionAndReturnsSuccess"
+              - "IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess"
+              - "IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess"
 
           - id: "CLI-003"
             title: "The tool shall display help information when requested."
             tests:
-              - "Program_Run_WithHelpShort_DisplaysUsageAndReturnsSuccess"
-              - "Program_Run_WithHelpQuestion_DisplaysUsageAndReturnsSuccess"
-              - "Program_Run_WithHelpLong_DisplaysUsageAndReturnsSuccess"
+              - "IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess"
+              - "IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess"
+              - "IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess"
 
       - title: "Test Execution"
         requirements:
           - id: "TEST-001"
             title: "The tool shall execute VHDL test benches and return zero exit code on success."
             tests:
-              - "Program_Run_TestsPassed_ReturnsZeroExitCode"
+              - "IntegrationTest_TestsPassed_ReturnsZeroExitCode"
 
           - id: "TEST-002"
             title: "The tool shall return non-zero exit code when compilation fails."
             tests:
-              - "Program_Run_CompileError_ReturnsNonZeroExitCode"
+              - "IntegrationTest_CompileError_ReturnsNonZeroExitCode"
 
           - id: "TEST-003"
             title: "The tool shall return non-zero exit code when tests fail."
             tests:
-              - "Program_Run_TestExecutionError_ReturnsNonZeroExitCode"
+              - "IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode"
 
           - id: "TEST-004"
             title: "The tool shall support exit-0 mode to always return zero exit code."
             tests:
-              - "Program_Run_TestExecutionErrorWithExit0_ReturnsZeroExitCode"
+              - "IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode"
 
       - title: "Validation"
         requirements:
           - id: "VAL-001"
             title: "The tool shall support self-validation mode."
             tests:
-              - "Program_Run_WithValidate_PerformsValidationAndReturnsSuccess"
+              - "IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess"
               - "Context_Create_WithValidate_SetsValidateFlag"
 
           - id: "VAL-002"
             title: "The tool shall support configurable validation report depth."
             tests:
-              - "Program_Run_WithValidateAndDepth_PerformsValidationWithDepth"
+              - "IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth"
 
           - id: "VAL-003"
             title: "The tool shall save validation results to file."
             tests:
-              - "Program_Run_WithValidateAndResultsFile_SavesValidationResults"
+              - "IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults"
 
           - id: "VAL-004"
             title: "The tool shall include system information in validation reports."
             tests:
-              - "Program_Run_WithValidate_IncludesOSVersionInReport"
+              - "IntegrationTest_ValidateFlag_IncludesOSVersionInReport"
 
       - title: "Simulator Support"
         requirements:
