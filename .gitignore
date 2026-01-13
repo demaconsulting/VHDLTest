@@ -6,3 +6,4 @@ VHDLTest.out
 TestResults/
 node_modules/
 package-lock.json
+docs/temp.html
