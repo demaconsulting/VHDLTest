@@ -49,6 +49,8 @@ jobs:
       contents: read        # To read repository contents
       pull-requests: write  # To write pull requests analysis
 
+    needs: quality-checks
+
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]

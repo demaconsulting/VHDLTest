@@ -119,20 +119,17 @@ sections:
           - id: "PLT-003"
             title: "The tool shall support .NET 8.0 runtime."
             tests:
-              - "net8.0@UnitTests"
               - "dotnet8.x@VHDLTest_TestPasses"
               - "dotnet8.x@VHDLTest_TestFails"
 
           - id: "PLT-004"
             title: "The tool shall support .NET 9.0 runtime."
             tests:
-              - "net9.0@UnitTests"
               - "dotnet9.x@VHDLTest_TestPasses"
               - "dotnet9.x@VHDLTest_TestFails"
 
           - id: "PLT-005"
             title: "The tool shall support .NET 10.0 runtime."
             tests:
-              - "net10.0@UnitTests"
               - "dotnet10.x@VHDLTest_TestPasses"
               - "dotnet10.x@VHDLTest_TestFails"
