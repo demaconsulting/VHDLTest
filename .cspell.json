@@ -32,7 +32,19 @@
     "mingw",
     "dotnet",
     "dorny",
-    "mstest"
+    "mstest",
+    "Pandoc",
+    "Weasyprint",
+    "ibiqlik",
+    "msystem",
+    "nickg",
+    "sonarscanner",
+    "mcode",
+    "Anson",
+    "dotnettool",
+    "spdxtool",
+    "pandoctool",
+    "weasyprinttool"
   ],
   "ignorePaths": [
     "node_modules",
