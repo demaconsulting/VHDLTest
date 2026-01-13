@@ -1,0 +1,7 @@
+---
+title: 'VHDLTest User Guide'
+subtitle: 'VHDL Test Bench Automation Tool'
+author: 'DEMA Consulting'
+description: 'Comprehensive guide for installing, configuring, and using VHDLTest to run VHDL test benches and generate test results'
+keywords: [VHDL, testing, automation, simulation, GHDL, ModelSim, Vivado, ActiveHDL, NVC]
+---

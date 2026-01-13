@@ -4,9 +4,6 @@
 on:
   workflow_call:
     inputs:
-      os:
-        required: true
-        type: string
       version:
         required: true
         type: string
@@ -16,13 +13,47 @@ on:
 
 
 jobs:
+  quality-checks:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Spell Check
+        uses: streetsidesoftware/cspell-action@v8
+        with:
+          config: .cspell.json
+          files: |
+            **/*.md
+            **/*.cs
+            **/*.yaml
+            **/*.yml
+
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v22
+        with:
+          config: .markdownlint.json
+          globs: '**/*.md'
+
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          config_file: .yamllint.yaml
+
   build:
     # Permissions for this job
     permissions:
       contents: read        # To read repository contents
       pull-requests: write  # To write pull requests analysis
 
-    runs-on: ${{ inputs.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
 
@@ -40,7 +71,7 @@ jobs:
             10.x
 
       - uses: msys2/setup-msys2@v2
-        if: inputs.os == 'windows-latest'
+        if: matrix.os == 'windows-latest'
         with:
           msystem: MINGW64
           update: true
@@ -121,10 +152,180 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: artifacts-${{ inputs.os }}
+          name: artifacts-${{ matrix.os }}
           path: |
             **/*.nupkg
             **/*.snupkg
             **/manifest.spdx.json
             **/manifest.spdx.json.sha256
             *summary.md
+
+  test-ghdl:
+    name: Test on GHDL
+    # Permissions for this job
+    permissions:
+      contents: read  # To read repository contents
+
+    needs: build
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        dotnet: [8.x, 9.x, 10.x]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - uses: actions/checkout@v6
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - uses: msys2/setup-msys2@v2
+        if: matrix.os == 'windows-latest'
+        with:
+          msystem: MINGW64
+          update: true
+
+      - uses: ghdl/setup-ghdl@v1
+        with:
+          version: nightly
+          backend: mcode
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: artifacts-ubuntu-latest
+          path: artifacts
+
+      - name: Install VHDLTest
+        shell: bash
+        run: >
+          dotnet tool install
+          --global DemaConsulting.VHDLTest
+          --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
+          --version ${{ inputs.version }}
+
+      - name: Validate VHDLTest
+        shell: bash
+        run: >
+          # Run the validation
+          vhdltest --validate --simulator ghdl
+
+      - name: Run
+        working-directory: test/example
+        shell: bash
+        run: |
+          # Run the test
+          bash ./test.sh ghdl
+
+  test-nvc:
+    name: Test on NVC
+    # Permissions for this job
+    permissions:
+      contents: read  # To read repository contents
+
+    needs: build
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        dotnet: [8.x, 9.x, 10.x]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - uses: actions/checkout@v6
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - uses: msys2/setup-msys2@v2
+        if: matrix.os == 'windows-latest'
+        with:
+          msystem: MINGW64
+          update: true
+
+      - uses: nickg/setup-nvc-ci@v1
+        with:
+          version: latest
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: artifacts-ubuntu-latest
+          path: artifacts
+
+      - name: Install VHDLTest
+        shell: bash
+        run: >
+          dotnet tool install
+          --global DemaConsulting.VHDLTest
+          --add-source artifacts/src/DEMAConsulting.VHDLTest/bin/Release
+          --version ${{ inputs.version }}
+
+      - name: Validate VHDLTest
+        shell: bash
+        run: >
+          vhdltest --validate --simulator nvc
+
+      - name: Run
+        working-directory: test/example
+        shell: bash
+        run: |
+          # Run the test
+          bash ./test.sh nvc
+
+  build-docs:
+    name: Build Documents
+    runs-on: windows-latest
+
+    needs: [build, test-ghdl, test-nvc]
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore Tools
+        run: dotnet tool restore
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Build PDF with Pandoc
+        run: >
+          dotnet pandoc
+          --defaults docs/guide/definition.yaml
+          --filter node_modules/.bin/mermaid-filter.cmd
+          --output docs/guide/guide.html
+
+      - name: Convert HTML to PDF with Weasyprint
+        run: >
+          dotnet weasyprint
+          docs/guide/guide.html
+          "docs/VHDLTest User Guide.pdf"
+
+      - name: Upload Document Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: documents
+          path: docs/*.pdf

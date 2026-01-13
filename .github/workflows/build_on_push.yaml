@@ -1,6 +1,6 @@
 ---
 # Main build workflow that runs on all pushes
-# This workflow performs quality checks, builds, and tests
+# This workflow calls the reusable build workflow
 name: Build
 
 on:
@@ -8,66 +8,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  quality-checks:
-    name: Quality Checks
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Spell Check
-        uses: streetsidesoftware/cspell-action@v8
-        with:
-          config: .cspell.json
-          files: |
-            **/*.md
-            **/*.cs
-            **/*.yaml
-            **/*.yml
-
-      - name: Markdown Lint
-        uses: DavidAnson/markdownlint-cli2-action@v22
-        with:
-          config: .markdownlint.json
-          globs: '**/*.md'
-
-      - name: YAML Lint
-        uses: ibiqlik/action-yamllint@v3
-        with:
-          config_file: .yamllint.yaml
-          file_or_dir: .
-
   build:
-    name: Build Artifacts
+    name: Build and Test
     # Permissions for this job
     permissions:
       contents: read        # To read repository contents
       pull-requests: write  # To write pull requests analysis
     uses: ./.github/workflows/build.yaml
     with:
-      os: ubuntu-latest
       version: 0.0.0-run.${{ github.run_number }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  test-ghdl:
-    name: Test on GHDL
-    # Permissions for this job
-    permissions:
-      contents: read  # To read repository contents
-    needs: build
-    uses: ./.github/workflows/test_ghdl.yaml
-    with:
-      version: 0.0.0-run.${{ github.run_number }}
-
-  test-nvc:
-    name: Test on NVC
-    # Permissions for this job
-    permissions:
-      contents: read  # To read repository contents
-    needs: build
-    uses: ./.github/workflows/test_nvc.yaml
-    with:
-      version: 0.0.0-run.${{ github.run_number }}
