@@ -315,12 +315,12 @@ jobs:
       - name: Build PDF with Pandoc
         shell: pwsh
         run: |
-          dotnet pandoc-tool --defaults docs/guide/definition.yaml -o docs/temp.html
+          dotnet pandoc-tool --defaults docs/guide/definition.yaml -o docs/guide/guide.html
 
       - name: Convert HTML to PDF with Weasyprint
         shell: pwsh
         run: |
-          dotnet weasyprint-tool docs/temp.html "docs/VHDLTest User Guide.pdf"
+          dotnet weasyprint-tool docs/guide/guide.html "docs/VHDLTest User Guide.pdf"
 
       - name: Upload Document Artifacts
         uses: actions/upload-artifact@v6
