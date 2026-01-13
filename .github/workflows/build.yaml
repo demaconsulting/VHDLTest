@@ -115,6 +115,8 @@ jobs:
           --configuration Release
           --property:Version=${{ inputs.version }}
           --collect "XPlat Code Coverage;Format=opencover"
+          --logger "trx;LogFileName=TestResults-${{ matrix.os }}.trx"
+          --results-directory test-results
 
       - name: End Sonar Scanner
         env:
@@ -159,6 +161,12 @@ jobs:
             **/manifest.spdx.json
             **/manifest.spdx.json.sha256
             *summary.md
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/**/*.trx
 
   test-ghdl:
     name: Test on GHDL
@@ -214,6 +222,7 @@ jobs:
         run: >
           # Run the validation
           vhdltest --validate --simulator ghdl
+          --results ghdl-${{ matrix.os }}-${{ matrix.dotnet }}-validation.trx
 
       - name: Run
         working-directory: test/example
@@ -221,6 +230,12 @@ jobs:
         run: |
           # Run the test
           bash ./test.sh ghdl
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results-ghdl-${{ matrix.os }}-${{ matrix.dotnet }}
+          path: "*.trx"
 
   test-nvc:
     name: Test on NVC
@@ -274,6 +289,7 @@ jobs:
         shell: bash
         run: >
           vhdltest --validate --simulator nvc
+          --results nvc-${{ matrix.os }}-${{ matrix.dotnet }}-validation.trx
 
       - name: Run
         working-directory: test/example
@@ -281,6 +297,12 @@ jobs:
         run: |
           # Run the test
           bash ./test.sh nvc
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results-nvc-${{ matrix.os }}-${{ matrix.dotnet }}
+          path: "*.trx"
 
   build-docs:
     name: Build Documents
@@ -310,6 +332,54 @@ jobs:
 
       - name: Install npm dependencies
         run: npm install
+
+      - name: Download All Test Results
+        uses: actions/download-artifact@v7
+        with:
+          pattern: test-results-*
+          path: test-results
+          merge-multiple: true
+
+      - name: Generate Requirements Report
+        run: >
+          dotnet reqstream
+          --requirements requirements.yaml
+          --tests "test-results/**/*.trx"
+          --report requirements.md
+
+      - name: Generate Trace Matrix
+        run: >
+          dotnet reqstream
+          --requirements requirements.yaml
+          --tests "test-results/**/*.trx"
+          --matrix tracematrix.md
+          --enforce-coverage
+
+      - name: Build Requirements PDF with Pandoc
+        run: >
+          dotnet pandoc
+          --defaults docs/requirements/definition.yaml
+          --filter node_modules/.bin/mermaid-filter.cmd
+          --output docs/requirements/requirements.html
+
+      - name: Convert Requirements HTML to PDF with Weasyprint
+        run: >
+          dotnet weasyprint
+          docs/requirements/requirements.html
+          "docs/VHDLTest Requirements.pdf"
+
+      - name: Build Trace Matrix PDF with Pandoc
+        run: >
+          dotnet pandoc
+          --defaults docs/tracematrix/definition.yaml
+          --filter node_modules/.bin/mermaid-filter.cmd
+          --output docs/tracematrix/tracematrix.html
+
+      - name: Convert Trace Matrix HTML to PDF with Weasyprint
+        run: >
+          dotnet weasyprint
+          docs/tracematrix/tracematrix.html
+          "docs/VHDLTest Trace Matrix.pdf"
 
       - name: Build PDF with Pandoc
         run: >
