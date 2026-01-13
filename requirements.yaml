@@ -1,0 +1,135 @@
+---
+sections:
+  - title: "VHDLTest Requirements"
+    sections:
+      - title: "Command-Line Interface"
+        requirements:
+          - id: "CLI-001"
+            title: "VHDLTest shall display usage information when run without arguments."
+            tests:
+              - "IntegrationTest_NoArguments_DisplaysUsageAndReturnsError"
+
+          - id: "CLI-002"
+            title: "VHDLTest shall display version information when requested."
+            tests:
+              - "IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess"
+              - "IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess"
+
+          - id: "CLI-003"
+            title: "VHDLTest shall display help information when requested."
+            tests:
+              - "IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess"
+              - "IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess"
+              - "IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess"
+
+      - title: "Test Execution"
+        requirements:
+          - id: "TEST-001"
+            title: "VHDLTest shall execute VHDL test benches and return zero exit code on success."
+            tests:
+              - "IntegrationTest_TestsPassed_ReturnsZeroExitCode"
+
+          - id: "TEST-002"
+            title: "VHDLTest shall return non-zero exit code when compilation fails."
+            tests:
+              - "IntegrationTest_CompileError_ReturnsNonZeroExitCode"
+
+          - id: "TEST-003"
+            title: "VHDLTest shall return non-zero exit code when tests fail."
+            tests:
+              - "IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode"
+
+          - id: "TEST-004"
+            title: "VHDLTest shall support exit-0 mode to always return zero exit code."
+            tests:
+              - "IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode"
+
+      - title: "Validation"
+        requirements:
+          - id: "VAL-001"
+            title: "VHDLTest shall support self-validation mode."
+            tests:
+              - "IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess"
+
+          - id: "VAL-002"
+            title: "VHDLTest shall support configurable validation report depth."
+            tests:
+              - "IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth"
+
+          - id: "VAL-003"
+            title: "VHDLTest shall save validation results to file."
+            tests:
+              - "IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults"
+
+          - id: "VAL-004"
+            title: "VHDLTest shall include system information in validation reports."
+            tests:
+              - "IntegrationTest_ValidateFlag_IncludesOSVersionInReport"
+
+      - title: "Simulator Support"
+        requirements:
+          - id: "SIM-001"
+            title: "VHDLTest shall support the GHDL simulator."
+            tests:
+              - "SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator"
+              - "GhdlSimulator_SimulatorName_ReturnsGHDL"
+              - "ghdl@VHDLTest_TestPasses"
+              - "ghdl@VHDLTest_TestFails"
+
+          - id: "SIM-002"
+            title: "VHDLTest shall support the ModelSim simulator."
+            tests:
+              - "SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator"
+              - "ModelSimSimulator_SimulatorName_ReturnsModelSim"
+
+          - id: "SIM-003"
+            title: "VHDLTest shall support the Vivado simulator."
+            tests:
+              - "SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator"
+              - "VivadoSimulator_SimulatorName_ReturnsVivado"
+
+          - id: "SIM-004"
+            title: "VHDLTest shall support the ActiveHDL simulator."
+            tests:
+              - "SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator"
+              - "ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL"
+
+          - id: "SIM-005"
+            title: "VHDLTest shall support the NVC simulator."
+            tests:
+              - "SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator"
+              - "NvcSimulator_SimulatorName_ReturnsNVC"
+              - "nvc@VHDLTest_TestPasses"
+              - "nvc@VHDLTest_TestFails"
+
+      - title: "Platform Support"
+        requirements:
+          - id: "PLT-001"
+            title: "VHDLTest shall run on Linux operating systems."
+            tests:
+              - "ubuntu-latest@VHDLTest_TestPasses"
+              - "ubuntu-latest@VHDLTest_TestFails"
+
+          - id: "PLT-002"
+            title: "VHDLTest shall run on Windows operating systems."
+            tests:
+              - "windows-latest@VHDLTest_TestPasses"
+              - "windows-latest@VHDLTest_TestFails"
+
+          - id: "PLT-003"
+            title: "VHDLTest shall support .NET 8.0 runtime."
+            tests:
+              - "dotnet8.x@VHDLTest_TestPasses"
+              - "dotnet8.x@VHDLTest_TestFails"
+
+          - id: "PLT-004"
+            title: "VHDLTest shall support .NET 9.0 runtime."
+            tests:
+              - "dotnet9.x@VHDLTest_TestPasses"
+              - "dotnet9.x@VHDLTest_TestFails"
+
+          - id: "PLT-005"
+            title: "VHDLTest shall support .NET 10.0 runtime."
+            tests:
+              - "dotnet10.x@VHDLTest_TestPasses"
+              - "dotnet10.x@VHDLTest_TestFails"

@@ -49,7 +49,7 @@ public class OptionsTests
     /// Test parsing options with no configuration file
     /// </summary>
     [TestMethod]
-    public void Test_Options_NoConfig()
+    public void Options_Parse_NoConfigProvided_ThrowsInvalidOperationException()
     {
         var arguments = Context.Create([]);
         Assert.ThrowsExactly<InvalidOperationException>(() => Options.Parse(arguments));
@@ -59,7 +59,7 @@ public class OptionsTests
     /// Test parsing options with missing configuration file
     /// </summary>
     [TestMethod]
-    public void Test_Options_MissingConfig()
+    public void Options_Parse_MissingConfigFile_ThrowsFileNotFoundException()
     {
         var arguments = Context.Create(["-c", "missing-config.yaml"]);
         Assert.ThrowsExactly<FileNotFoundException>(() => Options.Parse(arguments));
@@ -69,7 +69,7 @@ public class OptionsTests
     /// Test parsing options with configuration file
     /// </summary>
     [TestMethod]
-    public void Test_Options_ConfigFile()
+    public void Options_Parse_ValidConfigFile_ParsesSuccessfully()
     {
         try
         {
@@ -100,7 +100,7 @@ public class OptionsTests
     /// Test parsing options with verbose flag
     /// </summary>
     [TestMethod]
-    public void Test_Options_Verbose()
+    public void Options_Parse_WithVerboseFlag_ParsesSuccessfully()
     {
         try
         {
@@ -125,7 +125,7 @@ public class OptionsTests
     /// Test parsing options with custom test
     /// </summary>
     [TestMethod]
-    public void Test_Options_CustomTest()
+    public void Options_Parse_WithCustomTest_ParsesSuccessfully()
     {
         try
         {

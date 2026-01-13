@@ -30,7 +30,7 @@ public class ContextTests
     /// Test parsing arguments with no arguments
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_None()
+    public void Context_Create_NoArguments_ReturnsDefaultContext()
     {
         // Parse the arguments
         var arguments = Context.Create([]);
@@ -50,7 +50,7 @@ public class ContextTests
     /// Test parsing arguments with unknown argument
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_Unknown()
+    public void Context_Create_UnknownArgument_ThrowsInvalidOperationException()
     {
         // Verify the exception is thrown
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--unknown"]));
@@ -60,7 +60,7 @@ public class ContextTests
     /// Test parsing arguments with a config file
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_ConfigFile()
+    public void Context_Create_WithConfigFile_SetsConfigFile()
     {
         // Parse the arguments
         var arguments = Context.Create(["-c", "config.json"]);
@@ -80,7 +80,7 @@ public class ContextTests
     /// Test parsing arguments with a missing config file
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_ConfigFile_Missing()
+    public void Context_Create_MissingConfigValue_ThrowsInvalidOperationException()
     {
         // Verify the exception is thrown
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-c"]));
@@ -90,7 +90,7 @@ public class ContextTests
     /// Test parsing arguments with a results file
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_ResultsFile()
+    public void Context_Create_WithResultsFile_SetsResultsFile()
     {
         // Parse the arguments
         var arguments = Context.Create(["-r", "results.trx"]);
@@ -110,7 +110,7 @@ public class ContextTests
     /// Test parsing arguments with a missing results file
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_ResultsFile_Missing()
+    public void Context_Create_MissingResultsValue_ThrowsInvalidOperationException()
     {
         // Verify the exception is thrown
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-r"]));
@@ -120,7 +120,7 @@ public class ContextTests
     /// Test parsing arguments with a specified simulator
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_Simulator()
+    public void Context_Create_WithSimulator_SetsSimulator()
     {
         // Parse the arguments
         var arguments = Context.Create(["-s", "GHDL"]);
@@ -140,7 +140,7 @@ public class ContextTests
     /// Test parsing arguments with a missing simulator
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_Simulator_Missing()
+    public void Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException()
     {
         // Verify the exception is thrown
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-s"]));
@@ -150,7 +150,7 @@ public class ContextTests
     /// Test parsing arguments with verbose
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_Verbose()
+    public void Context_Create_WithVerbose_SetsVerboseFlag()
     {
         // Parse the arguments
         var arguments = Context.Create(["--verbose"]);
@@ -170,7 +170,7 @@ public class ContextTests
     /// Test parsing arguments with exit-zero flag
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_ExitZero()
+    public void Context_Create_WithExitZero_SetsExitZeroFlag()
     {
         // Parse the arguments
         var arguments = Context.Create(["--exit-0"]);
@@ -190,7 +190,7 @@ public class ContextTests
     /// Test parsing arguments with validate flag
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_Validate()
+    public void Context_Create_WithValidate_SetsValidateFlag()
     {
         // Parse the arguments
         var arguments = Context.Create(["--validate"]);
@@ -210,7 +210,7 @@ public class ContextTests
     /// Test parsing arguments with a custom test
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_CustomTest()
+    public void Context_Create_WithCustomTest_SetsCustomTest()
     {
         // Parse the arguments
         var arguments = Context.Create(["custom_test"]);
@@ -232,7 +232,7 @@ public class ContextTests
     /// Test parsing arguments with multiple custom tests
     /// </summary>
     [TestMethod]
-    public void Test_Arguments_CustomTests()
+    public void Context_Create_WithCustomTests_SetsCustomTests()
     {
         // Parse the arguments
         var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);

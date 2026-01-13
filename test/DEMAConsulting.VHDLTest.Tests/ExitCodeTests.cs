@@ -30,7 +30,7 @@ public class ExitCodeTests
     /// Test non-zero exit code with compile errors
     /// </summary>
     [TestMethod]
-    public void TestCompileError()
+    public void IntegrationTest_CompileError_ReturnsNonZeroExitCode()
     {
         try
         {
@@ -66,7 +66,7 @@ public class ExitCodeTests
     /// Test non-zero exit code with test-execution errors
     /// </summary>
     [TestMethod]
-    public void TestExecutionError()
+    public void IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode()
     {
         try
         {
@@ -102,7 +102,7 @@ public class ExitCodeTests
     /// Test non-zero exit code with test-execution errors
     /// </summary>
     [TestMethod]
-    public void TestExecutionErrorSuppress()
+    public void IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode()
     {
         try
         {
@@ -139,7 +139,7 @@ public class ExitCodeTests
     /// Test non-zero exit code with test-execution errors
     /// </summary>
     [TestMethod]
-    public void TestExecutionPassed()
+    public void IntegrationTest_TestsPassed_ReturnsZeroExitCode()
     {
         try
         {

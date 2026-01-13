@@ -32,7 +32,7 @@ public class SimulatorFactoryTests
     /// Test querying the simulator factory for GHDL
     /// </summary>
     [TestMethod]
-    public void Test_SimulatorFactory_Ghdl()
+    public void SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator()
     {
         Assert.IsNotNull(SimulatorFactory.Get("ghdl"));
         Assert.IsNotNull(SimulatorFactory.Get("GHDL"));
@@ -42,7 +42,7 @@ public class SimulatorFactoryTests
     /// Test querying the simulator factory for ModelSim
     /// </summary>
     [TestMethod]
-    public void Test_SimulatorFactory_ModelSim()
+    public void SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator()
     {
         Assert.IsNotNull(SimulatorFactory.Get("modelsim"));
         Assert.IsNotNull(SimulatorFactory.Get("ModelSim"));
@@ -52,7 +52,7 @@ public class SimulatorFactoryTests
     /// Test querying the simulator factory for Vivado
     /// </summary>
     [TestMethod]
-    public void Test_SimulatorFactory_Vivado()
+    public void SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator()
     {
         Assert.IsNotNull(SimulatorFactory.Get("vivado"));
         Assert.IsNotNull(SimulatorFactory.Get("Vivado"));
@@ -62,7 +62,7 @@ public class SimulatorFactoryTests
     /// Test querying the simulator factory for ActiveHDL
     /// </summary>
     [TestMethod]
-    public void Test_SimulatorFactory_ActiveHDL()
+    public void SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator()
     {
         Assert.IsNotNull(SimulatorFactory.Get("activehdl"));
         Assert.IsNotNull(SimulatorFactory.Get("ActiveHDL"));
@@ -72,7 +72,7 @@ public class SimulatorFactoryTests
     /// Test querying the simulator factory for NVC
     /// </summary>
     [TestMethod]
-    public void Test_SimulatorFactory_NVC()
+    public void SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator()
     {
         Assert.IsNotNull(SimulatorFactory.Get("nvc"));
         Assert.IsNotNull(SimulatorFactory.Get("NVC"));
@@ -82,7 +82,7 @@ public class SimulatorFactoryTests
     /// Test querying the simulator factory for an unknown simulator
     /// </summary>
     [TestMethod]
-    public void Test_SimulatorFactory_Unknown()
+    public void SimulatorFactory_Get_UnknownSimulator_ReturnsNull()
     {
         Assert.IsNull(SimulatorFactory.Get("unknown"));
         Assert.IsNull(SimulatorFactory.Get("Unknown"));
