@@ -30,7 +30,7 @@ public class UsageTests
     /// Test usage information is reported when no arguments are specified
     /// </summary>
     [TestMethod]
-    public void Usage_NoArguments()
+    public void Program_Run_NoArguments_DisplaysUsageAndReturnsError()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -50,7 +50,7 @@ public class UsageTests
     /// Test usage information is reported when the '-h' parameter is specified
     /// </summary>
     [TestMethod]
-    public void Usage_Short()
+    public void Program_Run_WithHelpShort_DisplaysUsageAndReturnsSuccess()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -70,7 +70,7 @@ public class UsageTests
     /// Test usage information is reported when the '-?' parameter is specified
     /// </summary>
     [TestMethod]
-    public void Usage_QuestionMark()
+    public void Program_Run_WithHelpQuestion_DisplaysUsageAndReturnsSuccess()
     {
         // Run the application
         var exitCode = Runner.Run(
@@ -90,7 +90,7 @@ public class UsageTests
     /// Test usage information is reported when the '--help' parameter is specified
     /// </summary>
     [TestMethod]
-    public void Usage_Long()
+    public void Program_Run_WithHelpLong_DisplaysUsageAndReturnsSuccess()
     {
         // Run the application
         var exitCode = Runner.Run(

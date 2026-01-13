@@ -33,7 +33,7 @@ public class ModelSimSimulatorTests
     /// Check name of GHDL simulator
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Name()
+    public void ModelSimSimulator_SimulatorName_ReturnsModelSim()
     {
         Assert.AreEqual("ModelSim", ModelSimSimulator.Instance.SimulatorName);
     }
@@ -42,7 +42,7 @@ public class ModelSimSimulatorTests
     /// Test ModelSim simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Compile_Clean()
+    public void ModelSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = ModelSimSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -66,7 +66,7 @@ public class ModelSimSimulatorTests
     /// Test ModelSim simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Compile_Error()
+    public void ModelSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = ModelSimSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -90,7 +90,7 @@ public class ModelSimSimulatorTests
     /// Test ModelSim simulator test with clean output
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Test_Clean()
+    public void ModelSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -114,7 +114,7 @@ public class ModelSimSimulatorTests
     /// Test ModelSim simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Test_Info()
+    public void ModelSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -138,7 +138,7 @@ public class ModelSimSimulatorTests
     /// Test ModelSim simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Test_Warning()
+    public void ModelSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -162,7 +162,7 @@ public class ModelSimSimulatorTests
     /// Test ModelSim simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void Test_ModelSimSimulator_Test_Error()
+    public void ModelSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),

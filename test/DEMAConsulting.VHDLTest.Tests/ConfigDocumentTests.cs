@@ -49,7 +49,7 @@ public class ConfigDocumentTests
     /// Test reading a missing configuration file
     /// </summary>
     [TestMethod]
-    public void Test_ConfigDocument_Missing()
+    public void ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException()
     {
         Assert.ThrowsExactly<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
     }
@@ -58,7 +58,7 @@ public class ConfigDocumentTests
     /// Test reading a valid configuration file
     /// </summary>
     [TestMethod]
-    public void Test_ConfigDocument_Valid()
+    public void ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully()
     {
         try
         {

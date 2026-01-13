@@ -39,7 +39,7 @@ public partial class VersionTests
     /// Test version information is reported when the '-v' parameter is specified
     /// </summary>
     [TestMethod]
-    public void VersionShort()
+    public void Program_Run_WithVersionShort_DisplaysVersionAndReturnsSuccess()
     {
         // Query version
         var exitCode = Runner.Run(
@@ -59,7 +59,7 @@ public partial class VersionTests
     /// Test version information is reported when the '--version' parameter is specified
     /// </summary>
     [TestMethod]
-    public void VersionLong()
+    public void Program_Run_WithVersionLong_DisplaysVersionAndReturnsSuccess()
     {
         // Query version
         var exitCode = Runner.Run(

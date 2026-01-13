@@ -33,7 +33,7 @@ public class NvcSimulatorTests
     /// Check name of NVC simulator
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Name()
+    public void NvcSimulator_SimulatorName_ReturnsNVC()
     {
         Assert.AreEqual("NVC", NvcSimulator.Instance.SimulatorName);
     }
@@ -42,7 +42,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Clean()
+    public void NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -66,7 +66,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Info()
+    public void NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -90,7 +90,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator compile with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Warning()
+    public void NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -114,7 +114,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator compile with an error message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Compile_Error()
+    public void NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -138,7 +138,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator test with clean output
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Clean()
+    public void NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -162,7 +162,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Info()
+    public void NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -186,7 +186,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Warning()
+    public void NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -210,7 +210,7 @@ public class NvcSimulatorTests
     /// Test NVC simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void Test_NvcSimulator_Test_Error()
+    public void NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),

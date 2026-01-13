@@ -54,6 +54,11 @@ Use these commands to perform common development tasks:
 * All new features should be tested with comprehensive unit tests.
 * The build must pass all tests and static analysis warnings before merging.
 * Tests should be written using the AAA (Arrange, Act, Assert) pattern.
+* Test methods must follow the naming convention: `ClassName_MethodUnderTest_Scenario_ExpectedBehavior`
+  * Example: `Context_Create_NoArguments_ReturnsDefaultContext`
+  * Example: `Program_Run_WithValidate_PerformsValidationAndReturnsSuccess`
+  * Example: `SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator`
+* Requirements should primarily link to integration tests that actually run the VHDLTest tool (tests starting with `Program_Run_`).
 
 ## Code Style and Conventions
 

@@ -33,7 +33,7 @@ public class TestResultTests
     /// Test constructing a test result with info
     /// </summary>
     [TestMethod]
-    public void Test_TestResult_Info()
+    public void TestResult_Constructor_WithInfoResult_CreatesPassedTest()
     {
         // Construct the result
         var result = new Results.TestResult(
@@ -62,7 +62,7 @@ public class TestResultTests
     /// Test constructing a test result with error
     /// </summary>
     [TestMethod]
-    public void Test_TestResult_Error()
+    public void TestResult_Constructor_WithErrorResult_CreatesFailedTest()
     {
         // Construct the result
         var result = new Results.TestResult(

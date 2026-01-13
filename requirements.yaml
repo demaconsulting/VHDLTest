@@ -5,278 +5,103 @@ sections:
       - title: "Command-Line Interface"
         requirements:
           - id: "CLI-001"
-            title: "The tool shall provide a command-line interface."
+            title: "The tool shall display usage information when run without arguments."
             tests:
-              - "Test_Arguments_None"
+              - "Program_Run_NoArguments_DisplaysUsageAndReturnsError"
 
           - id: "CLI-002"
             title: "The tool shall display version information when requested."
             tests:
-              - "VersionShort"
-              - "VersionLong"
+              - "Program_Run_WithVersionShort_DisplaysVersionAndReturnsSuccess"
+              - "Program_Run_WithVersionLong_DisplaysVersionAndReturnsSuccess"
 
           - id: "CLI-003"
             title: "The tool shall display help information when requested."
             tests:
-              - "Usage_Short"
-              - "Usage_Long"
-              - "Usage_QuestionMark"
-              - "Usage_NoArguments"
-
-          - id: "CLI-004"
-            title: "The tool shall support silent mode to suppress console output."
-            tests:
-              - "TestExecutionErrorSuppress"
-
-          - id: "CLI-005"
-            title: "The tool shall support verbose mode for detailed output."
-            tests:
-              - "Test_Arguments_Verbose"
-              - "Test_Options_Verbose"
-
-          - id: "CLI-006"
-            title: "The tool shall allow specification of configuration files."
-            tests:
-              - "Test_Arguments_ConfigFile"
-              - "Test_Options_ConfigFile"
-
-          - id: "CLI-007"
-            title: "The tool shall allow specification of test results output file."
-            tests:
-              - "Test_Arguments_ResultsFile"
-
-          - id: "CLI-008"
-            title: "The tool shall allow specification of simulator to use."
-            tests:
-              - "Test_Arguments_Simulator"
-
-          - id: "CLI-009"
-            title: "The tool shall support exit-0 mode to always exit with code 0."
-            tests:
-              - "Test_Arguments_ExitZero"
-
-          - id: "CLI-010"
-            title: "The tool shall handle invalid command-line arguments appropriately."
-            tests:
-              - "Test_Arguments_Unknown"
-              - "Test_Arguments_ConfigFile_Missing"
-              - "Test_Arguments_ResultsFile_Missing"
-              - "Test_Arguments_Simulator_Missing"
-
-      - title: "Configuration File Processing"
-        requirements:
-          - id: "CFG-001"
-            title: "The tool shall process YAML configuration files."
-            tests:
-              - "Test_ConfigDocument_Valid"
-
-          - id: "CFG-002"
-            title: "The tool shall read VHDL file lists from configuration."
-            tests:
-              - "Test_ConfigDocument_Valid"
-
-          - id: "CFG-003"
-            title: "The tool shall read test bench lists from configuration."
-            tests:
-              - "Test_ConfigDocument_Valid"
-              - "Test_Arguments_CustomTest"
-              - "Test_Arguments_CustomTests"
-              - "Test_Options_CustomTest"
-
-          - id: "CFG-004"
-            title: "The tool shall handle missing configuration files with appropriate error messages."
-            tests:
-              - "Test_ConfigDocument_Missing"
-              - "Test_Options_MissingConfig"
-
-          - id: "CFG-005"
-            title: "The tool shall operate without configuration when no config file is specified."
-            tests:
-              - "Test_Options_NoConfig"
-
-      - title: "Simulator Support"
-        requirements:
-          - id: "SIM-001"
-            title: "The tool shall support the GHDL simulator."
-            tests:
-              - "Test_SimulatorFactory_Ghdl"
-              - "Test_GhdlSimulator_Name"
-              - "Test_GhdlSimulator_Compile_Clean"
-              - "Test_GhdlSimulator_Test_Clean"
-              - "ubuntu-latest@ghdl"
-              - "windows-latest@ghdl"
-
-          - id: "SIM-002"
-            title: "The tool shall support the ModelSim simulator."
-            tests:
-              - "Test_SimulatorFactory_ModelSim"
-              - "Test_ModelSimSimulator_Name"
-              - "Test_ModelSimSimulator_Compile_Clean"
-              - "Test_ModelSimSimulator_Test_Clean"
-
-          - id: "SIM-003"
-            title: "The tool shall support the Vivado simulator."
-            tests:
-              - "Test_SimulatorFactory_Vivado"
-              - "Test_VivadoSimulator_Name"
-              - "Test_VivadoSimulator_Compile_Clean"
-              - "Test_VivadoSimulator_Test_Clean"
-
-          - id: "SIM-004"
-            title: "The tool shall support the ActiveHDL simulator."
-            tests:
-              - "Test_SimulatorFactory_ActiveHDL"
-              - "Test_ActiveHdlSimulator_Name"
-              - "Test_ActiveHdlSimulator_Compile_Clean"
-              - "Test_ActiveHdlSimulator_Test_Clean"
-
-          - id: "SIM-005"
-            title: "The tool shall support the NVC simulator."
-            tests:
-              - "Test_SimulatorFactory_NVC"
-              - "Test_NvcSimulator_Name"
-              - "Test_NvcSimulator_Compile_Clean"
-              - "Test_NvcSimulator_Test_Clean"
-              - "ubuntu-latest@nvc"
-              - "windows-latest@nvc"
-
-          - id: "SIM-006"
-            title: "The tool shall create appropriate simulator instances based on configuration."
-            tests:
-              - "Test_SimulatorFactory_Ghdl"
-              - "Test_SimulatorFactory_ModelSim"
-              - "Test_SimulatorFactory_Vivado"
-              - "Test_SimulatorFactory_ActiveHDL"
-              - "Test_SimulatorFactory_NVC"
-
-          - id: "SIM-007"
-            title: "The tool shall handle unsupported simulators with appropriate error messages."
-            tests:
-              - "Test_SimulatorFactory_Unknown"
+              - "Program_Run_WithHelpShort_DisplaysUsageAndReturnsSuccess"
+              - "Program_Run_WithHelpQuestion_DisplaysUsageAndReturnsSuccess"
+              - "Program_Run_WithHelpLong_DisplaysUsageAndReturnsSuccess"
 
       - title: "Test Execution"
         requirements:
           - id: "TEST-001"
-            title: "The tool shall execute VHDL test benches."
+            title: "The tool shall execute VHDL test benches and return zero exit code on success."
             tests:
-              - "TestExecutionPassed"
-              - "Test_GhdlSimulator_Test_Clean"
-              - "Test_ModelSimSimulator_Test_Clean"
-              - "Test_VivadoSimulator_Test_Clean"
-              - "Test_ActiveHdlSimulator_Test_Clean"
-              - "Test_NvcSimulator_Test_Clean"
+              - "Program_Run_TestsPassed_ReturnsZeroExitCode"
 
           - id: "TEST-002"
-            title: "The tool shall detect test bench pass/fail status."
+            title: "The tool shall return non-zero exit code when compilation fails."
             tests:
-              - "TestExecutionPassed"
-              - "TestExecutionError"
-              - "Test_RunProcessor_Pass"
-              - "Test_RunProcessor_Error"
+              - "Program_Run_CompileError_ReturnsNonZeroExitCode"
 
           - id: "TEST-003"
-            title: "The tool shall generate test results in TRX format."
+            title: "The tool shall return non-zero exit code when tests fail."
             tests:
-              - "Test_TestResults_SaveToTrx"
+              - "Program_Run_TestExecutionError_ReturnsNonZeroExitCode"
 
           - id: "TEST-004"
-            title: "The tool shall handle test execution errors appropriately."
+            title: "The tool shall support exit-0 mode to always return zero exit code."
             tests:
-              - "TestExecutionError"
-              - "TestCompileError"
-
-      - title: "Test Output Processing"
-        requirements:
-          - id: "OUT-001"
-            title: "The tool shall parse simulator output for test results."
-            tests:
-              - "Test_RunProcessor_Pass"
-              - "Test_RunProcessor_Error"
-              - "Test_RunProcessor_Missing"
-
-          - id: "OUT-002"
-            title: "The tool shall recognize pass assertions in test output."
-            tests:
-              - "Test_RunProcessor_Pass"
-
-          - id: "OUT-003"
-            title: "The tool shall recognize failure assertions in test output."
-            tests:
-              - "Test_RunProcessor_Error"
-
-          - id: "OUT-004"
-            title: "The tool shall categorize simulator output lines for different message types."
-            tests:
-              - "Test_GhdlSimulator_Test_Info"
-              - "Test_GhdlSimulator_Test_Warning"
-              - "Test_GhdlSimulator_Test_Error"
-              - "Test_GhdlSimulator_Compile_Warning"
-              - "Test_GhdlSimulator_Compile_Error"
-              - "Test_ModelSimSimulator_Test_Info"
-              - "Test_ModelSimSimulator_Test_Warning"
-              - "Test_ModelSimSimulator_Test_Error"
-              - "Test_ModelSimSimulator_Compile_Error"
-              - "Test_VivadoSimulator_Test_Info"
-              - "Test_VivadoSimulator_Test_Warning"
-              - "Test_VivadoSimulator_Test_Error"
-              - "Test_VivadoSimulator_Compile_Error"
-              - "Test_ActiveHdlSimulator_Test_Info"
-              - "Test_ActiveHdlSimulator_Test_Warning"
-              - "Test_ActiveHdlSimulator_Test_Error"
-              - "Test_ActiveHdlSimulator_Compile_Warning"
-              - "Test_ActiveHdlSimulator_Compile_Error"
-              - "Test_NvcSimulator_Test_Info"
-              - "Test_NvcSimulator_Test_Warning"
-              - "Test_NvcSimulator_Test_Error"
-              - "Test_NvcSimulator_Compile_Info"
-              - "Test_NvcSimulator_Compile_Warning"
-              - "Test_NvcSimulator_Compile_Error"
-
-      - title: "Test Results"
-        requirements:
-          - id: "RES-001"
-            title: "The tool shall track individual test result information."
-            tests:
-              - "Test_TestResult_Info"
-              - "Test_TestResult_Error"
-
-          - id: "RES-002"
-            title: "The tool shall save test results to TRX format files."
-            tests:
-              - "Test_TestResults_SaveToTrx"
+              - "Program_Run_TestExecutionErrorWithExit0_ReturnsZeroExitCode"
 
       - title: "Validation"
         requirements:
           - id: "VAL-001"
             title: "The tool shall support self-validation mode."
             tests:
-              - "Test_Arguments_Validate"
-              - "Validation"
+              - "Program_Run_WithValidate_PerformsValidationAndReturnsSuccess"
+              - "Context_Create_WithValidate_SetsValidateFlag"
 
           - id: "VAL-002"
-            title: "The tool shall generate validation reports."
+            title: "The tool shall support configurable validation report depth."
             tests:
-              - "Validation_Results"
+              - "Program_Run_WithValidateAndDepth_PerformsValidationWithDepth"
 
           - id: "VAL-003"
+            title: "The tool shall save validation results to file."
+            tests:
+              - "Program_Run_WithValidateAndResultsFile_SavesValidationResults"
+
+          - id: "VAL-004"
             title: "The tool shall include system information in validation reports."
             tests:
-              - "Validation_OSVersion"
-              - "Validation_Depth"
+              - "Program_Run_WithValidate_IncludesOSVersionInReport"
 
-      - title: "Exit Code Handling"
+      - title: "Simulator Support"
         requirements:
-          - id: "EXIT-001"
-            title: "The tool shall exit with appropriate codes based on test execution results."
+          - id: "SIM-001"
+            title: "The tool shall support the GHDL simulator."
             tests:
-              - "TestExecutionPassed"
-              - "TestExecutionError"
+              - "SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator"
+              - "GhdlSimulator_SimulatorName_ReturnsGHDL"
+              - "ubuntu-latest@ghdl"
+              - "windows-latest@ghdl"
 
-          - id: "EXIT-002"
-            title: "The tool shall support exit-0 mode to override failure exit codes."
+          - id: "SIM-002"
+            title: "The tool shall support the ModelSim simulator."
             tests:
-              - "Test_Arguments_ExitZero"
-              - "TestExecutionErrorSuppress"
+              - "SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator"
+              - "ModelSimSimulator_SimulatorName_ReturnsModelSim"
+
+          - id: "SIM-003"
+            title: "The tool shall support the Vivado simulator."
+            tests:
+              - "SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator"
+              - "VivadoSimulator_SimulatorName_ReturnsVivado"
+
+          - id: "SIM-004"
+            title: "The tool shall support the ActiveHDL simulator."
+            tests:
+              - "SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator"
+              - "ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL"
+
+          - id: "SIM-005"
+            title: "The tool shall support the NVC simulator."
+            tests:
+              - "SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator"
+              - "NvcSimulator_SimulatorName_ReturnsNVC"
+              - "ubuntu-latest@nvc"
+              - "windows-latest@nvc"
 
       - title: "Platform Support"
         requirements:
@@ -314,4 +139,3 @@ sections:
               - "net10.0@UnitTests"
               - "dotnet10.x@ghdl"
               - "dotnet10.x@nvc"
-

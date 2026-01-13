@@ -33,7 +33,7 @@ public class ActiveHdlSimulatorTests
     /// Check name of ActiveHDL simulator name
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Name()
+    public void ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL()
     {
         Assert.AreEqual("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
     }
@@ -42,7 +42,7 @@ public class ActiveHdlSimulatorTests
     /// Test ActiveHDL simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Compile_Clean()
+    public void ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = ActiveHdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -66,7 +66,7 @@ public class ActiveHdlSimulatorTests
     /// Test ActiveHDL simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Compile_Warning()
+    public void ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = ActiveHdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -90,7 +90,7 @@ public class ActiveHdlSimulatorTests
     /// Test ActiveHDL simulator compile with an error message
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Compile_Error()
+    public void ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = ActiveHdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -114,7 +114,7 @@ public class ActiveHdlSimulatorTests
     /// T
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Test_Clean()
+    public void ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -138,7 +138,7 @@ public class ActiveHdlSimulatorTests
     /// Test ActiveHDL simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Test_Info()
+    public void ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -162,7 +162,7 @@ public class ActiveHdlSimulatorTests
     /// Test ActiveHDL simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Test_Warning()
+    public void ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -186,7 +186,7 @@ public class ActiveHdlSimulatorTests
     /// Test ActiveHDL simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void Test_ActiveHdlSimulator_Test_Error()
+    public void ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),

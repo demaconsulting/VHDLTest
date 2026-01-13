@@ -34,7 +34,7 @@ public class TestResultsTests
     /// Test saving test results to a TRX file.
     /// </summary>
     [TestMethod]
-    public void Test_TestResults_SaveToTrx()
+    public void TestResults_SaveToTrx_WithTestResults_CreatesTrxFile()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(

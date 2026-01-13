@@ -32,7 +32,7 @@ public class RunProcessorTests
     /// Test running a missing program.
     /// </summary>
     [TestMethod]
-    public void Test_RunProcessor_Missing()
+    public void RunProcessor_Execute_MissingProgram_ThrowsException()
     {
         // Construct the processor
         var processor = new RunProcessor(
@@ -56,7 +56,7 @@ public class RunProcessorTests
     /// Test running a program with an error.
     /// </summary>
     [TestMethod]
-    public void Test_RunProcessor_Error()
+    public void RunProcessor_Execute_ProgramWithError_ReturnsErrorResult()
     {
         // Construct the processor
         var processor = new RunProcessor(
@@ -75,7 +75,7 @@ public class RunProcessorTests
     /// Test running a program producing passing output.
     /// </summary>
     [TestMethod]
-    public void Test_RunProcessor_Pass()
+    public void RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult()
     {
         // Construct the processor
         var processor = new RunProcessor(

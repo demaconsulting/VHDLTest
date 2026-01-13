@@ -33,7 +33,7 @@ public class GhdlSimulatorTests
     /// Check name of GHDL simulator
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Name()
+    public void GhdlSimulator_SimulatorName_ReturnsGHDL()
     {
         Assert.AreEqual("GHDL", GhdlSimulator.Instance.SimulatorName);
     }
@@ -42,7 +42,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Compile_Clean()
+    public void GhdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -66,7 +66,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Compile_Warning()
+    public void GhdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -90,7 +90,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator compile with an error message
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Compile_Error()
+    public void GhdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -114,7 +114,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator test with clean output
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Test_Clean()
+    public void GhdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -138,7 +138,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Test_Info()
+    public void GhdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -162,7 +162,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Test_Warning()
+    public void GhdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
@@ -186,7 +186,7 @@ public class GhdlSimulatorTests
     /// Test GHDL simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void Test_GhdlSimulator_Test_Error()
+    public void GhdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
