@@ -4,7 +4,9 @@ This document specifies the requirements for the VHDLTest tool, a VHDL test benc
 
 ## Purpose
 
-The VHDLTest tool is designed to automate the execution of VHDL test benches across multiple HDL simulators and generate standardized test results. This requirements document defines the functional and non-functional requirements that the tool must satisfy.
+The VHDLTest tool is designed to automate the execution of VHDL test benches across multiple HDL simulators and
+generate standardized test results. This requirements document defines the functional and non-functional requirements
+that the tool must satisfy.
 
 ## Scope
 

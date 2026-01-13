@@ -1,10 +1,12 @@
 # Introduction
 
-This document provides a requirements traceability matrix for the VHDLTest tool, showing the relationship between requirements and test cases that verify them.
+This document provides a requirements traceability matrix for the VHDLTest tool, showing the relationship between
+requirements and test cases that verify them.
 
 ## Purpose
 
-The traceability matrix demonstrates that all requirements have been adequately tested and provides evidence of verification coverage. This is essential for:
+The traceability matrix demonstrates that all requirements have been adequately tested and provides evidence of
+verification coverage. This is essential for:
 
 * Quality assurance
 * Regulatory compliance
