@@ -312,14 +312,17 @@ jobs:
         run: npm install
 
       - name: Build PDF with Pandoc
-        shell: pwsh
-        run: |
-          dotnet pandoc --defaults docs/guide/definition.yaml -o docs/guide/guide.html
+        run: >
+          dotnet pandoc
+          --defaults docs/guide/definition.yaml
+          --filter node_modules/.bin/mermaid-filter.cmd
+          --output docs/guide/guide.html
 
       - name: Convert HTML to PDF with Weasyprint
-        shell: pwsh
-        run: |
-          dotnet weasyprint docs/guide/guide.html "docs/VHDLTest User Guide.pdf"
+        run: >
+          dotnet weasyprint
+          docs/guide/guide.html
+          "docs/VHDLTest User Guide.pdf"
 
       - name: Upload Document Artifacts
         uses: actions/upload-artifact@v6
