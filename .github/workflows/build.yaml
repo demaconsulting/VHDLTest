@@ -220,9 +220,9 @@ jobs:
       - name: Validate VHDLTest
         shell: bash
         run: >
-          # Run the validation
           vhdltest --validate --simulator ghdl
-          --results ghdl-${{ matrix.os }}-${{ matrix.dotnet }}-validation.trx
+          --results ghdl-${{ matrix.os }}-dotnet${{ matrix.dotnet }}-validation.trx
+          && echo "Validation completed successfully"
 
       - name: Run
         working-directory: test/example
@@ -234,7 +234,7 @@ jobs:
       - name: Upload Test Results
         uses: actions/upload-artifact@v6
         with:
-          name: test-results-ghdl-${{ matrix.os }}-${{ matrix.dotnet }}
+          name: test-results-ghdl-${{ matrix.os }}-dotnet${{ matrix.dotnet }}
           path: "*.trx"
 
   test-nvc:
@@ -289,7 +289,8 @@ jobs:
         shell: bash
         run: >
           vhdltest --validate --simulator nvc
-          --results nvc-${{ matrix.os }}-${{ matrix.dotnet }}-validation.trx
+          --results nvc-${{ matrix.os }}-dotnet${{ matrix.dotnet }}-validation.trx
+          && echo "Validation completed successfully"
 
       - name: Run
         working-directory: test/example
@@ -301,7 +302,7 @@ jobs:
       - name: Upload Test Results
         uses: actions/upload-artifact@v6
         with:
-          name: test-results-nvc-${{ matrix.os }}-${{ matrix.dotnet }}
+          name: test-results-nvc-${{ matrix.os }}-dotnet${{ matrix.dotnet }}
           path: "*.trx"
 
   build-docs:
