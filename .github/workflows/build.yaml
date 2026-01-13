@@ -42,7 +42,6 @@ jobs:
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint.yaml
-          file_or_dir: .
 
   build:
     # Permissions for this job

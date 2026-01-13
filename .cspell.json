@@ -44,6 +44,11 @@
     "*.pdb",
     "*.nupkg",
     "*.snupkg",
+    "*.trx",
+    "*.csproj",
+    "*spdx.json",
+    "package-lock.json",
+    "yarn.lock",
     "TestResults",
     ".vs",
     "*.bak"

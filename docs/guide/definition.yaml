@@ -15,8 +15,7 @@ input-files:
 template: template.html
 
 # Table of contents settings
-toc: true
-toc-depth: 3
+table-of-contents: true
 
 # Enable numbered sections
 number-sections: true
