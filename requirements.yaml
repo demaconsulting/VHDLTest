@@ -73,8 +73,8 @@ sections:
             tests:
               - "SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator"
               - "GhdlSimulator_SimulatorName_ReturnsGHDL"
-              - "ghdl@full_adder_pass_tb"
-              - "ghdl@full_adder_fail_tb"
+              - "ghdl@VHDLTest_TestPasses"
+              - "ghdl@VHDLTest_TestFails"
 
           - id: "SIM-002"
             title: "The tool shall support the ModelSim simulator."
@@ -99,40 +99,40 @@ sections:
             tests:
               - "SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator"
               - "NvcSimulator_SimulatorName_ReturnsNVC"
-              - "nvc@full_adder_pass_tb"
-              - "nvc@full_adder_fail_tb"
+              - "nvc@VHDLTest_TestPasses"
+              - "nvc@VHDLTest_TestFails"
 
       - title: "Platform Support"
         requirements:
           - id: "PLT-001"
             title: "The tool shall run on Ubuntu Linux operating systems."
             tests:
-              - "ubuntu-latest@full_adder_pass_tb"
-              - "ubuntu-latest@full_adder_fail_tb"
+              - "ubuntu-latest@VHDLTest_TestPasses"
+              - "ubuntu-latest@VHDLTest_TestFails"
 
           - id: "PLT-002"
             title: "The tool shall run on Windows operating systems."
             tests:
-              - "windows-latest@full_adder_pass_tb"
-              - "windows-latest@full_adder_fail_tb"
+              - "windows-latest@VHDLTest_TestPasses"
+              - "windows-latest@VHDLTest_TestFails"
 
           - id: "PLT-003"
             title: "The tool shall support .NET 8.0 runtime."
             tests:
               - "net8.0@UnitTests"
-              - "dotnet8.x@full_adder_pass_tb"
-              - "dotnet8.x@full_adder_fail_tb"
+              - "dotnet8.x@VHDLTest_TestPasses"
+              - "dotnet8.x@VHDLTest_TestFails"
 
           - id: "PLT-004"
             title: "The tool shall support .NET 9.0 runtime."
             tests:
               - "net9.0@UnitTests"
-              - "dotnet9.x@full_adder_pass_tb"
-              - "dotnet9.x@full_adder_fail_tb"
+              - "dotnet9.x@VHDLTest_TestPasses"
+              - "dotnet9.x@VHDLTest_TestFails"
 
           - id: "PLT-005"
             title: "The tool shall support .NET 10.0 runtime."
             tests:
               - "net10.0@UnitTests"
-              - "dotnet10.x@full_adder_pass_tb"
-              - "dotnet10.x@full_adder_fail_tb"
+              - "dotnet10.x@VHDLTest_TestPasses"
+              - "dotnet10.x@VHDLTest_TestFails"
