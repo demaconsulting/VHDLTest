@@ -353,7 +353,7 @@ jobs:
           --requirements requirements.yaml
           --tests "test-results/**/*.trx"
           --matrix tracematrix.md
-          --enforce-coverage
+          --enforce
 
       - name: Build Requirements PDF with Pandoc
         run: >
