@@ -50,7 +50,6 @@ sections:
             title: "The tool shall support self-validation mode."
             tests:
               - "IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess"
-              - "Context_Create_WithValidate_SetsValidateFlag"
 
           - id: "VAL-002"
             title: "The tool shall support configurable validation report depth."

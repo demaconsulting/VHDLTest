@@ -340,18 +340,12 @@ jobs:
           path: test-results
           merge-multiple: true
 
-      - name: Generate Requirements Report
+      - name: Generate Requirements and Trace Matrix with ReqStream
         run: >
           dotnet reqstream
           --requirements requirements.yaml
           --tests "test-results/**/*.trx"
           --report requirements.md
-
-      - name: Generate Trace Matrix
-        run: >
-          dotnet reqstream
-          --requirements requirements.yaml
-          --tests "test-results/**/*.trx"
           --matrix tracematrix.md
           --enforce
 
