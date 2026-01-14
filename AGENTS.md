@@ -75,6 +75,57 @@ Use these commands to perform common development tasks:
     * Example: `IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess`
 * Requirements should primarily link to integration tests that actually run the VHDLTest tool (tests starting with `IntegrationTest_`).
 
+## Requirements Management
+
+This project maintains formal requirements documentation to ensure quality, traceability, and regulatory compliance support.
+
+### Requirements Documentation Structure
+
+* **requirements.yaml**: The master requirements document defining all functional and non-functional requirements
+* **docs/requirements/**: Additional requirements documentation and supporting materials
+* **docs/tracematrix/**: Requirements traceability matrix showing verification coverage
+
+### Maintaining Requirements
+
+When working on this project, you must:
+
+1. **Review Existing Requirements**: Before implementing features or fixing bugs, review relevant requirements in `requirements.yaml`
+2. **Update Requirements**: If your changes affect existing requirements or introduce new ones:
+   * Add or update requirement entries in `requirements.yaml`
+   * Assign unique requirement IDs following the existing pattern (e.g., `CLI-001`, `TEST-001`, `SIM-001`)
+   * Link requirements to test cases that verify them
+3. **Maintain Traceability**: Ensure all requirements have associated test cases for verification
+4. **Document Changes**: Update `docs/requirements/introduction.md` if you add new requirement categories
+
+### Following Requirements
+
+When implementing features or changes:
+
+1. **Identify Applicable Requirements**: Determine which requirements apply to your work
+2. **Implement to Requirements**: Ensure your implementation satisfies all applicable requirements
+3. **Validate Compliance**: Verify your changes meet the specified requirements through testing
+4. **Update Documentation**: If requirements change, update related documentation
+
+### Testing Requirements
+
+All requirements must be verified through automated testing:
+
+1. **Link Tests to Requirements**: Each requirement in `requirements.yaml` must list associated test cases
+2. **Prefer Integration Tests**: Requirements should primarily link to integration tests (those starting with `IntegrationTest_`)
+3. **Ensure Test Coverage**: All requirements must have at least one passing test case
+4. **Run Validation**: Use `dotnet vhdltest --validate` to generate a requirements traceability matrix
+5. **Review Coverage**: Check that your changes maintain or improve requirements coverage
+
+### Requirements Categories
+
+The project organizes requirements into these categories:
+
+* **Command-Line Interface (CLI-*)**: User interface and command-line options
+* **Test Execution (TEST-*)**: Test bench execution and result handling
+* **Validation (VAL-*)**: Self-validation and tool verification features
+* **Simulator Support (SIM-*)**: HDL simulator integration
+* **Platform Support (PLT-*)**: Operating system and runtime compatibility
+
 ## Code Style and Conventions
 
 * Follow standard C# naming conventions (PascalCase for classes/methods/properties, camelCase for local variables).

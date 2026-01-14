@@ -70,14 +70,53 @@ Run `dotnet build` to see analyzer feedback.
 * Test files should be named `[Component]Tests.cs`
 * Aim for high test coverage
 
+### Requirements
+
+This project maintains formal requirements documentation to ensure quality, traceability, and regulatory compliance support.
+
+#### Requirements Structure
+
+* **requirements.yaml**: Master requirements document in the project root
+* **docs/requirements/**: Additional requirements documentation
+* **docs/tracematrix/**: Requirements traceability matrix
+
+#### Working with Requirements
+
+When contributing to this project:
+
+1. **Review Applicable Requirements**: Before making changes, review `requirements.yaml` for relevant requirements
+2. **Maintain Traceability**: If you add new features:
+   * Add new requirements to `requirements.yaml` with unique IDs (e.g., `CLI-001`, `TEST-001`)
+   * Link requirements to test cases that verify them
+   * Prefer linking to integration tests (tests starting with `IntegrationTest_`)
+3. **Update Tests**: Ensure all requirements have associated test coverage
+4. **Verify Compliance**: Run the validation command to check requirements coverage:
+
+   ```bash
+   dotnet vhdltest --validate
+   ```
+
+5. **Update Documentation**: If you add new requirement categories, update `docs/requirements/introduction.md`
+
+#### Requirement Categories
+
+Requirements are organized into categories with prefixed IDs:
+
+* **CLI-***: Command-line interface and user interaction
+* **TEST-***: Test execution and result handling
+* **VAL-***: Self-validation and tool verification
+* **SIM-***: HDL simulator integration
+* **PLT-***: Platform and runtime support
+
 ### Pull Request Guidelines
 
 1. **Keep changes focused** - One feature or fix per PR
 2. **Write clear commit messages** - Explain what and why
 3. **Include tests** - New features need test coverage
-4. **Update documentation** - Keep README and comments current
-5. **Follow code style** - Respect the existing patterns
-6. **Ensure CI passes** - All checks must pass before merging
+4. **Update requirements** - Add or update requirements in `requirements.yaml` for new features
+5. **Update documentation** - Keep README and comments current
+6. **Follow code style** - Respect the existing patterns
+7. **Ensure CI passes** - All checks must pass before merging
 
 ### Commit Messages
 
@@ -97,6 +136,7 @@ All submissions require review before merging. Reviewers will check:
 
 * Code quality and style
 * Test coverage
+* Requirements traceability
 * Documentation updates
 * Backward compatibility
 * Performance implications
