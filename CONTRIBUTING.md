@@ -84,7 +84,7 @@ This project maintains formal requirements documentation to ensure quality, trac
 
 When contributing to this project:
 
-1. **Review Applicable Requirements**: Check `requirements.yaml` for requirements related to your changes
+1. **Review Applicable Requirements**: Before making changes, review `requirements.yaml` for relevant requirements
 2. **Maintain Traceability**: If you add new features:
    * Add new requirements to `requirements.yaml` with unique IDs (e.g., `CLI-001`, `TEST-001`)
    * Link requirements to test cases that verify them
