@@ -57,7 +57,7 @@ body:
       label: Additional Context
       description: |
         Add any other context about the problem here, such as configuration files, error messages, or logs.
-        
+
         Please include relevant environment details such as:
         - VHDLTest version (e.g., 1.0.0)
         - HDL Simulator and version (e.g., GHDL 3.0.0)
