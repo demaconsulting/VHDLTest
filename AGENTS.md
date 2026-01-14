@@ -28,6 +28,10 @@ VHDLTest/
 ├── test/
 │   ├── DEMAConsulting.VHDLTest.Tests/  # Tool unit tests
 │   └── example/                    # Example VHDL modules and unit tests
+├── .cspell.json                    # Spell checking configuration
+├── .editorconfig                   # Code formatting rules
+├── .markdownlint.json              # Markdown linting rules
+├── .yamllint.yaml                  # YAML linting configuration
 └── DEMAConsulting.VHDLTest.sln     # Main Visual Studio solution file
 ```
 
