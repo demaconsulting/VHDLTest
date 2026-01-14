@@ -51,65 +51,18 @@ body:
     validations:
       required: true
 
-  - type: input
-    id: version
-    attributes:
-      label: VHDLTest Version
-      description: What version of VHDLTest are you using?
-      placeholder: "e.g., 1.0.0"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: simulator
-    attributes:
-      label: HDL Simulator
-      description: Which HDL simulator are you using?
-      options:
-        - GHDL
-        - ModelSim
-        - Vivado
-        - ActiveHDL
-        - NVC
-        - Other
-        - Not applicable
-    validations:
-      required: true
-
-  - type: input
-    id: simulator-version
-    attributes:
-      label: Simulator Version
-      description: What version of the simulator are you using (if applicable)?
-      placeholder: "e.g., GHDL 3.0.0"
-
-  - type: dropdown
-    id: os
-    attributes:
-      label: Operating System
-      description: What operating system are you using?
-      options:
-        - Windows
-        - Linux
-        - macOS
-        - Other
-    validations:
-      required: true
-
-  - type: input
-    id: dotnet-version
-    attributes:
-      label: .NET Version
-      description: What version of .NET are you using?
-      placeholder: "e.g., .NET 8.0"
-    validations:
-      required: true
-
   - type: textarea
     id: additional-context
     attributes:
       label: Additional Context
-      description: Add any other context about the problem here, such as configuration files, error messages, or logs.
+      description: |
+        Add any other context about the problem here, such as configuration files, error messages, or logs.
+        
+        Please include relevant environment details such as:
+        - VHDLTest version (e.g., 1.0.0)
+        - HDL Simulator and version (e.g., GHDL 3.0.0)
+        - Operating System (e.g., Windows, Linux, macOS)
+        - .NET version (e.g., .NET 8.0)
       placeholder: |
         You can attach files by dragging and dropping them here.
 

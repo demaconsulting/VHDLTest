@@ -18,12 +18,18 @@ VHDLTest is a C# .NET tool for running VHDL unit tests and generating test repor
 
 The repository is organized as follows:
 
-* `/.config/`: Contains the .NET Tool configuration.
-* `/.github/workflows/`: Contains the CI/CD pipeline configurations.
-* `/src/DEMAConsulting.VHDLTest/`: Contains the tool source code.
-* `/test/DEMAConsulting.VHDLTest.Tests/`: Contains the tool unit tests.
-* `/test/example/`: Contains example VHDL modules and unit tests.
-* `/DEMAConsulting.VHDLTest.sln`: The main Visual Studio solution file.
+```text
+VHDLTest/
+├── .config/                        # .NET Tool configuration
+├── .github/
+│   └── workflows/                  # CI/CD pipeline configurations
+├── src/
+│   └── DEMAConsulting.VHDLTest/    # Tool source code
+├── test/
+│   ├── DEMAConsulting.VHDLTest.Tests/  # Tool unit tests
+│   └── example/                    # Example VHDL modules and unit tests
+└── DEMAConsulting.VHDLTest.sln     # Main Visual Studio solution file
+```
 
 ## Development Commands
 
@@ -80,6 +86,7 @@ The project uses several tools to maintain code quality:
 
 * **EditorConfig** (`.editorconfig`): Defines consistent coding styles across editors and IDEs.
 * **Microsoft.CodeAnalysis.NetAnalyzers**: Provides static analysis for performance, security, and reliability.
+* **SonarAnalyzer.CSharp**: Additional static analysis for code quality and security.
 * **.cspell.json**: Spell checking configuration with project-specific dictionary.
 * **.markdownlint.json**: Markdown linting rules configuration.
 * **.yamllint.yaml**: YAML linting configuration for maintaining consistent YAML file formatting.
@@ -103,8 +110,31 @@ The CI/CD pipeline includes:
 * Security scanning
 * Dependabot for weekly dependency updates
 
+### Running Quality Checks
+
+You can run the quality checks locally to ensure your changes meet project standards:
+
+* **Spell Check**:
+
+  ```bash
+  npx cspell "**/*.md" "**/*.cs" "**/*.yaml" "**/*.yml" --config .cspell.json
+  ```
+
+* **Markdown Lint**:
+
+  ```bash
+  npx markdownlint-cli2 "**/*.md" --config .markdownlint.json
+  ```
+
+* **YAML Lint**:
+
+  ```bash
+  yamllint -c .yamllint.yaml .
+  ```
+
 ## Boundaries and Guardrails
 
 * **NEVER** modify files within the `/obj/` or `/bin/` directories.
 * **NEVER** commit secrets, API keys, or sensitive configuration data.
+* **ALWAYS** run the Quality Checks before committing changes to ensure code quality standards are met.
 * **ASK FIRST** before making significant architectural changes to the core library logic.

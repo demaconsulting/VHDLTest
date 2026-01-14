@@ -126,29 +126,6 @@ On validation failure the tool will exit with a non-zero exit code.
 
 This report may be useful in regulated industries requiring evidence of tool validation.
 
-## Code Quality
-
-This project maintains high code quality standards through:
-
-* **Static Analysis**: Microsoft.CodeAnalysis.NetAnalyzers provides comprehensive code analysis
-* **Code Coverage**: Coverlet tracks test coverage during builds
-* **SonarCloud**: Continuous code quality and security analysis
-* **EditorConfig**: Consistent code formatting across all editors
-* **Spell Checking**: cspell configuration for documentation quality
-* **Markdown Linting**: markdownlint for consistent documentation formatting
-* **Automated Checks**: Quality checks workflow with spell checking and markdown linting
-* **Dependency Management**: Dependabot for weekly dependency updates
-
-### For Contributors
-
-The project includes:
-
-* `.editorconfig` - Formatting rules for all editors
-* `.cspell.json` - Spell checking configuration
-* `.markdownlint.json` - Markdown linting rules
-
-Build with `dotnet build` to see code quality feedback.
-
 ## Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines][contributing-url] for details on how to submit
