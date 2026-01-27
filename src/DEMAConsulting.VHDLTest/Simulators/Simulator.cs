@@ -99,19 +99,13 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             searchFiles = [..extensions.Select(e => $"{application}{e}")];
         }
 
-        // Search every path and file
-        foreach (var p in searchPaths)
-        {
-            foreach (var f in searchFiles)
-            {
-                var fullName = Path.Combine(p, f);
-                if (File.Exists(fullName))
-                    return fullName;
-            }
-        }
+        // Search every path and file using SelectMany to combine paths and files
+        var result = searchPaths
+            .SelectMany(p => searchFiles.Select(f => Path.Combine(p, f)))
+            .FirstOrDefault(File.Exists);
 
-        // Not found
-        return null;
+        // Return result (null if not found)
+        return result;
     }
 
     /// <summary>

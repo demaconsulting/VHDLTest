@@ -44,13 +44,9 @@ public sealed record RunResults(
     /// </summary>
     public void Print(Context context)
     {
-        // Write all lines
-        foreach (var line in Lines)
+        // Filter and write all lines
+        foreach (var line in Lines.Where(l => context.Verbose || l.Type != RunLineType.Text))
         {
-            // Skip text lines unless verbose requested
-            if (!context.Verbose && line.Type == RunLineType.Text)
-                continue;
-
             // Pick the desired color
             var color = line.Type switch
             {
