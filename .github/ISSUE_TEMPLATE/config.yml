@@ -1,11 +1,9 @@
 ---
-# GitHub issue template configuration
-# Controls issue creation and provides helpful links
 blank_issues_enabled: false
 contact_links:
-  - name: 💬 GitHub Discussions
+  - name: 💬 Ask a Question
     url: https://github.com/demaconsulting/VHDLTest/discussions
-    about: Ask questions and discuss ideas with the community
-  - name: 🔒 Security Advisory
+    about: Ask questions and discuss with the community
+  - name: 🔒 Security Issue
     url: https://github.com/demaconsulting/VHDLTest/security/advisories/new
-    about: Report security vulnerabilities privately (do not use public issues)
+    about: Report a security vulnerability privately

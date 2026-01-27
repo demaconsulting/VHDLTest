@@ -1,23 +1,21 @@
 ---
-# Feature request issue template for VHDLTest
-# Used to collect structured information about feature requests
 name: ✨ Feature Request
-description: Suggest a new feature or enhancement for VHDLTest
+description: Suggest a new feature or enhancement for the VHDLTest tool
 title: "[Feature]: "
 labels: ["enhancement"]
+assignees: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to suggest a feature! Please fill
-        out the form below to help us understand your request.
+        Thanks for suggesting a feature! Please fill out the sections below to help us understand your request.
 
   - type: textarea
     id: problem
     attributes:
       label: Problem Statement
       description: Is your feature request related to a problem? Please describe.
-      placeholder: "I'm frustrated when..."
+      placeholder: I'm frustrated when... / I need to be able to...
     validations:
       required: true
 
@@ -25,8 +23,8 @@ body:
     id: solution
     attributes:
       label: Proposed Solution
-      description: Describe the solution you'd like to see implemented.
-      placeholder: "I would like VHDLTest to..."
+      description: Describe the solution you'd like to see
+      placeholder: A clear and concise description of what you want to happen
     validations:
       required: true
 
@@ -34,8 +32,29 @@ body:
     id: alternatives
     attributes:
       label: Alternatives Considered
-      description: Describe any alternative solutions or features you've considered.
-      placeholder: "Alternative approaches could include..."
+      description: Describe any alternative solutions or features you've considered
+      placeholder: A clear and concise description of any alternative solutions or features
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Usage Examples
+      description: If applicable, provide examples of how this feature would be used
+      placeholder: |
+        ```csharp
+        // Example usage
+        vhdltest --input report.json --output report.md --feature-flag
+        ```
+      render: csharp
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits
+      description: Explain why this enhancement would be useful to VHDLTest users
+      placeholder: This would be useful because...
+    validations:
+      required: true
 
   - type: dropdown
     id: priority
@@ -43,10 +62,22 @@ body:
       label: Priority
       description: How important is this feature to you?
       options:
-        - Critical - Blocking my work
-        - High - Would significantly improve my workflow
-        - Medium - Would be nice to have
-        - Low - Minor improvement
+        - Low - Nice to have
+        - Medium - Would improve my workflow
+        - High - Blocking my use case
+    validations:
+      required: true
+
+  - type: dropdown
+    id: willingness
+    attributes:
+      label: Willingness to Contribute
+      description: Would you be willing to contribute this feature?
+      options:
+        - "Yes, I can submit a pull request"
+        - "Yes, with guidance from maintainers"
+        - "No, but I can help test it"
+        - "No, I'm just suggesting"
     validations:
       required: true
 
@@ -54,23 +85,18 @@ body:
     id: additional-context
     attributes:
       label: Additional Context
-      description: |
-        Add any other context, screenshots, or examples about the feature request here.
-
-        Please consider including:
-        - Feature area (e.g., Test execution, Report generation, Configuration,
-          Simulator integration, CLI, Documentation)
-        - Specific use case or scenario where this feature would be beneficial
-      placeholder: |
-        You can attach files by dragging and dropping them here.
+      description: Add any other context, screenshots, or links about the feature request here
+      placeholder: Any additional information...
 
   - type: checkboxes
-    id: terms
+    id: checklist
     attributes:
-      label: Code of Conduct
-      description: >
-        By submitting this issue, you agree to follow our
-        [Code of Conduct](https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md)
+      label: Checklist
+      description: Please confirm the following
       options:
-        - label: I agree to follow this project's Code of Conduct
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided a clear description of the feature
+          required: true
+        - label: I have explained why this feature would be useful
           required: true
