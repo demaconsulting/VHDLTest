@@ -366,11 +366,7 @@ jobs:
     name: Build Documents
     runs-on: windows-latest
 
-    needs:
-      - build
-      - test-ghdl
-      - test-nvc
-      - codeql
+    needs: [build, test-ghdl, test-nvc, codeql]
 
     permissions:
       contents: read
@@ -458,18 +454,12 @@ jobs:
 
       - name: Generate CodeQL Quality Report with SarifMark
         shell: pwsh
-        run: |
-          if (Test-Path codeql-results/csharp.sarif) {
-            dotnet sarifmark `
-              --sarif codeql-results/csharp.sarif `
-              --report docs/quality/codeql-quality.md `
-              --heading "VHDLTest CodeQL Analysis" `
-              --report-depth 1
-          } else {
-            Write-Host "No CodeQL SARIF file found, creating placeholder report"
-            $content = "# CodeQL Analysis`n`nCodeQL analysis not available."
-            Set-Content -Path docs/quality/codeql-quality.md -Value $content
-          }
+        run: >
+          dotnet sarifmark
+          --sarif codeql-results/csharp.sarif
+          --report docs/quality/codeql-quality.md
+          --heading "VHDLTest CodeQL Analysis"
+          --report-depth 1
 
       - name: Display CodeQL Quality Report
         shell: pwsh
@@ -481,20 +471,14 @@ jobs:
         shell: pwsh
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          if ([string]::IsNullOrEmpty($env:SONAR_TOKEN)) {
-            Write-Host "SONAR_TOKEN not available, creating placeholder report"
-            $content = "# SonarCloud Analysis`n`nSonarCloud analysis not available."
-            Set-Content -Path docs/quality/sonar-quality.md -Value $content
-          } else {
-            dotnet sonarmark `
-              --server https://sonarcloud.io `
-              --project-key demaconsulting_VHDLTest `
-              --branch ${{ github.ref_name }} `
-              --token "$env:SONAR_TOKEN" `
-              --report docs/quality/sonar-quality.md `
-              --report-depth 1
-          }
+        run: >
+          dotnet sonarmark
+          --server https://sonarcloud.io
+          --project-key demaconsulting_VHDLTest
+          --branch ${{ github.ref_name }}
+          --token "$env:SONAR_TOKEN"
+          --report docs/quality/sonar-quality.md
+          --report-depth 1
 
       - name: Display SonarCloud Quality Report
         shell: pwsh
