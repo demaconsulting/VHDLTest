@@ -25,8 +25,10 @@ jobs:
     name: Build and Test
     # Permissions for this job
     permissions:
-      contents: read        # To read repository contents
-      pull-requests: write  # To write pull requests analysis
+      actions: read           # To read actions for CodeQL
+      contents: read          # To read repository contents
+      pull-requests: write    # To write pull requests analysis
+      security-events: write  # To write security events for CodeQL
     uses: ./.github/workflows/build.yaml
     with:
       version: ${{ inputs.version }}
