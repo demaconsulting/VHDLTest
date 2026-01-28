@@ -1,6 +1,7 @@
 # Agent Quick Reference
 
-Project-specific guidance for agents working on VHDLTest - a .NET CLI tool for running VHDL unit tests and generating test reports.
+Project-specific guidance for agents working on VHDLTest - a .NET CLI tool for running VHDL unit tests and
+generating test reports.
 
 ## Tech Stack
 
@@ -21,7 +22,8 @@ Project-specific guidance for agents working on VHDLTest - a .NET CLI tool for r
 
 ## Testing (VHDLTest-Specific)
 
-- **Test Naming**: `ClassName_MethodUnderTest_Scenario_ExpectedBehavior` (unit tests) or `IntegrationTest_Scenario_ExpectedBehavior` (integration tests)
+- **Test Naming**: `ClassName_MethodUnderTest_Scenario_ExpectedBehavior` (unit tests) or
+  `IntegrationTest_Scenario_ExpectedBehavior` (integration tests)
 - **MSTest v4**: Use modern assertions like `Assert.IsTrue()`, `Assert.AreEqual()`
 - **Integration Tests**: Prefer tests that run the actual VHDLTest tool (starting with `IntegrationTest_`)
 
@@ -53,6 +55,7 @@ dotnet build --configuration Release && dotnet test --configuration Release
 
 Delegate tasks to specialized agents for better results:
 
-- **documentation-writer** - Invoke for: documentation updates/reviews, requirements.yaml changes, markdown/spell/YAML linting
+- **documentation-writer** - Invoke for: documentation updates/reviews, requirements.yaml changes,
+  markdown/spell/YAML linting
 - **project-maintainer** - Invoke for: dependency updates, CI/CD maintenance, releases, requirements traceability enforcement
 - **software-quality-enforcer** - Invoke for: code quality reviews, test coverage verification, static analysis, zero-warning builds, requirements test quality

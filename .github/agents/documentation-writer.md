@@ -17,7 +17,8 @@ Invoke the documentation-writer agent for:
 - Markdown, spell checking, and YAML linting issues
 - Documentation structure and organization improvements
 
-For requirements quality: After this agent updates requirements, invoke the software-quality-enforcer agent to ensure requirements have proper test coverage and quality.
+For requirements quality: After this agent updates requirements, invoke the software-quality-enforcer agent to
+ensure requirements have proper test coverage and quality.
 
 ## VHDLTest-Specific Rules
 
