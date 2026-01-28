@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ public static class Validation
     /// Validation folder name
     /// </summary>
     private const string ValidationFolder = "validation.tmp";
-    
+
     /// <summary>
     ///     Run self-validation
     /// </summary>
@@ -65,7 +65,7 @@ public static class Validation
 
         // Save results if requested
         if (context.ResultsFile != null)
-            results.SaveToTrx(context.ResultsFile);
+            results.SaveResults(context.ResultsFile);
 
         // If all validations succeeded (no errors) then report validation passed
         if (context.Errors == 0)
@@ -82,7 +82,7 @@ public static class Validation
         // Run the validation files
         var start = DateTime.UtcNow;
         var exitCode = RunValidation(out var output, context.Simulator);
-        var duration = (DateTime.UtcNow -  start).TotalSeconds;
+        var duration = (DateTime.UtcNow - start).TotalSeconds;
 
         // Determine if the test succeeded
         var succeeded =
@@ -158,11 +158,11 @@ public static class Validation
                 args.AddRange(["--simulator", simulator]);
 
             // Run VhdlTest on the validation files
-            var exitCode = RunVhdlTest(ValidationFolder, [..args]);
+            var exitCode = RunVhdlTest(ValidationFolder, [.. args]);
 
             // Read the output
-            results = File.Exists($"{ValidationFolder}/output.log") ? 
-                File.ReadAllText($"{ValidationFolder}/output.log") : 
+            results = File.Exists($"{ValidationFolder}/output.log") ?
+                File.ReadAllText($"{ValidationFolder}/output.log") :
                 "";
 
             // Return the exit code
@@ -248,7 +248,7 @@ public static class Validation
             var target = Path.Combine(path, name);
 
             // Get the resource stream
-            using var stream = typeof(Validation).Assembly.GetManifestResourceStream(resource) ?? 
+            using var stream = typeof(Validation).Assembly.GetManifestResourceStream(resource) ??
                 throw new InvalidOperationException($"Resource {resource} not found");
 
             // Copy the resource to the file

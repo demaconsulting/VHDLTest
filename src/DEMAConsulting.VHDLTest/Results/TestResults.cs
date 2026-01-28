@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,10 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Text;
-using System.Xml.Linq;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DemaConsulting.TestResults;
+using DemaConsulting.TestResults.IO;
 
 namespace DEMAConsulting.VHDLTest.Results;
 
@@ -32,11 +32,6 @@ namespace DEMAConsulting.VHDLTest.Results;
 /// <param name="codeBase">Code Base</param>
 public sealed class TestResults(string runName, string codeBase)
 {
-    /// <summary>
-    ///     Namespace for TRX files
-    /// </summary>
-    private static readonly XNamespace TrxNamespace = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
-
     /// <summary>
     ///     Gets the Test Run ID
     /// </summary>
@@ -111,7 +106,7 @@ public sealed class TestResults(string runName, string codeBase)
             throw new InvalidOperationException("Build Failed");
 
         // Report pass of build
-        context.Write(ConsoleColor.Green, 
+        context.Write(ConsoleColor.Green,
             """
             Build Passed
             
@@ -140,118 +135,69 @@ public sealed class TestResults(string runName, string codeBase)
     }
 
     /// <summary>
-    ///     Save results to TRX file
+    ///     Save results to a file (TRX or JUnit based on file extension)
+    /// </summary>
+    /// <param name="fileName">File name (extension determines format: .trx for TRX, .xml for JUnit, others default to TRX)</param>
+    /// <exception cref="ArgumentException">Thrown when fileName is null or empty</exception>
+    public void SaveResults(string fileName)
+    {
+        // Validate parameter
+        if (string.IsNullOrWhiteSpace(fileName))
+            throw new ArgumentException("File name cannot be null or empty", nameof(fileName));
+
+        // Create the TestResults from the library
+        var testResults = new DemaConsulting.TestResults.TestResults
+        {
+            Id = RunId,
+            Name = RunName
+        };
+
+        // Add each test result
+        foreach (var test in Tests)
+        {
+            var result = new DemaConsulting.TestResults.TestResult
+            {
+                TestId = test.TestId,
+                ExecutionId = test.ExecutionId,
+                Name = test.TestName,
+                ClassName = test.ClassName,
+                CodeBase = CodeBase,
+                Outcome = test.Passed ? TestOutcome.Passed : TestOutcome.Failed,
+                StartTime = test.RunResults.Start,
+                Duration = TimeSpan.FromSeconds(test.RunResults.Duration),
+                SystemOutput = test.RunResults.Output
+            };
+
+            // Add error information if the test failed
+            if (test.Failed)
+            {
+                result.ErrorMessage = string.Join(
+                    '\n',
+                    test.RunResults.Lines
+                        .Where(l => l.Type == RunLineType.Error)
+                        .Select(l => l.Text));
+            }
+
+            testResults.Results.Add(result);
+        }
+
+        // Determine format based on file extension (.xml = JUnit, others = TRX)
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        var content = extension == ".xml"
+            ? JUnitSerializer.Serialize(testResults)
+            : TrxSerializer.Serialize(testResults);
+
+        // Save the file
+        File.WriteAllText(fileName, content);
+    }
+
+    /// <summary>
+    ///     Save results to TRX file (backward compatibility)
     /// </summary>
     /// <param name="fileName">TRX file name</param>
     public void SaveToTrx(string fileName)
     {
-        // Construct the root element
-        var root = new XElement(TrxNamespace + "TestRun",
-            new XAttribute("id", RunId),
-            new XAttribute("name", RunName));
-
-        // Construct the results
-        var results = new XElement(TrxNamespace + "Results");
-        root.Add(results);
-        foreach (var r in Tests)
-        {
-            // Construct the unit test results
-            var unitTestResult = new XElement(TrxNamespace + "UnitTestResult",
-                new XAttribute("executionId", r.ExecutionId),
-                new XAttribute("testId", r.TestId),
-                new XAttribute("testName", r.TestName),
-                new XAttribute("computerName", Environment.MachineName),
-                new XAttribute("testType", "13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B"),
-                new XAttribute("outcome", r.RunResults.Summary == RunLineType.Error ? "Failed" : "Passed"),
-                new XAttribute("testListId", "19431567-8539-422a-85D7-44EE4E166BDA"));
-            results.Add(unitTestResult);
-
-            // Construct the output
-            var output = new XElement(TrxNamespace + "Output");
-            unitTestResult.Add(output);
-
-            // Add the standard output
-            output.Add(
-                new XElement(TrxNamespace + "StdOut",
-                    new XCData(r.RunResults.Output)));
-
-            // Add the optional error information
-            if (r.Failed)
-                output.Add(
-                    new XElement(TrxNamespace + "ErrorInfo",
-                        new XElement("Message",
-                            new XCData(
-                                string.Join(
-                                    '\n',
-                                    r.RunResults.Lines
-                                        .Where(l => l.Type == RunLineType.Error)
-                                        .Select(l => l.Text))))));
-        }
-
-        // Construct the definitions
-        var definitions = new XElement(TrxNamespace + "TestDefinitions");
-        root.Add(definitions);
-        foreach (var r in Tests)
-            definitions.Add(
-                new XElement(TrxNamespace + "UnitTest",
-                    new XAttribute("name", r.TestName),
-                    new XAttribute("id", r.TestId),
-                    new XElement(TrxNamespace + "Execution",
-                        new XAttribute("id", r.ExecutionId)),
-                    new XElement(TrxNamespace + "TestMethod",
-                        new XAttribute("codeBase", CodeBase),
-                        new XAttribute("className", r.ClassName),
-                        new XAttribute("name", r.TestName))));
-
-        // Construct the test entries
-        var testEntries = new XElement(TrxNamespace + "TestEntries");
-        root.Add(testEntries);
-        foreach (var r in Tests)
-            testEntries.Add(
-                new XElement(TrxNamespace + "TestEntry",
-                    new XAttribute("testId", r.TestId),
-                    new XAttribute("executionId", r.ExecutionId),
-                    new XAttribute("testListId", "19431567-8539-422a-85D7-44EE4E166BDA")));
-
-        // Construct the test lists
-        root.Add(
-            new XElement(TrxNamespace + "TestLists",
-                new XElement(TrxNamespace + "TestList",
-                    new XAttribute("name", "All Loaded Results"),
-                    new XAttribute("id", "19431567-8539-422a-85D7-44EE4E166BDA"))));
-
-        // Construct the complete stdout
-        var stdout = new StringBuilder();
-
-        // Add the build results
-        if (BuildResults != null)
-            foreach (var line in BuildResults.Lines)
-                stdout.AppendLine(line.Text);
-
-        // Add all test executions
-        foreach (var line in Tests.Select(r => r.RunResults.Output))
-            stdout.AppendLine(line);
-
-        // Construct the summary
-        root.Add(
-            new XElement(
-                TrxNamespace + "ResultSummary",
-                new XAttribute("outcome", "Completed"),
-                new XElement(
-                    TrxNamespace + "Counters",
-                    new XAttribute("total", Tests.Count),
-                    new XAttribute("executed", Tests.Count),
-                    new XAttribute("passed", Passes.Count()),
-                    new XAttribute("failed", Fails.Count()))),
-            new XElement(
-                TrxNamespace + "Output",
-                new XElement(
-                    TrxNamespace + "StdOut",
-                    new XCData(stdout.ToString()))));
-
-        // Save the document
-        var doc = new XDocument(root);
-        doc.Save(fileName);
+        SaveResults(fileName);
     }
 
     /// <summary>

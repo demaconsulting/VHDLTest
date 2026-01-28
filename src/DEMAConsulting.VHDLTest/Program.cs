@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -119,7 +119,7 @@ public static class Program
 
             // Save the test results
             if (context.ResultsFile != null)
-                results.SaveToTrx(context.ResultsFile);
+                results.SaveResults(context.ResultsFile);
 
             // If we got failures then exit with an error code
             if (!context.ExitZero && results.Fails.Any())
