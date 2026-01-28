@@ -79,6 +79,16 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
+    /// Test querying the simulator factory for QuestaSim
+    /// </summary>
+    [TestMethod]
+    public void SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator()
+    {
+        Assert.IsNotNull(SimulatorFactory.Get("questasim"));
+        Assert.IsNotNull(SimulatorFactory.Get("QuestaSim"));
+    }
+
+    /// <summary>
     /// Test querying the simulator factory for an unknown simulator
     /// </summary>
     [TestMethod]
