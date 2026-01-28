@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -18,9 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using DEMAConsulting.VHDLTest.Run;
 using System.Text;
 using DEMAConsulting.VHDLTest.Results;
+using DEMAConsulting.VHDLTest.Run;
 
 namespace DEMAConsulting.VHDLTest.Simulators;
 

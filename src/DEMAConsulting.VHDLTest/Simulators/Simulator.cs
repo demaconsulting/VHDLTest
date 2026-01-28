@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             .Select(Path.GetFullPath)
             .Distinct()
             .ToList();
-        var searchFiles = new List<string> {application};
+        var searchFiles = new List<string> { application };
 
         // Handle windows specifics
         if (OperatingSystem.IsWindows())
@@ -96,7 +96,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             // Update the files list considering the executable extensions
             var pathExt = Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD";
             var extensions = pathExt.Split(Path.PathSeparator);
-            searchFiles = [..extensions.Select(e => $"{application}{e}")];
+            searchFiles = [.. extensions.Select(e => $"{application}{e}")];
         }
 
         // Search every path and file using SelectMany to combine paths and files

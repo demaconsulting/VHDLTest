@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -106,7 +106,7 @@ public sealed class TestResults(string runName, string codeBase)
             throw new InvalidOperationException("Build Failed");
 
         // Report pass of build
-        context.Write(ConsoleColor.Green, 
+        context.Write(ConsoleColor.Green,
             """
             Build Passed
             
@@ -183,7 +183,7 @@ public sealed class TestResults(string runName, string codeBase)
 
         // Determine format based on file extension (.xml = JUnit, others = TRX)
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        var content = extension == ".xml" 
+        var content = extension == ".xml"
             ? JUnitSerializer.Serialize(testResults)
             : TrxSerializer.Serialize(testResults);
 
