@@ -13,6 +13,6 @@ echo "📋 Checking YAML..."
 yamllint .
 
 echo "🎨 Checking code formatting..."
-dotnet format --verify-no-changes
+dotnet format --verify-no-changes DEMAConsulting.VHDLTest.sln
 
 echo "✨ All linting passed!"

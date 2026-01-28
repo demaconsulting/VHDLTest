@@ -59,7 +59,8 @@
       "command": "dotnet",
       "type": "process",
       "args": [
-        "format"
+        "format",
+        "${workspaceFolder}/DEMAConsulting.VHDLTest.sln"
       ],
       "problemMatcher": [],
       "presentation": {

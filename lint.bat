@@ -14,7 +14,7 @@ call yamllint .
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo Checking code formatting...
-dotnet format --verify-no-changes
+dotnet format --verify-no-changes DEMAConsulting.VHDLTest.sln
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 echo All linting passed!
