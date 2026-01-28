@@ -188,4 +188,58 @@ public class TestResultsTests
                 File.Delete("TestResults.trx");
         }
     }
+
+    /// <summary>
+    /// Test that SaveResults throws ArgumentException for null/empty file name.
+    /// </summary>
+    [TestMethod]
+    public void TestResults_SaveResults_WithNullFileName_ThrowsArgumentException()
+    {
+        var results = new TestResults("TestRun", "TestCodeBase");
+        
+        Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults(null!));
+        Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults(string.Empty));
+        Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults("   "));
+    }
+
+    /// <summary>
+    /// Test that SaveResults defaults to TRX for unknown extensions.
+    /// </summary>
+    [TestMethod]
+    public void TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile()
+    {
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(
+            new Results.TestResult(
+                "TestClass", "TestName",
+                new RunResults(
+                    RunLineType.Info,
+                    new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+                    5.0,
+                    0,
+                    "Test\nNo Issues",
+                    new ReadOnlyCollection<RunLine>([
+                        new RunLine(RunLineType.Text, "Test"),
+                        new RunLine(RunLineType.Text, "No Issues")
+                    ])
+                )
+            )
+        );
+
+        try
+        {
+            results.SaveResults("TestResults.unknown");
+            Assert.IsTrue(File.Exists("TestResults.unknown"));
+            
+            // Verify it's TRX format
+            var content = File.ReadAllText("TestResults.unknown");
+            Assert.Contains("<?xml", content);
+            Assert.Contains("TestRun", content);
+        }
+        finally
+        {
+            if (File.Exists("TestResults.unknown"))
+                File.Delete("TestResults.unknown");
+        }
+    }
 }

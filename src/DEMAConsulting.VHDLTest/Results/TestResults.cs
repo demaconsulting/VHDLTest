@@ -137,9 +137,14 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Save results to a file (TRX or JUnit based on file extension)
     /// </summary>
-    /// <param name="fileName">File name (extension determines format: .trx or .xml)</param>
+    /// <param name="fileName">File name (extension determines format: .trx for TRX, .xml for JUnit, others default to TRX)</param>
+    /// <exception cref="ArgumentException">Thrown when fileName is null or empty</exception>
     public void SaveResults(string fileName)
     {
+        // Validate parameter
+        if (string.IsNullOrWhiteSpace(fileName))
+            throw new ArgumentException("File name cannot be null or empty", nameof(fileName));
+
         // Create the TestResults from the library
         var testResults = new DemaConsulting.TestResults.TestResults
         {
@@ -176,7 +181,7 @@ public sealed class TestResults(string runName, string codeBase)
             testResults.Results.Add(result);
         }
 
-        // Determine format based on file extension
+        // Determine format based on file extension (.xml = JUnit, others = TRX)
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
         var content = extension == ".xml" 
             ? JUnitSerializer.Serialize(testResults)
