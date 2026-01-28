@@ -462,7 +462,6 @@ jobs:
           "docs/VHDLTest User Guide.pdf"
 
       - name: Generate CodeQL Quality Report with SarifMark
-        shell: pwsh
         run: >
           dotnet sarifmark
           --sarif codeql-results/csharp.sarif
@@ -477,7 +476,6 @@ jobs:
           cat docs/quality/codeql-quality.md
 
       - name: Generate Code Quality Report with SonarMark
-        shell: pwsh
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
