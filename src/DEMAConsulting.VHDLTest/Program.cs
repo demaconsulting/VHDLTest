@@ -119,7 +119,7 @@ public static class Program
 
             // Save the test results
             if (context.ResultsFile != null)
-                results.SaveToTrx(context.ResultsFile);
+                results.SaveResults(context.ResultsFile);
 
             // If we got failures then exit with an error code
             if (!context.ExitZero && results.Fails.Any())

@@ -65,7 +65,7 @@ public static class Validation
 
         // Save results if requested
         if (context.ResultsFile != null)
-            results.SaveToTrx(context.ResultsFile);
+            results.SaveResults(context.ResultsFile);
 
         // If all validations succeeded (no errors) then report validation passed
         if (context.Errors == 0)

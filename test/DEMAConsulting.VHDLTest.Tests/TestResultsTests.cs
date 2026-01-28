@@ -34,6 +34,129 @@ public class TestResultsTests
     /// Test saving test results to a TRX file.
     /// </summary>
     [TestMethod]
+    public void TestResults_SaveResults_WithTrxExtension_CreatesTrxFile()
+    {
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(
+            new Results.TestResult(
+                "TestClass", "TestName",
+                new RunResults(
+                    RunLineType.Info,
+                    new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+                    5.0,
+                    0,
+                    "Test\nNo Issues",
+                    new ReadOnlyCollection<RunLine>([
+                        new RunLine(RunLineType.Text, "Test"),
+                        new RunLine(RunLineType.Text, "No Issues")
+                    ])
+                )
+            )
+        );
+
+        try
+        {
+            results.SaveResults("TestResults.trx");
+            Assert.IsTrue(File.Exists("TestResults.trx"));
+            
+            // Verify it's valid XML
+            var content = File.ReadAllText("TestResults.trx");
+            Assert.Contains("<?xml", content);
+            Assert.Contains("TestRun", content);
+        }
+        finally
+        {
+            if (File.Exists("TestResults.trx"))
+                File.Delete("TestResults.trx");
+        }
+    }
+
+    /// <summary>
+    /// Test saving test results to a JUnit XML file.
+    /// </summary>
+    [TestMethod]
+    public void TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile()
+    {
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(
+            new Results.TestResult(
+                "TestClass", "TestName",
+                new RunResults(
+                    RunLineType.Info,
+                    new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+                    5.0,
+                    0,
+                    "Test\nNo Issues",
+                    new ReadOnlyCollection<RunLine>([
+                        new RunLine(RunLineType.Text, "Test"),
+                        new RunLine(RunLineType.Text, "No Issues")
+                    ])
+                )
+            )
+        );
+
+        try
+        {
+            results.SaveResults("TestResults.xml");
+            Assert.IsTrue(File.Exists("TestResults.xml"));
+            
+            // Verify it's valid JUnit XML
+            var content = File.ReadAllText("TestResults.xml");
+            Assert.Contains("<?xml", content);
+            Assert.Contains("testsuites", content);
+        }
+        finally
+        {
+            if (File.Exists("TestResults.xml"))
+                File.Delete("TestResults.xml");
+        }
+    }
+
+    /// <summary>
+    /// Test saving failed test results to a JUnit XML file.
+    /// </summary>
+    [TestMethod]
+    public void TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure()
+    {
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(
+            new Results.TestResult(
+                "TestClass", "FailedTest",
+                new RunResults(
+                    RunLineType.Error,
+                    new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+                    5.0,
+                    1,
+                    "Test\nError occurred",
+                    new ReadOnlyCollection<RunLine>([
+                        new RunLine(RunLineType.Text, "Test"),
+                        new RunLine(RunLineType.Error, "Error occurred")
+                    ])
+                )
+            )
+        );
+
+        try
+        {
+            results.SaveResults("TestResults.xml");
+            Assert.IsTrue(File.Exists("TestResults.xml"));
+            
+            // Verify it contains failure information
+            var content = File.ReadAllText("TestResults.xml");
+            Assert.Contains("failure", content);
+            Assert.Contains("Error occurred", content);
+        }
+        finally
+        {
+            if (File.Exists("TestResults.xml"))
+                File.Delete("TestResults.xml");
+        }
+    }
+
+    /// <summary>
+    /// Test backward compatibility with SaveToTrx method.
+    /// </summary>
+    [TestMethod]
     public void TestResults_SaveToTrx_WithTestResults_CreatesTrxFile()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
@@ -61,7 +184,8 @@ public class TestResultsTests
         }
         finally
         {
-            File.Delete("TestResults.trx");
+            if (File.Exists("TestResults.trx"))
+                File.Delete("TestResults.trx");
         }
     }
 }
