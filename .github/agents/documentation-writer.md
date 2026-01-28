@@ -17,14 +17,15 @@ Invoke the documentation-writer agent for:
 - Markdown, spell checking, and YAML linting issues
 - Documentation structure and organization improvements
 
-For requirements quality: After this agent updates requirements, invoke the software-quality-enforcer agent to
-ensure requirements have proper test coverage and quality.
+For requirements quality: After this agent updates requirements, invoke the software-quality-enforcer agent to ensure
+requirements have proper test coverage and quality.
 
 ## VHDLTest-Specific Rules
 
 ### Markdown
 
-- **README.md ONLY**: Absolute URLs (shipped in NuGet) - `https://github.com/demaconsulting/VHDLTest/blob/main/FILE.md`
+- **README.md ONLY**: Absolute URLs (shipped in NuGet) -
+  `https://github.com/demaconsulting/VHDLTest/blob/main/FILE.md`
 - **All other .md**: Reference-style links - `[text][ref]` with `[ref]: url` at file end
 - Max 120 chars/line, lists need blank lines (MD032)
 
