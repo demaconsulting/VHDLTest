@@ -116,9 +116,6 @@ capabilities compared to ModelSim.
 
 **Configuration**: Set the `VHDLTEST_VIVADO_PATH` environment variable to the Vivado installation folder.
 
-**Configuration**: Set the `VHDLTEST_NVC_PATH` environment variable to the NVC installation folder
-if not in PATH.
-
 ## Configuration
 
 VHDLTest uses YAML configuration files to specify VHDL source files and test benches.
