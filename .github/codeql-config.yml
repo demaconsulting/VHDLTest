@@ -2,8 +2,14 @@
 # CodeQL configuration for VHDLTest
 # Excludes test code from path-combine security analysis
 # Excludes justified generic exception handlers
+# Excludes generated code from analysis
 
 name: "VHDLTest CodeQL Config"
+
+# Exclude generated code and build artifacts from analysis
+paths-ignore:
+  - '**/obj/**'
+  - '**/bin/**'
 
 # Query filters to disable specific queries for certain paths
 query-filters:
