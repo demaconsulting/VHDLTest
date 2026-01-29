@@ -17,7 +17,7 @@ VHDLTest simplifies the process of running VHDL unit tests by:
 
 ### Key Features
 
-* **Multi-Simulator Support**: Works with GHDL, ModelSim, QuestaSim, Vivado, ActiveHDL, and NVC
+* **Multi-Simulator Support**: Works with ActiveHDL, GHDL, ModelSim, NVC, QuestaSim, and Vivado
 * **Standard Test Results**: Generates TRX (Visual Studio Test Results) files
 * **YAML Configuration**: Simple, readable test configuration
 * **CI/CD Integration**: Designed for automated testing pipelines
@@ -77,6 +77,12 @@ This will display the installed version number.
 
 VHDLTest supports the following VHDL simulators:
 
+### ActiveHDL
+
+[ActiveHDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl) is a commercial HDL simulator from Aldec.
+
+**Configuration**: Set the `VHDLTEST_ACTIVEHDL_PATH` environment variable to the ActiveHDL installation folder.
+
 ### GHDL
 
 [GHDL](https://github.com/ghdl/ghdl) is an open-source VHDL simulator.
@@ -90,6 +96,13 @@ if not in PATH.
 
 **Configuration**: Set the `VHDLTEST_MODELSIM_PATH` environment variable to the ModelSim installation folder.
 
+### NVC
+
+[NVC](https://www.nickg.me.uk/nvc) is an open-source VHDL simulator and compiler.
+
+**Configuration**: Set the `VHDLTEST_NVC_PATH` environment variable to the NVC installation folder
+if not in PATH.
+
 ### QuestaSim
 
 [QuestaSim][questasim-ref] is an advanced verification platform from Siemens, offering enhanced performance and
@@ -102,16 +115,6 @@ capabilities compared to ModelSim.
 [Vivado](https://www.xilinx.com/products/design-tools/vivado.html) is Xilinx's design suite for FPGAs.
 
 **Configuration**: Set the `VHDLTEST_VIVADO_PATH` environment variable to the Vivado installation folder.
-
-### ActiveHDL
-
-[ActiveHDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl) is a commercial HDL simulator from Aldec.
-
-**Configuration**: Set the `VHDLTEST_ACTIVEHDL_PATH` environment variable to the ActiveHDL installation folder.
-
-### NVC
-
-[NVC](https://www.nickg.me.uk/nvc) is an open-source VHDL simulator and compiler.
 
 **Configuration**: Set the `VHDLTEST_NVC_PATH` environment variable to the NVC installation folder
 if not in PATH.
@@ -162,12 +165,12 @@ The `tests` section specifies which test benches to execute:
 
 Configure simulator paths using environment variables:
 
+* `VHDLTEST_ACTIVEHDL_PATH` - Path to ActiveHDL installation
 * `VHDLTEST_GHDL_PATH` - Path to GHDL installation
 * `VHDLTEST_MODELSIM_PATH` - Path to ModelSim installation
+* `VHDLTEST_NVC_PATH` - Path to NVC installation
 * `VHDLTEST_QUESTASIM_PATH` - Path to QuestaSim installation
 * `VHDLTEST_VIVADO_PATH` - Path to Vivado installation
-* `VHDLTEST_ACTIVEHDL_PATH` - Path to ActiveHDL installation
-* `VHDLTEST_NVC_PATH` - Path to NVC installation
 
 These are only required if simulators are not in the system PATH.
 
@@ -198,7 +201,7 @@ VHDLTest supports the following command line options:
 * `--validate` - Perform self-validation
 * `-c, --config <config.yaml>` - Specify configuration file
 * `-r, --results <out.trx>` - Specify test results output file
-* `-s, --simulator <name>` - Specify simulator (ghdl, modelsim, questasim, vivado, activehdl, nvc)
+* `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, modelsim, nvc, questasim, vivado)
 * `-0, --exit-0` - Exit with code 0 even if tests fail
 * `--` - End of options marker
 
