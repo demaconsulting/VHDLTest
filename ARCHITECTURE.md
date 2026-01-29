@@ -68,6 +68,7 @@ The simulator layer provides a common interface for HDL simulators:
 
 - **`GhdlSimulator`**: GHDL (open-source VHDL simulator)
 - **`ModelSimSimulator`**: ModelSim (Mentor Graphics)
+- **`QuestaSimSimulator`**: QuestaSim (Siemens)
 - **`VivadoSimulator`**: Vivado Simulator (Xilinx)
 - **`ActiveHdlSimulator`**: Active-HDL (Aldec)
 - **`NvcSimulator`**: NVC (open-source VHDL simulator)
@@ -171,6 +172,7 @@ Simulators are located using environment variables:
 
 - `VHDLTEST_GHDL_PATH`: Path to GHDL installation
 - `VHDLTEST_MODELSIM_PATH`: Path to ModelSim installation
+- `VHDLTEST_QUESTASIM_PATH`: Path to QuestaSim installation
 - `VHDLTEST_VIVADO_PATH`: Path to Vivado installation
 - `VHDLTEST_ACTIVEHDL_PATH`: Path to Active-HDL installation
 - `VHDLTEST_NVC_PATH`: Path to NVC installation
@@ -212,7 +214,6 @@ The tool is distributed as a .NET tool package:
 
 ## Future Considerations
 
-- Additional simulator support (e.g., QuestaSim)
 - JSON configuration format support
 - Parallel test execution
 - Test result caching
