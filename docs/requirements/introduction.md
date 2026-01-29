@@ -13,7 +13,7 @@ that the tool must satisfy.
 VHDLTest provides:
 
 * Command-line interface for test execution
-* Support for multiple VHDL simulators (GHDL, ModelSim, Vivado, ActiveHDL, NVC)
+* Support for multiple VHDL simulators (GHDL, ModelSim, QuestaSim, Vivado, ActiveHDL, NVC)
 * YAML-based configuration
 * Automated test execution and result collection
 * TRX format test result output
