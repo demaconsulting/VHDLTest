@@ -32,6 +32,7 @@ public static class SimulatorFactory
     [
         GhdlSimulator.Instance,
         ModelSimSimulator.Instance,
+        QuestaSimSimulator.Instance,
         VivadoSimulator.Instance,
         ActiveHdlSimulator.Instance,
         NvcSimulator.Instance

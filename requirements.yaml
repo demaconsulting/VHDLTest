@@ -83,18 +83,24 @@ sections:
               - "ModelSimSimulator_SimulatorName_ReturnsModelSim"
 
           - id: "SIM-003"
+            title: "VHDLTest shall support the QuestaSim simulator."
+            tests:
+              - "SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator"
+              - "QuestaSimSimulator_SimulatorName_ReturnsQuestaSim"
+
+          - id: "SIM-004"
             title: "VHDLTest shall support the Vivado simulator."
             tests:
               - "SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator"
               - "VivadoSimulator_SimulatorName_ReturnsVivado"
 
-          - id: "SIM-004"
+          - id: "SIM-005"
             title: "VHDLTest shall support the ActiveHDL simulator."
             tests:
               - "SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator"
               - "ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL"
 
-          - id: "SIM-005"
+          - id: "SIM-006"
             title: "VHDLTest shall support the NVC simulator."
             tests:
               - "SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator"
