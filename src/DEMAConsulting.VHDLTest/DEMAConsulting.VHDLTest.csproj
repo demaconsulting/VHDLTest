@@ -6,35 +6,44 @@
     <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>vhdl</PackageTags>
+
+    <!-- NuGet Tool Package Configuration -->
     <PackAsTool>True</PackAsTool>
     <ToolCommandName>vhdltest</ToolCommandName>
-    <Description>VHDL Unit Test Runner</Description>
-    <Copyright>Copyright DEMA Consulting</Copyright>
-    <PackageProjectUrl>https://github.com/demaconsulting/VHDLTest</PackageProjectUrl>
-    <Title>VHDL Test Runner</Title>
+    <PackageId>DemaConsulting.VHDLTest</PackageId>
     <Version>0.0.0</Version>
     <Authors>DEMA Consulting</Authors>
-    <PackageIcon>Icon.png</PackageIcon>
+    <Company>DEMA Consulting</Company>
+    <Description>VHDL Unit Test Runner</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageId>DemaConsulting.VHDLTest</PackageId>
+    <PackageProjectUrl>https://github.com/demaconsulting/VHDLTest</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/demaconsulting/VHDLTest</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>Icon.png</PackageIcon>
+    <PackageTags>vhdl</PackageTags>
+    <Copyright>Copyright DEMA Consulting</Copyright>
+    <Title>VHDL Test Runner</Title>
     <Product>DemaConsulting.VHDLTest</Product>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+    <!-- Symbol Package Configuration -->
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-  </PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
 
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <!-- Code Quality Configuration -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DemaConsulting.TestResults" Version="1.4.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102" PrivateAssets="All" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.102">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -47,25 +56,12 @@
 
   <ItemGroup>
     <None Remove="ValidationFiles\*" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="ValidationFiles\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Icon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\Icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
