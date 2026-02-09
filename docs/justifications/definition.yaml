@@ -10,7 +10,7 @@ resource-path:
 input-files:
   - docs/justifications/title.txt
   - docs/justifications/introduction.md
-  - justifications.md
+  - docs/justifications/justifications.md
 
 # Template configuration
 template: template.html

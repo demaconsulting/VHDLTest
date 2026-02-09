@@ -7,9 +7,9 @@ TestResults/
 node_modules/
 package-lock.json
 docs/guide/guide.html
-requirements.md
-justifications.md
-tracematrix.md
+docs/requirements/requirements.md
 docs/requirements/requirements.html
+docs/justifications/justifications.md
 docs/justifications/justifications.html
+docs/tracematrix/tracematrix.md
 docs/tracematrix/tracematrix.html

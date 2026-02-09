@@ -409,9 +409,9 @@ jobs:
           dotnet reqstream
           --requirements requirements.yaml
           --tests "test-results/**/*.trx"
-          --report requirements.md
-          --justifications justifications.md
-          --matrix tracematrix.md
+          --report docs/requirements/requirements.md
+          --justifications docs/justifications/justifications.md
+          --matrix docs/tracematrix/tracematrix.md
           --enforce
 
       - name: Build Requirements PDF with Pandoc

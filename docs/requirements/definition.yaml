@@ -10,7 +10,7 @@ resource-path:
 input-files:
   - docs/requirements/title.txt
   - docs/requirements/introduction.md
-  - requirements.md
+  - docs/requirements/requirements.md
 
 # Template configuration
 template: template.html

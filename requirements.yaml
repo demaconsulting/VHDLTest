@@ -86,9 +86,9 @@ sections:
           - id: VAL-002
             title: VHDLTest shall support configurable validation report depth.
             justification: |
-              Allows users to control the level of detail in validation reports based on their
-              needs. Shallow reports provide quick checks while deeper reports offer comprehensive
-              diagnostic information for complex troubleshooting scenarios.
+              Enables control of markdown header depth in validation reports when embedding the
+              validation output in other documents. This ensures proper document hierarchy and
+              formatting when validation reports are included as sections in larger documents.
             tests:
               - IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth
 
@@ -185,8 +185,8 @@ sections:
               environments. Supporting Linux ensures VHDLTest can be used in CI/CD pipelines and
               on the primary development platform for embedded systems and hardware design.
             tests:
-              - ubuntu-latest@VHDLTest_TestPasses
-              - ubuntu-latest@VHDLTest_TestFails
+              - ubuntu@VHDLTest_TestPasses
+              - ubuntu@VHDLTest_TestFails
 
           - id: PLT-002
             title: VHDLTest shall run on Windows operating systems.
@@ -195,8 +195,8 @@ sections:
               development. Supporting Windows ensures VHDLTest is accessible to the broadest
               possible user base including enterprise users with Windows-standardized environments.
             tests:
-              - windows-latest@VHDLTest_TestPasses
-              - windows-latest@VHDLTest_TestFails
+              - windows@VHDLTest_TestPasses
+              - windows@VHDLTest_TestFails
 
           - id: PLT-003
             title: VHDLTest shall support .NET 8.0 runtime.
