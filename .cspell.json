@@ -46,6 +46,8 @@
     "pandoctool",
     "weasyprinttool",
     "tracematrix",
+    "buildnotes",
+    "buildmark",
     "vsimsa",
     "alib",
     "worklib",
