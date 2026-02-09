@@ -10,7 +10,7 @@ resource-path:
 input-files:
   - docs/tracematrix/title.txt
   - docs/tracematrix/introduction.md
-  - tracematrix.md
+  - docs/tracematrix/tracematrix.md
 
 # Template configuration
 template: template.html

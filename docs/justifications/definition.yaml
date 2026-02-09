@@ -1,16 +1,16 @@
 ---
-# Pandoc document definition for VHDLTest Requirements
+# Pandoc document definition for VHDLTest Requirements Justifications
 
 # Resource paths for finding files and templates
 resource-path:
-  - docs/requirements
+  - docs/justifications
   - docs/template
 
 # Input files in order (relative to resource-path)
 input-files:
-  - docs/requirements/title.txt
-  - docs/requirements/introduction.md
-  - docs/requirements/requirements.md
+  - docs/justifications/title.txt
+  - docs/justifications/introduction.md
+  - docs/justifications/justifications.md
 
 # Template configuration
 template: template.html

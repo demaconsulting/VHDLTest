@@ -404,13 +404,14 @@ jobs:
           name: codeql-sarif
           path: codeql-results
 
-      - name: Generate Requirements and Trace Matrix with ReqStream
+      - name: Generate Requirements, Justifications, and Trace Matrix with ReqStream
         run: >
           dotnet reqstream
           --requirements requirements.yaml
           --tests "test-results/**/*.trx"
-          --report requirements.md
-          --matrix tracematrix.md
+          --report docs/requirements/requirements.md
+          --justifications docs/justifications/justifications.md
+          --matrix docs/tracematrix/tracematrix.md
           --enforce
 
       - name: Build Requirements PDF with Pandoc
@@ -428,6 +429,22 @@ jobs:
           dotnet weasyprint
           docs/requirements/requirements.html
           "docs/VHDLTest Requirements.pdf"
+
+      - name: Build Justifications PDF with Pandoc
+        shell: bash
+        run: >
+          dotnet pandoc
+          --defaults docs/justifications/definition.yaml
+          --filter node_modules/.bin/mermaid-filter.cmd
+          --metadata version="${{ inputs.version }}"
+          --metadata date="$(date +'%Y-%m-%d')"
+          --output docs/justifications/justifications.html
+
+      - name: Convert Justifications HTML to PDF with Weasyprint
+        run: >
+          dotnet weasyprint
+          docs/justifications/justifications.html
+          "docs/VHDLTest Requirements Justifications.pdf"
 
       - name: Build Trace Matrix PDF with Pandoc
         shell: bash
