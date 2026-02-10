@@ -25,6 +25,7 @@ jobs:
       - name: Spell Check
         uses: streetsidesoftware/cspell-action@v8
         with:
+          incremental_files_only: false
           config: .cspell.json
           files: |
             **/*.md
