@@ -57,10 +57,10 @@ dotnet format --verify-no-changes
 # Build with zero warnings
 dotnet build --configuration Release
 
-# Run tests
+# Run unit tests
 dotnet test --configuration Release
 
-# Run self-validation
+# Run self-validation tests
 dotnet run --project src/DEMAConsulting.VHDLTest \
   --configuration Release --framework net10.0 --no-build -- --validate
 

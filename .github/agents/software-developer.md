@@ -12,7 +12,7 @@ Develop production code and self-validation tests with emphasis on testability a
 Invoke the software-developer for:
 
 - Implementing production code features
-- Creating and maintaining self-validation tests (VHDLTest's `--validate` tests)
+- Creating and maintaining self-validation tests (VHDLTest_*)
 - Code refactoring for testability and maintainability
 - Implementing command-line argument parsing and program logic
 
