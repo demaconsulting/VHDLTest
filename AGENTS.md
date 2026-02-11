@@ -3,6 +3,15 @@
 Project-specific guidance for agents working on VHDLTest - a .NET CLI tool for running VHDL unit tests and
 generating test reports.
 
+## Available Specialized Agents
+
+- **Requirements Agent** - Develops requirements and ensures test coverage linkage
+- **Technical Writer** - Creates accurate documentation following regulatory best practices
+- **Software Developer** - Writes production code in literate style
+- **Test Developer** - Creates unit and integration tests following AAA pattern
+- **Code Quality Agent** - Enforces linting, static analysis, and security standards
+- **Repo Consistency Agent** - Ensures VHDLTest remains consistent with TemplateDotNetTool template patterns
+
 ## Tech Stack
 
 - C# 12, .NET 8.0/9.0/10.0, MSTest, dotnet CLI, NuGet
@@ -29,7 +38,7 @@ generating test reports.
 
 ## Code Style (VHDLTest-Specific)
 
-- **XML Docs**: On public members with spaces after `///`
+- **XML Docs**: On ALL members (public/internal/private) with spaces after `///`
 - **Private fields**: Prefix with underscore (`_fieldName`)
 - **Warnings**: Zero warnings required (`TreatWarningsAsErrors=true`)
 
@@ -55,9 +64,9 @@ dotnet build --configuration Release && dotnet test --configuration Release
 
 Delegate tasks to specialized agents for better results:
 
-- **documentation-writer** - Invoke for: documentation updates/reviews, requirements.yaml changes, markdown/spell/YAML
-  linting
-- **project-maintainer** - Invoke for: dependency updates, CI/CD maintenance, releases, requirements traceability
-  enforcement
-- **software-quality-enforcer** - Invoke for: code quality reviews, test coverage verification, static analysis,
-  zero-warning builds, requirements test quality
+- **requirements-agent** - Invoke for: creating/reviewing requirements, test coverage strategy
+- **technical-writer** - Invoke for: documentation updates/reviews, markdown/spell/YAML linting
+- **software-developer** - Invoke for: production code implementation, refactoring for testability
+- **test-developer** - Invoke for: unit and integration tests, test coverage improvements
+- **code-quality-agent** - Invoke for: code quality reviews, linting, static analysis, security, zero-warning builds
+- **repo-consistency-agent** - Invoke for: checking consistency with TemplateDotNetTool template patterns
