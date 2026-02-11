@@ -66,14 +66,15 @@ public void ClassName_MethodUnderTest_Scenario_ExpectedBehavior()
 
 ### VHDLTest-Specific
 
+- **NOT self-validation tests** - those are handled by Software Developer Agent
 - Unit tests live in `test/` directory
 - Use MSTest V4 testing framework
-- Follow existing naming conventions in the test suite (`ClassName_MethodUnderTest_Scenario_ExpectedBehavior` for unit tests, `IntegrationTest_Scenario_ExpectedBehavior` for integration tests)
+- Follow existing naming conventions in the test suite
 
 ## Defer To
 
 - **Requirements Agent**: For test strategy and coverage requirements
-- **Software Developer Agent**: For production code issues
+- **Software Developer Agent**: For self-validation tests and production code issues
 - **Technical Writer Agent**: For test documentation in markdown
 - **Code Quality Agent**: For test linting and static analysis
 
@@ -82,3 +83,4 @@ public void ClassName_MethodUnderTest_Scenario_ExpectedBehavior()
 - Write tests that test multiple behaviors in one test
 - Skip test documentation
 - Create brittle tests with tight coupling to implementation details
+- Write self-validation tests (delegate to Software Developer Agent)

@@ -1,17 +1,18 @@
 ---
 name: Software Developer
-description: Writes production code - targets design-for-testability and literate programming style
+description: Writes production code and self-validation tests - targets design-for-testability and literate programming style
 ---
 
 # Software Developer - VHDLTest
 
-Develop production code with emphasis on testability and clarity.
+Develop production code and self-validation tests with emphasis on testability and clarity.
 
 ## When to Invoke This Agent
 
 Invoke the software-developer for:
 
 - Implementing production code features
+- Creating and maintaining self-validation tests (VHDLTest's `--validate` tests)
 - Code refactoring for testability and maintainability
 - Implementing command-line argument parsing and program logic
 
@@ -57,6 +58,12 @@ var results = ProcessFile(options.InputFile);
 - **Namespace**: File-scoped namespaces only
 - **Using Statements**: Top of file only
 - **String Formatting**: Use interpolated strings ($"") for clarity
+
+### Self-Validation Tests
+
+- These tests ship with the product and run via `--validate` flag
+- Must support TRX/JUnit output format
+- Link to requirements in `requirements.yaml`
 
 ## Defer To
 

@@ -35,9 +35,9 @@ Invoke the requirements-agent for:
   - Testing design decisions
   - Failure-testing scenarios
   - Implementation validation beyond requirement scope
-- **Integration tests** (`IntegrationTest_*`): Preferred for command-line behavior, features
-  that ship with the product
+- **Self-validation tests**: Preferred for command-line behavior, features that ship with the product
 - **Unit tests**: For internal component behavior, isolated logic
+- **Integration tests**: For cross-component interactions, end-to-end scenarios
 
 ### Requirements Format
 
@@ -50,7 +50,7 @@ Follow the `requirements.yaml` structure:
 
 ## Defer To
 
-- **Software Developer Agent**: For implementing production code
+- **Software Developer Agent**: For implementing self-validation tests and production code
 - **Test Developer Agent**: For implementing unit and integration tests
 - **Technical Writer Agent**: For documentation of requirements and processes
 - **Code Quality Agent**: For verifying test quality and enforcement
