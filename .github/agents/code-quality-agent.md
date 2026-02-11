@@ -46,7 +46,7 @@ Ensure the project is:
 
 - **XML Docs**: Enforce on ALL members (public/internal/private)
 - **Code Style**: Verify `.editorconfig` compliance
-- **Test Naming**: Check naming patterns for integration tests (`IntegrationTest_*`)
+- **Test Naming**: Check naming patterns for self-validation tests
 
 ### Commands to Run
 
