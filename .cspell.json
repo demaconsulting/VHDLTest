@@ -41,8 +41,6 @@
     "sonarscanner",
     "mcode",
     "Anson",
-    "dotnettool",
-    "spdxtool",
     "pandoctool",
     "weasyprinttool",
     "tracematrix",
@@ -63,7 +61,10 @@
     "runall",
     "xelab",
     "ASIC",
-    "lifecycles"
+    "lifecycles",
+    "slnx",
+    "reqstream",
+    "screencasts"
   ],
   "ignorePaths": [
     "node_modules",
@@ -82,6 +83,7 @@
     "yarn.lock",
     "TestResults",
     ".vs",
-    "*.bak"
+    "*.bak",
+    "AGENT_REPORT_*.md"
   ]
 }

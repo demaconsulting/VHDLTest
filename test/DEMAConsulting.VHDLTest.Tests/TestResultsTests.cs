@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ public class TestResultsTests
         {
             results.SaveResults("TestResults.trx");
             Assert.IsTrue(File.Exists("TestResults.trx"));
-            
+
             // Verify it's valid XML
             var content = File.ReadAllText("TestResults.trx");
             Assert.Contains("<?xml", content);
@@ -99,7 +99,7 @@ public class TestResultsTests
         {
             results.SaveResults("TestResults.xml");
             Assert.IsTrue(File.Exists("TestResults.xml"));
-            
+
             // Verify it's valid JUnit XML
             var content = File.ReadAllText("TestResults.xml");
             Assert.Contains("<?xml", content);
@@ -140,7 +140,7 @@ public class TestResultsTests
         {
             results.SaveResults("TestResults.xml");
             Assert.IsTrue(File.Exists("TestResults.xml"));
-            
+
             // Verify it contains failure information
             var content = File.ReadAllText("TestResults.xml");
             Assert.Contains("failure", content);
@@ -196,7 +196,7 @@ public class TestResultsTests
     public void TestResults_SaveResults_WithNullFileName_ThrowsArgumentException()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
-        
+
         Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults(null!));
         Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults(string.Empty));
         Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults("   "));
@@ -230,7 +230,7 @@ public class TestResultsTests
         {
             results.SaveResults("TestResults.unknown");
             Assert.IsTrue(File.Exists("TestResults.unknown"));
-            
+
             // Verify it's TRX format
             var content = File.ReadAllText("TestResults.unknown");
             Assert.Contains("<?xml", content);

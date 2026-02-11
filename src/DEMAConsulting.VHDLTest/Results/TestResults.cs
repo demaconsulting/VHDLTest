@@ -18,10 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using DEMAConsulting.VHDLTest.Run;
-using DEMAConsulting.VHDLTest.Simulators;
 using DemaConsulting.TestResults;
 using DemaConsulting.TestResults.IO;
+using DEMAConsulting.VHDLTest.Run;
+using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest.Results;
 

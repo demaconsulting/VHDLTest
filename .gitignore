@@ -4,6 +4,7 @@ bin
 obj
 VHDLTest.out
 TestResults/
+test-results/
 node_modules/
 package-lock.json
 docs/guide/guide.html
@@ -13,3 +14,4 @@ docs/justifications/justifications.md
 docs/justifications/justifications.html
 docs/tracematrix/tracematrix.md
 docs/tracematrix/tracematrix.html
+AGENT_REPORT_*.md
