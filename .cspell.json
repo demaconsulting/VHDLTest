@@ -83,6 +83,7 @@
     "yarn.lock",
     "TestResults",
     ".vs",
-    "*.bak"
+    "*.bak",
+    "AGENT_REPORT_*.md"
   ]
 }

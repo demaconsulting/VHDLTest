@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DEMA Consulting
+// Copyright (c) 2023 DEMA Consulting
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,10 +32,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_NoArguments_ReturnsDefaultContext()
     {
-        // Parse the arguments
+        // Arrange - Prepare empty arguments array
+
+        // Act - Parse the arguments
         var arguments = Context.Create([]);
 
-        // Check the arguments
+        // Assert - Verify default context is returned with all properties set to defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -52,7 +54,7 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_UnknownArgument_ThrowsInvalidOperationException()
     {
-        // Verify the exception is thrown
+        // Act & Assert - Verify InvalidOperationException is thrown for unknown argument
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--unknown"]));
     }
 
@@ -62,10 +64,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithConfigFile_SetsConfigFile()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with config file option
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["-c", "config.json"]);
 
-        // Check the arguments
+        // Assert - Verify config file is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.AreEqual("config.json", arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -82,7 +86,7 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_MissingConfigValue_ThrowsInvalidOperationException()
     {
-        // Verify the exception is thrown
+        // Act & Assert - Verify InvalidOperationException is thrown for missing config value
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-c"]));
     }
 
@@ -92,10 +96,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithResultsFile_SetsResultsFile()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with results file option
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["-r", "results.trx"]);
 
-        // Check the arguments
+        // Assert - Verify results file is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.AreEqual("results.trx", arguments.ResultsFile);
@@ -112,7 +118,7 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_MissingResultsValue_ThrowsInvalidOperationException()
     {
-        // Verify the exception is thrown
+        // Act & Assert - Verify InvalidOperationException is thrown for missing results value
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-r"]));
     }
 
@@ -122,10 +128,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithSimulator_SetsSimulator()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with simulator option
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["-s", "GHDL"]);
 
-        // Check the arguments
+        // Assert - Verify simulator is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -142,7 +150,7 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException()
     {
-        // Verify the exception is thrown
+        // Act & Assert - Verify InvalidOperationException is thrown for missing simulator value
         Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-s"]));
     }
 
@@ -152,10 +160,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithVerbose_SetsVerboseFlag()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with verbose flag
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["--verbose"]);
 
-        // Check the arguments
+        // Assert - Verify verbose flag is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -172,10 +182,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithExitZero_SetsExitZeroFlag()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with exit-zero flag
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["--exit-0"]);
 
-        // Check the arguments
+        // Assert - Verify exit-zero flag is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -192,10 +204,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithValidate_SetsValidateFlag()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with validate flag
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["--validate"]);
 
-        // Check the arguments
+        // Assert - Verify validate flag is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -212,10 +226,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithCustomTest_SetsCustomTest()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with single custom test name
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["custom_test"]);
 
-        // Check the arguments
+        // Assert - Verify custom test is set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
@@ -234,10 +250,12 @@ public class ContextTests
     [TestMethod]
     public void Context_Create_WithCustomTests_SetsCustomTests()
     {
-        // Parse the arguments
+        // Arrange - Prepare arguments with multiple custom test names
+
+        // Act - Parse the arguments
         var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);
 
-        // Check the arguments
+        // Assert - Verify all custom tests are set and other properties are defaults
         Assert.IsNotNull(arguments);
         Assert.IsNull(arguments.ConfigFile);
         Assert.IsNull(arguments.ResultsFile);
