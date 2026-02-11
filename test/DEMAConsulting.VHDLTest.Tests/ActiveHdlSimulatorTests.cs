@@ -111,7 +111,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// T
+    /// Test ActiveHDL simulator test with clean output
     /// </summary>
     [TestMethod]
     public void ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
