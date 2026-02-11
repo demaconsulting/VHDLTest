@@ -4,6 +4,7 @@ bin
 obj
 VHDLTest.out
 TestResults/
+test-results/
 node_modules/
 package-lock.json
 docs/guide/guide.html
