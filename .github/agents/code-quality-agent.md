@@ -60,8 +60,9 @@ dotnet build --configuration Release
 # Run tests
 dotnet test --configuration Release
 
-# Requirements enforcement
-dotnet vhdltest --validate
+# Run self-validation
+dotnet run --project src/DEMAConsulting.VHDLTest \
+  --configuration Release --framework net10.0 --no-build -- --validate
 
 # Run all linters
 ./lint.sh    # Linux/macOS
