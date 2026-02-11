@@ -129,24 +129,6 @@ jobs:
           end
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
-      - name: Generate Tool SBOM
-        run: >
-          dotnet sbom-tool generate
-          -b src/DEMAConsulting.VHDLTest/bin/Release
-          -bc src/DEMAConsulting.VHDLTest
-          -pn DemaConsulting.VHDLTest
-          -pv ${{ inputs.version }}
-          -ps DEMAConsulting
-          -nsb https://DemaConsulting.com/VHDLTest
-          -pm true
-          -li true
-
-      - name: Run SBOM Workflow
-        run: >
-          dotnet spdx-tool
-          run-workflow
-          spdx-workflow.yaml
-
       - name: Create Dotnet Tool
         run: >
           dotnet pack
@@ -161,9 +143,7 @@ jobs:
           path: |
             **/*.nupkg
             **/*.snupkg
-            **/manifest.spdx.json
-            **/manifest.spdx.json.sha256
-            *summary.md
+            **/_manifest/spdx_2.2/manifest.spdx.json
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v6

@@ -13,3 +13,6 @@ docs/justifications/justifications.md
 docs/justifications/justifications.html
 docs/tracematrix/tracematrix.md
 docs/tracematrix/tracematrix.html
+AGENT_REPORT_*.md
+requirements-report.md
+test-results/

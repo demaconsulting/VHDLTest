@@ -11,7 +11,7 @@ generates standardized test reports. The tool follows a modular architecture wit
 
 1. **Simulator Independence**: Support multiple VHDL simulators through a common interface
 2. **Standards Compliance**: Generate standard test result formats (TRX)
-3. **Cross-Platform**: Run on Windows, Linux, and macOS
+3. **Cross-Platform**: Run on Windows and Linux
 4. **Tool Validation**: Support self-validation for regulated industries
 5. **Minimal Dependencies**: Keep external dependencies to a minimum
 
