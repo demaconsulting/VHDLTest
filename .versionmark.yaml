@@ -68,7 +68,7 @@ tools:
     command: ghdl --version
     regex: '(?i)GHDL (?<version>\d+\.\d+\.\d+)'
 
-  # VHDLTest specific: NVC simulator  
+  # VHDLTest specific: NVC simulator
   nvc:
     command: nvc --version
     regex: '(?i)nvc (?<version>\d+\.\d+(?:\.\d+)?)'
