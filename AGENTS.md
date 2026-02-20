@@ -21,13 +21,30 @@ generating test reports.
 
 - **`requirements.yaml`** - All requirements with test linkage (enforced via `dotnet vhdltest --validate`)
 - **`.editorconfig`** - Code style (file-scoped namespaces, 4-space indent, UTF-8+BOM, LF endings)
-- **`.cspell.json`, `.markdownlint.json`, `.yamllint.yaml`** - Linting configs
+- **`.cspell.json`, `.markdownlint-cli2.jsonc`, `.yamllint.yaml`** - Linting configs
 
 ## Requirements (VHDLTest-Specific)
 
 - Link ALL requirements to tests (prefer `IntegrationTest_*` tests over unit tests)
+- Not all tests need to be linked to requirements (tests may exist for corner cases, design testing, failure-testing, etc.)
 - Enforced: `dotnet vhdltest --validate` generates requirements traceability matrix
 - When adding features: add requirement + link to test
+
+## Test Source Filters
+
+Test links in `requirements.yaml` can include a source filter prefix to restrict which test results count as
+evidence. This is critical for platform, simulator, and framework requirements - **do not remove these filters**.
+
+- `ghdl@TestName` - proves the test passed using the GHDL simulator
+- `nvc@TestName` - proves the test passed using the NVC simulator
+- `windows@TestName` - proves the test passed on a Windows platform
+- `ubuntu@TestName` - proves the test passed on a Linux (Ubuntu) platform
+- `dotnet8.x@TestName` - proves the self-validation test ran on a machine with .NET 8.x runtime
+- `dotnet9.x@TestName` - proves the self-validation test ran on a machine with .NET 9.x runtime
+- `dotnet10.x@TestName` - proves the self-validation test ran on a machine with .NET 10.x runtime
+
+Without the source filter, a test result from any platform/simulator/framework satisfies the requirement. Adding
+the filter ensures the CI evidence comes specifically from the required environment.
 
 ## Testing (VHDLTest-Specific)
 
