@@ -41,6 +41,9 @@ public static class Validation
     /// <param name="context">Program context</param>
     public static void Run(Context context)
     {
+        // Validate input
+        ArgumentNullException.ThrowIfNull(context);
+
         // Write validation header
         context.WriteLine(
             $"""
