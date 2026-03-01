@@ -196,6 +196,9 @@ public sealed class Context : IDisposable
     /// <exception cref="InvalidOperationException">On invalid arguments</exception>
     public static Context Create(string[] args)
     {
+        // Validate input
+        ArgumentNullException.ThrowIfNull(args);
+
         // Process the arguments
         var help = false;
         var version = false;

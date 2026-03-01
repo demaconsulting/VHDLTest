@@ -64,12 +64,72 @@ public void ClassName_MethodUnderTest_Scenario_ExpectedBehavior()
   - Failure-testing and error handling scenarios
   - Verifying internal behavior beyond requirement scope
 
+### Test Source Filters
+
+Test links in `requirements.yaml` can include a source filter prefix to restrict which test results count as
+evidence. These filters are critical for platform, simulator, and framework requirements - **do not remove them**.
+
+- `ghdl@TestName` - proves the test passed using the GHDL simulator
+- `nvc@TestName` - proves the test passed using the NVC simulator
+- `windows@TestName` - proves the test passed on a Windows platform
+- `ubuntu@TestName` - proves the test passed on a Linux (Ubuntu) platform
+- `dotnet8.x@TestName` - proves the self-validation test ran on a machine with .NET 8.x runtime
+- `dotnet9.x@TestName` - proves the self-validation test ran on a machine with .NET 9.x runtime
+- `dotnet10.x@TestName` - proves the self-validation test ran on a machine with .NET 10.x runtime
+
+Removing a source filter means a test result from any environment can satisfy the requirement, which invalidates
+the evidence-based proof that the tool works on a specific platform, simulator, or framework.
+
 ### VHDLTest-Specific
 
 - **NOT self-validation tests** - those are handled by Software Developer Agent
 - Unit tests live in `test/` directory
 - Use MSTest V4 testing framework
 - Follow existing naming conventions in the test suite
+
+### MSTest V4 Best Practices
+
+Common anti-patterns to avoid (not exhaustive):
+
+1. **Avoid Assertions in Catch Blocks (MSTEST0058)** - Instead of wrapping code in try/catch and asserting in the
+   catch block, use `Assert.ThrowsExactly<T>()`:
+
+   ```csharp
+   var ex = Assert.ThrowsExactly<ArgumentNullException>(() => SomeWork());
+   Assert.Contains("Some message", ex.Message);
+   ```
+
+2. **Avoid using Assert.IsTrue / Assert.IsFalse for equality checks** - Use `Assert.AreEqual` /
+   `Assert.AreNotEqual` instead, as it provides better failure messages:
+
+   ```csharp
+   // ❌ Bad: Assert.IsTrue(result == expected);
+   // ✅ Good: Assert.AreEqual(expected, result);
+   ```
+
+3. **Avoid non-public test classes and methods** - Test classes and `[TestMethod]` methods must be `public` or
+   they will be silently ignored:
+
+   ```csharp
+   // ❌ Bad: internal class MyTests
+   // ✅ Good: public class MyTests
+   ```
+
+4. **Avoid Assert.IsTrue(collection.Count == N)** - Use `Assert.HasCount` for count assertions:
+
+   ```csharp
+   // ❌ Bad: Assert.IsTrue(collection.Count == 3);
+   // ✅ Good: Assert.HasCount(3, collection);
+   ```
+
+5. **Avoid Assert.IsTrue for string prefix checks** - Use `Assert.StartsWith` instead of wrapping
+   `string.StartsWith` in `Assert.IsTrue`, as it produces clearer failure messages that show the expected prefix
+   and actual value:
+
+   ```csharp
+   // ❌ Bad: Assert.IsTrue(value.StartsWith("prefix"));
+   // ✅ Good: Assert.StartsWith("prefix", value);
+   ```
 
 ## Defer To
 
