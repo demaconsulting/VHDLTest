@@ -225,7 +225,7 @@ jobs:
           backend: mcode
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: artifacts-ubuntu-latest
           path: artifacts
@@ -316,7 +316,7 @@ jobs:
           version: latest
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: artifacts-ubuntu-latest
           path: artifacts
@@ -465,20 +465,20 @@ jobs:
         run: npm install
 
       - name: Download All Test Results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: test-results-*
           path: test-results
           merge-multiple: true
 
       - name: Download CodeQL SARIF
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: codeql-sarif
           path: codeql-results
 
       - name: Download all version captures
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: version-captures
           pattern: 'version-capture-*'
