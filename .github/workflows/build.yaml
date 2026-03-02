@@ -60,7 +60,7 @@ jobs:
           echo "✓ Tool versions captured"
 
       - name: Upload version capture
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: version-capture-quality
           path: versionmark-quality.json
@@ -169,13 +169,13 @@ jobs:
           echo "✓ Tool versions captured"
 
       - name: Upload version capture
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: version-capture-${{ matrix.os }}
           path: versionmark-build-*.json
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: artifacts-${{ matrix.os }}
           path: |
@@ -184,7 +184,7 @@ jobs:
             **/_manifest/spdx_2.2/manifest.spdx.json
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ matrix.os }}
           path: test-results/**/*.trx
@@ -270,13 +270,13 @@ jobs:
           echo "✓ Tool versions captured"
 
       - name: Upload version capture
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: version-capture-${{ matrix.os }}-dotnet${{ matrix.dotnet }}-ghdl
           path: versionmark-int-*.json
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-ghdl-${{ matrix.os }}-dotnet${{ matrix.dotnet }}
           path: "*.trx"
@@ -361,13 +361,13 @@ jobs:
           echo "✓ Tool versions captured"
 
       - name: Upload version capture
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: version-capture-${{ matrix.os }}-dotnet${{ matrix.dotnet }}-nvc
           path: versionmark-int-*.json
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-nvc-${{ matrix.os }}-dotnet${{ matrix.dotnet }}
           path: "*.trx"
@@ -422,7 +422,7 @@ jobs:
           upload: false
 
       - name: Upload SARIF
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: codeql-sarif
           path: sarif-results/csharp.sarif
@@ -652,7 +652,7 @@ jobs:
           "docs/VHDLTest Build Notes.pdf"
 
       - name: Upload Document Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: documents
           path: |
