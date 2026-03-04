@@ -231,8 +231,8 @@ jobs:
         with:
           name: packages-${{ matrix.os }}
           path: |
-            **/*.nupkg
-            **/*.snupkg
+            src/DEMAConsulting.VHDLTest/bin/Release/*.nupkg
+            src/DEMAConsulting.VHDLTest/bin/Release/*.snupkg
 
   # Performs integration testing on GHDL simulator across a matrix of operating
   # systems and .NET runtimes to ensure compatibility with the GHDL simulator.
