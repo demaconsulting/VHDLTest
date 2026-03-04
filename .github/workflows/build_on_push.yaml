@@ -1,21 +1,22 @@
 ---
-# Main build workflow that runs on all pushes
-# This workflow calls the reusable build workflow
-name: Build
+name: Build on Push
 
 on:
-  push:
-  workflow_dispatch:
+  push:                 # On push to any branch
+  workflow_dispatch:    # Allow manual trigger
+  schedule:             # 5PM UTC every Monday
+    - cron: '0 17 * * 1'
 
 jobs:
+  # Calls the reusable build workflow to build, test, and generate documentation
+  # for the current push version.
   build:
-    name: Build and Test
-    # Permissions for this job
+    name: Build
     permissions:
-      actions: read           # To read actions for CodeQL
-      contents: read          # To read repository contents
-      pull-requests: write    # To write pull requests analysis
-      security-events: write  # To write security events for CodeQL
+      actions: read
+      contents: read
+      pull-requests: write
+      security-events: write
     uses: ./.github/workflows/build.yaml
     with:
       version: 0.0.0-run.${{ github.run_number }}

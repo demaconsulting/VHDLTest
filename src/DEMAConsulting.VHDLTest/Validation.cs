@@ -28,7 +28,7 @@ namespace DEMAConsulting.VHDLTest;
 /// <summary>
 /// Validation runner
 /// </summary>
-public static class Validation
+internal static class Validation
 {
     /// <summary>
     /// Validation folder name
@@ -45,21 +45,18 @@ public static class Validation
         ArgumentNullException.ThrowIfNull(context);
 
         // Write validation header
-        context.WriteLine(
-            $"""
-             {new string('#', context.Depth)} DEMAConsulting.VHDLTest
-
-             | Information         | Value                                              |
-             | :------------------ | :------------------------------------------------- |
-             | VHDLTest Version    | {Program.Version,-50} |
-             | Machine Name        | {Environment.MachineName,-50} |
-             | OS Version          | {RuntimeInformation.OSDescription,-50} |
-             | DotNet Runtime      | {Environment.Version,-50} |
-             | Time Stamp          | {DateTime.UtcNow,-50:u} |
-
-             Tests:
-              
-             """);
+        context.WriteLine($"{new string('#', context.Depth)} DEMAConsulting.VHDLTest");
+        context.WriteLine("");
+        context.WriteLine("| Information         | Value                                              |");
+        context.WriteLine("| :------------------ | :------------------------------------------------- |");
+        context.WriteLine($"| VHDLTest Version    | {Program.Version,-50} |");
+        context.WriteLine($"| Machine Name        | {Environment.MachineName,-50} |");
+        context.WriteLine($"| OS Version          | {RuntimeInformation.OSDescription,-50} |");
+        context.WriteLine($"| DotNet Runtime      | {RuntimeInformation.FrameworkDescription,-50} |");
+        context.WriteLine($"| Time Stamp          | {$"{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC",-50} |");
+        context.WriteLine("");
+        context.WriteLine("Tests:");
+        context.WriteLine("");
 
         // Run validation tests
         var results = new TestResults("Validation", "VHDLTest");
@@ -69,6 +66,18 @@ public static class Validation
         // Save results if requested
         if (context.ResultsFile != null)
             results.SaveResults(context.ResultsFile);
+
+        // Print summary
+        var totalTests = results.Tests.Count;
+        var passedTests = results.Tests.Count(t => t.Passed);
+        var failedTests = results.Tests.Count(t => !t.Passed);
+        context.WriteLine("");
+        context.WriteLine($"Total Tests: {totalTests}");
+        context.WriteLine($"Passed: {passedTests}");
+        if (failedTests > 0)
+            context.WriteError($"Failed: {failedTests}");
+        else
+            context.WriteLine($"Failed: {failedTests}");
 
         // If all validations succeeded (no errors) then report validation passed
         if (context.Errors == 0)
@@ -201,9 +210,9 @@ public static class Validation
     {
         // Report to the context
         if (succeeded)
-            context.WriteLine($"- {testName}: Passed");
+            context.WriteLine($"✓ VHDLTest_{testName} - Passed");
         else
-            context.WriteError($"- {testName}: Failed");
+            context.WriteError($"✗ VHDLTest_{testName} - Failed");
 
         // Get the line type
         var line = succeeded
