@@ -5,22 +5,22 @@
 VHDLTest is a .NET tool for running VHDL test benches and generating standard test results files.
 It simplifies the process of running VHDL unit tests by:
 
-* Providing a unified interface for multiple VHDL simulators
-* Generating standard test result files compatible with CI/CD systems
-* Supporting automated testing workflows
-* Enabling tool validation for regulated industries
+- Providing a unified interface for multiple VHDL simulators
+- Generating standard test result files compatible with CI/CD systems
+- Supporting automated testing workflows
+- Enabling tool validation for regulated industries
 
 ## Scope
 
 This user guide covers:
 
-* Installation and prerequisites
-* Supported VHDL simulators and their configuration
-* YAML-based test configuration
-* Command-line options and usage
-* Self-validation for regulated industries
-* CI/CD integration examples
-* Troubleshooting and best practices
+- Installation and prerequisites
+- Supported VHDL simulators and their configuration
+- YAML-based test configuration
+- Command-line options and usage
+- Self-validation for regulated industries
+- CI/CD integration examples
+- Troubleshooting and best practices
 
 # Installation
 
@@ -28,8 +28,8 @@ This user guide covers:
 
 Before installing VHDLTest, ensure you have:
 
-* **.NET SDK**: Version 8.0 or later
-* **VHDL Simulator**: At least one of the supported simulators installed
+- **.NET SDK**: Version 8.0 or later
+- **VHDL Simulator**: At least one of the supported simulators installed
 
 ## Installation Methods
 
@@ -145,28 +145,28 @@ tests:
 
 The `files` section lists all VHDL source files in dependency order:
 
-* List dependencies before files that use them
-* Include both design files and test bench files
-* Use relative paths from the configuration file location
+- List dependencies before files that use them
+- Include both design files and test bench files
+- Use relative paths from the configuration file location
 
 ## Tests Section
 
 The `tests` section specifies which test benches to execute:
 
-* List the entity name of each test bench
-* Tests are executed in the order listed
-* Test bench entities must be defined in the files section
+- List the entity name of each test bench
+- Tests are executed in the order listed
+- Test bench entities must be defined in the files section
 
 ## Environment Variables
 
 Configure simulator paths using environment variables:
 
-* `VHDLTEST_ACTIVEHDL_PATH` - Path to ActiveHDL installation
-* `VHDLTEST_GHDL_PATH` - Path to GHDL installation
-* `VHDLTEST_MODELSIM_PATH` - Path to ModelSim installation
-* `VHDLTEST_NVC_PATH` - Path to NVC installation
-* `VHDLTEST_QUESTASIM_PATH` - Path to QuestaSim installation
-* `VHDLTEST_VIVADO_PATH` - Path to Vivado installation
+- `VHDLTEST_ACTIVEHDL_PATH` - Path to ActiveHDL installation
+- `VHDLTEST_GHDL_PATH` - Path to GHDL installation
+- `VHDLTEST_MODELSIM_PATH` - Path to ModelSim installation
+- `VHDLTEST_NVC_PATH` - Path to NVC installation
+- `VHDLTEST_QUESTASIM_PATH` - Path to QuestaSim installation
+- `VHDLTEST_VIVADO_PATH` - Path to Vivado installation
 
 These are only required if simulators are not in the system PATH.
 
@@ -190,16 +190,16 @@ dotnet vhdltest --config test_suite.yaml --simulator ghdl
 
 VHDLTest supports the following command line options:
 
-* `-h, --help` - Display help information
-* `-v, --version` - Display version information
-* `--silent` - Suppress console output
-* `--verbose` - Enable verbose output
-* `--validate` - Perform self-validation
-* `-c, --config <config.yaml>` - Specify configuration file
-* `-r, --results <out.trx>` - Specify test results output file
-* `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, modelsim, nvc, questasim, vivado)
-* `-0, --exit-0` - Exit with code 0 even if tests fail
-* `--` - End of options marker
+- `-h, --help` - Display help information
+- `-v, --version` - Display version information
+- `--silent` - Suppress console output
+- `--verbose` - Enable verbose output
+- `--validate` - Perform self-validation
+- `-c, --config <config.yaml>` - Specify configuration file
+- `-r, --results <out.trx>` - Specify test results output file
+- `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, modelsim, nvc, questasim, vivado)
+- `-0, --exit-0` - Exit with code 0 even if tests fail
+- `--` - End of options marker
 
 ## Generating Test Results
 
@@ -211,18 +211,18 @@ dotnet vhdltest --config test_suite.yaml --results test_results.trx
 
 The TRX file format is compatible with most CI/CD systems and can be displayed in:
 
-* Azure DevOps
-* GitHub Actions
-* Jenkins
-* TeamCity
-* Other systems supporting Visual Studio Test Results format
+- Azure DevOps
+- GitHub Actions
+- Jenkins
+- TeamCity
+- Other systems supporting Visual Studio Test Results format
 
 ## Exit Codes
 
 VHDLTest returns the following exit codes:
 
-* `0` - All tests passed (or `--exit-0` was used)
-* `Non-zero` - One or more tests failed
+- `0` - All tests passed (or `--exit-0` was used)
+- `Non-zero` - One or more tests failed
 
 # Self-Validation
 
@@ -243,12 +243,12 @@ dotnet vhdltest --validate --simulator ghdl
 
 The validation report contains:
 
-* VHDLTest version
-* Machine name
-* Operating system version
-* .NET runtime version
-* Timestamp
-* Test results
+- VHDLTest version
+- Machine name
+- Operating system version
+- .NET runtime version
+- Timestamp
+- Test results
 
 Example validation report:
 
@@ -279,16 +279,16 @@ Validation Passed
 
 Each test proves specific functionality works correctly:
 
-* **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
-* **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
+- **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
+- **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
 
 ## Validation Failure
 
 On validation failure:
 
-* The tool exits with a non-zero exit code
-* The report indicates which validation tests failed
-* Error messages provide diagnostic information
+- The tool exits with a non-zero exit code
+- The report indicates which validation tests failed
+- Error messages provide diagnostic information
 
 # CI/CD Integration
 
@@ -402,9 +402,9 @@ pipeline {
 
 **Solution**:
 
-* Ensure the simulator is installed
-* Set the appropriate environment variable (e.g., `VHDLTEST_GHDL_PATH`)
-* Add the simulator to your system PATH
+- Ensure the simulator is installed
+- Set the appropriate environment variable (e.g., `VHDLTEST_GHDL_PATH`)
+- Add the simulator to your system PATH
 
 ### Compilation Errors
 
@@ -412,9 +412,9 @@ pipeline {
 
 **Solution**:
 
-* Verify VHDL syntax is correct
-* Check that files are listed in dependency order
-* Ensure all required libraries are included
+- Verify VHDL syntax is correct
+- Check that files are listed in dependency order
+- Ensure all required libraries are included
 
 ### Tests Not Executing
 
@@ -422,9 +422,9 @@ pipeline {
 
 **Solution**:
 
-* Verify test bench entity names match the `tests` section
-* Ensure test bench files are included in the `files` section
-* Check that test benches have correct structure
+- Verify test bench entity names match the `tests` section
+- Ensure test bench files are included in the `files` section
+- Check that test benches have correct structure
 
 ### Permission Errors
 
@@ -432,9 +432,9 @@ pipeline {
 
 **Solution**:
 
-* Ensure the output directory exists
-* Verify write permissions on the output directory
-* Check disk space availability
+- Ensure the output directory exists
+- Verify write permissions on the output directory
+- Check disk space availability
 
 ## Debug Mode
 
@@ -446,38 +446,38 @@ dotnet vhdltest --config test_suite.yaml --verbose
 
 This provides detailed information about:
 
-* File processing
-* Compilation steps
-* Test execution
-* Simulator output
+- File processing
+- Compilation steps
+- Test execution
+- Simulator output
 
 # Best Practices
 
 ## Test Organization
 
-* **Separate Test Files**: Keep test benches in separate files from design units
-* **Naming Convention**: Use `_tb` suffix for test bench files (e.g., `adder_tb.vhd`)
-* **Dependency Order**: List files in dependency order in configuration
+- **Separate Test Files**: Keep test benches in separate files from design units
+- **Naming Convention**: Use `_tb` suffix for test bench files (e.g., `adder_tb.vhd`)
+- **Dependency Order**: List files in dependency order in configuration
 
 ## Configuration Management
 
-* **Version Control**: Keep configuration files in version control
-* **Multiple Configs**: Use different configuration files for different test suites
-* **Documentation**: Comment configuration files to explain purpose
+- **Version Control**: Keep configuration files in version control
+- **Multiple Configs**: Use different configuration files for different test suites
+- **Documentation**: Comment configuration files to explain purpose
 
 ## CI/CD Integration
 
-* **Automated Testing**: Run VHDLTest on every commit
-* **Test Results**: Always generate and publish test results
-* **Multiple Simulators**: Test with multiple simulators when possible
-* **Validation**: Include self-validation in release pipelines
+- **Automated Testing**: Run VHDLTest on every commit
+- **Test Results**: Always generate and publish test results
+- **Multiple Simulators**: Test with multiple simulators when possible
+- **Validation**: Include self-validation in release pipelines
 
 ## Test Design
 
-* **Assertions**: Use VHDL assertions to verify behavior
-* **Coverage**: Aim for comprehensive test coverage
-* **Independence**: Ensure tests are independent and can run in any order
-* **Clear Output**: Provide clear pass/fail indicators
+- **Assertions**: Use VHDL assertions to verify behavior
+- **Coverage**: Aim for comprehensive test coverage
+- **Independence**: Ensure tests are independent and can run in any order
+- **Clear Output**: Provide clear pass/fail indicators
 
 # Appendix
 
@@ -501,15 +501,15 @@ for details.
 
 For issues, questions, or feature requests:
 
-* **GitHub Issues**: <https://github.com/demaconsulting/VHDLTest/issues>
-* **Documentation**: <https://github.com/demaconsulting/VHDLTest>
+- **GitHub Issues**: <https://github.com/demaconsulting/VHDLTest/issues>
+- **Documentation**: <https://github.com/demaconsulting/VHDLTest>
 
 ## Additional Resources
 
-* **VHDL Standards**: IEEE Std 1076-2019
-* **GHDL Documentation**: <https://ghdl.github.io/ghdl/>
-* **NVC Documentation**: <https://www.nickg.me.uk/nvc/>
-* **.NET Tool Documentation**: <https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools>
+- **VHDL Standards**: IEEE Std 1076-2019
+- **GHDL Documentation**: <https://ghdl.github.io/ghdl/>
+- **NVC Documentation**: <https://www.nickg.me.uk/nvc/>
+- **.NET Tool Documentation**: <https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools>
 
 <!-- Reference Links -->
 [questasim-ref]: https://eda.sw.siemens.com/en-US/ic/questa-one/simulation/

@@ -48,12 +48,12 @@ Options:
 
 The current list of supported simulators are:
 
-* [GHDL][ghdl-url]
-* [ModelSim][modelsim-url]
-* [QuestaSim][questasim-url]
-* [Vivado][vivado-url]
-* [ActiveHDL][activehdl-url]
-* [NVC][nvc-url]
+- [GHDL][ghdl-url]
+- [ModelSim][modelsim-url]
+- [QuestaSim][questasim-url]
+- [Vivado][vivado-url]
+- [ActiveHDL][activehdl-url]
+- [NVC][nvc-url]
 
 ## Configuration
 
@@ -82,12 +82,12 @@ tests:
 Before running the tests, it may be necessary to configure where the simulators are installed.
 This can be done through environment variables:
 
-* VHDLTEST_GHDL_PATH = path to GHDL folder
-* VHDLTEST_MODELSIM_PATH = path to ModelSim folder
-* VHDLTEST_QUESTASIM_PATH = path to QuestaSim folder
-* VHDLTEST_VIVADO_PATH = path to Vivado folder
-* VHDLTEST_ACTIVEHDL_PATH = path to ActiveHDL folder
-* VHDLTEST_NVC_PATH = path to NVC folder
+- VHDLTEST_GHDL_PATH = path to GHDL folder
+- VHDLTEST_MODELSIM_PATH = path to ModelSim folder
+- VHDLTEST_QUESTASIM_PATH = path to QuestaSim folder
+- VHDLTEST_VIVADO_PATH = path to Vivado folder
+- VHDLTEST_ACTIVEHDL_PATH = path to ActiveHDL folder
+- VHDLTEST_NVC_PATH = path to NVC folder
 
 To run the tests, execute VHDLTest with the name of the configuration file.
 
@@ -130,8 +130,8 @@ Validation Passed
 
 Each test in the report proves:
 
-* **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
-* **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
+- **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
+- **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
 
 On validation failure the tool will exit with a non-zero exit code.
 
