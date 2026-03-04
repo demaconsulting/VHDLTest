@@ -64,7 +64,10 @@
     "lifecycles",
     "slnx",
     "reqstream",
-    "screencasts"
+    "screencasts",
+    "sarifmark",
+    "Sarif",
+    "SARIF"
   ],
   "ignorePaths": [
     "node_modules",
