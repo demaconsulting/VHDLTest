@@ -114,15 +114,24 @@ Running self-validation produces a report containing the following information:
 | Machine Name        | <machine-name>                                     |
 | OS Version          | <os-version>                                       |
 | DotNet Runtime      | <dotnet-runtime-version>                           |
-| Time Stamp          | <timestamp>                                        |
+| Time Stamp          | <timestamp> UTC                                    |
 
 Tests:
 
-- TestPasses: Passed
-- TestFails: Passed
+✓ VHDLTest_TestPasses - Passed
+✓ VHDLTest_TestFails - Passed
+
+Total Tests: 2
+Passed: 2
+Failed: 0
 
 Validation Passed
 ```
+
+Each test in the report proves:
+
+* **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
+* **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
 
 On validation failure the tool will exit with a non-zero exit code.
 

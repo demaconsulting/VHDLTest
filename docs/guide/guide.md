@@ -261,15 +261,26 @@ Example validation report:
 | Machine Name        | BUILD-SERVER                                       |
 | OS Version          | Microsoft Windows NT 10.0.19045.0                  |
 | DotNet Runtime      | .NET 8.0.0                                         |
-| Time Stamp          | 2024-01-15T10:30:00Z                               |
+| Time Stamp          | 2024-01-15 10:30:00 UTC                            |
 
 Tests:
 
-- TestPasses: Passed
-- TestFails: Passed
+✓ VHDLTest_TestPasses - Passed
+✓ VHDLTest_TestFails - Passed
+
+Total Tests: 2
+Passed: 2
+Failed: 0
 
 Validation Passed
 ```
+
+## Validation Tests
+
+Each test proves specific functionality works correctly:
+
+* **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
+* **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
 
 ## Validation Failure
 

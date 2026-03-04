@@ -31,7 +31,7 @@ sections:
     sections:
       - title: Command-Line Interface
         requirements:
-          - id: CLI-001
+          - id: VHDLTest-Cmd-Usage
             title: VHDLTest shall display usage information when run without arguments.
             justification: |
               Provides immediate guidance to users who are unfamiliar with the tool or have
@@ -40,7 +40,7 @@ sections:
             tests:
               - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
 
-          - id: CLI-002
+          - id: VHDLTest-Cmd-Version
             title: VHDLTest shall display version information when requested.
             justification: |
               Enables users to verify which version of VHDLTest is installed, which is critical
@@ -50,7 +50,7 @@ sections:
               - IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess
               - IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess
 
-          - id: CLI-003
+          - id: VHDLTest-Cmd-Help
             title: VHDLTest shall display help information when requested.
             justification: |
               Provides comprehensive command-line documentation directly within the tool,
@@ -63,7 +63,7 @@ sections:
 
       - title: Test Execution
         requirements:
-          - id: TEST-001
+          - id: VHDLTest-Test-Success
             title: VHDLTest shall execute VHDL test benches and return zero exit code on success.
             justification: |
               Enables integration with CI/CD pipelines and build systems that rely on exit
@@ -72,7 +72,7 @@ sections:
             tests:
               - IntegrationTest_TestsPassed_ReturnsZeroExitCode
 
-          - id: TEST-002
+          - id: VHDLTest-Test-CompileError
             title: VHDLTest shall return non-zero exit code when compilation fails.
             justification: |
               Allows CI/CD systems and automated workflows to detect compilation errors and
@@ -81,7 +81,7 @@ sections:
             tests:
               - IntegrationTest_CompileError_ReturnsNonZeroExitCode
 
-          - id: TEST-003
+          - id: VHDLTest-Test-TestError
             title: VHDLTest shall return non-zero exit code when tests fail.
             justification: |
               Enables automated test environments to detect test failures and take appropriate
@@ -90,7 +90,7 @@ sections:
             tests:
               - IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode
 
-          - id: TEST-004
+          - id: VHDLTest-Test-Exit0
             title: VHDLTest shall support exit-0 mode to always return zero exit code.
             justification: |
               Provides flexibility for scenarios where test results need to be collected and
@@ -101,7 +101,7 @@ sections:
 
       - title: Validation
         requirements:
-          - id: VAL-001
+          - id: VHDLTest-Val-Validate
             title: VHDLTest shall support self-validation mode.
             justification: |
               Enables users to verify that VHDLTest is correctly installed and configured in
@@ -110,7 +110,7 @@ sections:
             tests:
               - IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess
 
-          - id: VAL-002
+          - id: VHDLTest-Val-Depth
             title: VHDLTest shall support configurable validation report depth.
             justification: |
               Enables control of markdown header depth in validation reports when embedding the
@@ -119,7 +119,7 @@ sections:
             tests:
               - IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth
 
-          - id: VAL-003
+          - id: VHDLTest-Val-Results
             title: VHDLTest shall save validation results to file.
             justification: |
               Enables persistent storage of validation results for documentation, compliance,
@@ -128,7 +128,7 @@ sections:
             tests:
               - IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults
 
-          - id: VAL-004
+          - id: VHDLTest-Val-SystemInfo
             title: VHDLTest shall include system information in validation reports.
             justification: |
               Provides essential context for validation results by capturing the execution
@@ -139,7 +139,7 @@ sections:
 
       - title: Simulator Support
         requirements:
-          - id: SIM-001
+          - id: VHDLTest-Sim-GHDL
             title: VHDLTest shall support the GHDL simulator.
             justification: |
               GHDL is the most widely-used open-source VHDL simulator and is essential for
@@ -151,7 +151,7 @@ sections:
               - ghdl@VHDLTest_TestPasses
               - ghdl@VHDLTest_TestFails
 
-          - id: SIM-002
+          - id: VHDLTest-Sim-ModelSim
             title: VHDLTest shall support the ModelSim simulator.
             justification: |
               ModelSim is an industry-standard commercial VHDL simulator widely used in
@@ -161,7 +161,7 @@ sections:
               - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
               - ModelSimSimulator_SimulatorName_ReturnsModelSim
 
-          - id: SIM-003
+          - id: VHDLTest-Sim-QuestaSim
             title: VHDLTest shall support the QuestaSim simulator.
             justification: |
               QuestaSim is the advanced verification tool from Siemens/Mentor Graphics, offering
@@ -171,7 +171,7 @@ sections:
               - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
               - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
 
-          - id: SIM-004
+          - id: VHDLTest-Sim-Vivado
             title: VHDLTest shall support the Vivado simulator.
             justification: |
               Vivado is Xilinx's primary design suite and simulator for their FPGA products.
@@ -181,7 +181,7 @@ sections:
               - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
               - VivadoSimulator_SimulatorName_ReturnsVivado
 
-          - id: SIM-005
+          - id: VHDLTest-Sim-ActiveHDL
             title: VHDLTest shall support the ActiveHDL simulator.
             justification: |
               Active-HDL from Aldec is a popular VHDL simulator particularly in the aerospace
@@ -191,7 +191,7 @@ sections:
               - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
               - ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL
 
-          - id: SIM-006
+          - id: VHDLTest-Sim-NVC
             title: VHDLTest shall support the NVC simulator.
             justification: |
               NVC is a modern, fast open-source VHDL simulator with good standards compliance.
@@ -205,7 +205,7 @@ sections:
 
       - title: Platform Support
         requirements:
-          - id: PLT-001
+          - id: VHDLTest-Plt-Linux
             title: VHDLTest shall run on Linux operating systems.
             justification: |
               Linux is the dominant platform for FPGA/ASIC development and continuous integration
@@ -215,7 +215,7 @@ sections:
               - ubuntu@VHDLTest_TestPasses
               - ubuntu@VHDLTest_TestFails
 
-          - id: PLT-002
+          - id: VHDLTest-Plt-Windows
             title: VHDLTest shall run on Windows operating systems.
             justification: |
               Windows is widely used in corporate environments and for desktop-based FPGA
@@ -225,7 +225,7 @@ sections:
               - windows@VHDLTest_TestPasses
               - windows@VHDLTest_TestFails
 
-          - id: PLT-003
+          - id: VHDLTest-Plt-Net8
             title: VHDLTest shall support .NET 8.0 runtime.
             justification: |
               .NET 8.0 is a Long-Term Support (LTS) release supported until November 2026.
@@ -235,7 +235,7 @@ sections:
               - dotnet8.x@VHDLTest_TestPasses
               - dotnet8.x@VHDLTest_TestFails
 
-          - id: PLT-004
+          - id: VHDLTest-Plt-Net9
             title: VHDLTest shall support .NET 9.0 runtime.
             justification: |
               .NET 9.0 is a Standard Term Support (STS) release that provides access to the
@@ -245,7 +245,7 @@ sections:
               - dotnet9.x@VHDLTest_TestPasses
               - dotnet9.x@VHDLTest_TestFails
 
-          - id: PLT-005
+          - id: VHDLTest-Plt-Net10
             title: VHDLTest shall support .NET 10.0 runtime.
             justification: |
               .NET 10.0 is the upcoming Long-Term Support (LTS) release scheduled for November
