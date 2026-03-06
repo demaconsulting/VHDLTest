@@ -123,7 +123,7 @@ build.bat     # Windows
 - **Quality Checks**: Markdown lint, spell check, YAML lint
 - **Build**: Multi-platform (Windows/Linux/macOS)
 - **CodeQL**: Security scanning
-- **VHDL Simulation Tests**: GHDL on Windows/Linux/macOS, NVC on Windows/Linux
+- **VHDL Simulation Tests**: GHDL on Windows/Linux/macOS, NVC on Windows/Linux/macOS
 - **Documentation**: Auto-generated via Pandoc + Weasyprint
 
 ## Build & Quality (Quick Reference)

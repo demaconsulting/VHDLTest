@@ -135,6 +135,10 @@ jobs:
         with:
           version: latest
 
+      - name: Install NVC (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install nvc
+
       - name: Restore Tools
         run: >
           dotnet tool restore
@@ -273,7 +277,7 @@ jobs:
       - uses: ghdl/setup-ghdl@v1
         with:
           version: 5.1.1
-          backend: ${{ matrix.os == 'macos-latest' && 'llvm' || 'mcode' }}
+          backend: mcode
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
@@ -353,7 +357,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         dotnet: [8.x, 9.x, 10.x]
 
     runs-on: ${{ matrix.os }}
@@ -378,8 +382,13 @@ jobs:
           update: true
 
       - uses: nickg/setup-nvc-ci@v1
+        if: matrix.os != 'macos-latest'
         with:
           version: latest
+
+      - name: Install NVC (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install nvc
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
