@@ -225,7 +225,23 @@ internal static class Validation
         }
         else
         {
+            // Write the primary failure line
             context.WriteError($"✗ VHDLTest_{testName} - Failed");
+
+            // Write the exit code so the caller knows what the simulator returned
+            context.WriteError($"  Exit code: {exitCode}");
+
+            // Write each line of the captured output indented so it is visually grouped
+            // under the failure — trim first to avoid spurious blank trailing lines.
+            // Split on both CR and LF to handle Windows (CRLF) and Unix (LF) line endings.
+            var trimmedOutput = output.Trim();
+            if (trimmedOutput.Length > 0)
+            {
+                foreach (var outputLine in trimmedOutput.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
+                {
+                    context.WriteError($"  {outputLine}");
+                }
+            }
         }
 
         // Get the line type
