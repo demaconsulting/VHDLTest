@@ -101,7 +101,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -131,6 +131,7 @@ jobs:
           update: true
 
       - uses: nickg/setup-nvc-ci@v1
+        if: matrix.os != 'macos-latest'
         with:
           version: latest
 
@@ -147,8 +148,8 @@ jobs:
         run: |
           mkdir -p artifacts
           echo "Capturing tool versions..."
-          # Create short job ID: build-win, build-ubuntu
-          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/windows-latest/win/;s/ubuntu-latest/ubuntu/')
+          # Create short job ID: build-windows, build-ubuntu, build-macos
+          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/-latest//')
           JOB_ID="build-${OS_SHORT}"
           dotnet versionmark --capture --job-id "${JOB_ID}" \
             --output "artifacts/versionmark-${JOB_ID}.json" -- \
@@ -245,7 +246,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         dotnet: [8.x, 9.x, 10.x]
 
     runs-on: ${{ matrix.os }}
@@ -272,7 +273,7 @@ jobs:
       - uses: ghdl/setup-ghdl@v1
         with:
           version: 5.1.1
-          backend: mcode
+          backend: ${{ matrix.os == 'macos-latest' && 'llvm' || 'mcode' }}
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
@@ -302,7 +303,7 @@ jobs:
           mkdir -p artifacts
           echo "Capturing tool versions..."
           # Create appropriate job ID for the test job
-          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/windows-latest/win/;s/ubuntu-latest/ubuntu/')
+          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/-latest//')
           DOTNET_SHORT=$(echo "${{ matrix.dotnet }}" | sed 's/\.x$//')
           SIMULATOR="ghdl"
           JOB_ID="int-${SIMULATOR}-${OS_SHORT}-${DOTNET_SHORT}"
@@ -408,7 +409,7 @@ jobs:
           mkdir -p artifacts
           echo "Capturing tool versions..."
           # Create appropriate job ID for the test job
-          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/windows-latest/win/;s/ubuntu-latest/ubuntu/')
+          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/-latest//')
           DOTNET_SHORT=$(echo "${{ matrix.dotnet }}" | sed 's/\.x$//')
           SIMULATOR="nvc"
           JOB_ID="int-${SIMULATOR}-${OS_SHORT}-${DOTNET_SHORT}"

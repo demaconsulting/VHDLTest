@@ -21,6 +21,7 @@
 #   nvc@TestName        - proves the test passed using the NVC simulator
 #   windows@TestName    - proves the test passed on a Windows platform
 #   ubuntu@TestName     - proves the test passed on a Linux (Ubuntu) platform
+#   macos@TestName      - proves the test passed on a macOS platform
 #   dotnet8.x@TestName  - proves the self-validation test ran with .NET 8.x runtime
 #   dotnet9.x@TestName  - proves the self-validation test ran with .NET 9.x runtime
 #   dotnet10.x@TestName - proves the self-validation test ran with .NET 10.x runtime
@@ -224,6 +225,17 @@ sections:
             tests:
               - windows@VHDLTest_TestPasses
               - windows@VHDLTest_TestFails
+
+          - id: VHDLTest-Plt-MacOS
+            title: VHDLTest shall run on macOS operating systems.
+            justification: |
+              macOS is widely used by developers working in Apple ecosystems and for desktop-based
+              FPGA development. Supporting macOS ensures VHDLTest is accessible to the broadest
+              possible user base including developers using Apple hardware.
+            tests:
+              # Tests link to "macos" to ensure results come from macOS platform
+              - macos@VHDLTest_TestPasses
+              - macos@VHDLTest_TestFails
 
           - id: VHDLTest-Plt-Net8
             title: VHDLTest shall support .NET 8.0 runtime.
