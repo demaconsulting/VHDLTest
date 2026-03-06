@@ -96,7 +96,7 @@ public sealed class VivadoSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the ModelSim compiler
+        // Run the Vivado compiler
         var application = Path.Combine(simPath, "xvhdl");
         context.WriteVerboseLine($"  Run Directory: {libDir}");
         context.WriteVerboseLine($"  Run Command: cmd /c {application} -file compile.do");

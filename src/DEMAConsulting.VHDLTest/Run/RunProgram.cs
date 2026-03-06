@@ -59,9 +59,13 @@ public static class RunProgram
         using var p = new Process { StartInfo = startInfo };
         p.Start();
 
-        // Collect all output
-        output = p.StandardOutput.ReadToEnd() + p.StandardError.ReadToEnd();
+        // Read both streams asynchronously to prevent deadlock if either buffer fills
+        var stdoutTask = p.StandardOutput.ReadToEndAsync();
+        var stderrTask = p.StandardError.ReadToEndAsync();
         p.WaitForExit();
+
+        // Collect all output
+        output = stdoutTask.GetAwaiter().GetResult() + stderrTask.GetAwaiter().GetResult();
 
         // Return the output
         return p.ExitCode;
