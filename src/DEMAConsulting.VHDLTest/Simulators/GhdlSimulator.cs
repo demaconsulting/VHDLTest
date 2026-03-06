@@ -133,7 +133,7 @@ public sealed class GhdlSimulator : Simulator
         var application = Path.Combine(simPath, "ghdl");
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
         context.WriteVerboseLine($"  Elaborate Command: {application} -e --std=08 --workdir=VHDLTest.out/GHDL {test}");
-        var elabResults = CompileProcessor.Execute(
+        var elaborateResults = CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
             "-e",
@@ -142,9 +142,9 @@ public sealed class GhdlSimulator : Simulator
             test);
 
         // Return elaboration failure immediately without attempting to run
-        if (elabResults.Summary >= RunLineType.Error)
+        if (elaborateResults.Summary >= RunLineType.Error)
         {
-            return new TestResult(test, test, elabResults);
+            return new TestResult(test, test, elaborateResults);
         }
 
         // Run the test
