@@ -117,7 +117,7 @@ public sealed class GhdlSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting GHDL test {test}...");
 
         // Fail if we cannot find the simulator
@@ -129,9 +129,25 @@ public sealed class GhdlSimulator : Simulator
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
-        // Run the test
+        // Elaborate the test - required for the llvm backend (e.g. macOS) and harmless for mcode
         var application = Path.Combine(simPath, "ghdl");
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
+        context.WriteVerboseLine($"  Elaborate Command: {application} -e --std=08 --workdir=VHDLTest.out/GHDL {test}");
+        var elabResults = CompileProcessor.Execute(
+            application,
+            options.WorkingDirectory,
+            "-e",
+            "--std=08",
+            "--workdir=VHDLTest.out/GHDL",
+            test);
+
+        // Return elaboration failure immediately without attempting to run
+        if (elabResults.Summary >= RunLineType.Error)
+        {
+            return new TestResult(test, test, elabResults);
+        }
+
+        // Run the test
         context.WriteVerboseLine($"  Run Command: {application} -r --std=08 --workdir=VHDLTest.out/GHDL {test}");
         var testRunResults = TestProcessor.Execute(
             application,
