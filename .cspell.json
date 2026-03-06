@@ -71,22 +71,17 @@
   ],
   "ignorePaths": [
     "node_modules",
+    ".git",
     "bin",
     "obj",
-    ".git",
-    "*.dll",
-    "*.exe",
-    "*.pdb",
     "*.nupkg",
     "*.snupkg",
+    "*.dll",
+    "*.exe",
     "*.trx",
-    "*.csproj",
-    "*spdx.json",
+    "*.spdx.json",
     "package-lock.json",
     "yarn.lock",
-    "TestResults",
-    ".vs",
-    "*.bak",
     "AGENT_REPORT_*.md"
   ]
 }

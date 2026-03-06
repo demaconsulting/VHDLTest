@@ -103,7 +103,9 @@ public sealed class TestResults(string runName, string codeBase)
         results.BuildResults = simulator.Compile(context, options);
         results.BuildResults.Print(context);
         if (results.BuildResults.Summary >= RunLineType.Error)
+        {
             throw new InvalidOperationException("Build Failed");
+        }
 
         // Report pass of build
         context.Write(ConsoleColor.Green,
@@ -143,7 +145,9 @@ public sealed class TestResults(string runName, string codeBase)
     {
         // Validate parameter
         if (string.IsNullOrWhiteSpace(fileName))
+        {
             throw new ArgumentException("File name cannot be null or empty", nameof(fileName));
+        }
 
         // Create the TestResults from the library
         var testResults = new DemaConsulting.TestResults.TestResults
@@ -209,7 +213,10 @@ public sealed class TestResults(string runName, string codeBase)
         // Print the summary table
         context.WriteLine("==== summary ===========================");
         foreach (var r in Tests)
+        {
             r.PrintSummary(context);
+        }
+
         context.WriteLine("========================================");
 
         // Get the totals

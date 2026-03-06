@@ -35,6 +35,11 @@ public sealed class ActiveHdlSimulator : Simulator
     private const string SimApp = "vsimsa";
 
     /// <summary>
+    /// Library output directory path (relative to working directory)
+    /// </summary>
+    private const string LibDirPath = "VHDLTest.out/ActiveHDL";
+
+    /// <summary>
     /// Compile processor
     /// </summary>
     public static RunProcessor CompileProcessor { get; } = new(
@@ -88,18 +93,22 @@ public sealed class ActiveHdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ActiveHdl");
+        var libDir = Path.Combine(options.WorkingDirectory, LibDirPath);
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
+        {
             Directory.CreateDirectory(libDir);
+        }
 
         // Build the batch file
         var writer = new StringBuilder();
         writer.AppendLine("onerror {exit -code 1}");
-        writer.AppendLine("alib work VHDLTest.out/ActiveHDL");
+        writer.AppendLine($"alib work {LibDirPath}");
         writer.AppendLine("set worklib work");
         foreach (var file in options.Config.Files)
+        {
             writer.AppendLine($"acom -2008 -dbg {file}");
+        }
 
         // Write the batch file
         var script = Path.Combine(libDir, "compile.do");
@@ -109,12 +118,12 @@ public sealed class ActiveHdlSimulator : Simulator
         // Run the ActiveHDL compiler
         var application = Path.Combine(simPath, SimApp);
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/compile.do");
+        context.WriteVerboseLine($"  Run Command: {application} -do {LibDirPath}/compile.do");
         return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
             "-do",
-            "VHDLTest.out/ActiveHDL/compile.do");
+            $"{LibDirPath}/compile.do");
     }
 
     /// <inheritdoc />
@@ -129,7 +138,7 @@ public sealed class ActiveHdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ActiveHDL");
+        var libDir = Path.Combine(options.WorkingDirectory, LibDirPath);
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Build the batch file
@@ -149,12 +158,12 @@ public sealed class ActiveHdlSimulator : Simulator
         // Run the test
         var application = Path.Combine(simPath, SimApp);
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} -do VHDLTest.out/ActiveHDL/test.do");
+        context.WriteVerboseLine($"  Run Command: {application} -do {LibDirPath}/test.do");
         var testRunResults = TestProcessor.Execute(
             Path.Combine(simPath, SimApp),
             options.WorkingDirectory,
             "-do",
-            "VHDLTest.out/ActiveHDL/test.do");
+            $"{LibDirPath}/test.do");
 
         // Return the test results
         return new TestResult(
@@ -172,12 +181,16 @@ public sealed class ActiveHdlSimulator : Simulator
         // Look for an environment variable
         var simPathEnv = Environment.GetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH");
         if (simPathEnv != null)
+        {
             return simPathEnv;
+        }
 
         // Find the path to the simulator application
         var simPath = Where(SimApp);
         if (simPath == null)
+        {
             return null;
+        }
 
         // Return the working directory
         return Path.GetDirectoryName(simPath);

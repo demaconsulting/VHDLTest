@@ -46,7 +46,24 @@ Follow the `requirements.yaml` structure:
 - Clear ID and description
 - Justification explaining why the requirement is needed
 - Linked to appropriate test(s)
-- Enforced via: `dotnet vhdltest --validate`
+- Enforced via: `dotnet reqstream --requirements requirements.yaml --tests "artifacts/**/*.trx" --enforce`
+
+### Test Source Filters
+
+Test links in `requirements.yaml` can include a source filter prefix to restrict which test results count as
+evidence. This is critical for platform, simulator, and framework requirements - **never remove these filters**.
+
+- `ghdl@TestName` - proves the test passed using the GHDL simulator
+- `nvc@TestName` - proves the test passed using the NVC simulator
+- `windows@TestName` - proves the test passed on a Windows platform
+- `ubuntu@TestName` - proves the test passed on a Linux (Ubuntu) platform
+- `macos@TestName` - proves the test passed on a macOS platform
+- `dotnet8.x@TestName` - proves the self-validation test ran on a machine with .NET 8.x runtime
+- `dotnet9.x@TestName` - proves the self-validation test ran on a machine with .NET 9.x runtime
+- `dotnet10.x@TestName` - proves the self-validation test ran on a machine with .NET 10.x runtime
+
+Without the source filter, a test result from any platform/simulator/framework satisfies the requirement. Removing
+a filter invalidates the evidence for platform/simulator/framework requirements.
 
 ## Defer To
 

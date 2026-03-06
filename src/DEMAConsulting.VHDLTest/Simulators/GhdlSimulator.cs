@@ -85,12 +85,16 @@ public sealed class GhdlSimulator : Simulator
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
+        {
             Directory.CreateDirectory(libDir);
+        }
 
         // Build the batch file
         var writer = new StringBuilder();
         foreach (var file in options.Config.Files)
+        {
             writer.AppendLine(file);
+        }
 
         // Write the batch file
         var script = Path.Combine(libDir, "compile.rsp");
@@ -113,7 +117,7 @@ public sealed class GhdlSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting GHDL test {test}...");
 
         // Fail if we cannot find the simulator
@@ -125,9 +129,25 @@ public sealed class GhdlSimulator : Simulator
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
-        // Run the test
+        // Elaborate the test - required for the llvm backend (e.g. macOS) and harmless for mcode
         var application = Path.Combine(simPath, "ghdl");
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
+        context.WriteVerboseLine($"  Elaborate Command: {application} -e --std=08 --workdir=VHDLTest.out/GHDL {test}");
+        var elaborateResults = CompileProcessor.Execute(
+            application,
+            options.WorkingDirectory,
+            "-e",
+            "--std=08",
+            "--workdir=VHDLTest.out/GHDL",
+            test);
+
+        // Return elaboration failure immediately without attempting to run
+        if (elaborateResults.Summary >= RunLineType.Error)
+        {
+            return new TestResult(test, test, elaborateResults);
+        }
+
+        // Run the test
         context.WriteVerboseLine($"  Run Command: {application} -r --std=08 --workdir=VHDLTest.out/GHDL {test}");
         var testRunResults = TestProcessor.Execute(
             application,
@@ -153,12 +173,16 @@ public sealed class GhdlSimulator : Simulator
         // Look for an environment variable
         var simPathEnv = Environment.GetEnvironmentVariable("VHDLTEST_GHDL_PATH");
         if (simPathEnv != null)
+        {
             return simPathEnv;
+        }
 
         // Find the path to the simulator application
         var simPath = Where("ghdl");
         if (simPath == null)
+        {
             return null;
+        }
 
         // Return the working directory
         return Path.GetDirectoryName(simPath);

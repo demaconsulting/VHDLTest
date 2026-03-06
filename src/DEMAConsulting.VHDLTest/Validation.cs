@@ -65,7 +65,9 @@ internal static class Validation
 
         // Save results if requested
         if (context.ResultsFile != null)
+        {
             results.SaveResults(context.ResultsFile);
+        }
 
         // Print summary
         var totalTests = results.Tests.Count;
@@ -75,13 +77,19 @@ internal static class Validation
         context.WriteLine($"Total Tests: {totalTests}");
         context.WriteLine($"Passed: {passedTests}");
         if (failedTests > 0)
+        {
             context.WriteError($"Failed: {failedTests}");
+        }
         else
+        {
             context.WriteLine($"Failed: {failedTests}");
+        }
 
         // If all validations succeeded (no errors) then report validation passed
         if (context.Errors == 0)
+        {
             context.WriteLine("\nValidation Passed");
+        }
     }
 
     /// <summary>
@@ -167,7 +175,9 @@ internal static class Validation
                 "--config", "validate.yaml",
                 "--exit-0"]);
             if (simulator != null)
+            {
                 args.AddRange(["--simulator", simulator]);
+            }
 
             // Run VhdlTest on the validation files
             var exitCode = RunVhdlTest(ValidationFolder, [.. args]);
@@ -210,9 +220,29 @@ internal static class Validation
     {
         // Report to the context
         if (succeeded)
+        {
             context.WriteLine($"✓ VHDLTest_{testName} - Passed");
+        }
         else
+        {
+            // Write the primary failure line
             context.WriteError($"✗ VHDLTest_{testName} - Failed");
+
+            // Write the exit code so the caller knows what the simulator returned
+            context.WriteError($"  Exit code: {exitCode}");
+
+            // Write each line of the captured output indented so it is visually grouped
+            // under the failure — trim first to avoid spurious blank trailing lines.
+            // Split on both CR and LF to handle Windows (CRLF) and Unix (LF) line endings.
+            var trimmedOutput = output.Trim();
+            if (trimmedOutput.Length > 0)
+            {
+                foreach (var outputLine in trimmedOutput.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
+                {
+                    context.WriteError($"  {outputLine}");
+                }
+            }
+        }
 
         // Get the line type
         var line = succeeded

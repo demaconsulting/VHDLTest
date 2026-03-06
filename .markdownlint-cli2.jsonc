@@ -1,5 +1,4 @@
 {
-  // Markdownlint CLI 2 Configuration
   "config": {
     "default": true,
     "MD003": { "style": "atx" },
@@ -10,9 +9,8 @@
     "MD033": false,
     "MD041": false
   },
-  // Ignore patterns
   "ignores": [
-    "**/node_modules",
+    "node_modules",
     "**/AGENT_REPORT_*.md"
   ]
 }

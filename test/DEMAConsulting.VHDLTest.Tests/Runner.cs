@@ -48,17 +48,23 @@ internal static class Runner
 
         // Add the arguments
         foreach (var argument in arguments)
+        {
             startInfo.ArgumentList.Add(argument);
+        }
 
         // Start the process
         var process = Process.Start(startInfo) ??
                       throw new InvalidOperationException("Failed to start process");
 
+        // Read both streams asynchronously to prevent deadlock if either buffer fills
+        var stdoutTask = process.StandardOutput.ReadToEndAsync();
+        var stderrTask = process.StandardError.ReadToEndAsync();
+
         // Wait for the process to exit
         process.WaitForExit();
 
         // Save the output and return the exit code
-        output = process.StandardOutput.ReadToEnd();
+        output = stdoutTask.GetAwaiter().GetResult() + stderrTask.GetAwaiter().GetResult();
         return process.ExitCode;
     }
 }

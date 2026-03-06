@@ -119,11 +119,15 @@ public sealed class MockSimulator : Simulator
 
         // Add warning if desired
         if (test.Contains("_warning_"))
+        {
             output.AppendLine($"Warning: {test}");
+        }
 
         // Add info if desired
         if (test.Contains("_info_"))
+        {
             output.AppendLine($"Info: {test}");
+        }
 
         // Use test name to determine type of result
         if (test.Contains("_error_"))

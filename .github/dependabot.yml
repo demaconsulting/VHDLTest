@@ -11,7 +11,7 @@ updates:
       day: "monday"
     open-pull-requests-limit: 10
     groups:
-      dotnet-dependencies:
+      nuget-dependencies:
         patterns:
           - "*"
 

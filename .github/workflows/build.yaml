@@ -62,7 +62,12 @@ jobs:
       # This section runs all quality checks for the project.
       # Downstream projects: Add any additional quality checks here.
 
-      - name: Spell Check
+      - name: Run markdown linter
+        uses: DavidAnson/markdownlint-cli2-action@v22
+        with:
+          globs: '**/*.md'
+
+      - name: Run spell checker
         uses: streetsidesoftware/cspell-action@v8
         with:
           incremental_files_only: false
@@ -73,12 +78,7 @@ jobs:
             **/*.yaml
             **/*.yml
 
-      - name: Markdown Lint
-        uses: DavidAnson/markdownlint-cli2-action@v22
-        with:
-          globs: '**/*.md'
-
-      - name: YAML Lint
+      - name: Run YAML linter
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint.yaml
@@ -93,16 +93,15 @@ jobs:
   # unit-tests operate on all platforms and to run SonarScanner for generating
   # the code quality report.
   build:
-    # Permissions for this job
-    permissions:
-      contents: read        # To read repository contents
-      pull-requests: write  # To write pull requests analysis
-
+    name: Build ${{ matrix.os }}
     needs: quality-checks
+    permissions:
+      contents: read
+      pull-requests: write
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -132,8 +131,13 @@ jobs:
           update: true
 
       - uses: nickg/setup-nvc-ci@v1
+        if: matrix.os != 'macos-latest'
         with:
           version: latest
+
+      - name: Install NVC (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install nvc
 
       - name: Restore Tools
         run: >
@@ -148,8 +152,8 @@ jobs:
         run: |
           mkdir -p artifacts
           echo "Capturing tool versions..."
-          # Create short job ID: build-win, build-ubuntu
-          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/windows-latest/win/;s/ubuntu-latest/ubuntu/')
+          # Create short job ID: build-windows, build-ubuntu, build-macos
+          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/-latest//')
           JOB_ID="build-${OS_SHORT}"
           dotnet versionmark --capture --job-id "${JOB_ID}" \
             --output "artifacts/versionmark-${JOB_ID}.json" -- \
@@ -246,7 +250,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         dotnet: [8.x, 9.x, 10.x]
 
     runs-on: ${{ matrix.os }}
@@ -273,7 +277,7 @@ jobs:
       - uses: ghdl/setup-ghdl@v1
         with:
           version: 5.1.1
-          backend: mcode
+          backend: ${{ matrix.os == 'macos-latest' && 'llvm' || 'mcode' }}
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
@@ -303,7 +307,7 @@ jobs:
           mkdir -p artifacts
           echo "Capturing tool versions..."
           # Create appropriate job ID for the test job
-          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/windows-latest/win/;s/ubuntu-latest/ubuntu/')
+          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/-latest//')
           DOTNET_SHORT=$(echo "${{ matrix.dotnet }}" | sed 's/\.x$//')
           SIMULATOR="ghdl"
           JOB_ID="int-${SIMULATOR}-${OS_SHORT}-${DOTNET_SHORT}"
@@ -353,7 +357,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         dotnet: [8.x, 9.x, 10.x]
 
     runs-on: ${{ matrix.os }}
@@ -378,8 +382,13 @@ jobs:
           update: true
 
       - uses: nickg/setup-nvc-ci@v1
+        if: matrix.os != 'macos-latest'
         with:
           version: latest
+
+      - name: Install NVC (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install nvc
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
@@ -409,7 +418,7 @@ jobs:
           mkdir -p artifacts
           echo "Capturing tool versions..."
           # Create appropriate job ID for the test job
-          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/windows-latest/win/;s/ubuntu-latest/ubuntu/')
+          OS_SHORT=$(echo "${{ matrix.os }}" | sed 's/-latest//')
           DOTNET_SHORT=$(echo "${{ matrix.dotnet }}" | sed 's/\.x$//')
           SIMULATOR="nvc"
           JOB_ID="int-${SIMULATOR}-${OS_SHORT}-${DOTNET_SHORT}"
@@ -623,6 +632,7 @@ jobs:
       - name: Convert Requirements HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/requirements/requirements.html
           "docs/VHDLTest Requirements.pdf"
 
@@ -639,6 +649,7 @@ jobs:
       - name: Convert Justifications HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/justifications/justifications.html
           "docs/VHDLTest Requirements Justifications.pdf"
 
@@ -655,6 +666,7 @@ jobs:
       - name: Convert Trace Matrix HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/tracematrix/tracematrix.html
           "docs/VHDLTest Trace Matrix.pdf"
 
@@ -671,6 +683,7 @@ jobs:
       - name: Convert HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/guide/guide.html
           "docs/VHDLTest User Guide.pdf"
 
@@ -689,6 +702,7 @@ jobs:
           cat docs/quality/codeql-quality.md
 
       - name: Generate Code Quality Report with SonarMark
+        shell: bash
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
@@ -696,7 +710,7 @@ jobs:
           --server https://sonarcloud.io
           --project-key demaconsulting_VHDLTest
           --branch ${{ github.ref_name }}
-          --token "$env:SONAR_TOKEN"
+          --token "$SONAR_TOKEN"
           --report docs/quality/sonar-quality.md
           --report-depth 1
 
@@ -718,6 +732,7 @@ jobs:
       - name: Convert Code Quality HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/quality/quality.html
           "docs/VHDLTest Code Quality.pdf"
 
@@ -764,6 +779,7 @@ jobs:
       - name: Convert Build Notes HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/buildnotes/buildnotes.html
           "docs/VHDLTest Build Notes.pdf"
 
