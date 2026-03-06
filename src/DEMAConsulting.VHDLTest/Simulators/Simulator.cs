@@ -76,7 +76,9 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
         // Get the path environment
         var searchPath = Environment.GetEnvironmentVariable("PATH");
         if (searchPath == null)
+        {
             return null;
+        }
 
         // Get all the paths and files to search
         var searchPaths = searchPath
@@ -117,7 +119,9 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     {
         // First check for null or white-space
         if (string.IsNullOrWhiteSpace(path))
+        {
             return false;
+        }
 
         // Consider other sanity-checks
         return true;

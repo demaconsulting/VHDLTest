@@ -85,12 +85,16 @@ public sealed class GhdlSimulator : Simulator
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
+        {
             Directory.CreateDirectory(libDir);
+        }
 
         // Build the batch file
         var writer = new StringBuilder();
         foreach (var file in options.Config.Files)
+        {
             writer.AppendLine(file);
+        }
 
         // Write the batch file
         var script = Path.Combine(libDir, "compile.rsp");
@@ -153,12 +157,16 @@ public sealed class GhdlSimulator : Simulator
         // Look for an environment variable
         var simPathEnv = Environment.GetEnvironmentVariable("VHDLTEST_GHDL_PATH");
         if (simPathEnv != null)
+        {
             return simPathEnv;
+        }
 
         // Find the path to the simulator application
         var simPath = Where("ghdl");
         if (simPath == null)
+        {
             return null;
+        }
 
         // Return the working directory
         return Path.GetDirectoryName(simPath);

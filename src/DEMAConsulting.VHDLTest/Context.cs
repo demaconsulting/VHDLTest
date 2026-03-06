@@ -139,11 +139,15 @@ public sealed class Context : IDisposable
     {
         // Skip if not verbose
         if (!Verbose)
+        {
             return;
+        }
 
         // Write to the console unless silent
         if (!Silent)
+        {
             Console.WriteLine(text);
+        }
 
         // Write to the log if specified
         _log?.WriteLine(text);
@@ -157,7 +161,9 @@ public sealed class Context : IDisposable
     {
         // Write to the console unless silent
         if (!Silent)
+        {
             Console.WriteLine(text);
+        }
 
         // Write to the log if specified
         _log?.WriteLine(text);
@@ -174,7 +180,9 @@ public sealed class Context : IDisposable
 
         // Skip writing if no message provided
         if (message == null)
+        {
             return;
+        }
 
         // Write to the console unless silent
         if (!Silent)
@@ -285,12 +293,17 @@ public sealed class Context : IDisposable
                 case "--":
                     // Handle custom tests
                     while (e.MoveNext())
+                    {
                         customTests.Add(e.Current);
+                    }
+
                     break;
 
                 default:
                     if (arg.StartsWith('-'))
+                    {
                         throw new InvalidOperationException($"Unsupported option {arg}");
+                    }
 
                     // Handle custom tests
                     customTests.Add(arg);
@@ -324,7 +337,9 @@ public sealed class Context : IDisposable
     private static string GetArgument(IEnumerator<string> enumerator, string message)
     {
         if (!enumerator.MoveNext())
+        {
             throw new InvalidOperationException(message);
+        }
 
         return enumerator.Current;
     }

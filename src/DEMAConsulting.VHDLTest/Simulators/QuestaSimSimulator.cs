@@ -77,7 +77,9 @@ public sealed class QuestaSimSimulator : Simulator
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/QuestaSim");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
+        {
             Directory.CreateDirectory(libDir);
+        }
 
         // Build the batch file
         var writer = new StringBuilder();
@@ -85,7 +87,10 @@ public sealed class QuestaSimSimulator : Simulator
         writer.AppendLine("vlib work");
         writer.AppendLine("set worklib work");
         foreach (var file in options.Config.Files)
+        {
             writer.AppendLine($"vcom -2008 ../../{file}");
+        }
+
         writer.AppendLine("exit -code 0");
 
         // Write the batch file
@@ -161,12 +166,16 @@ public sealed class QuestaSimSimulator : Simulator
         // Look for an environment variable
         var simPathEnv = Environment.GetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH");
         if (simPathEnv != null)
+        {
             return simPathEnv;
+        }
 
         // Find the path to the simulator application
         var simPath = Where("vsim");
         if (simPath == null)
+        {
             return null;
+        }
 
         // Return the working directory
         return Path.GetDirectoryName(simPath);

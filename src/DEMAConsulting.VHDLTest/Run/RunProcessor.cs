@@ -88,7 +88,9 @@ public class RunProcessor(RunLineRule[] rules)
         {
             var maxLineType = lines.Max(line => line.Type);
             if (maxLineType > summary)
+            {
                 summary = maxLineType;
+            }
         }
 
         return new RunResults(

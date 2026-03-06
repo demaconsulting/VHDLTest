@@ -62,7 +62,12 @@ jobs:
       # This section runs all quality checks for the project.
       # Downstream projects: Add any additional quality checks here.
 
-      - name: Spell Check
+      - name: Run markdown linter
+        uses: DavidAnson/markdownlint-cli2-action@v22
+        with:
+          globs: '**/*.md'
+
+      - name: Run spell checker
         uses: streetsidesoftware/cspell-action@v8
         with:
           incremental_files_only: false
@@ -73,12 +78,7 @@ jobs:
             **/*.yaml
             **/*.yml
 
-      - name: Markdown Lint
-        uses: DavidAnson/markdownlint-cli2-action@v22
-        with:
-          globs: '**/*.md'
-
-      - name: YAML Lint
+      - name: Run YAML linter
         uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .yamllint.yaml
@@ -93,12 +93,11 @@ jobs:
   # unit-tests operate on all platforms and to run SonarScanner for generating
   # the code quality report.
   build:
-    # Permissions for this job
-    permissions:
-      contents: read        # To read repository contents
-      pull-requests: write  # To write pull requests analysis
-
+    name: Build ${{ matrix.os }}
     needs: quality-checks
+    permissions:
+      contents: read
+      pull-requests: write
 
     strategy:
       matrix:
@@ -623,6 +622,7 @@ jobs:
       - name: Convert Requirements HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/requirements/requirements.html
           "docs/VHDLTest Requirements.pdf"
 
@@ -639,6 +639,7 @@ jobs:
       - name: Convert Justifications HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/justifications/justifications.html
           "docs/VHDLTest Requirements Justifications.pdf"
 
@@ -655,6 +656,7 @@ jobs:
       - name: Convert Trace Matrix HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/tracematrix/tracematrix.html
           "docs/VHDLTest Trace Matrix.pdf"
 
@@ -671,6 +673,7 @@ jobs:
       - name: Convert HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/guide/guide.html
           "docs/VHDLTest User Guide.pdf"
 
@@ -689,6 +692,7 @@ jobs:
           cat docs/quality/codeql-quality.md
 
       - name: Generate Code Quality Report with SonarMark
+        shell: bash
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
@@ -696,7 +700,7 @@ jobs:
           --server https://sonarcloud.io
           --project-key demaconsulting_VHDLTest
           --branch ${{ github.ref_name }}
-          --token "$env:SONAR_TOKEN"
+          --token "$SONAR_TOKEN"
           --report docs/quality/sonar-quality.md
           --report-depth 1
 
@@ -718,6 +722,7 @@ jobs:
       - name: Convert Code Quality HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/quality/quality.html
           "docs/VHDLTest Code Quality.pdf"
 
@@ -764,6 +769,7 @@ jobs:
       - name: Convert Build Notes HTML to PDF with Weasyprint
         run: >
           dotnet weasyprint
+          --pdf-variant pdf/a-3u
           docs/buildnotes/buildnotes.html
           "docs/VHDLTest Build Notes.pdf"
 

@@ -51,7 +51,9 @@ public static class RunProgram
         };
 
         foreach (var argument in arguments)
+        {
             startInfo.ArgumentList.Add(argument);
+        }
 
         // Launch the process and ensure proper disposal
         using var p = new Process { StartInfo = startInfo };

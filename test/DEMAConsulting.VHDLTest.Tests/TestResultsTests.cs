@@ -67,7 +67,9 @@ public class TestResultsTests
         finally
         {
             if (File.Exists("TestResults.trx"))
+            {
                 File.Delete("TestResults.trx");
+            }
         }
     }
 
@@ -108,7 +110,9 @@ public class TestResultsTests
         finally
         {
             if (File.Exists("TestResults.xml"))
+            {
                 File.Delete("TestResults.xml");
+            }
         }
     }
 
@@ -149,7 +153,9 @@ public class TestResultsTests
         finally
         {
             if (File.Exists("TestResults.xml"))
+            {
                 File.Delete("TestResults.xml");
+            }
         }
     }
 
@@ -185,7 +191,9 @@ public class TestResultsTests
         finally
         {
             if (File.Exists("TestResults.trx"))
+            {
                 File.Delete("TestResults.trx");
+            }
         }
     }
 
@@ -239,7 +247,9 @@ public class TestResultsTests
         finally
         {
             if (File.Exists("TestResults.unknown"))
+            {
                 File.Delete("TestResults.unknown");
+            }
         }
     }
 }

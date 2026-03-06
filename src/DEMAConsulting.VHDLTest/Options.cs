@@ -37,7 +37,9 @@ public record Options(string WorkingDirectory,
     {
         // Verify a configuration file was specified
         if (args.ConfigFile == null)
+        {
             throw new InvalidOperationException("Configuration file not specified");
+        }
 
         // Read the configuration file
         var config = ConfigDocument.ReadFile(args.ConfigFile);

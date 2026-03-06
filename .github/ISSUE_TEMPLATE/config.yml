@@ -1,7 +1,10 @@
 ---
 blank_issues_enabled: false
 contact_links:
-  - name: 💬 Ask a Question
+  - name: 📚 Documentation
+    url: https://github.com/demaconsulting/VHDLTest
+    about: Read the documentation for VHDLTest
+  - name: 💬 Discussions
     url: https://github.com/demaconsulting/VHDLTest/discussions
     about: Ask questions and discuss with the community
   - name: 🔒 Security Issue
