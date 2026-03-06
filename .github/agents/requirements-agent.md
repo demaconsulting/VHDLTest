@@ -57,6 +57,7 @@ evidence. This is critical for platform, simulator, and framework requirements -
 - `nvc@TestName` - proves the test passed using the NVC simulator
 - `windows@TestName` - proves the test passed on a Windows platform
 - `ubuntu@TestName` - proves the test passed on a Linux (Ubuntu) platform
+- `macos@TestName` - proves the test passed on a macOS platform
 - `dotnet8.x@TestName` - proves the self-validation test ran on a machine with .NET 8.x runtime
 - `dotnet9.x@TestName` - proves the self-validation test ran on a machine with .NET 9.x runtime
 - `dotnet10.x@TestName` - proves the self-validation test ran on a machine with .NET 10.x runtime
