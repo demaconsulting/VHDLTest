@@ -88,7 +88,7 @@ public sealed class ActiveHdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ActiveHdl");
+        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/ActiveHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
         {
