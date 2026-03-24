@@ -1,6 +1,8 @@
 ---
-name: Test Developer
+name: test-developer
 description: Writes unit and integration tests following AAA pattern - clear documentation of what's tested and proved
+tools: [read, search, edit, execute, github, agent]
+user-invocable: true
 ---
 
 # Test Developer - VHDLTest
@@ -87,6 +89,16 @@ the evidence-based proof that the tool works on a specific platform, simulator, 
 - Use MSTest V4 testing framework
 - Follow existing naming conventions in the test suite
 
+### CI/CD Integration
+
+```yaml
+- name: Upload Test Results
+  uses: actions/upload-artifact@v7
+  with:
+    name: test-results
+    path: TestResults/**/*.trx
+```
+
 ### MSTest V4 Best Practices
 
 Common anti-patterns to avoid (not exhaustive):
@@ -138,7 +150,7 @@ Common anti-patterns to avoid (not exhaustive):
 - **Technical Writer Agent**: For test documentation in markdown
 - **Code Quality Agent**: For test linting and static analysis
 
-## Don't
+## Don't Do These Things
 
 - Write tests that test multiple behaviors in one test
 - Skip test documentation

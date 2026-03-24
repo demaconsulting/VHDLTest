@@ -1,6 +1,8 @@
 ---
-name: Technical Writer
+name: technical-writer
 description: Ensures documentation is accurate and complete - knowledgeable about regulatory documentation and special document types
+tools: [read, search, edit, execute, github, agent]
+user-invocable: true
 ---
 
 # Technical Writer - VHDLTest
@@ -34,14 +36,15 @@ Invoke the technical-writer for:
 - **All markdown files**: Use reference-style links `[text][ref]` with `[ref]: url` at document end
 - **Exceptions**:
   - **README.md**: Use absolute URLs in the links (shipped in NuGet package)
-  - **AI agent markdown files** (`.github/agents/*.md`): Use inline links `[text](url)` so URLs are visible in agent context
+  - **AI agent markdown files** (`.github/agents/*.agent.md`): Use inline links `[text](url)` so URLs are visible
+    in agent context
 - Max 120 characters per line
 - Lists require blank lines (MD032)
 
 #### Linting Requirements
 
-- **markdownlint**: Style and structure compliance
-- **cspell**: Spelling (add technical terms to `.cspell.json`)
+- **markdownlint**: Style and structure compliance (`.markdownlint-cli2.yaml`)
+- **cspell**: Spelling (add technical terms to `.cspell.yaml`)
 - **yamllint**: YAML file validation
 
 ### Regulatory Documentation
@@ -59,8 +62,9 @@ For documents requiring regulatory compliance:
 - **Test Developer Agent**: For test documentation
 - **Code Quality Agent**: For running linters and fixing lint issues
 
-## Don't
+## Don't Do These Things
 
-- Change code to match documentation (code is source of truth)
-- Document non-existent features
-- Skip linting before committing changes
+- Edit auto-generated documentation manually (will be overwritten)
+- Skip purpose and scope sections in regulatory documents
+- Ignore spelling errors
+- Commit documentation without linting verification

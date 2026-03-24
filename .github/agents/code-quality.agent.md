@@ -1,6 +1,8 @@
 ---
-name: Code Quality Agent
-description: Ensures code quality through linting and static analysis - responsible for security, maintainability, and correctness
+name: code-quality
+description: Ensures code quality through comprehensive linting and static analysis.
+tools: [read, search, edit, execute, github, agent]
+user-invocable: true
 ---
 
 # Code Quality Agent - VHDLTest
@@ -9,7 +11,7 @@ Enforce quality standards through linting, static analysis, and security scannin
 
 ## When to Invoke This Agent
 
-Invoke the code-quality-agent for:
+Invoke the code-quality agent for:
 
 - Running and fixing linting issues (markdown, YAML, spell check, code formatting)
 - Ensuring static analysis passes with zero warnings
@@ -31,8 +33,8 @@ Ensure the project is:
 
 1. **Build**: Zero warnings (TreatWarningsAsErrors=true)
 2. **Linting**:
-   - markdownlint (`.markdownlint-cli2.jsonc`)
-   - cspell (`.cspell.json`)
+   - markdownlint (`.markdownlint-cli2.yaml`)
+   - cspell (`.cspell.yaml`)
    - yamllint (`.yamllint.yaml`)
    - dotnet format (`.editorconfig`)
 3. **Static Analysis**:
@@ -76,7 +78,7 @@ lint.bat     # Windows
 - **Software Developer Agent**: For fixing production code issues
 - **Test Developer Agent**: For fixing test code issues
 
-## Don't
+## Don't Do These Things
 
 - Disable quality checks to make builds pass
 - Ignore security warnings

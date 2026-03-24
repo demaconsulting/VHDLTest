@@ -5,24 +5,26 @@ generating test reports.
 
 ## Available Specialized Agents
 
-- **Requirements Agent** - Develops requirements and ensures test coverage linkage
-- **Technical Writer** - Creates accurate documentation following regulatory best practices
-- **Software Developer** - Writes production code and self-validation tests in literate style
-- **Test Developer** - Creates unit and integration tests following AAA pattern
-- **Code Quality Agent** - Enforces linting, static analysis, and security standards
-- **Repo Consistency Agent** - Ensures VHDLTest remains consistent with TemplateDotNetTool template patterns
+- **requirements** - Develops requirements and ensures test coverage linkage
+- **technical-writer** - Creates accurate documentation following regulatory best practices
+- **software-developer** - Writes production code and self-validation tests in literate style
+- **test-developer** - Creates unit and integration tests following AAA pattern
+- **code-quality** - Enforces linting, static analysis, and security standards
+- **code-review** - Assists in performing formal file reviews
+- **repo-consistency** - Ensures VHDLTest remains consistent with TemplateDotNetTool template patterns
 
 ## Agent Selection Guide
 
-- Fix a bug → **Software Developer**
-- Add a new feature → **Requirements Agent** → **Software Developer** → **Test Developer**
-- Write a test → **Test Developer**
-- Fix linting or static analysis issues → **Code Quality Agent**
-- Update documentation → **Technical Writer**
-- Add or update requirements → **Requirements Agent**
-- Ensure test coverage linkage in `requirements.yaml` → **Requirements Agent**
-- Run security scanning or address CodeQL alerts → **Code Quality Agent**
-- Propagate template changes → **Repo Consistency Agent**
+- Fix a bug → **software-developer**
+- Add a new feature → **requirements** → **software-developer** → **test-developer**
+- Write a test → **test-developer**
+- Fix linting or static analysis issues → **code-quality**
+- Update documentation → **technical-writer**
+- Add or update requirements → **requirements**
+- Ensure test coverage linkage in `requirements.yaml` → **requirements**
+- Run security scanning or address CodeQL alerts → **code-quality**
+- Perform formal file reviews → **code-review**
+- Propagate template changes → **repo-consistency**
 
 ## Tech Stack
 
@@ -33,7 +35,17 @@ generating test reports.
 
 - **`requirements.yaml`** - All requirements with test linkage (enforced via `dotnet reqstream --enforce`)
 - **`.editorconfig`** - Code style (file-scoped namespaces, 4-space indent, UTF-8, LF endings)
-- **`.cspell.json`, `.markdownlint-cli2.jsonc`, `.yamllint.yaml`** - Linting configs
+- **`.cspell.yaml`, `.markdownlint-cli2.yaml`, `.yamllint.yaml`** - Linting configs
+
+### Spell Check Word List Policy
+
+**Never** add a word to the `.cspell.yaml` word list in order to silence a spell-checking failure.
+Doing so defeats the purpose of spell-checking and reduces the quality of the repository.
+
+- If cspell flags a word that is **misspelled**, fix the spelling in the source file.
+- If cspell flags a word that is a **genuine technical term** (tool name, project identifier, etc.) and is
+  spelled correctly, raise a **proposal** (e.g. comment in a pull request) explaining why the word
+  should be added. The proposal must be reviewed and approved before the word is added to the list.
 
 ## Requirements (VHDLTest-Specific)
 
@@ -113,7 +125,7 @@ build.bat     # Windows
 
 ## Markdown Link Style
 
-- **AI agent markdown files** (`.github/agents/*.md`): Use inline links `[text](url)` so URLs are visible in
+- **AI agent markdown files** (`.github/agents/*.agent.md`): Use inline links `[text](url)` so URLs are visible in
   agent context
 - **README.md**: Use absolute URLs (shipped in NuGet package)
 - **All other markdown files**: Use reference-style links `[text][ref]` with `[ref]: url` at document end
@@ -159,9 +171,10 @@ When agents need to write report files to communicate with each other or the use
 
 Delegate tasks to specialized agents for better results:
 
-- **requirements-agent** - Invoke for: creating/reviewing requirements, test coverage strategy
+- **requirements** - Invoke for: creating/reviewing requirements, test coverage strategy
 - **technical-writer** - Invoke for: documentation updates/reviews, markdown/spell/YAML linting
 - **software-developer** - Invoke for: production code implementation, refactoring for testability
 - **test-developer** - Invoke for: unit and integration tests, test coverage improvements
-- **code-quality-agent** - Invoke for: code quality reviews, linting, static analysis, security, zero-warning builds
-- **repo-consistency-agent** - Invoke for: checking consistency with TemplateDotNetTool template patterns
+- **code-quality** - Invoke for: code quality reviews, linting, static analysis, security, zero-warning builds
+- **code-review** - Invoke for: performing formal file reviews and compliance verification
+- **repo-consistency** - Invoke for: checking consistency with TemplateDotNetTool template patterns
