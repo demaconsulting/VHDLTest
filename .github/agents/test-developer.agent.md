@@ -5,154 +5,120 @@ tools: [read, search, edit, execute, github, agent]
 user-invocable: true
 ---
 
-# Test Developer - VHDLTest
+# Test Developer Agent
 
-Develop comprehensive unit and integration tests following best practices.
+Develop comprehensive unit and integration tests with emphasis on requirements coverage and
+Continuous Compliance verification.
+
+## Reporting
+
+If detailed documentation of testing activities is needed,
+create a report using the filename pattern `AGENT_REPORT_testing.md` to document test strategies, coverage analysis,
+and validation results.
 
 ## When to Invoke This Agent
 
-Invoke the test-developer for:
+Use the Test Developer Agent for:
 
-- Creating unit tests for individual components
-- Creating integration tests for cross-component behavior
-- Improving test coverage
-- Refactoring existing tests for clarity
+- Creating unit tests for new functionality
+- Writing integration tests for component interactions
+- Improving test coverage for compliance requirements
+- Implementing AAA (Arrange-Act-Assert) pattern tests
+- Generating platform-specific test evidence
 
-## Responsibilities
+## Primary Responsibilities
 
-### AAA Pattern (Arrange-Act-Assert)
+### Comprehensive Test Coverage Strategy
 
-All tests must follow the AAA pattern with clear sections:
+#### Requirements Coverage (MANDATORY)
+
+- **All requirements MUST have linked tests** - Enforced by ReqStream
+- **Platform-specific tests** must generate evidence with source filters
+- **Test result formats** must be compatible (TRX format for VHDLTest)
+
+#### VHDLTest Test Types
+
+1. **Self-Validation Tests** (via `--validate`): For CLI argument handling, output formatting
+2. **Integration Tests** (`IntegrationTest_*`): For VHDL simulation workflows with GHDL, NVC
+3. **Unit Tests**: For parsing logic, data transformations
+
+### AAA Pattern Implementation (MANDATORY)
+
+All tests MUST follow Arrange-Act-Assert pattern for clarity and maintainability:
 
 ```csharp
 [TestMethod]
 public void ClassName_MethodUnderTest_Scenario_ExpectedBehavior()
 {
-    // Arrange - Set up test conditions
-    var input = "test data";
-    var expected = "expected result";
-    var component = new Component();
+    // Arrange - Set up test data and dependencies
+    ...
 
-    // Act - Execute the behavior being tested
-    var actual = component.Method(input);
+    // Act - Execute the system under test
+    ...
 
-    // Assert - Verify the results
-    Assert.AreEqual(expected, actual);
+    // Assert - Verify expected outcomes
+    ...
 }
 ```
 
-### Test Documentation
+### Test Naming Standards
 
-- Test name clearly states what is being tested and the scenario
-- Comments document:
-  - What is being tested (the behavior/requirement)
-  - What the assertions prove (the expected outcome)
-  - Any non-obvious setup or conditions
+```csharp
+// Unit test pattern: ClassName_MethodUnderTest_Scenario_ExpectedBehavior
+Context_ParseArguments_ValidInput_ReturnsContext()
+Context_ParseArguments_MissingRequired_ThrowsException()
 
-### Test Quality
-
-- Tests should be independent and isolated
-- Each test verifies one behavior/scenario
-- Use meaningful test data (avoid magic values)
-- Clear failure messages for assertions
-- Consider edge cases and error conditions
-
-### Tests and Requirements
-
-- **All requirements MUST have linked tests** - this is enforced in CI
-- **Not all tests need requirements** - tests may be created for:
-  - Exploring corner cases not explicitly stated in requirements
-  - Testing design decisions and implementation details
-  - Failure-testing and error handling scenarios
-  - Verifying internal behavior beyond requirement scope
-
-### Test Source Filters
-
-Test links in `requirements.yaml` can include a source filter prefix to restrict which test results count as
-evidence. These filters are critical for platform, simulator, and framework requirements - **do not remove them**.
-
-- `ghdl@TestName` - proves the test passed using the GHDL simulator
-- `nvc@TestName` - proves the test passed using the NVC simulator
-- `windows@TestName` - proves the test passed on a Windows platform
-- `ubuntu@TestName` - proves the test passed on a Linux (Ubuntu) platform
-- `dotnet8.x@TestName` - proves the self-validation test ran on a machine with .NET 8.x runtime
-- `dotnet9.x@TestName` - proves the self-validation test ran on a machine with .NET 9.x runtime
-- `dotnet10.x@TestName` - proves the self-validation test ran on a machine with .NET 10.x runtime
-
-Removing a source filter means a test result from any environment can satisfy the requirement, which invalidates
-the evidence-based proof that the tool works on a specific platform, simulator, or framework.
-
-### VHDLTest-Specific
-
-- **NOT self-validation tests** - those are handled by Software Developer Agent
-- Unit tests live in `test/` directory
-- Use MSTest V4 testing framework
-- Follow existing naming conventions in the test suite
-
-### CI/CD Integration
-
-```yaml
-- name: Upload Test Results
-  uses: actions/upload-artifact@v7
-  with:
-    name: test-results
-    path: TestResults/**/*.trx
+// Integration test pattern: IntegrationTest_Scenario_ExpectedBehavior
+IntegrationTest_GhdlSimulation_ValidTest_ReportsPass()
+IntegrationTest_NvcSimulation_FailingTest_ReportsFailure()
 ```
 
-### MSTest V4 Best Practices
+## Quality Gate Verification
 
-Common anti-patterns to avoid (not exhaustive):
+### Test Quality Standards
 
-1. **Avoid Assertions in Catch Blocks (MSTEST0058)** - Instead of wrapping code in try/catch and asserting in the
-   catch block, use `Assert.ThrowsExactly<T>()`:
+- [ ] All tests follow AAA pattern consistently
+- [ ] Test names clearly describe scenario and expected outcome
+- [ ] Each test validates single, specific behavior
+- [ ] Both happy path and edge cases covered
+- [ ] Platform-specific tests generate appropriate evidence
 
-   ```csharp
-   var ex = Assert.ThrowsExactly<ArgumentNullException>(() => SomeWork());
-   Assert.Contains("Some message", ex.Message);
-   ```
+### Requirements Traceability
 
-2. **Avoid using Assert.IsTrue / Assert.IsFalse for equality checks** - Use `Assert.AreEqual` /
-   `Assert.AreNotEqual` instead, as it provides better failure messages:
+- [ ] Tests linked to specific requirements in `requirements.yaml`
+- [ ] Source filters applied for platform/simulator-specific requirements
+- [ ] Test coverage adequate for all stated requirements
+- [ ] ReqStream validation passes: `dotnet reqstream --enforce`
 
-   ```csharp
-   // ❌ Bad: Assert.IsTrue(result == expected);
-   // ✅ Good: Assert.AreEqual(expected, result);
-   ```
+### Test Execution
 
-3. **Avoid non-public test classes and methods** - Test classes and `[TestMethod]` methods must be `public` or
-   they will be silently ignored:
+```bash
+# Run unit tests
+dotnet test --configuration Release
 
-   ```csharp
-   // ❌ Bad: internal class MyTests
-   // ✅ Good: public class MyTests
-   ```
+# Run self-validation tests
+dotnet run --project src/DEMAConsulting.VHDLTest \
+  --configuration Release --framework net10.0 --no-build -- --validate
+```
 
-4. **Avoid Assert.IsTrue(collection.Count == N)** - Use `Assert.HasCount` for count assertions:
+## Cross-Agent Coordination
 
-   ```csharp
-   // ❌ Bad: Assert.IsTrue(collection.Count == 3);
-   // ✅ Good: Assert.HasCount(3, collection);
-   ```
+### Hand-off to Other Agents
 
-5. **Avoid Assert.IsTrue for string prefix checks** - Use `Assert.StartsWith` instead of wrapping
-   `string.StartsWith` in `Assert.IsTrue`, as it produces clearer failure messages that show the expected prefix
-   and actual value:
-
-   ```csharp
-   // ❌ Bad: Assert.IsTrue(value.StartsWith("prefix"));
-   // ✅ Good: Assert.StartsWith("prefix", value);
-   ```
-
-## Defer To
-
-- **Requirements Agent**: For test strategy and coverage requirements
-- **Software Developer Agent**: For self-validation tests and production code issues
-- **Technical Writer Agent**: For test documentation in markdown
-- **Code Quality Agent**: For test linting and static analysis
+- If test quality gates and coverage metrics need verification, then call the @code-quality agent with the **request**
+  to verify test quality gates and coverage metrics with **context** of current test results.
+- If test linkage needs to satisfy requirements traceability, then call the @requirements agent with the **request**
+  to ensure test linkage satisfies requirements traceability with **context** of test coverage.
+- If testable code structure improvements are needed, then call the @software-developer agent with the **request** to
+  improve testable code structure with **context** of testing challenges.
 
 ## Don't Do These Things
 
-- Write tests that test multiple behaviors in one test
-- Skip test documentation
-- Create brittle tests with tight coupling to implementation details
-- Write self-validation tests (delegate to Software Developer Agent)
+- **Never skip AAA pattern** in test structure (mandatory for consistency)
+- **Never create tests without clear names** (must describe scenario/expectation)
+- **Never write flaky tests** that pass/fail inconsistently
+- **Never test implementation details** (test behavior, not internal mechanics)
+- **Never skip edge cases** and error conditions
+- **Never create tests without requirements linkage** (for compliance requirements)
+- **Never ignore platform-specific test evidence** requirements
+- **Never commit failing tests** (all tests must pass before merge)

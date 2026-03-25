@@ -5,21 +5,10 @@ tools: [read, search, edit, execute, github, agent]
 user-invocable: true
 ---
 
-# Repo Consistency Agent - VHDLTest
+# Repo Consistency Agent
 
-Maintain consistency between VHDLTest and the TemplateDotNetTool template at <https://github.com/demaconsulting/TemplateDotNetTool>.
-
-## When to Invoke This Agent
-
-Invoke the repo-consistency-agent for:
-
-- Periodic reviews of VHDLTest against the TemplateDotNetTool template
-- Checking if VHDLTest follows the latest template patterns
-- Identifying drift from template standards
-- Recommending updates to bring VHDLTest back in sync with TemplateDotNetTool
-
-**Note**: This agent reviews VHDLTest (<https://github.com/demaconsulting/VHDLTest>) for consistency with
-the TemplateDotNetTool template (<https://github.com/demaconsulting/TemplateDotNetTool>).
+Maintain consistency between downstream projects and the TemplateDotNetTool template, ensuring repositories
+benefit from template evolution while respecting project-specific customizations.
 
 ## Reporting
 

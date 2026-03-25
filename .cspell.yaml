@@ -24,6 +24,7 @@ words:
   - buildmark
   - BuildMark
   - build_notes
+  - buildnotes
   - camelcase
   - code_quality
   - code_review_plan
@@ -39,6 +40,7 @@ words:
   - dotnet
   - dorny
   - endsim
+  - errorlevel
   - ghdl
   - gitattributes
   - ibiqlik
@@ -52,7 +54,9 @@ words:
   - msystem
   - netanalyzers
   - nickg
+  - nameof
   - nlog
+  - nolog
   - nupkg
   - opencover
   - pandoc
@@ -60,6 +64,7 @@ words:
   - PATHEXT
   - Questa
   - QuestaSim
+  - Qube
   - reqstream
   - ReqStream
   - requirements_doc
@@ -73,16 +78,20 @@ words:
   - sbom
   - SBOM
   - screencasts
+  - setlocal
   - slnx
   - snupkg
   - sonarcloud
+  - SonarQube
   - sonarscanner
   - spdx
   - testbench
   - testbenches
   - trace_matrix
   - tracematrix
+  - thirdparty
   - trx
+  - venv
   - vcom
   - VHDL
   - vhdl

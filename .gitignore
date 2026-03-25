@@ -7,6 +7,7 @@ TestResults/
 test-results/
 node_modules/
 package-lock.json
+.venv/
 docs/guide/guide.html
 docs/requirements/requirements.md
 docs/requirements/requirements.html
