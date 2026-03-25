@@ -13,17 +13,13 @@ set "LINT_ERROR=0"
 
 REM Install npm dependencies
 call npm install
-if errorlevel 1 exit /b 1
 
 REM Create Python virtual environment (for yamllint) if missing
 if not exist ".venv\Scripts\activate.bat" (
     python -m venv .venv
-    if errorlevel 1 exit /b 1
 )
 call .venv\Scripts\activate.bat
-if errorlevel 1 exit /b 1
 pip install -r pip-requirements.txt
-if errorlevel 1 exit /b 1
 
 REM Run spell check
 call npx cspell --no-progress --no-color "**/*.{md,yaml,yml,json,cs,txt}"
@@ -34,7 +30,7 @@ call npx markdownlint-cli2 "**/*.md"
 if errorlevel 1 set "LINT_ERROR=1"
 
 REM Run yamllint check
-yamllint -c .yamllint.yaml .
+yamllint .
 if errorlevel 1 set "LINT_ERROR=1"
 
 REM Run .NET formatting check (verifies no changes are needed)

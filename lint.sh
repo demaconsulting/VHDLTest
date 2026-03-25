@@ -11,14 +11,14 @@
 lint_error=0
 
 # Install npm dependencies
-npm install || exit 1
+npm install
 
 # Create Python virtual environment (for yamllint)
 if [ ! -d ".venv" ]; then
-  python -m venv .venv || exit 1
+  python -m venv .venv
 fi
-source .venv/bin/activate || exit 1
-pip install -r pip-requirements.txt || exit 1
+source .venv/bin/activate
+pip install -r pip-requirements.txt
 
 # Run spell check
 npx cspell --no-progress --no-color "**/*.{md,yaml,yml,json,cs,txt}" || lint_error=1
@@ -27,7 +27,7 @@ npx cspell --no-progress --no-color "**/*.{md,yaml,yml,json,cs,txt}" || lint_err
 npx markdownlint-cli2 "**/*.md" || lint_error=1
 
 # Run yamllint check
-yamllint -c .yamllint.yaml . || lint_error=1
+yamllint . || lint_error=1
 
 # Run .NET formatting check (verifies no changes are needed)
 dotnet format --verify-no-changes DEMAConsulting.VHDLTest.sln || lint_error=1
