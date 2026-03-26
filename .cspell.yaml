@@ -120,4 +120,5 @@ ignorePaths:
   - "**/AGENT_REPORT_*.md"
   - "**/bin/**"
   - "**/obj/**"
+  - "**/artifacts/**"
   - package-lock.json
