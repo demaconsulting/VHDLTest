@@ -77,8 +77,8 @@ This project maintains formal requirements documentation to ensure quality, trac
 #### Requirements Structure
 
 * **requirements.yaml**: Master requirements document in the project root
-* **docs/requirements/**: Additional requirements documentation
-* **docs/tracematrix/**: Requirements traceability matrix
+* **docs/requirements_doc/**: Additional requirements documentation
+* **docs/requirements_report/**: Requirements traceability matrix
 
 #### Working with Requirements
 
@@ -96,7 +96,7 @@ When contributing to this project:
    dotnet vhdltest --validate
    ```
 
-5. **Update Documentation**: If you add new requirement categories, update `docs/requirements/introduction.md`
+5. **Update Documentation**: If you add new requirement categories, update `docs/requirements_doc/introduction.md`
 
 #### Requirement Categories
 
