@@ -82,6 +82,8 @@ words:
   - slnx
   - snupkg
   - sonarcloud
+  - sonarmark
+  - SonarMark
   - SonarQube
   - sonarscanner
   - spdx
@@ -96,6 +98,8 @@ words:
   - VHDL
   - vhdl
   - vhdltest
+  - versionmark
+  - VersionMark
   - vlib
   - vivado
   - vsim
@@ -118,6 +122,7 @@ ignorePaths:
   - "**/third-party/**"
   - "**/3rd-party/**"
   - "**/AGENT_REPORT_*.md"
+  - "**/.agent-logs/**"
   - "**/bin/**"
   - "**/obj/**"
   - "**/artifacts/**"
