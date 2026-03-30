@@ -3,15 +3,44 @@
 Project-specific guidance for agents working on VHDLTest - a .NET CLI tool for running VHDL unit tests and
 generating test reports.
 
+## Standards Application (ALL Agents Must Follow)
+
+Before performing any work, agents must read and apply the relevant standards from `.github/standards/`:
+
+- **`csharp-language.md`** - For C# code development (literate programming, XML docs, dependency injection)
+- **`csharp-testing.md`** - For C# test development (AAA pattern, naming, MSTest anti-patterns)
+- **`reqstream-usage.md`** - For requirements management (traceability, semantic IDs, source filters)
+- **`reviewmark-usage.md`** - For file review management (review-sets, file patterns, enforcement)
+- **`software-items.md`** - For software categorization (system/subsystem/unit/OTS classification)
+- **`technical-documentation.md`** - For documentation creation and maintenance (structure, Pandoc, README best practices)
+
+Load only the standards relevant to your specific task scope and apply their
+quality checks and guidelines throughout your work.
+
+## Agent Delegation Guidelines
+
+The default agent should handle simple, straightforward tasks directly.
+Delegate to specialized agents only for specific scenarios:
+
+- **Light development work** (small fixes, simple features) → Call @developer agent
+- **Light quality checking** (linting, basic validation) → Call @quality agent
+- **Formal feature implementation** (complex, multi-step) → Call the `@implementation` agent
+- **Formal bug resolution** (complex debugging, systematic fixes) → Call the `@implementation` agent
+- **Formal reviews** (compliance verification, detailed analysis) → Call @code-review agent
+- **Template consistency** (downstream repository alignment) → Call @repo-consistency agent
+
 ## Available Specialized Agents
 
-- **requirements** - Develops requirements and ensures test coverage linkage
-- **technical-writer** - Creates accurate documentation following regulatory best practices
-- **software-developer** - Writes production code and self-validation tests in literate style
-- **test-developer** - Creates unit and integration tests following AAA pattern
-- **code-quality** - Enforces linting, static analysis, and security standards
-- **code-review** - Assists in performing formal file reviews
-- **repo-consistency** - Ensures VHDLTest remains consistent with TemplateDotNetTool template patterns
+- **code-review** - Agent for performing formal reviews using standardized
+  review processes
+- **developer** - General-purpose software development agent that applies
+  appropriate standards based on the work being performed
+- **implementation** - Orchestrator agent that manages quality implementations
+  through a formal state machine workflow
+- **quality** - Quality assurance agent that grades developer work against DEMA
+  Consulting standards and Continuous Compliance practices
+- **repo-consistency** - Ensures VHDLTest remains consistent with
+  TemplateDotNetTool template patterns and best practices
 
 ## Agent Selection Guide
 
@@ -178,3 +207,6 @@ Delegate tasks to specialized agents for better results:
 - **code-quality** - Invoke for: code quality reviews, linting, static analysis, security, zero-warning builds
 - **code-review** - Invoke for: performing formal file reviews and compliance verification
 - **repo-consistency** - Invoke for: checking consistency with TemplateDotNetTool template patterns
+- **developer** - Invoke for: light development work applying appropriate standards
+- **implementation** - Invoke for: complex multi-step feature implementation or bug resolution
+- **quality** - Invoke for: grading developer work against DEMA Consulting standards
