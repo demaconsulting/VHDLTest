@@ -31,6 +31,10 @@ Delegate to specialized agents only for specific scenarios:
 
 ## Available Specialized Agents
 
+The following workflow-based agents are available for complex tasks. For project-specific
+specialized agents (requirements, software-developer, test-developer, etc.), see the
+[Custom Agents](#custom-agents) section below.
+
 - **code-review** - Agent for performing formal reviews using standardized
   review processes
 - **developer** - General-purpose software development agent that applies
