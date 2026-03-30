@@ -32,6 +32,10 @@ config:
   MD013:
     line_length: 120
 
+  # Allow duplicate headings if they are not siblings (e.g., same heading in different sections)
+  MD024:
+    siblings_only: true
+
   # Allow multiple top-level headers per document
   MD025: false
 
