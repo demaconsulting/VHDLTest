@@ -1,0 +1,17 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: SonarMark
+        requirements:
+          - id: VHDLTest-OTS-SonarMark
+            title: SonarMark shall generate a SonarCloud quality report.
+            justification: |
+              DemaConsulting.SonarMark retrieves quality-gate and metrics data from SonarCloud and
+              renders it as a markdown document included in the release artifacts.
+            tags: [ots]
+            tests:
+              - SonarMark_QualityGateRetrieval
+              - SonarMark_IssuesRetrieval
+              - SonarMark_HotSpotsRetrieval
+              - SonarMark_MarkdownReportGeneration

@@ -82,6 +82,8 @@ words:
   - slnx
   - snupkg
   - sonarcloud
+  - sonarmark
+  - SonarMark
   - SonarQube
   - sonarscanner
   - spdx
@@ -96,6 +98,8 @@ words:
   - VHDL
   - vhdl
   - vhdltest
+  - versionmark
+  - VersionMark
   - vlib
   - vivado
   - vsim
