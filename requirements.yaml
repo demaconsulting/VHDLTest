@@ -30,7 +30,17 @@
 includes:
   - docs/reqstream/vhdltest-system.yaml
   - docs/reqstream/platform-requirements.yaml
-  - docs/reqstream/subsystem-simulators.yaml
+  - docs/reqstream/cli/subsystem-cli.yaml
+  - docs/reqstream/cli/unit-context.yaml
+  - docs/reqstream/cli/unit-config-document.yaml
+  - docs/reqstream/cli/unit-options.yaml
+  - docs/reqstream/simulators/subsystem-simulators.yaml
+  - docs/reqstream/run/subsystem-run.yaml
+  - docs/reqstream/run/unit-run-processor.yaml
+  - docs/reqstream/results/subsystem-results.yaml
+  - docs/reqstream/results/unit-test-results.yaml
+  - docs/reqstream/self-test/subsystem-self-test.yaml
+  - docs/reqstream/self-test/unit-validation.yaml
   - docs/reqstream/ots-mstest.yaml
   - docs/reqstream/ots-reqstream.yaml
   - docs/reqstream/ots-buildmark.yaml

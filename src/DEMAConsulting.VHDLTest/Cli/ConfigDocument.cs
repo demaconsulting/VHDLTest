@@ -21,7 +21,7 @@
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace DEMAConsulting.VHDLTest;
+namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
 ///     Configuration document class

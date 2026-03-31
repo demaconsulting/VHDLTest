@@ -20,10 +20,11 @@
 
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 
-namespace DEMAConsulting.VHDLTest;
+namespace DEMAConsulting.VHDLTest.SelfTest;
 
 /// <summary>
 /// Validation runner

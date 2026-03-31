@@ -7,6 +7,9 @@
 # Processed in order; prefix a pattern with '!' to exclude.
 needs-review:
   - "**/*.cs"                    # All C# source and test files
+  - "requirements.yaml"          # Root requirements file
+  - "docs/reqstream/**/*.yaml"   # All requirements files
+  - "docs/design/**/*.md"        # All design documents
   - "!**/obj/**"                 # Exclude build output
   - "!**/bin/**"                 # Exclude build output
 
@@ -22,16 +25,13 @@ evidence-source:
 # Each review-set groups requirements, source, and tests for a coherent software unit
 # so that an AI-assisted review can verify consistency across the full evidence chain.
 reviews:
-  # Software unit reviews - one per class
-  - id: VHDLTest-Context
-    title: Review of VHDLTest Context Unit
+  # System-level review
+  - id: VHDLTest-System
+    title: Review of VHDLTest System
     paths:
-      - "src/**/Context.cs"
-      - "test/**/ContextTests.cs"
-
-  - id: VHDLTest-Program
-    title: Review of VHDLTest Program Unit
-    paths:
+      - "docs/reqstream/vhdltest-system.yaml"
+      - "docs/reqstream/platform-requirements.yaml"
+      - "docs/design/introduction.md"
       - "src/**/Program.cs"
       - "test/**/UsageTests.cs"
       - "test/**/VersionTests.cs"
@@ -39,36 +39,132 @@ reviews:
       - "test/**/Runner.cs"
       - "test/**/GlobalUsings.cs"
 
-  - id: VHDLTest-Validation
-    title: Review of VHDLTest Validation Unit
+  # Design review
+  - id: VHDLTest-Design
+    title: Review of VHDLTest Design Documentation
     paths:
-      - "src/**/Validation.cs"
-      - "test/**/ValidationTests.cs"
+      - "docs/reqstream/vhdltest-system.yaml"
+      - "docs/reqstream/platform-requirements.yaml"
+      - "docs/design/**/*.md"
 
-  - id: VHDLTest-Config
-    title: Review of VHDLTest Configuration Units
+  # All requirements review
+  - id: VHDLTest-AllRequirements
+    title: Review of All VHDLTest Requirements
     paths:
-      - "src/**/ConfigDocument.cs"
-      - "src/**/Options.cs"
-      - "test/**/ConfigDocumentTests.cs"
-      - "test/**/OptionsTests.cs"
+      - "requirements.yaml"
+      - "docs/reqstream/**/*.yaml"
 
+  # OTS review
+  - id: VHDLTest-OTS
+    title: Review of VHDLTest OTS Dependencies
+    paths:
+      - "docs/reqstream/ots-mstest.yaml"
+      - "docs/reqstream/ots-reqstream.yaml"
+      - "docs/reqstream/ots-buildmark.yaml"
+      - "docs/reqstream/ots-versionmark.yaml"
+      - "docs/reqstream/ots-sarifmark.yaml"
+      - "docs/reqstream/ots-sonarmark.yaml"
+
+  # Cli subsystem review
+  - id: VHDLTest-Cli
+    title: Review of VHDLTest Cli Subsystem
+    paths:
+      - "docs/reqstream/cli/subsystem-cli.yaml"
+      - "docs/design/cli/cli.md"
+
+  # Context unit review
+  - id: VHDLTest-Context
+    title: Review of VHDLTest Context Unit
+    paths:
+      - "docs/reqstream/cli/unit-context.yaml"
+      - "docs/design/cli/context.md"
+      - "src/**/Cli/Context.cs"
+      - "test/**/Cli/ContextTests.cs"
+
+  # ConfigDocument unit review
+  - id: VHDLTest-ConfigDocument
+    title: Review of VHDLTest ConfigDocument Unit
+    paths:
+      - "docs/reqstream/cli/unit-config-document.yaml"
+      - "docs/design/cli/config-document.md"
+      - "src/**/Cli/ConfigDocument.cs"
+      - "test/**/Cli/ConfigDocumentTests.cs"
+
+  # Options unit review
+  - id: VHDLTest-Options
+    title: Review of VHDLTest Options Unit
+    paths:
+      - "docs/reqstream/cli/unit-options.yaml"
+      - "docs/design/cli/options.md"
+      - "src/**/Cli/Options.cs"
+      - "test/**/Cli/OptionsTests.cs"
+
+  # Program unit review
+  - id: VHDLTest-Program
+    title: Review of VHDLTest Program Unit
+    paths:
+      - "docs/design/program.md"
+      - "src/**/Program.cs"
+      - "test/**/UsageTests.cs"
+      - "test/**/VersionTests.cs"
+      - "test/**/ExitCodeTests.cs"
+      - "test/**/Runner.cs"
+      - "test/**/GlobalUsings.cs"
+
+  # Run subsystem review
   - id: VHDLTest-Run
-    title: Review of VHDLTest Run Processing Units
+    title: Review of VHDLTest Run Subsystem
     paths:
+      - "docs/reqstream/run/subsystem-run.yaml"
+      - "docs/reqstream/run/unit-run-processor.yaml"
+      - "docs/design/run/run.md"
+      - "docs/design/run/run-processor.md"
+      - "docs/design/run/run-program.md"
+      - "docs/design/run/run-results.md"
+      - "docs/design/run/run-line.md"
+      - "docs/design/run/run-line-rule.md"
+      - "docs/design/run/run-line-type.md"
       - "src/**/Run/*.cs"
       - "test/**/RunProcessorTests.cs"
 
+  # Results subsystem review
   - id: VHDLTest-Results
-    title: Review of VHDLTest Test Results Units
+    title: Review of VHDLTest Results Subsystem
     paths:
+      - "docs/reqstream/results/subsystem-results.yaml"
+      - "docs/reqstream/results/unit-test-results.yaml"
+      - "docs/design/results/results.md"
+      - "docs/design/results/test-result.md"
+      - "docs/design/results/test-results.md"
       - "src/**/Results/*.cs"
       - "test/**/TestResultTests.cs"
       - "test/**/TestResultsTests.cs"
 
+  # Simulators subsystem review
   - id: VHDLTest-Simulators
     title: Review of VHDLTest Simulator Units
     paths:
+      - "docs/reqstream/simulators/subsystem-simulators.yaml"
+      - "docs/design/simulators/simulators.md"
+      - "docs/design/simulators/simulator.md"
+      - "docs/design/simulators/simulator-factory.md"
+      - "docs/design/simulators/ghdl-simulator.md"
+      - "docs/design/simulators/nvc-simulator.md"
+      - "docs/design/simulators/modelsim-simulator.md"
+      - "docs/design/simulators/questasim-simulator.md"
+      - "docs/design/simulators/vivado-simulator.md"
+      - "docs/design/simulators/active-hdl-simulator.md"
       - "src/**/Simulators/*.cs"
       - "test/**/*SimulatorTests.cs"
       - "test/**/SimulatorFactoryTests.cs"
+
+  # SelfTest subsystem review
+  - id: VHDLTest-SelfTest
+    title: Review of VHDLTest SelfTest Subsystem
+    paths:
+      - "docs/reqstream/self-test/subsystem-self-test.yaml"
+      - "docs/reqstream/self-test/unit-validation.yaml"
+      - "docs/design/self-test/self-test.md"
+      - "docs/design/self-test/validation.md"
+      - "src/**/SelfTest/Validation.cs"
+      - "test/**/SelfTest/ValidationTests.cs"

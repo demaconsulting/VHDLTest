@@ -19,7 +19,9 @@
 // SOFTWARE.
 
 using System.Reflection;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Results;
+using DEMAConsulting.VHDLTest.SelfTest;
 using DEMAConsulting.VHDLTest.Simulators;
 
 namespace DEMAConsulting.VHDLTest;

@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 using System.Text;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 

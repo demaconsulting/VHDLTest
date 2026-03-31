@@ -1,0 +1,32 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Options Unit
+        requirements:
+          - id: VHDLTest-Options-Parse
+            title: The Options class shall combine Context and ConfigDocument into test run options.
+            justification: |
+              Combining the command-line context and configuration document into a single Options
+              record provides a single, validated source of truth for test execution, simplifying
+              downstream logic.
+            tests:
+              - Options_Parse_ValidConfigFile_ParsesSuccessfully
+              - Options_Parse_WithVerboseFlag_ParsesSuccessfully
+              - Options_Parse_WithCustomTest_ParsesSuccessfully
+
+          - id: VHDLTest-Options-NoConfig
+            title: The Options class shall throw InvalidOperationException when no config file is provided.
+            justification: |
+              Validating that a configuration file is specified before attempting to parse options
+              provides an early and clear error message, improving user experience.
+            tests:
+              - Options_Parse_NoConfigProvided_ThrowsInvalidOperationException
+
+          - id: VHDLTest-Options-MissingConfig
+            title: The Options class shall throw FileNotFoundException for a missing configuration file.
+            justification: |
+              Propagating the FileNotFoundException from ConfigDocument.ReadFile ensures the caller
+              receives a descriptive error when the specified configuration file cannot be found.
+            tests:
+              - Options_Parse_MissingConfigFile_ThrowsFileNotFoundException

@@ -1,0 +1,30 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Validation Unit
+        requirements:
+          - id: VHDLTest-Validation-Run
+            title: The Validation class shall execute built-in VHDL test benches to verify correct operation.
+            justification: |
+              Running built-in test benches during self-validation provides concrete evidence that
+              the simulator integration is working correctly in the user's environment, rather than
+              just checking that the tool starts up.
+            tests:
+              - IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess
+
+          - id: VHDLTest-Validation-SystemInfo
+            title: The Validation class shall include OS and runtime information in the validation report.
+            justification: |
+              Including system information in the validation report provides essential context for
+              diagnosing environment-specific issues and for compliance documentation.
+            tests:
+              - IntegrationTest_ValidateFlag_IncludesOSVersionInReport
+
+          - id: VHDLTest-Validation-Results
+            title: The Validation class shall save results to a file when a results path is specified.
+            justification: |
+              Saving validation results to a file enables integration with CI/CD pipelines and
+              provides a persistent record of validation outcomes for compliance documentation.
+            tests:
+              - IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults

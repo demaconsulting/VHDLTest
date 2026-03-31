@@ -18,7 +18,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace DEMAConsulting.VHDLTest.Tests;
+using DEMAConsulting.VHDLTest.Cli;
+
+namespace DEMAConsulting.VHDLTest.Tests.Cli;
 
 /// <summary>
 /// Tests for configuration documents

@@ -1,0 +1,21 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: RunProcessor Unit
+        requirements:
+          - id: VHDLTest-RunProcessor-Pass
+            title: RunProcessor shall classify simulator output as a pass when pass patterns match.
+            justification: |
+              Correct classification of pass output is essential for accurate test reporting and
+              for distinguishing successful test bench executions from failures.
+            tests:
+              - RunProcessor_ProcessLines_WithPassLine_ReturnsPassResult
+
+          - id: VHDLTest-RunProcessor-Fail
+            title: RunProcessor shall classify simulator output as a fail when fail patterns match.
+            justification: |
+              Correct classification of fail output enables VHDLTest to accurately identify
+              test failures and report them to the user and CI/CD system.
+            tests:
+              - RunProcessor_ProcessLines_WithFailLine_ReturnsFailResult
