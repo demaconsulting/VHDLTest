@@ -21,11 +21,12 @@
 using System.Collections.ObjectModel;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
+using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for <see cref="Results.TestResults"/> class.
+/// Tests for <see cref="TestResults"/> class.
 /// </summary>
 [TestClass]
 public class TestResultsTests
@@ -38,7 +39,7 @@ public class TestResultsTests
     {
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
-            new Results.TestResult(
+            new VHDLTestResult(
                 "TestClass", "TestName",
                 new RunResults(
                     RunLineType.Info,
@@ -81,7 +82,7 @@ public class TestResultsTests
     {
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
-            new Results.TestResult(
+            new VHDLTestResult(
                 "TestClass", "TestName",
                 new RunResults(
                     RunLineType.Info,
@@ -124,7 +125,7 @@ public class TestResultsTests
     {
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
-            new Results.TestResult(
+            new VHDLTestResult(
                 "TestClass", "FailedTest",
                 new RunResults(
                     RunLineType.Error,
@@ -167,7 +168,7 @@ public class TestResultsTests
     {
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
-            new Results.TestResult(
+            new VHDLTestResult(
                 "TestClass", "TestName",
                 new RunResults(
                     RunLineType.Info,
@@ -218,7 +219,7 @@ public class TestResultsTests
     {
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
-            new Results.TestResult(
+            new VHDLTestResult(
                 "TestClass", "TestName",
                 new RunResults(
                     RunLineType.Info,

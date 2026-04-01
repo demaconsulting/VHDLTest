@@ -20,11 +20,12 @@
 
 using System.Collections.ObjectModel;
 using DEMAConsulting.VHDLTest.Run;
+using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for <see cref="Results.TestResult"/> class.
+/// Tests for <see cref="VHDLTestResult"/> class.
 /// </summary>
 [TestClass]
 public class TestResultTests
@@ -36,7 +37,7 @@ public class TestResultTests
     public void TestResult_Constructor_WithInfoResult_CreatesPassedTest()
     {
         // Construct the result
-        var result = new Results.TestResult(
+        var result = new VHDLTestResult(
             "test",
             "test",
             new RunResults(
@@ -65,7 +66,7 @@ public class TestResultTests
     public void TestResult_Constructor_WithErrorResult_CreatesFailedTest()
     {
         // Construct the result
-        var result = new Results.TestResult(
+        var result = new VHDLTestResult(
             "test",
             "test",
             new RunResults(
