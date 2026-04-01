@@ -33,9 +33,9 @@ reviews:
       - "docs/reqstream/platform-requirements.yaml"
       - "docs/design/introduction.md"
       - "src/**/Program.cs"
-      - "test/**/UsageTests.cs"
-      - "test/**/VersionTests.cs"
-      - "test/**/ExitCodeTests.cs"
+      - "test/**/Program/UsageTests.cs"
+      - "test/**/Program/VersionTests.cs"
+      - "test/**/Program/ExitCodeTests.cs"
       - "test/**/Runner.cs"
       - "test/**/GlobalUsings.cs"
 
@@ -107,9 +107,9 @@ reviews:
       - "docs/reqstream/unit-program.yaml"              # requirements
       - "docs/design/program.md"                        # design
       - "src/**/Program.cs"                             # implementation
-      - "test/**/UsageTests.cs"                         # unit tests
-      - "test/**/VersionTests.cs"                       # unit tests
-      - "test/**/ExitCodeTests.cs"                      # unit tests
+      - "test/**/Program/UsageTests.cs"                         # unit tests
+      - "test/**/Program/VersionTests.cs"                       # unit tests
+      - "test/**/Program/ExitCodeTests.cs"                      # unit tests
       - "test/**/Runner.cs"                             # test infrastructure
       - "test/**/GlobalUsings.cs"                       # test infrastructure
 
@@ -128,7 +128,7 @@ reviews:
       - "docs/reqstream/run/unit-run-processor.yaml"    # requirements
       - "docs/design/run/run-processor.md"              # design
       - "src/**/Run/RunProcessor.cs"                    # implementation
-      - "test/**/RunProcessorTests.cs"                  # unit tests
+      - "test/**/Run/RunProcessorTests.cs"                  # unit tests
 
   # RunProgram unit review
   - id: VHDLTest-RunProgram
@@ -173,7 +173,7 @@ reviews:
       - "docs/reqstream/results/unit-test-result.yaml"  # requirements
       - "docs/design/results/test-result.md"            # design
       - "src/**/Results/TestResult.cs"                  # implementation
-      - "test/**/TestResultTests.cs"                    # unit tests
+      - "test/**/Results/TestResultTests.cs"                    # unit tests
 
   # TestResults unit review
   - id: VHDLTest-TestResults
@@ -182,7 +182,7 @@ reviews:
       - "docs/reqstream/results/unit-test-results.yaml" # requirements
       - "docs/design/results/test-results.md"           # design
       - "src/**/Results/TestResults.cs"                 # implementation
-      - "test/**/TestResultsTests.cs"                   # unit tests
+      - "test/**/Results/TestResultsTests.cs"                   # unit tests
 
   # Simulators subsystem review
   - id: VHDLTest-Simulators
@@ -201,7 +201,7 @@ reviews:
       - "docs/reqstream/simulators/unit-simulator-factory.yaml" # requirements
       - "docs/design/simulators/simulator-factory.md"           # design
       - "src/**/Simulators/SimulatorFactory.cs"                 # implementation
-      - "test/**/SimulatorFactoryTests.cs"                      # unit tests
+      - "test/**/Simulators/SimulatorFactoryTests.cs"                      # unit tests
 
   # GhdlSimulator unit review
   - id: VHDLTest-GhdlSimulator
@@ -210,7 +210,7 @@ reviews:
       - "docs/reqstream/simulators/unit-ghdl-simulator.yaml"  # requirements
       - "docs/design/simulators/ghdl-simulator.md"            # design
       - "src/**/Simulators/GhdlSimulator.cs"                  # implementation
-      - "test/**/GhdlSimulatorTests.cs"                       # unit tests
+      - "test/**/Simulators/GhdlSimulatorTests.cs"                       # unit tests
 
   # NvcSimulator unit review
   - id: VHDLTest-NvcSimulator
@@ -219,7 +219,7 @@ reviews:
       - "docs/reqstream/simulators/unit-nvc-simulator.yaml"   # requirements
       - "docs/design/simulators/nvc-simulator.md"             # design
       - "src/**/Simulators/NvcSimulator.cs"                   # implementation
-      - "test/**/NvcSimulatorTests.cs"                        # unit tests
+      - "test/**/Simulators/NvcSimulatorTests.cs"                        # unit tests
 
   # ModelSimSimulator unit review
   - id: VHDLTest-ModelSimSimulator
@@ -228,7 +228,7 @@ reviews:
       - "docs/reqstream/simulators/unit-modelsim-simulator.yaml" # requirements
       - "docs/design/simulators/modelsim-simulator.md"           # design
       - "src/**/Simulators/ModelSimSimulator.cs"                 # implementation
-      - "test/**/ModelSimSimulatorTests.cs"                      # unit tests
+      - "test/**/Simulators/ModelSimSimulatorTests.cs"                      # unit tests
 
   # QuestaSimSimulator unit review
   - id: VHDLTest-QuestaSimSimulator
@@ -237,7 +237,7 @@ reviews:
       - "docs/reqstream/simulators/unit-questasim-simulator.yaml" # requirements
       - "docs/design/simulators/questasim-simulator.md"           # design
       - "src/**/Simulators/QuestaSimSimulator.cs"                 # implementation
-      - "test/**/QuestaSimSimulatorTests.cs"                      # unit tests
+      - "test/**/Simulators/QuestaSimSimulatorTests.cs"                      # unit tests
 
   # VivadoSimulator unit review
   - id: VHDLTest-VivadoSimulator
@@ -246,7 +246,7 @@ reviews:
       - "docs/reqstream/simulators/unit-vivado-simulator.yaml"  # requirements
       - "docs/design/simulators/vivado-simulator.md"            # design
       - "src/**/Simulators/VivadoSimulator.cs"                  # implementation
-      - "test/**/VivadoSimulatorTests.cs"                       # unit tests
+      - "test/**/Simulators/VivadoSimulatorTests.cs"                       # unit tests
 
   # ActiveHdlSimulator unit review
   - id: VHDLTest-ActiveHdlSimulator
@@ -255,7 +255,7 @@ reviews:
       - "docs/reqstream/simulators/unit-active-hdl-simulator.yaml" # requirements
       - "docs/design/simulators/active-hdl-simulator.md"           # design
       - "src/**/Simulators/ActiveHdlSimulator.cs"                  # implementation
-      - "test/**/ActiveHdlSimulatorTests.cs"                       # unit tests
+      - "test/**/Simulators/ActiveHdlSimulatorTests.cs"                       # unit tests
 
   # SelfTest subsystem review
   - id: VHDLTest-SelfTest

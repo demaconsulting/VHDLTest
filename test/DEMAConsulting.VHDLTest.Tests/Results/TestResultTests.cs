@@ -22,7 +22,7 @@ using System.Collections.ObjectModel;
 using DEMAConsulting.VHDLTest.Run;
 using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 
-namespace DEMAConsulting.VHDLTest.Tests;
+namespace DEMAConsulting.VHDLTest.Tests.Results;
 
 /// <summary>
 /// Tests for <see cref="VHDLTestResult"/> class.

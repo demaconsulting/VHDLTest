@@ -23,7 +23,7 @@ using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
 using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 
-namespace DEMAConsulting.VHDLTest.Tests;
+namespace DEMAConsulting.VHDLTest.Tests.Results;
 
 /// <summary>
 /// Tests for <see cref="TestResults"/> class.

@@ -19,8 +19,9 @@
 // SOFTWARE.
 
 using System.Text.RegularExpressions;
+using DEMAConsulting.VHDLTest.Tests;
 
-namespace DEMAConsulting.VHDLTest.Tests;
+namespace DEMAConsulting.VHDLTest.Tests.Program;
 
 /// <summary>
 /// Tests for program version

@@ -21,30 +21,30 @@
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 
-namespace DEMAConsulting.VHDLTest.Tests;
+namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for Vivado simulator
+/// Tests for ModelSim simulator
 /// </summary>
 [TestClass]
-public class VivadoSimulatorTests
+public class ModelSimSimulatorTests
 {
     /// <summary>
-    /// Check name of Vivado simulator
+    /// Check name of GHDL simulator
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_SimulatorName_ReturnsVivado()
+    public void ModelSimSimulator_SimulatorName_ReturnsModelSim()
     {
-        Assert.AreEqual("Vivado", VivadoSimulator.Instance.SimulatorName);
+        Assert.AreEqual("ModelSim", ModelSimSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
-    /// Test Vivado simulator compile with clean output
+    /// Test ModelSim simulator compile with clean output
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
+    public void ModelSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
-        var results = VivadoSimulator.CompileProcessor.Parse(
+        var results = ModelSimSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nNo Issues",
@@ -63,12 +63,12 @@ public class VivadoSimulatorTests
     }
 
     /// <summary>
-    /// Test Vivado simulator compile with an error message
+    /// Test ModelSim simulator compile with an info message
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
+    public void ModelSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
-        var results = VivadoSimulator.CompileProcessor.Parse(
+        var results = ModelSimSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nError: Compile Error",
@@ -87,12 +87,12 @@ public class VivadoSimulatorTests
     }
 
     /// <summary>
-    /// Test Vivado simulator test with clean output
+    /// Test ModelSim simulator test with clean output
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
+    public void ModelSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNo Issues",
@@ -111,12 +111,12 @@ public class VivadoSimulatorTests
     }
 
     /// <summary>
-    /// Test Vivado simulator test with an info message
+    /// Test ModelSim simulator test with an info message
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
+    public void ModelSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNote: Test Note",
@@ -135,12 +135,12 @@ public class VivadoSimulatorTests
     }
 
     /// <summary>
-    /// Test Vivado simulator test with a warning message
+    /// Test ModelSim simulator test with a warning message
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
+    public void ModelSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nWarning: Test Warning",
@@ -159,12 +159,12 @@ public class VivadoSimulatorTests
     }
 
     /// <summary>
-    /// Test Vivado simulator test with an error message
+    /// Test ModelSim simulator test with an error message
     /// </summary>
     [TestMethod]
-    public void VivadoSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
+    public void ModelSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
-        var results = VivadoSimulator.TestProcessor.Parse(
+        var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nError: Test Error",

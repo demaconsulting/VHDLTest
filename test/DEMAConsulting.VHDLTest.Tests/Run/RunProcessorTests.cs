@@ -20,7 +20,7 @@
 
 using DEMAConsulting.VHDLTest.Run;
 
-namespace DEMAConsulting.VHDLTest.Tests;
+namespace DEMAConsulting.VHDLTest.Tests.Run;
 
 /// <summary>
 /// Tests for <see cref="RunProcessor"/> class.

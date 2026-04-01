@@ -20,7 +20,7 @@
 
 using DEMAConsulting.VHDLTest.Simulators;
 
-namespace DEMAConsulting.VHDLTest.Tests;
+namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
 /// Tests for <see cref="SimulatorFactory"/> class.
