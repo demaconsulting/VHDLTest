@@ -6,7 +6,11 @@
 
 ## Data Model
 
-| Property   | Type        | Description           |
-| ---------- | ----------- | --------------------- |
-| `ExitCode` | `int`       | Process exit code     |
-| `Lines`    | `RunLine[]` | Captured output lines |
+| Property     | Type                         | Description                                   |
+| ------------ | ---------------------------- | --------------------------------------------- |
+| `Summary`    | `string`                     | High-level summary of the run                 |
+| `Start`      | `DateTime`                  | Timestamp when the run started                |
+| `Duration`   | `double`                    | Duration of the run in seconds                |
+| `ExitCode`   | `int`                       | Process exit code                             |
+| `Output`     | `string`                    | Full captured stdout/stderr text              |
+| `Lines`      | `ReadOnlyCollection<RunLine>` | Captured output lines, split into run lines   |
