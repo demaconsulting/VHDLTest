@@ -5,11 +5,11 @@ sections:
       - title: Program Unit
         requirements:
           - id: VHDLTest-Program-Usage
-            title: Program shall display usage information when no arguments are given.
+            title: Program shall return a non-zero exit code when no configuration file is found.
             justification: |
-              Providing immediate guidance when the tool is invoked without arguments
-              makes VHDLTest self-documenting and reduces the time users spend consulting
-              external documentation.
+              When the tool is invoked without a valid configuration file, Program.Run must
+              signal failure via a non-zero exit code so that callers (CI pipelines, scripts)
+              can detect the error condition reliably.
             tests:
               - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
 
