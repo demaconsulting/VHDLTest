@@ -1,0 +1,38 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: ActiveHdlSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-ActiveHDL
+            title: VHDLTest shall support the ActiveHDL simulator.
+            justification: |
+              Active-HDL from Aldec is a popular VHDL simulator particularly in the aerospace
+              and defense industries. Supporting Active-HDL ensures VHDLTest can be used in
+              regulated environments and specialized application domains.
+            tests:
+              - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
+              - ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL
+
+          - id: VHDLTest-Sim-ActiveHDL-Compile
+            title: ActiveHdlSimulator shall classify Active-HDL compilation output lines by severity.
+            justification: |
+              Accurate classification of compilation output enables VHDLTest to detect
+              warnings and errors during the analysis phase and report them clearly to
+              the user.
+            tests:
+              - ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
+              - ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-ActiveHDL-Test
+            title: ActiveHdlSimulator shall classify Active-HDL simulation output lines by severity.
+            justification: |
+              Accurate classification of simulation output enables VHDLTest to detect pass,
+              warning, and error conditions during test bench execution and reflect them
+              in the test report.
+            tests:
+              - ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult

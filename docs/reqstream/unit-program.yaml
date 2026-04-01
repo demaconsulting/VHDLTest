@@ -1,0 +1,33 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Program Unit
+        requirements:
+          - id: VHDLTest-Program-Usage
+            title: Program shall display usage information when no arguments are given.
+            justification: |
+              Providing immediate guidance when the tool is invoked without arguments
+              makes VHDLTest self-documenting and reduces the time users spend consulting
+              external documentation.
+            tests:
+              - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
+
+          - id: VHDLTest-Program-Version
+            title: Program shall display version information when the version flag is given.
+            justification: |
+              Enables users to confirm the installed version for troubleshooting and
+              compatibility verification.
+            tests:
+              - IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess
+              - IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess
+
+          - id: VHDLTest-Program-Help
+            title: Program shall display help information when a help flag is given.
+            justification: |
+              Built-in help reduces the need for users to consult external documentation
+              and supports multiple conventional help flag forms.
+            tests:
+              - IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess
+              - IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess
+              - IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess

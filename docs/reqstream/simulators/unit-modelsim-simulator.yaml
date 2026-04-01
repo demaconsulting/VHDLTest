@@ -1,0 +1,36 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: ModelSimSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-ModelSim
+            title: VHDLTest shall support the ModelSim simulator.
+            justification: |
+              ModelSim is an industry-standard commercial VHDL simulator widely used in
+              professional FPGA and ASIC development. Support for ModelSim is critical for
+              enterprise users and teams with existing ModelSim-based workflows.
+            tests:
+              - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
+              - ModelSimSimulator_SimulatorName_ReturnsModelSim
+
+          - id: VHDLTest-Sim-ModelSim-Compile
+            title: ModelSimSimulator shall classify ModelSim compilation output lines by severity.
+            justification: |
+              Accurate classification of compilation output enables VHDLTest to detect
+              errors during the vcom analysis phase and report them clearly to the user.
+            tests:
+              - ModelSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - ModelSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-ModelSim-Test
+            title: ModelSimSimulator shall classify ModelSim simulation output lines by severity.
+            justification: |
+              Accurate classification of simulation output enables VHDLTest to detect pass,
+              warning, and error conditions during vsim execution and reflect them in the
+              test report.
+            tests:
+              - ModelSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - ModelSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - ModelSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - ModelSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult

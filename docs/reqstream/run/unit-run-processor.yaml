@@ -10,7 +10,7 @@ sections:
               Correct classification of pass output is essential for accurate test reporting and
               for distinguishing successful test bench executions from failures.
             tests:
-              - RunProcessor_ProcessLines_WithPassLine_ReturnsPassResult
+              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
 
           - id: VHDLTest-RunProcessor-Fail
             title: RunProcessor shall classify simulator output as a fail when fail patterns match.
@@ -18,4 +18,12 @@ sections:
               Correct classification of fail output enables VHDLTest to accurately identify
               test failures and report them to the user and CI/CD system.
             tests:
-              - RunProcessor_ProcessLines_WithFailLine_ReturnsFailResult
+              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+
+          - id: VHDLTest-RunProcessor-MissingProgram
+            title: RunProcessor shall raise an exception when the simulator program cannot be found.
+            justification: |
+              Raising a clear exception for missing programs helps users quickly diagnose
+              configuration errors, such as an incorrectly specified simulator path.
+            tests:
+              - RunProcessor_Execute_MissingProgram_ThrowsException

@@ -2,68 +2,18 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Simulator Support
+      - title: Simulators Subsystem
         requirements:
-          - id: VHDLTest-Sim-GHDL
-            title: VHDLTest shall support the GHDL simulator.
+          - id: VHDLTest-Simulators-Factory
+            title: VHDLTest shall select the simulator implementation by name.
             justification: |
-              GHDL is the most widely-used open-source VHDL simulator and is essential for
-              teams working with free and open-source toolchains. Supporting GHDL enables
-              cost-effective VHDL development and testing without commercial licenses.
+              A factory pattern for simulator selection decouples test execution from the
+              concrete simulator implementation, enabling easy extension with new simulators
+              and allowing users to choose their preferred tool via configuration.
             tests:
               - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
-              - GhdlSimulator_SimulatorName_ReturnsGHDL
-              - ghdl@VHDLTest_TestPasses
-              - ghdl@VHDLTest_TestFails
-
-          - id: VHDLTest-Sim-ModelSim
-            title: VHDLTest shall support the ModelSim simulator.
-            justification: |
-              ModelSim is an industry-standard commercial VHDL simulator widely used in
-              professional FPGA and ASIC development. Support for ModelSim is critical for
-              enterprise users and teams with existing ModelSim-based workflows.
-            tests:
-              - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
-              - ModelSimSimulator_SimulatorName_ReturnsModelSim
-
-          - id: VHDLTest-Sim-QuestaSim
-            title: VHDLTest shall support the QuestaSim simulator.
-            justification: |
-              QuestaSim is the advanced verification tool from Siemens/Mentor Graphics, offering
-              enhanced debugging and coverage features. Supporting QuestaSim enables VHDLTest
-              to integrate with high-end verification environments.
-            tests:
-              - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
-              - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
-
-          - id: VHDLTest-Sim-Vivado
-            title: VHDLTest shall support the Vivado simulator.
-            justification: |
-              Vivado is Xilinx's primary design suite and simulator for their FPGA products.
-              Supporting Vivado simulator is essential for teams developing designs targeting
-              Xilinx/AMD FPGAs and enables seamless integration with the Vivado toolchain.
-            tests:
-              - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
-              - VivadoSimulator_SimulatorName_ReturnsVivado
-
-          - id: VHDLTest-Sim-ActiveHDL
-            title: VHDLTest shall support the ActiveHDL simulator.
-            justification: |
-              Active-HDL from Aldec is a popular VHDL simulator particularly in the aerospace
-              and defense industries. Supporting Active-HDL ensures VHDLTest can be used in
-              regulated environments and specialized application domains.
-            tests:
-              - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
-              - ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL
-
-          - id: VHDLTest-Sim-NVC
-            title: VHDLTest shall support the NVC simulator.
-            justification: |
-              NVC is a modern, fast open-source VHDL simulator with good standards compliance.
-              Supporting NVC provides users with an alternative open-source option that offers
-              better performance than GHDL in certain scenarios and supports newer VHDL standards.
-            tests:
               - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
-              - NvcSimulator_SimulatorName_ReturnsNVC
-              - nvc@VHDLTest_TestPasses
-              - nvc@VHDLTest_TestFails
+              - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
+              - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
+              - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
+              - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator

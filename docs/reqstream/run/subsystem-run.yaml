@@ -11,5 +11,5 @@ sections:
               VHDLTest to work with any command-line VHDL simulator without requiring
               programmatic integration.
             tests:
-              - RunProcessor_ProcessLines_WithPassLine_ReturnsPassResult
-              - RunProcessor_ProcessLines_WithFailLine_ReturnsFailResult
+              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult

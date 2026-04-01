@@ -1,0 +1,40 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: GhdlSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-GHDL
+            title: VHDLTest shall support the GHDL simulator.
+            justification: |
+              GHDL is the most widely-used open-source VHDL simulator and is essential for
+              teams working with free and open-source toolchains. Supporting GHDL enables
+              cost-effective VHDL development and testing without commercial licenses.
+            tests:
+              - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
+              - GhdlSimulator_SimulatorName_ReturnsGHDL
+              - ghdl@VHDLTest_TestPasses
+              - ghdl@VHDLTest_TestFails
+
+          - id: VHDLTest-Sim-GHDL-Compile
+            title: GhdlSimulator shall classify GHDL compilation output lines by severity.
+            justification: |
+              Accurate classification of compilation output enables VHDLTest to detect
+              warnings and errors during the analysis phase and report them clearly to
+              the user.
+            tests:
+              - GhdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - GhdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
+              - GhdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-GHDL-Test
+            title: GhdlSimulator shall classify GHDL simulation output lines by severity.
+            justification: |
+              Accurate classification of simulation output enables VHDLTest to detect pass,
+              warning, and error conditions during test bench execution and reflect them
+              in the test report.
+            tests:
+              - GhdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - GhdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - GhdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - GhdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult

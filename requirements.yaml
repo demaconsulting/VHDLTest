@@ -29,15 +29,27 @@
 ---
 includes:
   - docs/reqstream/vhdltest-system.yaml
+  - docs/reqstream/unit-program.yaml
   - docs/reqstream/platform-requirements.yaml
   - docs/reqstream/cli/subsystem-cli.yaml
   - docs/reqstream/cli/unit-context.yaml
   - docs/reqstream/cli/unit-config-document.yaml
   - docs/reqstream/cli/unit-options.yaml
   - docs/reqstream/simulators/subsystem-simulators.yaml
+  - docs/reqstream/simulators/unit-simulator-factory.yaml
+  - docs/reqstream/simulators/unit-ghdl-simulator.yaml
+  - docs/reqstream/simulators/unit-nvc-simulator.yaml
+  - docs/reqstream/simulators/unit-modelsim-simulator.yaml
+  - docs/reqstream/simulators/unit-questasim-simulator.yaml
+  - docs/reqstream/simulators/unit-vivado-simulator.yaml
+  - docs/reqstream/simulators/unit-active-hdl-simulator.yaml
   - docs/reqstream/run/subsystem-run.yaml
   - docs/reqstream/run/unit-run-processor.yaml
+  - docs/reqstream/run/unit-run-program.yaml
+  - docs/reqstream/run/unit-run-results.yaml
+  - docs/reqstream/run/unit-run-types.yaml
   - docs/reqstream/results/subsystem-results.yaml
+  - docs/reqstream/results/unit-test-result.yaml
   - docs/reqstream/results/unit-test-results.yaml
   - docs/reqstream/self-test/subsystem-self-test.yaml
   - docs/reqstream/self-test/unit-validation.yaml

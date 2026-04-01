@@ -1,0 +1,28 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: SimulatorFactory Unit
+        requirements:
+          - id: VHDLTest-SimulatorFactory-Get
+            title: SimulatorFactory shall return the correct simulator instance for a given name.
+            justification: |
+              The factory pattern centralizes simulator selection, allowing the rest of the
+              application to remain independent of the specific simulator being used and
+              enabling easy extension with new simulators.
+            tests:
+              - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
+              - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
+              - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
+              - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
+              - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
+              - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
+
+          - id: VHDLTest-SimulatorFactory-Unknown
+            title: SimulatorFactory shall return null for unknown simulator names.
+            justification: |
+              Returning null for unknown simulator names allows the calling code to provide
+              a descriptive error message, rather than surfacing an opaque exception from
+              within the factory.
+            tests:
+              - SimulatorFactory_Get_UnknownSimulator_ReturnsNull

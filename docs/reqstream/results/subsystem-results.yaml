@@ -11,7 +11,7 @@ sections:
               results in TRX format enables integration with Visual Studio, Azure DevOps, and
               other .NET-ecosystem CI/CD tools.
             tests:
-              - TestResults_SaveResults_TrxFormat_SavesSuccessfully
+              - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
 
           - id: VHDLTest-Results-JUnit
             title: VHDLTest shall save test results in JUnit XML format.
@@ -20,4 +20,4 @@ sections:
               Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables
               broad CI/CD integration.
             tests:
-              - TestResults_SaveResults_JUnitFormat_SavesSuccessfully
+              - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
