@@ -32,10 +32,9 @@ reviews:
       - "docs/reqstream/vhdltest-system.yaml"
       - "docs/reqstream/platform-requirements.yaml"
       - "docs/design/introduction.md"
+      - "docs/design/system.md"
       - "src/**/Program.cs"
-      - "test/**/Program/UsageTests.cs"
-      - "test/**/Program/VersionTests.cs"
-      - "test/**/Program/ExitCodeTests.cs"
+      - "test/**/IntegrationTests.cs"
       - "test/**/Runner.cs"
       - "test/**/GlobalUsings.cs"
 
@@ -107,11 +106,7 @@ reviews:
       - "docs/reqstream/unit-program.yaml"              # requirements
       - "docs/design/program.md"                        # design
       - "src/**/Program.cs"                             # implementation
-      - "test/**/Program/UsageTests.cs"                         # unit tests
-      - "test/**/Program/VersionTests.cs"                       # unit tests
-      - "test/**/Program/ExitCodeTests.cs"                      # unit tests
-      - "test/**/Runner.cs"                             # test infrastructure
-      - "test/**/GlobalUsings.cs"                       # test infrastructure
+      - "test/**/ProgramTests.cs"                       # unit tests
 
   # Run subsystem review
   - id: VHDLTest-Run

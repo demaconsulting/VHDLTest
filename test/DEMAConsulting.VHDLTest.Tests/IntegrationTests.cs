@@ -18,16 +18,144 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using DEMAConsulting.VHDLTest.Tests;
+using System.Text.RegularExpressions;
 
-namespace DEMAConsulting.VHDLTest.Tests.Program;
+namespace DEMAConsulting.VHDLTest.Tests;
 
 /// <summary>
-/// Tests for exit code
+/// System-level integration tests for VHDLTest.
+/// These tests run the VHDLTest tool as a whole and verify end-to-end behavior.
 /// </summary>
 [TestClass]
-public class ExitCodeTests
+public partial class IntegrationTests
 {
+    /// <summary>
+    /// Regular expression to check for version
+    /// </summary>
+    /// <returns>Version regex</returns>
+    [GeneratedRegex(@"\d+\.\d+\.\d+.*")]
+    private static partial Regex VersionRegex();
+
+    /// <summary>
+    /// Test usage information is reported when no arguments are specified
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_NoArguments_DisplaysUsageAndReturnsError()
+    {
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll");
+
+        // Verify error
+        Assert.AreNotEqual(0, exitCode);
+
+        // Verify usage reported
+        Assert.Contains("Error: Missing arguments", output);
+        Assert.Contains("Usage: VHDLTest", output);
+    }
+
+    /// <summary>
+    /// Test usage information is reported when the '-h' parameter is specified
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess()
+    {
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "-h");
+
+        // Verify no error
+        Assert.AreEqual(0, exitCode);
+
+        // Verify usage reported
+        Assert.Contains("Usage: VHDLTest", output);
+    }
+
+    /// <summary>
+    /// Test usage information is reported when the '-?' parameter is specified
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess()
+    {
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "-?");
+
+        // Verify no error
+        Assert.AreEqual(0, exitCode);
+
+        // Verify usage reported
+        Assert.Contains("Usage: VHDLTest", output);
+    }
+
+    /// <summary>
+    /// Test usage information is reported when the '--help' parameter is specified
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess()
+    {
+        // Run the application
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--help");
+
+        // Verify no error
+        Assert.AreEqual(0, exitCode);
+
+        // Verify usage reported
+        Assert.Contains("Usage: VHDLTest", output);
+    }
+
+    /// <summary>
+    /// Test version information is reported when the '-v' parameter is specified
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess()
+    {
+        // Query version
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "-v");
+
+        // Verify success
+        Assert.AreEqual(0, exitCode);
+
+        // Verify version reported
+        Assert.MatchesRegex(VersionRegex(), output);
+    }
+
+    /// <summary>
+    /// Test version information is reported when the '--version' parameter is specified
+    /// </summary>
+    [TestMethod]
+    public void IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess()
+    {
+        // Query version
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--version");
+
+        // Verify success
+        Assert.AreEqual(0, exitCode);
+
+        // Verify version reported
+        Assert.MatchesRegex(VersionRegex(), output);
+    }
+
     /// <summary>
     /// Test non-zero exit code with compile errors
     /// </summary>
@@ -101,7 +229,7 @@ public class ExitCodeTests
     }
 
     /// <summary>
-    /// Test non-zero exit code with test-execution errors
+    /// Test zero exit code is returned when exit-0 is specified and tests fail
     /// </summary>
     [TestMethod]
     public void IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode()
@@ -138,7 +266,7 @@ public class ExitCodeTests
     }
 
     /// <summary>
-    /// Test non-zero exit code with test-execution errors
+    /// Test zero exit code is returned when all tests pass
     /// </summary>
     [TestMethod]
     public void IntegrationTest_TestsPassed_ReturnsZeroExitCode()

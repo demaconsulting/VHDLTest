@@ -11,7 +11,7 @@ sections:
               makes VHDLTest self-documenting and reduces the time users spend consulting
               external documentation.
             tests:
-              - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
+              - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
 
           - id: VHDLTest-Program-Version
             title: Program shall display version information when the version flag is given.
@@ -19,8 +19,8 @@ sections:
               Enables users to confirm the installed version for troubleshooting and
               compatibility verification.
             tests:
-              - IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess
-              - IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess
+              - Program_Version_IsNotEmpty
+              - Program_Run_WithVersionFlag_ReturnsZeroExitCode
 
           - id: VHDLTest-Program-Help
             title: Program shall display help information when a help flag is given.
@@ -28,6 +28,4 @@ sections:
               Built-in help reduces the need for users to consult external documentation
               and supports multiple conventional help flag forms.
             tests:
-              - IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess
-              - IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess
-              - IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess
+              - Program_Run_WithHelpFlag_ReturnsZeroExitCode
