@@ -26,9 +26,9 @@ sections:
           - id: VHDLTest-Sim-Vivado-Test
             title: VivadoSimulator shall classify Vivado simulation output lines by severity.
             justification: |
-              Accurate classification of xsim output enables VHDLTest to detect pass,
-              warning, and error conditions during simulation and reflect them in the
-              test report.
+              Accurate classification of Vivado simulation output enables VHDLTest to
+              detect pass, warning, and error conditions and reflect them in the test
+              report.
             tests:
               - VivadoSimulator_TestProcessor_CleanOutput_ReturnsTextResult
               - VivadoSimulator_TestProcessor_InfoOutput_ReturnsInfoResult

@@ -5,7 +5,9 @@ sections:
       - title: Cli Subsystem
         requirements:
           - id: VHDLTest-Cli-Pipeline
-            title: VHDLTest shall parse command-line arguments, load the configuration file, and produce a combined Options object.
+            title: >-
+              VHDLTest shall parse command-line arguments, load the configuration file,
+              and produce a combined Options object.
             justification: |
               The end-to-end CLI pipeline — argument parsing, configuration loading, and option
               combination — must function correctly as an integrated whole. Verifying this

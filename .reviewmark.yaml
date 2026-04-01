@@ -174,7 +174,7 @@ reviews:
   - id: VHDLTest-TestResults
     title: Review of VHDLTest TestResults Unit
     paths:
-      - "docs/reqstream/results/unit-test-results.yaml" # requirements
+      - "docs/reqstream/results/unit-test-results.yaml"  # requirements
       - "docs/design/results/test-results.md"           # design
       - "src/**/Results/TestResults.cs"                 # implementation
       - "test/**/Results/TestResultsTests.cs"                   # unit tests
@@ -183,7 +183,7 @@ reviews:
   - id: VHDLTest-Simulators
     title: Review of VHDLTest Simulators Subsystem
     paths:
-      - "docs/reqstream/simulators/subsystem-simulators.yaml" # subsystem requirements
+      - "docs/reqstream/simulators/subsystem-simulators.yaml"  # subsystem requirements
       - "docs/design/simulators/simulators.md"                # subsystem design
       - "docs/design/simulators/simulator.md"                 # Simulator base class design
       - "src/**/Simulators/Simulator.cs"                      # base class (no dedicated unit review)
@@ -193,7 +193,7 @@ reviews:
   - id: VHDLTest-SimulatorFactory
     title: Review of VHDLTest SimulatorFactory Unit
     paths:
-      - "docs/reqstream/simulators/unit-simulator-factory.yaml" # requirements
+      - "docs/reqstream/simulators/unit-simulator-factory.yaml"  # requirements
       - "docs/design/simulators/simulator-factory.md"           # design
       - "src/**/Simulators/SimulatorFactory.cs"                 # implementation
       - "test/**/Simulators/SimulatorFactoryTests.cs"                      # unit tests
@@ -220,7 +220,7 @@ reviews:
   - id: VHDLTest-ModelSimSimulator
     title: Review of VHDLTest ModelSimSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-modelsim-simulator.yaml" # requirements
+      - "docs/reqstream/simulators/unit-modelsim-simulator.yaml"  # requirements
       - "docs/design/simulators/modelsim-simulator.md"           # design
       - "src/**/Simulators/ModelSimSimulator.cs"                 # implementation
       - "test/**/Simulators/ModelSimSimulatorTests.cs"                      # unit tests
@@ -229,7 +229,7 @@ reviews:
   - id: VHDLTest-QuestaSimSimulator
     title: Review of VHDLTest QuestaSimSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-questasim-simulator.yaml" # requirements
+      - "docs/reqstream/simulators/unit-questasim-simulator.yaml"  # requirements
       - "docs/design/simulators/questasim-simulator.md"           # design
       - "src/**/Simulators/QuestaSimSimulator.cs"                 # implementation
       - "test/**/Simulators/QuestaSimSimulatorTests.cs"                      # unit tests
@@ -247,7 +247,7 @@ reviews:
   - id: VHDLTest-ActiveHdlSimulator
     title: Review of VHDLTest ActiveHdlSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-active-hdl-simulator.yaml" # requirements
+      - "docs/reqstream/simulators/unit-active-hdl-simulator.yaml"  # requirements
       - "docs/design/simulators/active-hdl-simulator.md"           # design
       - "src/**/Simulators/ActiveHdlSimulator.cs"                  # implementation
       - "test/**/Simulators/ActiveHdlSimulatorTests.cs"                       # unit tests
@@ -256,7 +256,7 @@ reviews:
   - id: VHDLTest-SelfTest
     title: Review of VHDLTest SelfTest Subsystem
     paths:
-      - "docs/reqstream/self-test/subsystem-self-test.yaml" # subsystem requirements
+      - "docs/reqstream/self-test/subsystem-self-test.yaml"  # subsystem requirements
       - "docs/design/self-test/self-test.md"                # subsystem design
       - "test/**/SelfTest/ValidationTests.cs"               # subsystem integration tests
 
