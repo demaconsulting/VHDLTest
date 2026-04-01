@@ -7,5 +7,5 @@ into `RunLineType` categories.
 
 ## Responsibilities
 
-- Match output lines against a regex or substring pattern
+- Match output lines against a regular expression pattern
 - Return the associated `RunLineType` when a match is found
