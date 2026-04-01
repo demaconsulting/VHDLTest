@@ -7,9 +7,9 @@ to categorize simulator output lines.
 
 ## Values
 
-| Value    | Description                     |
-| -------- | ------------------------------- |
-| `Normal` | Standard informational output   |
-| `Pass`   | Output indicating a test passed |
-| `Fail`   | Output indicating a test failed |
-| `Error`  | Output indicating an error      |
+| Value    | Description                                       |
+| -------- | ------------------------------------------------- |
+| `Text`   | Standard textual output                          |
+| `Info`   | Informational message                            |
+| `Warning`| Warning or non-fatal issue                       |
+| `Error`  | Output indicating an error or failure condition  |
