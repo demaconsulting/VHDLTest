@@ -5,11 +5,11 @@ sections:
       - title: Run Subsystem
         requirements:
           - id: VHDLTest-Run-Execute
-            title: VHDLTest shall execute simulator programs and capture their output.
+            title: VHDLTest shall execute simulator programs and capture their classified output.
             justification: |
-              Executing the simulator as an external process and capturing its output allows
+              Executing the simulator as an external process and classifying its output allows
               VHDLTest to work with any command-line VHDL simulator without requiring
               programmatic integration.
             tests:
-              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
-              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+              - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
+              - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults

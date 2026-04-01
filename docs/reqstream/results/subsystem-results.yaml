@@ -4,20 +4,19 @@ sections:
     sections:
       - title: Results Subsystem
         requirements:
-          - id: VHDLTest-Results-Trx
-            title: VHDLTest shall save test results in TRX format.
+          - id: VHDLTest-Results-Collect
+            title: VHDLTest shall collect individual test results and report pass and fail counts.
             justification: |
-              TRX is the standard test results format for .NET and Microsoft tooling. Saving
-              results in TRX format enables integration with Visual Studio, Azure DevOps, and
-              other .NET-ecosystem CI/CD tools.
+              Aggregating individual test outcomes into a summary with pass/fail counts lets
+              users and CI/CD systems quickly determine overall test health without inspecting
+              every individual test result.
             tests:
-              - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
+              - ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts
 
-          - id: VHDLTest-Results-JUnit
-            title: VHDLTest shall save test results in JUnit XML format.
+          - id: VHDLTest-Results-Save
+            title: VHDLTest shall save a collection of test results to a results file.
             justification: |
-              JUnit XML is the de-facto standard test results format for CI/CD systems such as
-              Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables
-              broad CI/CD integration.
+              Persisting the collected test results to a file enables integration with CI/CD
+              platforms and test reporting tools that consume standard test result formats.
             tests:
-              - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
+              - ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts

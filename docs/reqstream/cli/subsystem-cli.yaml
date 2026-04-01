@@ -4,49 +4,12 @@ sections:
     sections:
       - title: Cli Subsystem
         requirements:
-          - id: VHDLTest-Cli-Context
-            title: VHDLTest shall parse command-line arguments into a typed Context object.
+          - id: VHDLTest-Cli-Pipeline
+            title: VHDLTest shall parse command-line arguments, load the configuration file, and produce a combined Options object.
             justification: |
-              A typed context object separates argument parsing from business logic, allowing
-              each module to receive only the data it needs. This improves testability and
-              reduces coupling between the entry point and the rest of the application.
+              The end-to-end CLI pipeline — argument parsing, configuration loading, and option
+              combination — must function correctly as an integrated whole. Verifying this
+              integration catches issues that cannot be found by testing each unit in isolation.
             tests:
-              - Context_Create_NoArguments_ReturnsDefaultContext
-              - Context_Create_WithConfigFile_SetsConfigFile
-              - Context_Create_WithResultsFile_SetsResultsFile
-              - Context_Create_WithSimulator_SetsSimulator
-              - Context_Create_WithVerbose_SetsVerboseFlag
-              - Context_Create_WithExitZero_SetsExitZeroFlag
-              - Context_Create_WithValidate_SetsValidateFlag
-              - Context_Create_WithCustomTest_SetsCustomTest
-              - Context_Create_WithCustomTests_SetsCustomTests
-
-          - id: VHDLTest-Cli-InvalidArgs
-            title: VHDLTest shall report an error for unrecognized command-line arguments.
-            justification: |
-              Reporting unrecognized arguments prevents silent misconfiguration where a typo
-              in an option name causes the tool to run with default behavior rather than the
-              intended configuration.
-            tests:
-              - Context_Create_UnknownArgument_ThrowsInvalidOperationException
-
-          - id: VHDLTest-Cli-Config
-            title: VHDLTest shall parse the YAML configuration file into a typed ConfigDocument.
-            justification: |
-              A typed configuration document provides compile-time safety and clear documentation
-              of the expected configuration schema, reducing configuration errors and improving
-              maintainability.
-            tests:
-              - ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully
-              - ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException
-
-          - id: VHDLTest-Cli-Options
-            title: VHDLTest shall combine command-line arguments and configuration file into an Options object.
-            justification: |
-              Combining arguments and configuration into a single Options object provides a
-              single source of truth for test execution parameters, simplifying the logic in
-              downstream modules and making the system easier to test.
-            tests:
-              - Options_Parse_ValidConfigFile_ParsesSuccessfully
-              - Options_Parse_NoConfigProvided_ThrowsInvalidOperationException
-              - Options_Parse_MissingConfigFile_ThrowsFileNotFoundException
+              - CliSubsystem_ParseArgsAndLoadConfig_WithValidConfig_ProducesCorrectOptions
+              - CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException

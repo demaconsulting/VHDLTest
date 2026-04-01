@@ -69,8 +69,9 @@ reviews:
   - id: VHDLTest-Cli
     title: Review of VHDLTest Cli Subsystem
     paths:
-      - "docs/reqstream/cli/subsystem-cli.yaml"
-      - "docs/design/cli/cli.md"
+      - "docs/reqstream/cli/subsystem-cli.yaml"           # subsystem requirements
+      - "docs/design/cli/cli.md"                          # subsystem design
+      - "test/**/Cli/CliSubsystemTests.cs"                # subsystem integration tests
 
   # Context unit review
   - id: VHDLTest-Context
@@ -116,8 +117,9 @@ reviews:
   - id: VHDLTest-Run
     title: Review of VHDLTest Run Subsystem
     paths:
-      - "docs/reqstream/run/subsystem-run.yaml"         # subsystem requirements
-      - "docs/design/run/run.md"                        # subsystem design
+      - "docs/reqstream/run/subsystem-run.yaml"           # subsystem requirements
+      - "docs/design/run/run.md"                          # subsystem design
+      - "test/**/Run/RunSubsystemTests.cs"                # subsystem integration tests
 
   # RunProcessor unit review
   - id: VHDLTest-RunProcessor
@@ -160,8 +162,9 @@ reviews:
   - id: VHDLTest-Results
     title: Review of VHDLTest Results Subsystem
     paths:
-      - "docs/reqstream/results/subsystem-results.yaml" # subsystem requirements
-      - "docs/design/results/results.md"                # subsystem design
+      - "docs/reqstream/results/subsystem-results.yaml"   # subsystem requirements
+      - "docs/design/results/results.md"                  # subsystem design
+      - "test/**/Results/ResultsSubsystemTests.cs"        # subsystem integration tests
 
   # TestResult unit review
   - id: VHDLTest-TestResult
@@ -188,7 +191,8 @@ reviews:
       - "docs/reqstream/simulators/subsystem-simulators.yaml" # subsystem requirements
       - "docs/design/simulators/simulators.md"                # subsystem design
       - "docs/design/simulators/simulator.md"                 # Simulator base class design
-      - "src/**/Simulators/Simulator.cs"                      # base class implementation
+      - "src/**/Simulators/Simulator.cs"                      # base class (no dedicated unit review)
+      - "test/**/Simulators/SimulatorsSubsystemTests.cs"      # subsystem integration tests
 
   # SimulatorFactory unit review
   - id: VHDLTest-SimulatorFactory
@@ -257,9 +261,15 @@ reviews:
   - id: VHDLTest-SelfTest
     title: Review of VHDLTest SelfTest Subsystem
     paths:
-      - "docs/reqstream/self-test/subsystem-self-test.yaml"
-      - "docs/reqstream/self-test/unit-validation.yaml"
-      - "docs/design/self-test/self-test.md"
-      - "docs/design/self-test/validation.md"
-      - "src/**/SelfTest/Validation.cs"
-      - "test/**/SelfTest/ValidationTests.cs"
+      - "docs/reqstream/self-test/subsystem-self-test.yaml" # subsystem requirements
+      - "docs/design/self-test/self-test.md"                # subsystem design
+      - "test/**/SelfTest/ValidationTests.cs"               # subsystem integration tests
+
+  # Validation unit review
+  - id: VHDLTest-Validation
+    title: Review of VHDLTest Validation Unit
+    paths:
+      - "docs/reqstream/self-test/unit-validation.yaml"     # requirements
+      - "docs/design/self-test/validation.md"               # design
+      - "src/**/SelfTest/Validation.cs"                     # implementation
+      - "test/**/SelfTest/ValidationTests.cs"               # unit/integration tests
