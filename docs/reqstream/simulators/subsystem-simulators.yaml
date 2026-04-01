@@ -1,0 +1,15 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Simulators Subsystem
+        requirements:
+          - id: VHDLTest-Simulators-Factory
+            title: VHDLTest shall select the simulator implementation by name and use it to classify output.
+            justification: |
+              A factory pattern for simulator selection decouples test execution from the
+              concrete simulator implementation. Verifying that the factory and simulator
+              processors work together end-to-end ensures the subsystem interfaces are correct.
+            tests:
+              - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
+              - SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText

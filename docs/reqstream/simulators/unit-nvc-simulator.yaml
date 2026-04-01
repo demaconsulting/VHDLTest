@@ -1,0 +1,41 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: NvcSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-NVC
+            title: VHDLTest shall support the NVC simulator.
+            justification: |
+              NVC is a modern, fast open-source VHDL simulator with good standards compliance.
+              Supporting NVC provides users with an alternative open-source option that offers
+              better performance than GHDL in certain scenarios and supports newer VHDL standards.
+            tests:
+              - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
+              - NvcSimulator_SimulatorName_ReturnsNVC
+              - nvc@VHDLTest_TestPasses
+              - nvc@VHDLTest_TestFails
+
+          - id: VHDLTest-Sim-NVC-Compile
+            title: NvcSimulator shall classify NVC compilation output lines by severity.
+            justification: |
+              Accurate classification of compilation output enables VHDLTest to detect
+              warnings and errors during the analysis phase and report them clearly to
+              the user.
+            tests:
+              - NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult
+              - NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
+              - NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-NVC-Test
+            title: NvcSimulator shall classify NVC simulation output lines by severity.
+            justification: |
+              Accurate classification of simulation output enables VHDLTest to detect pass,
+              warning, and error conditions during test bench execution and reflect them
+              in the test report.
+            tests:
+              - NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult

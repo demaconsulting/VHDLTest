@@ -1,0 +1,31 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Program Unit
+        requirements:
+          - id: VHDLTest-Program-Usage
+            title: Program shall return a non-zero exit code when no configuration file is found.
+            justification: |
+              When the tool is invoked without a valid configuration file, Program.Run must
+              signal failure via a non-zero exit code so that callers (CI pipelines, scripts)
+              can detect the error condition reliably.
+            tests:
+              - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
+
+          - id: VHDLTest-Program-Version
+            title: Program shall display version information when the version flag is given.
+            justification: |
+              Enables users to confirm the installed version for troubleshooting and
+              compatibility verification.
+            tests:
+              - Program_Version_IsNotEmpty
+              - Program_Run_WithVersionFlag_ReturnsZeroExitCode
+
+          - id: VHDLTest-Program-Help
+            title: Program shall display help information when a help flag is given.
+            justification: |
+              Built-in help reduces the need for users to consult external documentation
+              and supports multiple conventional help flag forms.
+            tests:
+              - Program_Run_WithHelpFlag_ReturnsZeroExitCode

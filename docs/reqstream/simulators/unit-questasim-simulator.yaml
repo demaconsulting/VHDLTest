@@ -1,0 +1,37 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: QuestaSimSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-QuestaSim
+            title: VHDLTest shall support the QuestaSim simulator.
+            justification: |
+              QuestaSim is the advanced verification tool from Siemens/Mentor Graphics, offering
+              enhanced debugging and coverage features. Supporting QuestaSim enables VHDLTest
+              to integrate with high-end verification environments.
+            tests:
+              - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
+              - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
+
+          - id: VHDLTest-Sim-QuestaSim-Compile
+            title: QuestaSimSimulator shall classify QuestaSim compilation output lines by severity.
+            justification: |
+              Accurate classification of compilation output enables VHDLTest to detect
+              errors during the vcom analysis phase and report them clearly to the user.
+            tests:
+              - QuestaSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - QuestaSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-QuestaSim-Test
+            title: QuestaSimSimulator shall classify QuestaSim simulation output lines by severity.
+            justification: |
+              Accurate classification of simulation output enables VHDLTest to detect pass,
+              warning, failure, and error conditions during vsim execution and reflect them
+              in the test report.
+            tests:
+              - QuestaSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - QuestaSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - QuestaSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+              - QuestaSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult

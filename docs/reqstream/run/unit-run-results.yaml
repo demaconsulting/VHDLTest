@@ -1,0 +1,15 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: RunResults Unit
+        requirements:
+          - id: VHDLTest-RunResults-Print
+            title: RunResults shall print classified output lines with color-coded severity.
+            justification: |
+              Color-coded output helps users quickly distinguish between informational,
+              warning, and error output lines when reviewing simulator output in the console,
+              reducing the time needed to identify failures.
+            tests:
+              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult

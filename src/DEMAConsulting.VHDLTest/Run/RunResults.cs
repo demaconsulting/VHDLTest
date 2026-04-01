@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 using System.Collections.ObjectModel;
+using DEMAConsulting.VHDLTest.Cli;
 
 namespace DEMAConsulting.VHDLTest.Run;
 

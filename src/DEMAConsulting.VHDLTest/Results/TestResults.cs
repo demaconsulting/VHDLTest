@@ -20,6 +20,7 @@
 
 using DemaConsulting.TestResults;
 using DemaConsulting.TestResults.IO;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 

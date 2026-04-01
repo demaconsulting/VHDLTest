@@ -1,0 +1,22 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Results Subsystem
+        requirements:
+          - id: VHDLTest-Results-Collect
+            title: VHDLTest shall collect individual test results and report pass and fail counts.
+            justification: |
+              Aggregating individual test outcomes into a summary with pass/fail counts lets
+              users and CI/CD systems quickly determine overall test health without inspecting
+              every individual test result.
+            tests:
+              - ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts
+
+          - id: VHDLTest-Results-Save
+            title: VHDLTest shall save a collection of test results to a results file.
+            justification: |
+              Persisting the collected test results to a file enables integration with CI/CD
+              platforms and test reporting tools that consume standard test result formats.
+            tests:
+              - ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts

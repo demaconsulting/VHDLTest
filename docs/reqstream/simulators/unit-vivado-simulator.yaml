@@ -1,0 +1,36 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: VivadoSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-Vivado
+            title: VHDLTest shall support the Vivado simulator.
+            justification: |
+              Vivado is Xilinx's primary design suite and simulator for their FPGA products.
+              Supporting Vivado simulator is essential for teams developing designs targeting
+              Xilinx/AMD FPGAs and enables seamless integration with the Vivado toolchain.
+            tests:
+              - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
+              - VivadoSimulator_SimulatorName_ReturnsVivado
+
+          - id: VHDLTest-Sim-Vivado-Compile
+            title: VivadoSimulator shall classify Vivado compilation output lines by severity.
+            justification: |
+              Accurate classification of xvhdl/xelab output enables VHDLTest to detect
+              errors during the elaboration phase and report them clearly to the user.
+            tests:
+              - VivadoSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - VivadoSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-Vivado-Test
+            title: VivadoSimulator shall classify Vivado simulation output lines by severity.
+            justification: |
+              Accurate classification of Vivado simulation output enables VHDLTest to
+              detect pass, warning, and error conditions and reflect them in the test
+              report.
+            tests:
+              - VivadoSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - VivadoSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - VivadoSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - VivadoSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult

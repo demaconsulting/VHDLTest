@@ -1,0 +1,17 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: RunProgram Unit
+        requirements:
+          - id: VHDLTest-RunProgram-Execute
+            title: RunProgram shall execute an external program and return its combined output.
+            justification: |
+              Executing simulator tools as external processes decouples VHDLTest from any
+              specific simulator API, allowing it to integrate with any command-line VHDL
+              simulator. Capturing both stdout and stderr ensures no output is lost when
+              diagnosing failures.
+            tests:
+              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+              - RunProcessor_Execute_MissingProgram_ThrowsException
