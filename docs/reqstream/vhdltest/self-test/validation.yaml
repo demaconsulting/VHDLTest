@@ -13,6 +13,15 @@ sections:
             tests:
               - IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess
 
+          - id: VHDLTest-Validation-Depth
+            title: The Validation class shall support configurable report depth for embedded document output.
+            justification: |
+              Configurable header depth in validation reports allows users to embed the validation
+              output in other documents with correct heading hierarchy, supporting compliance
+              documentation workflows.
+            tests:
+              - IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth
+
           - id: VHDLTest-Validation-SystemInfo
             title: The Validation class shall include OS and runtime information in the validation report.
             justification: |

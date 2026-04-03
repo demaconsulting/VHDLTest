@@ -12,6 +12,9 @@ sections:
               every individual test result.
             tests:
               - ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts
+            children:
+              - VHDLTest-TestResult-Pass
+              - VHDLTest-TestResult-Fail
 
           - id: VHDLTest-Results-Save
             title: VHDLTest shall save a collection of test results to a results file.
@@ -20,3 +23,7 @@ sections:
               platforms and test reporting tools that consume standard test result formats.
             tests:
               - ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts
+            children:
+              - VHDLTest-TestResults-Trx
+              - VHDLTest-TestResults-JUnit
+              - VHDLTest-TestResults-NullFile

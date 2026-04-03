@@ -15,3 +15,11 @@ sections:
             tests:
               - CliSubsystem_ParseArgsAndLoadConfig_WithValidConfig_ProducesCorrectOptions
               - CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException
+            children:
+              - VHDLTest-Context-Parse
+              - VHDLTest-Context-Error
+              - VHDLTest-ConfigDoc-Read
+              - VHDLTest-ConfigDoc-Missing
+              - VHDLTest-Options-Parse
+              - VHDLTest-Options-NoConfig
+              - VHDLTest-Options-MissingConfig
