@@ -188,9 +188,14 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/simulators.yaml"           # subsystem requirements
       - "docs/design/vhdltest/simulators/simulators.md"                # subsystem design
-      - "docs/design/vhdltest/simulators/simulator.md"                 # Simulator base class design
-      - "src/**/Simulators/Simulator.cs"                               # base class (no dedicated unit review)
       - "test/**/Simulators/SimulatorsSubsystemTests.cs"               # subsystem integration tests
+
+  # Simulator base class unit review
+  - id: VHDLTest-Simulators-Simulator
+    title: Review of VHDLTest Simulator Unit
+    paths:
+      - "docs/design/vhdltest/simulators/simulator.md"                 # design
+      - "src/**/Simulators/Simulator.cs"                               # implementation
 
   # SimulatorFactory unit review
   - id: VHDLTest-Simulators-SimulatorFactory
