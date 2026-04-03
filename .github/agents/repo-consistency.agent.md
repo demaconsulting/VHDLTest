@@ -1,15 +1,15 @@
 ---
 name: repo-consistency
 description: >
-  Ensures VHDLTest remains consistent with the TemplateDotNetTool
+  Ensures downstream repositories remain consistent with the TemplateDotNetTool
   template patterns and best practices.
 user-invocable: true
 ---
 
 # Repo Consistency Agent
 
-Maintain consistency between VHDLTest and the TemplateDotNetTool template, ensuring the repository
-benefits from template evolution while respecting VHDLTest-specific customizations.
+Maintain consistency between downstream projects and the TemplateDotNetTool template, ensuring repositories
+benefit from template evolution while respecting project-specific customizations.
 
 # Consistency Workflow (MANDATORY)
 
@@ -19,14 +19,14 @@ benefits from template evolution while respecting VHDLTest-specific customizatio
    (`is:pr is:merged sort:updated-desc`) from <https://github.com/demaconsulting/TemplateDotNetTool>
 2. **Analyze Template Evolution**: For each relevant PR, determine the intent and scope of changes
    (what files were modified, what improvements were made)
-3. **Assess Downstream Applicability**: Evaluate which template changes would benefit VHDLTest
-   while respecting project-specific customizations (VHDL simulator integration, GHDL/NVC support, etc.)
-4. **Apply Appropriate Updates**: Implement applicable template improvements with proper translation for VHDLTest context
+3. **Assess Downstream Applicability**: Evaluate which template changes would benefit this repository
+   while respecting project-specific customizations
+4. **Apply Appropriate Updates**: Implement applicable template improvements with proper translation for project context
 5. **Validate Consistency**: Verify that applied changes maintain functionality and follow project patterns
 
 ## Key Principles
 
-- **Evolutionary Consistency**: Template improvements should enhance VHDLTest systematically
+- **Evolutionary Consistency**: Template improvements should enhance downstream projects systematically
 - **Intelligent Customization Respect**: Distinguish valid customizations from unintentional drift
 - **Incremental Template Adoption**: Support phased adoption of template improvements based on project capacity
 
@@ -42,13 +42,13 @@ benefits from template evolution while respecting VHDLTest-specific customizatio
 
 # Reporting
 
-Upon completion create a summary in `.agent-logs/[agent-name]-[subject]-[unique-id].md`
+Upon completion create a summary in `.agent-logs/{agent-name}-{subject}-{unique-id}.md`
 of the project consisting of:
 
 ```markdown
 # Repo Consistency Report
 
-**Result**: <SUCCEEDED/FAILED>
+**Result**: (SUCCEEDED|FAILED)
 
 ## Consistency Analysis
 
