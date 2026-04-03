@@ -102,7 +102,8 @@ src/DEMAConsulting.VHDLTest/
     └── Validation.cs           — self-validation test runner
 ```
 
-The test project mirrors the same layout under `test/DEMAConsulting.VHDLTest.Tests/`.
+The design documentation mirrors this under `docs/design/vhdltest/` and the test project mirrors
+the same layout under `test/DEMAConsulting.VHDLTest.Tests/`.
 
 ## Document Conventions
 

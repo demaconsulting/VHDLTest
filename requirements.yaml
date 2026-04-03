@@ -28,31 +28,31 @@
 #
 ---
 includes:
-  - docs/reqstream/system.yaml
-  - docs/reqstream/program.yaml
-  - docs/reqstream/platform-requirements.yaml
-  - docs/reqstream/cli/cli.yaml
-  - docs/reqstream/cli/context.yaml
-  - docs/reqstream/cli/config-document.yaml
-  - docs/reqstream/cli/options.yaml
-  - docs/reqstream/simulators/simulators.yaml
-  - docs/reqstream/simulators/simulator-factory.yaml
-  - docs/reqstream/simulators/ghdl-simulator.yaml
-  - docs/reqstream/simulators/nvc-simulator.yaml
-  - docs/reqstream/simulators/modelsim-simulator.yaml
-  - docs/reqstream/simulators/questasim-simulator.yaml
-  - docs/reqstream/simulators/vivado-simulator.yaml
-  - docs/reqstream/simulators/active-hdl-simulator.yaml
-  - docs/reqstream/run/run.yaml
-  - docs/reqstream/run/run-processor.yaml
-  - docs/reqstream/run/run-program.yaml
-  - docs/reqstream/run/run-results.yaml
-  - docs/reqstream/run/run-types.yaml
-  - docs/reqstream/results/results.yaml
-  - docs/reqstream/results/test-result.yaml
-  - docs/reqstream/results/test-results.yaml
-  - docs/reqstream/self-test/self-test.yaml
-  - docs/reqstream/self-test/validation.yaml
+  - docs/reqstream/vhdltest/vhdltest.yaml
+  - docs/reqstream/vhdltest/program.yaml
+  - docs/reqstream/vhdltest/platform-requirements.yaml
+  - docs/reqstream/vhdltest/cli/cli.yaml
+  - docs/reqstream/vhdltest/cli/context.yaml
+  - docs/reqstream/vhdltest/cli/config-document.yaml
+  - docs/reqstream/vhdltest/cli/options.yaml
+  - docs/reqstream/vhdltest/simulators/simulators.yaml
+  - docs/reqstream/vhdltest/simulators/simulator-factory.yaml
+  - docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/nvc-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/modelsim-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/questasim-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/vivado-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/active-hdl-simulator.yaml
+  - docs/reqstream/vhdltest/run/run.yaml
+  - docs/reqstream/vhdltest/run/run-processor.yaml
+  - docs/reqstream/vhdltest/run/run-program.yaml
+  - docs/reqstream/vhdltest/run/run-results.yaml
+  - docs/reqstream/vhdltest/run/run-types.yaml
+  - docs/reqstream/vhdltest/results/results.yaml
+  - docs/reqstream/vhdltest/results/test-result.yaml
+  - docs/reqstream/vhdltest/results/test-results.yaml
+  - docs/reqstream/vhdltest/self-test/self-test.yaml
+  - docs/reqstream/vhdltest/self-test/validation.yaml
   - docs/reqstream/ots/mstest.yaml
   - docs/reqstream/ots/reqstream.yaml
   - docs/reqstream/ots/buildmark.yaml
