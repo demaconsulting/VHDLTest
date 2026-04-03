@@ -1,0 +1,51 @@
+---
+# Pandoc document definition for VHDLTest Design Document
+
+# Resource paths for finding files and templates
+resource-path:
+  - docs/design
+  - docs/template
+
+# Input files in order (relative to resource-path)
+input-files:
+  - docs/design/title.txt
+  - docs/design/introduction.md
+  - docs/design/vhdltest/vhdltest.md
+  - docs/design/vhdltest/program.md
+  - docs/design/vhdltest/cli/cli.md
+  - docs/design/vhdltest/cli/context.md
+  - docs/design/vhdltest/cli/config-document.md
+  - docs/design/vhdltest/cli/options.md
+  - docs/design/vhdltest/simulators/simulators.md
+  - docs/design/vhdltest/simulators/simulator.md
+  - docs/design/vhdltest/simulators/simulator-factory.md
+  - docs/design/vhdltest/simulators/ghdl-simulator.md
+  - docs/design/vhdltest/simulators/nvc-simulator.md
+  - docs/design/vhdltest/simulators/modelsim-simulator.md
+  - docs/design/vhdltest/simulators/questasim-simulator.md
+  - docs/design/vhdltest/simulators/vivado-simulator.md
+  - docs/design/vhdltest/simulators/active-hdl-simulator.md
+  - docs/design/vhdltest/run/run.md
+  - docs/design/vhdltest/run/run-processor.md
+  - docs/design/vhdltest/run/run-program.md
+  - docs/design/vhdltest/run/run-results.md
+  - docs/design/vhdltest/run/run-line.md
+  - docs/design/vhdltest/run/run-line-rule.md
+  - docs/design/vhdltest/run/run-line-type.md
+  - docs/design/vhdltest/results/results.md
+  - docs/design/vhdltest/results/test-result.md
+  - docs/design/vhdltest/results/test-results.md
+  - docs/design/vhdltest/self-test/self-test.md
+  - docs/design/vhdltest/self-test/validation.md
+
+# Template configuration
+template: template.html
+
+# Table of contents settings
+table-of-contents: true
+
+# Enable numbered sections
+number-sections: true
+
+# Standalone document
+standalone: true

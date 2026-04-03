@@ -13,3 +13,24 @@ sections:
             tests:
               - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
               - SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText
+            children:
+              - VHDLTest-SimulatorFactory-Get
+              - VHDLTest-SimulatorFactory-Unknown
+              - VHDLTest-Sim-GHDL
+              - VHDLTest-Sim-GHDL-Compile
+              - VHDLTest-Sim-GHDL-Test
+              - VHDLTest-Sim-NVC
+              - VHDLTest-Sim-NVC-Compile
+              - VHDLTest-Sim-NVC-Test
+              - VHDLTest-Sim-ModelSim
+              - VHDLTest-Sim-ModelSim-Compile
+              - VHDLTest-Sim-ModelSim-Test
+              - VHDLTest-Sim-QuestaSim
+              - VHDLTest-Sim-QuestaSim-Compile
+              - VHDLTest-Sim-QuestaSim-Test
+              - VHDLTest-Sim-Vivado
+              - VHDLTest-Sim-Vivado-Compile
+              - VHDLTest-Sim-Vivado-Test
+              - VHDLTest-Sim-ActiveHDL
+              - VHDLTest-Sim-ActiveHDL-Compile
+              - VHDLTest-Sim-ActiveHDL-Test

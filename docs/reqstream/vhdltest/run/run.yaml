@@ -13,3 +13,10 @@ sections:
             tests:
               - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
+            children:
+              - VHDLTest-RunProcessor-Pass
+              - VHDLTest-RunProcessor-Fail
+              - VHDLTest-RunProcessor-MissingProgram
+              - VHDLTest-RunProgram-Execute
+              - VHDLTest-RunResults-Print
+              - VHDLTest-RunTypes-Classify

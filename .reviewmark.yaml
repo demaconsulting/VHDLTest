@@ -132,6 +132,7 @@ reviews:
       - "docs/reqstream/vhdltest/run/run-program.yaml"         # requirements
       - "docs/design/vhdltest/run/run-program.md"              # design
       - "src/**/Run/RunProgram.cs"                             # implementation
+      - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
 
   # RunResults unit review
   - id: VHDLTest-Run-RunResults
@@ -140,6 +141,7 @@ reviews:
       - "docs/reqstream/vhdltest/run/run-results.yaml"         # requirements
       - "docs/design/vhdltest/run/run-results.md"              # design
       - "src/**/Run/RunResults.cs"                             # implementation
+      - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
 
   # Run types unit review (RunLine, RunLineRule, RunLineType)
   - id: VHDLTest-Run-RunTypes
@@ -152,6 +154,7 @@ reviews:
       - "src/**/Run/RunLine.cs"                                # implementation
       - "src/**/Run/RunLineRule.cs"                            # implementation
       - "src/**/Run/RunLineType.cs"                            # implementation
+      - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
 
   # Results subsystem review
   - id: VHDLTest-Results
