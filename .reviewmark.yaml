@@ -29,7 +29,7 @@ reviews:
   - id: VHDLTest-System
     title: Review of VHDLTest System
     paths:
-      - "docs/reqstream/vhdltest-system.yaml"
+      - "docs/reqstream/system.yaml"
       - "docs/reqstream/platform-requirements.yaml"
       - "docs/design/introduction.md"
       - "docs/design/system.md"
@@ -42,7 +42,7 @@ reviews:
   - id: VHDLTest-Design
     title: Review of VHDLTest Design Documentation
     paths:
-      - "docs/reqstream/vhdltest-system.yaml"
+      - "docs/reqstream/system.yaml"
       - "docs/reqstream/platform-requirements.yaml"
       - "docs/design/**/*.md"
 
@@ -57,18 +57,18 @@ reviews:
   - id: VHDLTest-OTS
     title: Review of VHDLTest OTS Dependencies
     paths:
-      - "docs/reqstream/ots-mstest.yaml"
-      - "docs/reqstream/ots-reqstream.yaml"
-      - "docs/reqstream/ots-buildmark.yaml"
-      - "docs/reqstream/ots-versionmark.yaml"
-      - "docs/reqstream/ots-sarifmark.yaml"
-      - "docs/reqstream/ots-sonarmark.yaml"
+      - "docs/reqstream/ots/mstest.yaml"
+      - "docs/reqstream/ots/reqstream.yaml"
+      - "docs/reqstream/ots/buildmark.yaml"
+      - "docs/reqstream/ots/versionmark.yaml"
+      - "docs/reqstream/ots/sarifmark.yaml"
+      - "docs/reqstream/ots/sonarmark.yaml"
 
   # Cli subsystem review
   - id: VHDLTest-Cli
     title: Review of VHDLTest Cli Subsystem
     paths:
-      - "docs/reqstream/cli/subsystem-cli.yaml"           # subsystem requirements
+      - "docs/reqstream/cli/cli.yaml"                     # subsystem requirements
       - "docs/design/cli/cli.md"                          # subsystem design
       - "test/**/Cli/CliSubsystemTests.cs"                # subsystem integration tests
 
@@ -76,7 +76,7 @@ reviews:
   - id: VHDLTest-Context
     title: Review of VHDLTest Context Unit
     paths:
-      - "docs/reqstream/cli/unit-context.yaml"
+      - "docs/reqstream/cli/context.yaml"
       - "docs/design/cli/context.md"
       - "src/**/Cli/Context.cs"
       - "test/**/Cli/ContextTests.cs"
@@ -85,7 +85,7 @@ reviews:
   - id: VHDLTest-ConfigDocument
     title: Review of VHDLTest ConfigDocument Unit
     paths:
-      - "docs/reqstream/cli/unit-config-document.yaml"
+      - "docs/reqstream/cli/config-document.yaml"
       - "docs/design/cli/config-document.md"
       - "src/**/Cli/ConfigDocument.cs"
       - "test/**/Cli/ConfigDocumentTests.cs"
@@ -94,7 +94,7 @@ reviews:
   - id: VHDLTest-Options
     title: Review of VHDLTest Options Unit
     paths:
-      - "docs/reqstream/cli/unit-options.yaml"
+      - "docs/reqstream/cli/options.yaml"
       - "docs/design/cli/options.md"
       - "src/**/Cli/Options.cs"
       - "test/**/Cli/OptionsTests.cs"
@@ -103,7 +103,7 @@ reviews:
   - id: VHDLTest-Program
     title: Review of VHDLTest Program Unit
     paths:
-      - "docs/reqstream/unit-program.yaml"              # requirements
+      - "docs/reqstream/program.yaml"                  # requirements
       - "docs/design/program.md"                        # design
       - "src/**/Program.cs"                             # implementation
       - "test/**/ProgramTests.cs"                       # unit tests
@@ -112,7 +112,7 @@ reviews:
   - id: VHDLTest-Run
     title: Review of VHDLTest Run Subsystem
     paths:
-      - "docs/reqstream/run/subsystem-run.yaml"           # subsystem requirements
+      - "docs/reqstream/run/run.yaml"                     # subsystem requirements
       - "docs/design/run/run.md"                          # subsystem design
       - "test/**/Run/RunSubsystemTests.cs"                # subsystem integration tests
 
@@ -120,7 +120,7 @@ reviews:
   - id: VHDLTest-RunProcessor
     title: Review of VHDLTest RunProcessor Unit
     paths:
-      - "docs/reqstream/run/unit-run-processor.yaml"    # requirements
+      - "docs/reqstream/run/run-processor.yaml"         # requirements
       - "docs/design/run/run-processor.md"              # design
       - "src/**/Run/RunProcessor.cs"                    # implementation
       - "test/**/Run/RunProcessorTests.cs"                  # unit tests
@@ -129,7 +129,7 @@ reviews:
   - id: VHDLTest-RunProgram
     title: Review of VHDLTest RunProgram Unit
     paths:
-      - "docs/reqstream/run/unit-run-program.yaml"      # requirements
+      - "docs/reqstream/run/run-program.yaml"           # requirements
       - "docs/design/run/run-program.md"                # design
       - "src/**/Run/RunProgram.cs"                      # implementation
 
@@ -137,7 +137,7 @@ reviews:
   - id: VHDLTest-RunResults
     title: Review of VHDLTest RunResults Unit
     paths:
-      - "docs/reqstream/run/unit-run-results.yaml"      # requirements
+      - "docs/reqstream/run/run-results.yaml"           # requirements
       - "docs/design/run/run-results.md"                # design
       - "src/**/Run/RunResults.cs"                      # implementation
 
@@ -145,7 +145,7 @@ reviews:
   - id: VHDLTest-RunTypes
     title: Review of VHDLTest Run Types Unit
     paths:
-      - "docs/reqstream/run/unit-run-types.yaml"        # requirements
+      - "docs/reqstream/run/run-types.yaml"             # requirements
       - "docs/design/run/run-line.md"                   # design
       - "docs/design/run/run-line-rule.md"              # design
       - "docs/design/run/run-line-type.md"              # design
@@ -157,7 +157,7 @@ reviews:
   - id: VHDLTest-Results
     title: Review of VHDLTest Results Subsystem
     paths:
-      - "docs/reqstream/results/subsystem-results.yaml"   # subsystem requirements
+      - "docs/reqstream/results/results.yaml"              # subsystem requirements
       - "docs/design/results/results.md"                  # subsystem design
       - "test/**/Results/ResultsSubsystemTests.cs"        # subsystem integration tests
 
@@ -165,7 +165,7 @@ reviews:
   - id: VHDLTest-TestResult
     title: Review of VHDLTest TestResult Unit
     paths:
-      - "docs/reqstream/results/unit-test-result.yaml"  # requirements
+      - "docs/reqstream/results/test-result.yaml"       # requirements
       - "docs/design/results/test-result.md"            # design
       - "src/**/Results/TestResult.cs"                  # implementation
       - "test/**/Results/TestResultTests.cs"                    # unit tests
@@ -174,7 +174,7 @@ reviews:
   - id: VHDLTest-TestResults
     title: Review of VHDLTest TestResults Unit
     paths:
-      - "docs/reqstream/results/unit-test-results.yaml"  # requirements
+      - "docs/reqstream/results/test-results.yaml"       # requirements
       - "docs/design/results/test-results.md"           # design
       - "src/**/Results/TestResults.cs"                 # implementation
       - "test/**/Results/TestResultsTests.cs"                   # unit tests
@@ -183,7 +183,7 @@ reviews:
   - id: VHDLTest-Simulators
     title: Review of VHDLTest Simulators Subsystem
     paths:
-      - "docs/reqstream/simulators/subsystem-simulators.yaml"  # subsystem requirements
+      - "docs/reqstream/simulators/simulators.yaml"            # subsystem requirements
       - "docs/design/simulators/simulators.md"                # subsystem design
       - "docs/design/simulators/simulator.md"                 # Simulator base class design
       - "src/**/Simulators/Simulator.cs"                      # base class (no dedicated unit review)
@@ -193,7 +193,7 @@ reviews:
   - id: VHDLTest-SimulatorFactory
     title: Review of VHDLTest SimulatorFactory Unit
     paths:
-      - "docs/reqstream/simulators/unit-simulator-factory.yaml"  # requirements
+      - "docs/reqstream/simulators/simulator-factory.yaml"       # requirements
       - "docs/design/simulators/simulator-factory.md"           # design
       - "src/**/Simulators/SimulatorFactory.cs"                 # implementation
       - "test/**/Simulators/SimulatorFactoryTests.cs"                      # unit tests
@@ -202,7 +202,7 @@ reviews:
   - id: VHDLTest-GhdlSimulator
     title: Review of VHDLTest GhdlSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-ghdl-simulator.yaml"  # requirements
+      - "docs/reqstream/simulators/ghdl-simulator.yaml"       # requirements
       - "docs/design/simulators/ghdl-simulator.md"            # design
       - "src/**/Simulators/GhdlSimulator.cs"                  # implementation
       - "test/**/Simulators/GhdlSimulatorTests.cs"                       # unit tests
@@ -211,7 +211,7 @@ reviews:
   - id: VHDLTest-NvcSimulator
     title: Review of VHDLTest NvcSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-nvc-simulator.yaml"   # requirements
+      - "docs/reqstream/simulators/nvc-simulator.yaml"        # requirements
       - "docs/design/simulators/nvc-simulator.md"             # design
       - "src/**/Simulators/NvcSimulator.cs"                   # implementation
       - "test/**/Simulators/NvcSimulatorTests.cs"                        # unit tests
@@ -220,7 +220,7 @@ reviews:
   - id: VHDLTest-ModelSimSimulator
     title: Review of VHDLTest ModelSimSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-modelsim-simulator.yaml"  # requirements
+      - "docs/reqstream/simulators/modelsim-simulator.yaml"       # requirements
       - "docs/design/simulators/modelsim-simulator.md"           # design
       - "src/**/Simulators/ModelSimSimulator.cs"                 # implementation
       - "test/**/Simulators/ModelSimSimulatorTests.cs"                      # unit tests
@@ -229,7 +229,7 @@ reviews:
   - id: VHDLTest-QuestaSimSimulator
     title: Review of VHDLTest QuestaSimSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-questasim-simulator.yaml"  # requirements
+      - "docs/reqstream/simulators/questasim-simulator.yaml"       # requirements
       - "docs/design/simulators/questasim-simulator.md"           # design
       - "src/**/Simulators/QuestaSimSimulator.cs"                 # implementation
       - "test/**/Simulators/QuestaSimSimulatorTests.cs"                      # unit tests
@@ -238,7 +238,7 @@ reviews:
   - id: VHDLTest-VivadoSimulator
     title: Review of VHDLTest VivadoSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-vivado-simulator.yaml"  # requirements
+      - "docs/reqstream/simulators/vivado-simulator.yaml"       # requirements
       - "docs/design/simulators/vivado-simulator.md"            # design
       - "src/**/Simulators/VivadoSimulator.cs"                  # implementation
       - "test/**/Simulators/VivadoSimulatorTests.cs"                       # unit tests
@@ -247,7 +247,7 @@ reviews:
   - id: VHDLTest-ActiveHdlSimulator
     title: Review of VHDLTest ActiveHdlSimulator Unit
     paths:
-      - "docs/reqstream/simulators/unit-active-hdl-simulator.yaml"  # requirements
+      - "docs/reqstream/simulators/active-hdl-simulator.yaml"       # requirements
       - "docs/design/simulators/active-hdl-simulator.md"           # design
       - "src/**/Simulators/ActiveHdlSimulator.cs"                  # implementation
       - "test/**/Simulators/ActiveHdlSimulatorTests.cs"                       # unit tests
@@ -256,7 +256,7 @@ reviews:
   - id: VHDLTest-SelfTest
     title: Review of VHDLTest SelfTest Subsystem
     paths:
-      - "docs/reqstream/self-test/subsystem-self-test.yaml"  # subsystem requirements
+      - "docs/reqstream/self-test/self-test.yaml"            # subsystem requirements
       - "docs/design/self-test/self-test.md"                # subsystem design
       - "test/**/SelfTest/ValidationTests.cs"               # subsystem integration tests
 
@@ -264,7 +264,7 @@ reviews:
   - id: VHDLTest-Validation
     title: Review of VHDLTest Validation Unit
     paths:
-      - "docs/reqstream/self-test/unit-validation.yaml"     # requirements
+      - "docs/reqstream/self-test/validation.yaml"          # requirements
       - "docs/design/self-test/validation.md"               # design
       - "src/**/SelfTest/Validation.cs"                     # implementation
       - "test/**/SelfTest/ValidationTests.cs"               # unit/integration tests
