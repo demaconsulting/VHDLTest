@@ -8,7 +8,7 @@
 
 | Property     | Type                          | Description                                 |
 | ------------ | ----------------------------- | ------------------------------------------- |
-| `Summary`    | `string`                      | High-level summary of the run               |
+| `Summary`    | `RunLineType`                 | High-level summary of the run               |
 | `Start`      | `DateTime`                    | Timestamp when the run started              |
 | `Duration`   | `double`                      | Duration of the run in seconds              |
 | `ExitCode`   | `int`                         | Process exit code                           |

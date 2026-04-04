@@ -130,11 +130,11 @@ public sealed class NvcSimulator : Simulator
         // Run the test
         var application = Path.Combine(simPath, "nvc");
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} --std=2008 --work=work:VHDLTest.out/NVC/lib -e {test} -r {test}");
+        context.WriteVerboseLine($"  Run Command: {application} --std=08 --work=work:VHDLTest.out/NVC/lib -e {test} -r {test}");
         var testRunResults = TestProcessor.Execute(
             application,
             options.WorkingDirectory,
-            "--std=2008",
+            "--std=08",
             "--work=work:VHDLTest.out/NVC/lib",
             "-e",
             test,
