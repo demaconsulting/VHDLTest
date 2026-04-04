@@ -17,6 +17,7 @@ sections:
               - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
               - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
               - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
+              - SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator
 
           - id: VHDLTest-SimulatorFactory-Unknown
             title: SimulatorFactory shall return null for unknown simulator names.

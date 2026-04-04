@@ -6,7 +6,8 @@
 # Patterns identifying all files that require review.
 # Processed in order; prefix a pattern with '!' to exclude.
 needs-review:
-  - "**/*.cs"                    # All C# source and test files
+  - "**/*.cs"                    # All C# files
+  - "!src/**/*.cs"               # Source code is covered through unit design reviews
   - "requirements.yaml"          # Root requirements file
   - "docs/reqstream/**/*.yaml"   # All requirements files
   - "docs/design/**/*.md"        # All design documents
@@ -33,7 +34,6 @@ reviews:
       - "docs/reqstream/vhdltest/platform-requirements.yaml"
       - "docs/design/introduction.md"
       - "docs/design/vhdltest/vhdltest.md"
-      - "src/**/Program.cs"
       - "test/**/IntegrationTests.cs"
       - "test/**/Runner.cs"
       - "test/**/GlobalUsings.cs"
@@ -78,7 +78,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/cli/context.yaml"
       - "docs/design/vhdltest/cli/context.md"
-      - "src/**/Cli/Context.cs"
       - "test/**/Cli/ContextTests.cs"
 
   # ConfigDocument unit review
@@ -87,7 +86,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/cli/config-document.yaml"
       - "docs/design/vhdltest/cli/config-document.md"
-      - "src/**/Cli/ConfigDocument.cs"
       - "test/**/Cli/ConfigDocumentTests.cs"
 
   # Options unit review
@@ -96,7 +94,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/cli/options.yaml"
       - "docs/design/vhdltest/cli/options.md"
-      - "src/**/Cli/Options.cs"
       - "test/**/Cli/OptionsTests.cs"
 
   # Program unit review
@@ -105,7 +102,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/program.yaml"           # requirements
       - "docs/design/vhdltest/program.md"                # design
-      - "src/**/Program.cs"                              # implementation
       - "test/**/ProgramTests.cs"                        # unit tests
 
   # Run subsystem review
@@ -122,7 +118,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/run/run-processor.yaml"       # requirements
       - "docs/design/vhdltest/run/run-processor.md"            # design
-      - "src/**/Run/RunProcessor.cs"                           # implementation
       - "test/**/Run/RunProcessorTests.cs"                     # unit tests
 
   # RunProgram unit review
@@ -131,7 +126,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/run/run-program.yaml"         # requirements
       - "docs/design/vhdltest/run/run-program.md"              # design
-      - "src/**/Run/RunProgram.cs"                             # implementation
       - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
 
   # RunResults unit review
@@ -140,7 +134,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/run/run-results.yaml"         # requirements
       - "docs/design/vhdltest/run/run-results.md"              # design
-      - "src/**/Run/RunResults.cs"                             # implementation
       - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
 
   # Run types unit review (RunLine, RunLineRule, RunLineType)
@@ -151,9 +144,6 @@ reviews:
       - "docs/design/vhdltest/run/run-line.md"                 # design
       - "docs/design/vhdltest/run/run-line-rule.md"            # design
       - "docs/design/vhdltest/run/run-line-type.md"            # design
-      - "src/**/Run/RunLine.cs"                                # implementation
-      - "src/**/Run/RunLineRule.cs"                            # implementation
-      - "src/**/Run/RunLineType.cs"                            # implementation
       - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
 
   # Results subsystem review
@@ -170,7 +160,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/results/test-result.yaml"     # requirements
       - "docs/design/vhdltest/results/test-result.md"          # design
-      - "src/**/Results/TestResult.cs"                         # implementation
       - "test/**/Results/TestResultTests.cs"                   # unit tests
 
   # TestResults unit review
@@ -179,7 +168,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/results/test-results.yaml"    # requirements
       - "docs/design/vhdltest/results/test-results.md"         # design
-      - "src/**/Results/TestResults.cs"                        # implementation
       - "test/**/Results/TestResultsTests.cs"                  # unit tests
 
   # Simulators subsystem review
@@ -194,8 +182,9 @@ reviews:
   - id: VHDLTest-Simulators-Simulator
     title: Review of VHDLTest Simulator Unit
     paths:
-      - "docs/design/vhdltest/simulators/simulator.md"                 # design
-      - "src/**/Simulators/Simulator.cs"                               # implementation
+      - "docs/reqstream/vhdltest/simulators/simulator.yaml"                # requirements
+      - "docs/design/vhdltest/simulators/simulator.md"                     # design
+      - "test/**/Simulators/MockSimulatorTests.cs"                         # unit tests (via MockSimulator)
 
   # SimulatorFactory unit review
   - id: VHDLTest-Simulators-SimulatorFactory
@@ -203,7 +192,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/simulator-factory.yaml"    # requirements
       - "docs/design/vhdltest/simulators/simulator-factory.md"         # design
-      - "src/**/Simulators/SimulatorFactory.cs"                        # implementation
       - "test/**/Simulators/SimulatorFactoryTests.cs"                  # unit tests
 
   # GhdlSimulator unit review
@@ -212,7 +200,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml"       # requirements
       - "docs/design/vhdltest/simulators/ghdl-simulator.md"            # design
-      - "src/**/Simulators/GhdlSimulator.cs"                           # implementation
       - "test/**/Simulators/GhdlSimulatorTests.cs"                     # unit tests
 
   # NvcSimulator unit review
@@ -221,7 +208,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/nvc-simulator.yaml"        # requirements
       - "docs/design/vhdltest/simulators/nvc-simulator.md"             # design
-      - "src/**/Simulators/NvcSimulator.cs"                            # implementation
       - "test/**/Simulators/NvcSimulatorTests.cs"                      # unit tests
 
   # ModelSimSimulator unit review
@@ -230,7 +216,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/modelsim-simulator.yaml"   # requirements
       - "docs/design/vhdltest/simulators/modelsim-simulator.md"        # design
-      - "src/**/Simulators/ModelSimSimulator.cs"                       # implementation
       - "test/**/Simulators/ModelSimSimulatorTests.cs"                 # unit tests
 
   # QuestaSimSimulator unit review
@@ -239,7 +224,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/questasim-simulator.yaml"  # requirements
       - "docs/design/vhdltest/simulators/questasim-simulator.md"       # design
-      - "src/**/Simulators/QuestaSimSimulator.cs"                      # implementation
       - "test/**/Simulators/QuestaSimSimulatorTests.cs"                # unit tests
 
   # VivadoSimulator unit review
@@ -248,7 +232,6 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/vivado-simulator.yaml"     # requirements
       - "docs/design/vhdltest/simulators/vivado-simulator.md"          # design
-      - "src/**/Simulators/VivadoSimulator.cs"                         # implementation
       - "test/**/Simulators/VivadoSimulatorTests.cs"                   # unit tests
 
   # ActiveHdlSimulator unit review
@@ -257,8 +240,15 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/simulators/active-hdl-simulator.yaml"  # requirements
       - "docs/design/vhdltest/simulators/active-hdl-simulator.md"      # design
-      - "src/**/Simulators/ActiveHdlSimulator.cs"                      # implementation
       - "test/**/Simulators/ActiveHdlSimulatorTests.cs"                # unit tests
+
+  # MockSimulator unit review
+  - id: VHDLTest-Simulators-MockSimulator
+    title: Review of VHDLTest MockSimulator Unit
+    paths:
+      - "docs/reqstream/vhdltest/simulators/mock-simulator.yaml"       # requirements
+      - "docs/design/vhdltest/simulators/mock-simulator.md"            # design
+      - "test/**/Simulators/MockSimulatorTests.cs"                     # unit tests
 
   # SelfTest subsystem review
   - id: VHDLTest-SelfTest
@@ -274,5 +264,4 @@ reviews:
     paths:
       - "docs/reqstream/vhdltest/self-test/validation.yaml"            # requirements
       - "docs/design/vhdltest/self-test/validation.md"                 # design
-      - "src/**/SelfTest/Validation.cs"                                # implementation
       - "test/**/SelfTest/ValidationTests.cs"                          # unit/integration tests

@@ -97,4 +97,13 @@ public class SimulatorFactoryTests
         Assert.IsNull(SimulatorFactory.Get("unknown"));
         Assert.IsNull(SimulatorFactory.Get("Unknown"));
     }
+
+    /// <summary>
+    /// Test querying the simulator factory for the mock simulator
+    /// </summary>
+    [TestMethod]
+    public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
+    {
+        Assert.IsNotNull(SimulatorFactory.Get("mock"));
+    }
 }

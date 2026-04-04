@@ -1,0 +1,18 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Simulator Unit
+        requirements:
+          - id: VHDLTest-Simulator-Interface
+            title: >-
+              The abstract Simulator class shall define the common interface for all
+              simulator implementations.
+            justification: |
+              A shared abstract base class ensures all simulator implementations provide a
+              consistent interface (SimulatorName, SimulatorPath, Available, Compile, Test)
+              to the rest of the application, enabling simulator-agnostic test execution and
+              straightforward addition of new simulator integrations.
+            tests:
+              - MockSimulator_SimulatorName_ReturnsMock
+              - MockSimulator_Available_WithNullPath_ReturnsFalse
