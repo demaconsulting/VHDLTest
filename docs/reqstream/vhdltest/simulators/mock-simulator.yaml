@@ -1,0 +1,46 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: MockSimulator Unit
+        requirements:
+          - id: VHDLTest-Sim-Mock
+            title: VHDLTest shall support a mock simulator for self-validation testing.
+            justification: |
+              A mock simulator enables self-validation without requiring any external VHDL
+              simulator to be installed. It ships as part of the tool and is used by the
+              --validate flag to verify that the test execution pipeline and result reporting
+              are functioning correctly in the user's environment.
+            tests:
+              - SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator
+              - MockSimulator_SimulatorName_ReturnsMock
+
+          - id: VHDLTest-Sim-Mock-Compile
+            title: >-
+              MockSimulator shall simulate compilation with pass, warning, and error
+              outcomes based on filename patterns.
+            justification: |
+              Deterministic compile simulation based on filename patterns allows self-validation
+              test cases to exercise the warning and error reporting paths of the compile pipeline
+              without relying on an external simulator or real VHDL source.
+            tests:
+              - MockSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+              - MockSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult
+              - MockSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
+              - MockSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+
+          - id: VHDLTest-Sim-Mock-Test
+            title: >-
+              MockSimulator shall simulate test execution with pass, warning, fail, and
+              error outcomes based on test name patterns.
+            justification: |
+              Deterministic test simulation based on test name patterns allows self-validation
+              test cases to exercise the pass, warning, failure, and error reporting paths of
+              the test execution pipeline without relying on an external simulator or real VHDL
+              test benches.
+            tests:
+              - MockSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+              - MockSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+              - MockSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+              - MockSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
+              - MockSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult

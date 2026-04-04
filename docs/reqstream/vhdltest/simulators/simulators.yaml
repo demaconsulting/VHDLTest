@@ -14,6 +14,7 @@ sections:
               - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
               - SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText
             children:
+              - VHDLTest-Simulator-Interface
               - VHDLTest-SimulatorFactory-Get
               - VHDLTest-SimulatorFactory-Unknown
               - VHDLTest-Sim-GHDL
@@ -34,3 +35,6 @@ sections:
               - VHDLTest-Sim-ActiveHDL
               - VHDLTest-Sim-ActiveHDL-Compile
               - VHDLTest-Sim-ActiveHDL-Test
+              - VHDLTest-Sim-Mock
+              - VHDLTest-Sim-Mock-Compile
+              - VHDLTest-Sim-Mock-Test

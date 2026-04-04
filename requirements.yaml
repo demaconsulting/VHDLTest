@@ -36,6 +36,7 @@ includes:
   - docs/reqstream/vhdltest/cli/config-document.yaml
   - docs/reqstream/vhdltest/cli/options.yaml
   - docs/reqstream/vhdltest/simulators/simulators.yaml
+  - docs/reqstream/vhdltest/simulators/simulator.yaml
   - docs/reqstream/vhdltest/simulators/simulator-factory.yaml
   - docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml
   - docs/reqstream/vhdltest/simulators/nvc-simulator.yaml
@@ -43,6 +44,7 @@ includes:
   - docs/reqstream/vhdltest/simulators/questasim-simulator.yaml
   - docs/reqstream/vhdltest/simulators/vivado-simulator.yaml
   - docs/reqstream/vhdltest/simulators/active-hdl-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/mock-simulator.yaml
   - docs/reqstream/vhdltest/run/run.yaml
   - docs/reqstream/vhdltest/run/run-processor.yaml
   - docs/reqstream/vhdltest/run/run-program.yaml
