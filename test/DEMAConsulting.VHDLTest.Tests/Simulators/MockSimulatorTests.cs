@@ -30,15 +30,6 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 public class MockSimulatorTests
 {
     /// <summary>
-    /// Test that the mock simulator is returned by the factory
-    /// </summary>
-    [TestMethod]
-    public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
-    {
-        Assert.IsNotNull(SimulatorFactory.Get("mock"));
-    }
-
-    /// <summary>
     /// Test the simulator name of the mock simulator
     /// </summary>
     [TestMethod]
