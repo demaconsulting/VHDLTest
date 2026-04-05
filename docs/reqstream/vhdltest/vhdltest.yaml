@@ -12,6 +12,9 @@ sections:
               self-documenting and reduces the need for external documentation lookups.
             tests:
               - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
+            children:
+              - VHDLTest-Program-NoArgs
+              - VHDLTest-Program-Usage
 
           - id: VHDLTest-Cmd-Version
             title: VHDLTest shall display version information when requested.
@@ -22,6 +25,8 @@ sections:
             tests:
               - IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess
               - IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess
+            children:
+              - VHDLTest-Program-Version
 
           - id: VHDLTest-Cmd-Help
             title: VHDLTest shall display help information when requested.
@@ -33,6 +38,8 @@ sections:
               - IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess
               - IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess
               - IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess
+            children:
+              - VHDLTest-Program-Help
 
       - title: Test Execution
         requirements:
@@ -44,6 +51,12 @@ sections:
               convention for successful command execution in Unix-like systems.
             tests:
               - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+            children:
+              - VHDLTest-Cli-Pipeline
+              - VHDLTest-Simulators-Factory
+              - VHDLTest-Run-Execute
+              - VHDLTest-Results-Collect
+              - VHDLTest-Results-Save
 
           - id: VHDLTest-Test-CompileError
             title: VHDLTest shall return non-zero exit code when compilation fails.
@@ -53,6 +66,9 @@ sections:
               from progressing through the development pipeline.
             tests:
               - IntegrationTest_CompileError_ReturnsNonZeroExitCode
+            children:
+              - VHDLTest-Simulators-Factory
+              - VHDLTest-Run-Execute
 
           - id: VHDLTest-Test-TestError
             title: VHDLTest shall return non-zero exit code when tests fail.
@@ -62,6 +78,9 @@ sections:
               continuous integration and maintaining code quality.
             tests:
               - IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode
+            children:
+              - VHDLTest-Simulators-Factory
+              - VHDLTest-Run-Execute
 
           - id: VHDLTest-Test-Exit0
             title: VHDLTest shall support exit-0 mode to always return zero exit code.
@@ -71,3 +90,5 @@ sections:
               in pipelines where failures are handled by separate post-processing steps.
             tests:
               - IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode
+            children:
+              - VHDLTest-Cli-Pipeline
