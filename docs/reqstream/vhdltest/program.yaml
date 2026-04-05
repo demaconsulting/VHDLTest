@@ -11,7 +11,7 @@ sections:
               print usage guidance so that the user knows the correct invocation syntax. This
               makes the tool self-documenting and reduces user confusion.
             tests:
-              - Program_Run_WithNoArguments_DisplaysUsage
+              - Program_Run_WithNoConfigFileArgument_DisplaysUsage
 
           - id: VHDLTest-Program-Usage
             title: Program shall return a non-zero exit code when no configuration file is found.

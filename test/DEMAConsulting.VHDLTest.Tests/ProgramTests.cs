@@ -71,22 +71,22 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Test that Run displays usage information when no arguments are given
+    /// Test that Run displays usage information when no configuration file argument is provided
     /// </summary>
     [TestMethod]
-    public void Program_Run_WithNoArguments_DisplaysUsage()
+    public void Program_Run_WithNoConfigFileArgument_DisplaysUsage()
     {
-        // Arrange - create a log file to capture output and run with no config
+        // Arrange: create a log file to capture output; no config file argument is passed
         var logFile = Path.GetTempFileName();
         try
         {
             using (var context = Context.Create(["--log", logFile, "--silent"]))
             {
-                // Act - run the program
+                // Act: run the program without a configuration file argument
                 Program.Run(context);
             }
 
-            // Assert - verify usage text was written to the log
+            // Assert: verify usage text was written to the log
             var output = File.ReadAllText(logFile);
             Assert.IsTrue(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
         }
