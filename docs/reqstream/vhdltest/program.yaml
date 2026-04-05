@@ -4,6 +4,15 @@ sections:
     sections:
       - title: Program Unit
         requirements:
+          - id: VHDLTest-Program-NoArgs
+            title: Program shall display usage information when no configuration file argument is provided.
+            justification: |
+              When the tool is invoked without specifying a configuration file, Program.Run must
+              print usage guidance so that the user knows the correct invocation syntax. This
+              makes the tool self-documenting and reduces user confusion.
+            tests:
+              - Program_Run_WithNoArguments_DisplaysUsage
+
           - id: VHDLTest-Program-Usage
             title: Program shall return a non-zero exit code when no configuration file is found.
             justification: |

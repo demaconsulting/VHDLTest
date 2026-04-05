@@ -71,6 +71,32 @@ public class ProgramTests
     }
 
     /// <summary>
+    /// Test that Run displays usage information when no arguments are given
+    /// </summary>
+    [TestMethod]
+    public void Program_Run_WithNoArguments_DisplaysUsage()
+    {
+        // Arrange - create a log file to capture output and run with no config
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var context = Context.Create(["--log", logFile, "--silent"]))
+            {
+                // Act - run the program
+                Program.Run(context);
+            }
+
+            // Assert - verify usage text was written to the log
+            var output = File.ReadAllText(logFile);
+            Assert.IsTrue(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
     /// Test that Run returns non-zero exit code when no config is given
     /// </summary>
     [TestMethod]

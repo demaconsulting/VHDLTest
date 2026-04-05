@@ -13,6 +13,7 @@ sections:
             tests:
               - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
             children:
+              - VHDLTest-Program-NoArgs
               - VHDLTest-Program-Usage
 
           - id: VHDLTest-Cmd-Version
