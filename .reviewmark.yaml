@@ -7,7 +7,6 @@
 # Processed in order; prefix a pattern with '!' to exclude.
 needs-review:
   - "**/*.cs"                    # All C# files
-  - "!src/**/*.cs"               # Source code is covered through unit design reviews
   - "requirements.yaml"          # Root requirements file
   - "docs/reqstream/**/*.yaml"   # All requirements files
   - "docs/design/**/*.md"        # All design documents
