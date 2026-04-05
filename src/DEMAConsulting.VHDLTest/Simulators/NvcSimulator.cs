@@ -99,14 +99,14 @@ public sealed class NvcSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the GHDL compiler
+        // Run the NVC compiler
         var application = Path.Combine(simPath, "nvc");
         context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} --std=08 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp");
+        context.WriteVerboseLine($"  Run Command: {application} --std=2008 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp");
         return CompileProcessor.Execute(
             application,
             options.WorkingDirectory,
-            "--std=08",
+            "--std=2008",
             "--work=work:VHDLTest.out/NVC/lib",
             "-a",
             "@VHDLTest.out/NVC/compile.rsp");

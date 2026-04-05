@@ -193,8 +193,11 @@ internal static class Validation
         }
         finally
         {
-            // Delete the validation directory
-            Directory.Delete(ValidationFolder, true);
+            // Delete the validation directory if it exists
+            if (Directory.Exists(ValidationFolder))
+            {
+                Directory.Delete(ValidationFolder, true);
+            }
         }
     }
 

@@ -46,7 +46,7 @@ public static class SimulatorFactory
     public static Simulator? Get(string? name = null)
     {
         // Only return the mock simulator if explicitly requested
-        if (name == "mock")
+        if (name?.Equals("mock", StringComparison.InvariantCultureIgnoreCase) == true)
         {
             return MockSimulator.Instance;
         }

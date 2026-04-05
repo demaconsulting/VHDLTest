@@ -100,12 +100,10 @@ public sealed class VivadoSimulator : Simulator
         // Run the Vivado compiler
         var application = Path.Combine(simPath, "xvhdl");
         context.WriteVerboseLine($"  Run Directory: {libDir}");
-        context.WriteVerboseLine($"  Run Command: cmd /c {application} -file compile.do");
+        context.WriteVerboseLine($"  Run Command: {application} -file compile.do");
         return CompileProcessor.Execute(
-            "cmd",
-            libDir,
-            "/c",
             application,
+            libDir,
             "-file",
             "compile.do");
     }
@@ -140,12 +138,10 @@ public sealed class VivadoSimulator : Simulator
         // Run the test
         var application = Path.Combine(simPath, "xelab");
         context.WriteVerboseLine($"  Run Directory: {libDir}");
-        context.WriteVerboseLine($"  Run Command: cmd /c {application} -file test.do");
+        context.WriteVerboseLine($"  Run Command: {application} -file test.do");
         var testRunResults = TestProcessor.Execute(
-            "cmd",
-            libDir,
-            "/c",
             application,
+            libDir,
             "-file",
             "test.do");
 
