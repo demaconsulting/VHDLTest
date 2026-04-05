@@ -17,14 +17,18 @@ to the rest of the application.
 
 ## Data Model
 
-| Property   | Type      | Description                                  |
-| ---------- | --------- | -------------------------------------------- |
-| `Version`  | `bool`    | True when `--version` or `-v` was passed     |
-| `Help`     | `bool`    | True when `--help`, `-h`, or `-?` was passed |
-| `Silent`   | `bool`    | True when `--silent` was passed              |
-| `Verbose`  | `bool`    | True when `--verbose` was passed             |
-| `Validate` | `bool`    | True when `--validate` was passed            |
-| `Depth`    | `int`     | Heading depth for validation reports         |
-| `Results`  | `string?` | Path to results output file                  |
-| `Config`   | `string?` | Path to the YAML configuration file          |
-| `ExitCode` | `int`     | Process exit code (0 = success, 1 = failure) |
+| Property      | Type                        | Description                                      |
+| ------------- | --------------------------- | ------------------------------------------------ |
+| `Version`     | `bool`                      | True when `--version` or `-v` was passed         |
+| `Help`        | `bool`                      | True when `--help`, `-h`, or `-?` was passed     |
+| `Silent`      | `bool`                      | True when `--silent` was passed                  |
+| `Verbose`     | `bool`                      | True when `--verbose` was passed                 |
+| `ExitZero`    | `bool`                      | True when `--exit-0` or `-0` was passed          |
+| `Validate`    | `bool`                      | True when `--validate` was passed                |
+| `Depth`       | `int`                       | Heading depth for validation reports             |
+| `ConfigFile`  | `string?`                   | Path to the YAML configuration file              |
+| `ResultsFile` | `string?`                   | Path to results output file                      |
+| `Simulator`   | `string?`                   | Name of the simulator to use                     |
+| `CustomTests` | `IReadOnlyList<string>?`    | Optional list of specific test names to run      |
+| `Errors`      | `int`                       | Count of errors encountered during execution     |
+| `ExitCode`    | `int`                       | Process exit code (0 = success, 1 = failure)     |

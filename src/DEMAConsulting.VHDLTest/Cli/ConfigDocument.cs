@@ -43,7 +43,8 @@ public class ConfigDocument
     /// </summary>
     /// <param name="filename">Configuration file</param>
     /// <returns>Configuration document</returns>
-    /// <exception cref="InvalidOperationException">Thrown on read error</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the YAML content is empty or null</exception>
     public static ConfigDocument ReadFile(string filename)
     {
         // Read the file contents

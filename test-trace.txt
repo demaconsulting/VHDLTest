@@ -1,0 +1,32 @@
+Tracing Program.Run logic for different scenarios:
+
+Case 1: No config file provided (args: ["--silent"])
+- context.Version = false
+- context.Help = false
+- context.ConfigFile = null
+- Line 78-82: Version check skipped (Version = false)
+- Line 85: Prints banner
+- Line 88-92: Help check skipped (Help = false)
+- Line 95-99: Validate check skipped (Validate = false)
+- Line 102-107: MATCHES - ConfigFile is null
+  * Calls context.WriteError("Error: Missing arguments") - increments Errors
+  * Calls PrintUsage(context)
+  * Returns
+- context.ExitCode = Errors > 0 ? 1 : 0 = 1
+
+Case 2: Version flag (args: ["--version", "--silent"])
+- context.Version = true
+- Line 78-82: MATCHES - Version is true
+  * Calls context.WriteLine(Version)
+  * Returns immediately
+- context.ExitCode = Errors > 0 ? 1 : 0 = 0 (no errors)
+
+Case 3: Help flag (args: ["--help", "--silent"])
+- context.Version = false
+- context.Help = true
+- Line 78-82: Version check skipped
+- Line 85: Prints banner
+- Line 88-92: MATCHES - Help is true
+  * Calls PrintUsage(context)
+  * Returns
+- context.ExitCode = Errors > 0 ? 1 : 0 = 0 (no errors)

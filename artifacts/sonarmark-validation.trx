@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ed6f85c7-e1a7-48af-8069-9f09bc3b7917" name="SonarMark Self-Validation" runUser="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Results>
+    <UnitTestResult executionId="0e8c733e-a4b0-4970-a5df-f87fdd894e7a" testId="9ca630c0-007c-41c3-aa84-b33ba14b0c4a" testName="SonarMark_QualityGateRetrieval" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0354213" startTime="2026-04-05T21:59:42.2911574Z" endTime="2026-04-05T21:59:42.3265787Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="e6b26c9c-b4f3-479a-8daf-a96d6bd12f00" testId="78833831-e2d6-4352-ab43-4d558ef2bb01" testName="SonarMark_IssuesRetrieval" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0007063" startTime="2026-04-05T21:59:42.3265008Z" endTime="2026-04-05T21:59:42.3272071Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="d79b6bde-381d-458b-b337-1ff70e0c9a24" testId="6539d0bd-20b9-4b19-8062-31d4699291a3" testName="SonarMark_HotSpotsRetrieval" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0005507" startTime="2026-04-05T21:59:42.3272982Z" endTime="2026-04-05T21:59:42.3278489Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="8eba8e41-c8de-4aec-8152-b5b06809b4e8" testId="4b921c4c-849c-4d11-87fb-89e1ca4db1f3" testName="SonarMark_MarkdownReportGeneration" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0030513" startTime="2026-04-05T21:59:42.3279424Z" endTime="2026-04-05T21:59:42.3309937Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SonarMark_QualityGateRetrieval" storage="SonarMark" id="9ca630c0-007c-41c3-aa84-b33ba14b0c4a">
+      <Execution id="0e8c733e-a4b0-4970-a5df-f87fdd894e7a" />
+      <TestMethod codeBase="SonarMark" className="Validation" name="SonarMark_QualityGateRetrieval" />
+    </UnitTest>
+    <UnitTest name="SonarMark_IssuesRetrieval" storage="SonarMark" id="78833831-e2d6-4352-ab43-4d558ef2bb01">
+      <Execution id="e6b26c9c-b4f3-479a-8daf-a96d6bd12f00" />
+      <TestMethod codeBase="SonarMark" className="Validation" name="SonarMark_IssuesRetrieval" />
+    </UnitTest>
+    <UnitTest name="SonarMark_HotSpotsRetrieval" storage="SonarMark" id="6539d0bd-20b9-4b19-8062-31d4699291a3">
+      <Execution id="d79b6bde-381d-458b-b337-1ff70e0c9a24" />
+      <TestMethod codeBase="SonarMark" className="Validation" name="SonarMark_HotSpotsRetrieval" />
+    </UnitTest>
+    <UnitTest name="SonarMark_MarkdownReportGeneration" storage="SonarMark" id="4b921c4c-849c-4d11-87fb-89e1ca4db1f3">
+      <Execution id="8eba8e41-c8de-4aec-8152-b5b06809b4e8" />
+      <TestMethod codeBase="SonarMark" className="Validation" name="SonarMark_MarkdownReportGeneration" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9ca630c0-007c-41c3-aa84-b33ba14b0c4a" executionId="0e8c733e-a4b0-4970-a5df-f87fdd894e7a" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="78833831-e2d6-4352-ab43-4d558ef2bb01" executionId="e6b26c9c-b4f3-479a-8daf-a96d6bd12f00" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="6539d0bd-20b9-4b19-8062-31d4699291a3" executionId="d79b6bde-381d-458b-b337-1ff70e0c9a24" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="4b921c4c-849c-4d11-87fb-89e1ca4db1f3" executionId="8eba8e41-c8de-4aec-8152-b5b06809b4e8" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85D7-44EE4E166BDA" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" />
+  </ResultSummary>
+</TestRun>

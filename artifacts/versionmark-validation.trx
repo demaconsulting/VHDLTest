@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3712df8a-814e-49fe-96ad-69a0ae5f79bc" name="VersionMark Self-Validation" runUser="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Results>
+    <UnitTestResult executionId="c2e6c405-10a6-4114-aee9-62fbc61ad9a4" testId="c25645a6-e3cc-4e62-9fa8-8ee142b61b67" testName="VersionMark_CapturesVersions" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.1919646" startTime="2026-04-05T21:59:30.0802676Z" endTime="2026-04-05T21:59:30.2722322Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="442f042f-f2dc-4062-adec-a7219dd06e49" testId="3941a741-2284-4c6f-b1cd-fd005ab61e04" testName="VersionMark_GeneratesMarkdownReport" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0192646" startTime="2026-04-05T21:59:30.2726737Z" endTime="2026-04-05T21:59:30.2919383Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="fc1f0817-cb7f-4983-a0ef-79a233b8cc0c" testId="e11cf231-1edb-4d57-84c9-b099c34a6590" testName="VersionMark_LintPassesForValidConfig" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0065528" startTime="2026-04-05T21:59:30.2922640Z" endTime="2026-04-05T21:59:30.2988168Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="0c8fcd6c-8715-49c7-90fa-832234e5d924" testId="832f9abc-8868-4387-81f5-108ddc7838f0" testName="VersionMark_LintReportsErrorsForInvalidConfig" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0009452" startTime="2026-04-05T21:59:30.2990502Z" endTime="2026-04-05T21:59:30.2999954Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="VersionMark_CapturesVersions" storage="VersionMark" id="c25645a6-e3cc-4e62-9fa8-8ee142b61b67">
+      <Execution id="c2e6c405-10a6-4114-aee9-62fbc61ad9a4" />
+      <TestMethod codeBase="VersionMark" className="Validation" name="VersionMark_CapturesVersions" />
+    </UnitTest>
+    <UnitTest name="VersionMark_GeneratesMarkdownReport" storage="VersionMark" id="3941a741-2284-4c6f-b1cd-fd005ab61e04">
+      <Execution id="442f042f-f2dc-4062-adec-a7219dd06e49" />
+      <TestMethod codeBase="VersionMark" className="Validation" name="VersionMark_GeneratesMarkdownReport" />
+    </UnitTest>
+    <UnitTest name="VersionMark_LintPassesForValidConfig" storage="VersionMark" id="e11cf231-1edb-4d57-84c9-b099c34a6590">
+      <Execution id="fc1f0817-cb7f-4983-a0ef-79a233b8cc0c" />
+      <TestMethod codeBase="VersionMark" className="Validation" name="VersionMark_LintPassesForValidConfig" />
+    </UnitTest>
+    <UnitTest name="VersionMark_LintReportsErrorsForInvalidConfig" storage="VersionMark" id="832f9abc-8868-4387-81f5-108ddc7838f0">
+      <Execution id="0c8fcd6c-8715-49c7-90fa-832234e5d924" />
+      <TestMethod codeBase="VersionMark" className="Validation" name="VersionMark_LintReportsErrorsForInvalidConfig" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c25645a6-e3cc-4e62-9fa8-8ee142b61b67" executionId="c2e6c405-10a6-4114-aee9-62fbc61ad9a4" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="3941a741-2284-4c6f-b1cd-fd005ab61e04" executionId="442f042f-f2dc-4062-adec-a7219dd06e49" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="e11cf231-1edb-4d57-84c9-b099c34a6590" executionId="fc1f0817-cb7f-4983-a0ef-79a233b8cc0c" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="832f9abc-8868-4387-81f5-108ddc7838f0" executionId="0c8fcd6c-8715-49c7-90fa-832234e5d924" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85D7-44EE4E166BDA" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" />
+  </ResultSummary>
+</TestRun>

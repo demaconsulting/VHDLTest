@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="13256ef1-e141-4fa7-b89a-9567c64b0781" name="SarifMark Self-Validation" runUser="" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Results>
+    <UnitTestResult executionId="91e09574-00e9-4104-99e1-8897a380910e" testId="b453ea10-3857-4b26-8506-9b217bbb4db9" testName="SarifMark_SarifReading" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0159120" startTime="2026-04-05T21:59:38.8396473Z" endTime="2026-04-05T21:59:38.8555593Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="1d892437-2c18-4c43-8306-fac2345ce6f8" testId="d89eb08e-1101-4d1e-a45c-c675339053a3" testName="SarifMark_MarkdownReportGeneration" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0020564" startTime="2026-04-05T21:59:38.8554363Z" endTime="2026-04-05T21:59:38.8574927Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+    <UnitTestResult executionId="2908c3b0-acb1-4c31-ada9-cb6cf08e818a" testId="1f365767-8fcb-4f29-8f5a-8135619bb466" testName="SarifMark_Enforcement" computerName="runnervm727z3" testType="13CDC9D9-DDB5-4fa4-A97D-D965CCFC6D4B" outcome="Passed" duration="00:00:00.0008800" startTime="2026-04-05T21:59:38.8577022Z" endTime="2026-04-05T21:59:38.8585822Z" testListId="19431567-8539-422a-85D7-44EE4E166BDA">
+      <Output />
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="SarifMark_SarifReading" id="b453ea10-3857-4b26-8506-9b217bbb4db9">
+      <Execution id="91e09574-00e9-4104-99e1-8897a380910e" />
+      <TestMethod codeBase="SarifMark" className="Validation" name="SarifMark_SarifReading" />
+    </UnitTest>
+    <UnitTest name="SarifMark_MarkdownReportGeneration" id="d89eb08e-1101-4d1e-a45c-c675339053a3">
+      <Execution id="1d892437-2c18-4c43-8306-fac2345ce6f8" />
+      <TestMethod codeBase="SarifMark" className="Validation" name="SarifMark_MarkdownReportGeneration" />
+    </UnitTest>
+    <UnitTest name="SarifMark_Enforcement" id="1f365767-8fcb-4f29-8f5a-8135619bb466">
+      <Execution id="2908c3b0-acb1-4c31-ada9-cb6cf08e818a" />
+      <TestMethod codeBase="SarifMark" className="Validation" name="SarifMark_Enforcement" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b453ea10-3857-4b26-8506-9b217bbb4db9" executionId="91e09574-00e9-4104-99e1-8897a380910e" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="d89eb08e-1101-4d1e-a45c-c675339053a3" executionId="1d892437-2c18-4c43-8306-fac2345ce6f8" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+    <TestEntry testId="1f365767-8fcb-4f29-8f5a-8135619bb466" executionId="2908c3b0-acb1-4c31-ada9-cb6cf08e818a" testListId="19431567-8539-422a-85D7-44EE4E166BDA" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85D7-44EE4E166BDA" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" />
+  </ResultSummary>
+</TestRun>

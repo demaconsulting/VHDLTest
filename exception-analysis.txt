@@ -1,0 +1,50 @@
+EXCEPTION HANDLING ANALYSIS:
+
+Main Method (lines 48-68):
+  try {
+    using var context = Context.Create(args);  // Can throw InvalidOperationException
+    Run(context);                               // Doesn't throw (catches internally)
+    Environment.ExitCode = context.ExitCode;
+  }
+  catch (InvalidOperationException e) {
+    Console.WriteLine($"Error: {e.Message}");
+    Environment.Exit(1);                        // TERMINATES PROCESS
+  }
+  catch (Exception e) {
+    Console.WriteLine($"Error: {e}");
+    throw;                                      // RE-THROWS - could crash app
+  }
+
+Analysis:
+1. Context.Create can throw InvalidOperationException for invalid args
+   - Example: unknown option, missing argument value
+   - Caught and handled gracefully with exit code 1
+
+2. General exceptions are re-thrown after printing
+   - This is unusual - why catch just to re-throw?
+   - Could cause application crash with stack trace
+   - Seems like defensive programming gone wrong
+
+3. Run method catches exceptions internally (lines 134-143)
+   - InvalidOperationException -> context.WriteError
+   - Exception -> context.WriteError
+   - Both set exit code via Errors++
+   - Neither re-throws
+   
+4. Inconsistency:
+   - Main: General exceptions are re-thrown
+   - Run: All exceptions are handled gracefully
+   
+5. Potential Issue:
+   - If Run throws an unexpected exception that it doesn't catch,
+     Main will print it and re-throw it
+   - This could cause a crash with full stack trace
+   - But looking at Run, it has a general catch (Exception ex) block
+   - So Run should never throw
+
+QUESTION: Is the re-throw in Main actually reachable?
+- Context.Create could throw (but InvalidOperationException is caught)
+- Run doesn't throw (has internal exception handling)
+- Dispose could potentially throw
+
+Let me check if Dispose can throw...
