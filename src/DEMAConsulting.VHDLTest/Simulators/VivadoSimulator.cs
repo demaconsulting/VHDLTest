@@ -97,15 +97,13 @@ public sealed class VivadoSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the Vivado compiler
+        // Run the Vivado compiler (on Windows xvhdl is a batch file requiring cmd /c)
         var application = Path.Combine(simPath, "xvhdl");
         context.WriteVerboseLine($"  Run Directory: {libDir}");
         context.WriteVerboseLine($"  Run Command: {application} -file compile.do");
-        return CompileProcessor.Execute(
-            application,
-            libDir,
-            "-file",
-            "compile.do");
+        return OperatingSystem.IsWindows()
+            ? CompileProcessor.Execute("cmd", libDir, "/c", application, "-file", "compile.do")
+            : CompileProcessor.Execute(application, libDir, "-file", "compile.do");
     }
 
     /// <inheritdoc />
@@ -135,15 +133,13 @@ public sealed class VivadoSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the test
+        // Run the test (on Windows xelab is a batch file requiring cmd /c)
         var application = Path.Combine(simPath, "xelab");
         context.WriteVerboseLine($"  Run Directory: {libDir}");
         context.WriteVerboseLine($"  Run Command: {application} -file test.do");
-        var testRunResults = TestProcessor.Execute(
-            application,
-            libDir,
-            "-file",
-            "test.do");
+        var testRunResults = OperatingSystem.IsWindows()
+            ? TestProcessor.Execute("cmd", libDir, "/c", application, "-file", "test.do")
+            : TestProcessor.Execute(application, libDir, "-file", "test.do");
 
         // Return the test results
         return new TestResult(

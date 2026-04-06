@@ -223,6 +223,40 @@ public class ContextTests
     }
 
     /// <summary>
+    /// Test parsing arguments with a valid depth value
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_WithDepth_SetsDepth()
+    {
+        // Act - Parse the arguments
+        var arguments = Context.Create(["--depth", "2"]);
+
+        // Assert - Verify depth is set
+        Assert.IsNotNull(arguments);
+        Assert.AreEqual(2, arguments.Depth);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with a non-integer depth value
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_WithInvalidDepth_ThrowsInvalidOperationException()
+    {
+        // Act & Assert - Verify InvalidOperationException is thrown for non-integer depth
+        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "abc"]));
+    }
+
+    /// <summary>
+    /// Test parsing arguments with a zero depth value (out of range)
+    /// </summary>
+    [TestMethod]
+    public void Context_Create_WithZeroDepth_ThrowsInvalidOperationException()
+    {
+        // Act & Assert - Verify InvalidOperationException is thrown for zero depth
+        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "0"]));
+    }
+
+    /// <summary>
     /// Test parsing arguments with a custom test
     /// </summary>
     [TestMethod]

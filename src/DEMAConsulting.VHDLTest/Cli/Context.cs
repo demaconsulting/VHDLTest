@@ -262,7 +262,7 @@ public sealed class Context : IDisposable
 
                 case "--depth":
                     // Handle validation markdown depth
-                    if (!int.TryParse(GetArgument(e, "Missing depth argument"), out depth))
+                    if (!int.TryParse(GetArgument(e, "Missing depth argument"), out depth) || depth < 1)
                     {
                         throw new InvalidOperationException("Invalid depth argument");
                     }
