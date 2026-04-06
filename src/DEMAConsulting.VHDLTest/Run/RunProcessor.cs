@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DEMAConsulting.VHDLTest.Cli;
+
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
@@ -26,6 +28,34 @@ namespace DEMAConsulting.VHDLTest.Run;
 /// <param name="rules">Processing rules</param>
 public class RunProcessor(RunLineRule[] rules)
 {
+    /// <summary>
+    /// Run a program and process the results, logging the command via the context
+    /// </summary>
+    /// <param name="context">Program context for verbose logging</param>
+    /// <param name="application">Program to run</param>
+    /// <param name="workingDirectory">Working directory</param>
+    /// <param name="arguments">Program arguments</param>
+    /// <returns>Run results</returns>
+    public RunResults Execute(
+        Context context,
+        string application,
+        string workingDirectory = "",
+        params string[] arguments)
+    {
+        // Log the run directory and command
+        context.WriteVerboseLine($"  Run Directory: {workingDirectory}");
+        if (OperatingSystem.IsWindows())
+        {
+            // On Windows, batch files (.bat/.cmd) cannot be launched directly; use cmd /c
+            context.WriteVerboseLine($"  Run Command: cmd /c {application} {string.Join(" ", arguments)}");
+            var windowsArgs = new[] { "/c", application }.Concat(arguments).ToArray();
+            return Execute("cmd", workingDirectory, windowsArgs);
+        }
+
+        context.WriteVerboseLine($"  Run Command: {application} {string.Join(" ", arguments)}");
+        return Execute(application, workingDirectory, arguments);
+    }
+
     /// <summary>
     /// Run a program and process the results
     /// </summary>

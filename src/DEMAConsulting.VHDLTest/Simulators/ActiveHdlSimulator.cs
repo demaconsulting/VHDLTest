@@ -118,9 +118,8 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Run the ActiveHDL compiler
         var application = Path.Combine(simPath, SimApp);
-        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} -do {LibDirPath}/compile.do");
         return CompileProcessor.Execute(
+            context,
             application,
             options.WorkingDirectory,
             "-do",
@@ -158,10 +157,9 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, SimApp);
-        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} -do {LibDirPath}/test.do");
         var testRunResults = TestProcessor.Execute(
-            Path.Combine(simPath, SimApp),
+            context,
+            application,
             options.WorkingDirectory,
             "-do",
             $"{LibDirPath}/test.do");
