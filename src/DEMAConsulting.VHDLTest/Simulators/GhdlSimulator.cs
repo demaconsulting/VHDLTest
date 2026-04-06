@@ -129,7 +129,8 @@ public sealed class GhdlSimulator : Simulator
         var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
-        // Run the GHDL compiler
+        // Elaborate the test before running it; some GHDL backends require an explicit
+        // elaboration step prior to execution.
         var application = Path.Combine(simPath, "ghdl");
         var elaborateResults = CompileProcessor.Execute(
             context,
