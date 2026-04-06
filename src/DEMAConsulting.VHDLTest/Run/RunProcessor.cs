@@ -31,10 +31,10 @@ public class RunProcessor(RunLineRule[] rules)
     /// <summary>
     /// Run a program and process the results, logging the command via the context.
     /// On Windows the application is invoked via <c>cmd /c</c> so that batch files
-    /// (.bat/.cmd) are resolved correctly; if the application path contains spaces it
-    /// is automatically quoted. Callers are responsible for ensuring that individual
-    /// arguments do not contain shell metacharacters that would be misinterpreted by
-    /// <c>cmd.exe</c>.
+    /// (.bat/.cmd) are resolved correctly; the application path is passed directly to
+    /// <c>ArgumentList</c>, which handles quoting paths that contain spaces. Callers
+    /// are responsible for ensuring that individual arguments do not contain shell
+    /// metacharacters that would be misinterpreted by <c>cmd.exe</c>.
     /// </summary>
     /// <param name="context">Program context for verbose logging</param>
     /// <param name="application">Program to run</param>
@@ -52,10 +52,12 @@ public class RunProcessor(RunLineRule[] rules)
         if (OperatingSystem.IsWindows())
         {
             // On Windows, batch files (.bat/.cmd) cannot be launched directly; use cmd /c.
-            // Quote the application path if it contains spaces so cmd.exe resolves it correctly.
-            var quotedApplication = application.Contains(' ') ? $"\"{application}\"" : application;
-            context.WriteVerboseLine($"  Run Command: cmd /c {quotedApplication} {string.Join(" ", arguments)}");
-            var windowsArgs = new[] { "/c", quotedApplication }.Concat(arguments).ToArray();
+            // Pass application directly to ArgumentList (no manual quoting); ArgumentList
+            // handles quoting paths with spaces automatically. Use a display form with quotes
+            // only for the verbose log so the log shows a valid shell-reproducible command.
+            var displayApplication = application.Contains(' ') ? $"\"{application}\"" : application;
+            context.WriteVerboseLine($"  Run Command: cmd /c {displayApplication} {string.Join(" ", arguments)}");
+            var windowsArgs = new[] { "/c", application }.Concat(arguments).ToArray();
             return Execute("cmd", workingDirectory, windowsArgs);
         }
 
@@ -64,7 +66,9 @@ public class RunProcessor(RunLineRule[] rules)
     }
 
     /// <summary>
-    /// Run a program and process the results
+    /// Run a program and process the results.
+    /// The application path and each argument are passed via <c>ArgumentList</c>, which
+    /// handles quoting values that contain spaces. Callers should not pre-quote values.
     /// </summary>
     /// <param name="application">Program to run</param>
     /// <param name="workingDirectory">Working directory</param>
