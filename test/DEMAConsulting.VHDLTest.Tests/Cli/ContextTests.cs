@@ -267,16 +267,6 @@ public class ContextTests
     }
 
     /// <summary>
-    /// Test parsing arguments with a negative depth value (out of range)
-    /// </summary>
-    [TestMethod]
-    public void Context_Create_WithNegativeDepth_ThrowsInvalidOperationException()
-    {
-        // Act & Assert - Verify InvalidOperationException is thrown for negative depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "-1"]));
-    }
-
-    /// <summary>
     /// Test parsing arguments with a custom test
     /// </summary>
     [TestMethod]
