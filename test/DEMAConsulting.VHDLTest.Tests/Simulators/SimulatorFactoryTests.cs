@@ -105,5 +105,7 @@ public class SimulatorFactoryTests
     public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
     {
         Assert.IsNotNull(SimulatorFactory.Get("mock"));
+        Assert.IsNotNull(SimulatorFactory.Get("Mock"));
+        Assert.IsNotNull(SimulatorFactory.Get("MOCK"));
     }
 }

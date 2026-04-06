@@ -262,7 +262,12 @@ public sealed class Context : IDisposable
 
                 case "--depth":
                     // Handle validation markdown depth
-                    depth = int.Parse(GetArgument(e, "Missing depth argument"));
+                    var depthArgument = GetArgument(e, "Missing depth argument");
+                    if (!int.TryParse(depthArgument, out depth) || depth < 1)
+                    {
+                        throw new InvalidOperationException($"Invalid value '{depthArgument}' for option '--depth'; expected an integer greater than or equal to 1.");
+                    }
+
                     break;
 
                 case "-l":

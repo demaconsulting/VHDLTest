@@ -99,14 +99,13 @@ public sealed class NvcSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the GHDL compiler
+        // Run the NVC compiler
         var application = Path.Combine(simPath, "nvc");
-        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} --std=08 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp");
         return CompileProcessor.Execute(
+            context,
             application,
             options.WorkingDirectory,
-            "--std=08",
+            "--std=2008",
             "--work=work:VHDLTest.out/NVC/lib",
             "-a",
             "@VHDLTest.out/NVC/compile.rsp");
@@ -129,9 +128,8 @@ public sealed class NvcSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "nvc");
-        context.WriteVerboseLine($"  Run Directory: {options.WorkingDirectory}");
-        context.WriteVerboseLine($"  Run Command: {application} --std=2008 --work=work:VHDLTest.out/NVC/lib -e {test} -r {test}");
         var testRunResults = TestProcessor.Execute(
+            context,
             application,
             options.WorkingDirectory,
             "--std=2008",

@@ -101,9 +101,8 @@ public sealed class QuestaSimSimulator : Simulator
 
         // Run the QuestaSim compiler
         var application = Path.Combine(simPath, "vsim");
-        context.WriteVerboseLine($"  Run Directory: {libDir}");
-        context.WriteVerboseLine($"  Run Command: {application} -c -do compile.do");
         return CompileProcessor.Execute(
+            context,
             application,
             libDir,
             "-c",
@@ -142,9 +141,8 @@ public sealed class QuestaSimSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "vsim");
-        context.WriteVerboseLine($"  Run Directory: {libDir}");
-        context.WriteVerboseLine($"  Run Command: {application} -c -do test.do");
         var testRunResults = TestProcessor.Execute(
+            context,
             application,
             libDir,
             "-c",

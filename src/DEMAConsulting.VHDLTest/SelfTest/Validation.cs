@@ -193,8 +193,15 @@ internal static class Validation
         }
         finally
         {
-            // Delete the validation directory
-            Directory.Delete(ValidationFolder, true);
+            // Best-effort cleanup: do not let delete failures mask an earlier exception
+            try
+            {
+                Directory.Delete(ValidationFolder, true);
+            }
+            catch
+            {
+                // Best-effort cleanup: do not let delete failures mask an earlier exception
+            }
         }
     }
 

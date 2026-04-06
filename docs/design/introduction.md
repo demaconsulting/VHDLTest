@@ -50,7 +50,8 @@ VHDLTest (System)
 │   ├── ModelSimSimulator (Unit)
 │   ├── QuestaSimSimulator (Unit)
 │   ├── VivadoSimulator (Unit)
-│   └── ActiveHdlSimulator (Unit)
+│   ├── ActiveHdlSimulator (Unit)
+│   └── MockSimulator (Unit)
 ├── Run (Subsystem)
 │   ├── RunProcessor (Unit)
 │   ├── RunProgram (Unit)
@@ -87,7 +88,8 @@ src/DEMAConsulting.VHDLTest/
 │   ├── ModelSimSimulator.cs    — ModelSim simulator integration
 │   ├── QuestaSimSimulator.cs   — QuestaSim simulator integration
 │   ├── VivadoSimulator.cs      — Vivado simulator integration
-│   └── ActiveHdlSimulator.cs  — Active-HDL simulator integration
+│   ├── ActiveHdlSimulator.cs  — Active-HDL simulator integration
+│   └── MockSimulator.cs        — Mock simulator for self-validation
 ├── Run/
 │   ├── RunProcessor.cs         — processes simulation run output
 │   ├── RunProgram.cs           — executes simulation programs
