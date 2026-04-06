@@ -29,7 +29,12 @@ namespace DEMAConsulting.VHDLTest.Run;
 public class RunProcessor(RunLineRule[] rules)
 {
     /// <summary>
-    /// Run a program and process the results, logging the command via the context
+    /// Run a program and process the results, logging the command via the context.
+    /// On Windows the application is invoked via <c>cmd /c</c> so that batch files
+    /// (.bat/.cmd) are resolved correctly; if the application path contains spaces it
+    /// is automatically quoted. Callers are responsible for ensuring that individual
+    /// arguments do not contain shell metacharacters that would be misinterpreted by
+    /// <c>cmd.exe</c>.
     /// </summary>
     /// <param name="context">Program context for verbose logging</param>
     /// <param name="application">Program to run</param>
