@@ -46,9 +46,11 @@ public class RunProcessor(RunLineRule[] rules)
         context.WriteVerboseLine($"  Run Directory: {workingDirectory}");
         if (OperatingSystem.IsWindows())
         {
-            // On Windows, batch files (.bat/.cmd) cannot be launched directly; use cmd /c
-            context.WriteVerboseLine($"  Run Command: cmd /c {application} {string.Join(" ", arguments)}");
-            var windowsArgs = new[] { "/c", application }.Concat(arguments).ToArray();
+            // On Windows, batch files (.bat/.cmd) cannot be launched directly; use cmd /c.
+            // Quote the application path if it contains spaces so cmd.exe resolves it correctly.
+            var quotedApplication = application.Contains(' ') ? $"\"{application}\"" : application;
+            context.WriteVerboseLine($"  Run Command: cmd /c {quotedApplication} {string.Join(" ", arguments)}");
+            var windowsArgs = new[] { "/c", quotedApplication }.Concat(arguments).ToArray();
             return Execute("cmd", workingDirectory, windowsArgs);
         }
 
