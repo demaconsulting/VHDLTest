@@ -46,7 +46,7 @@ public static class SimulatorFactory
     public static Simulator? Get(string? name = null)
     {
         // Only return the mock simulator if explicitly requested
-        if (name?.Equals("mock", StringComparison.InvariantCultureIgnoreCase) == true)
+        if (name?.Equals("mock", StringComparison.OrdinalIgnoreCase) == true)
         {
             return MockSimulator.Instance;
         }
@@ -54,7 +54,7 @@ public static class SimulatorFactory
         // If the simulator is specified then use it
         if (name != null)
         {
-            return Array.Find(Simulators, s => s.SimulatorName.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            return Array.Find(Simulators, s => s.SimulatorName.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         // Return the first available

@@ -193,10 +193,14 @@ internal static class Validation
         }
         finally
         {
-            // Delete the validation directory if it exists
-            if (Directory.Exists(ValidationFolder))
+            // Best-effort cleanup: do not let delete failures mask an earlier exception
+            try
             {
                 Directory.Delete(ValidationFolder, true);
+            }
+            catch
+            {
+                // Ignore cleanup failures
             }
         }
     }
