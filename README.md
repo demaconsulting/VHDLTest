@@ -32,11 +32,13 @@ dotnet vhdltest <arguments>
 Usage: VHDLTest [options] [tests]
 
 Options:
-  -h, --help                   Display help
+  -h, -?, --help               Display help
   -v, --version                Display version
   --silent                     Silence console output
   --verbose                    Verbose output
   --validate                   Perform self-validation
+  --depth <n>                  Validation report depth (default: 1)
+  -l, --log <log.txt>          Log output to file
   -c, --config <config.yaml>   Specify configuration
   -r, --results <out.trx>      Specify test results file
   -s, --simulator <name>       Specify simulator

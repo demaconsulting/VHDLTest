@@ -190,11 +190,13 @@ dotnet vhdltest --config test_suite.yaml --simulator ghdl
 
 VHDLTest supports the following command line options:
 
-- `-h, --help` - Display help information
+- `-h, -?, --help` - Display help information
 - `-v, --version` - Display version information
 - `--silent` - Suppress console output
 - `--verbose` - Enable verbose output
 - `--validate` - Perform self-validation
+- `--depth <n>` - Validation report depth (default: 1)
+- `-l, --log <log.txt>` - Log output to file
 - `-c, --config <config.yaml>` - Specify configuration file
 - `-r, --results <out.trx>` - Specify test results output file
 - `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, modelsim, nvc, questasim, vivado)
