@@ -37,6 +37,8 @@ Options:
   --silent                     Silence console output
   --verbose                    Verbose output
   --validate                   Perform self-validation
+  --depth <n>                  Validation report depth
+  -l, --log <log.txt>          Log output to file
   -c, --config <config.yaml>   Specify configuration
   -r, --results <out.trx>      Specify test results file
   -s, --simulator <name>       Specify simulator
