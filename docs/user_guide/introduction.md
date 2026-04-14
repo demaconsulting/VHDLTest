@@ -190,7 +190,7 @@ dotnet vhdltest --config test_suite.yaml --simulator ghdl
 
 VHDLTest supports the following command line options:
 
-- `-h, --help` - Display help information
+- `-h, -?, --help` - Display help information
 - `-v, --version` - Display version information
 - `--silent` - Suppress console output
 - `--verbose` - Enable verbose output

@@ -154,7 +154,7 @@ public static class Program
             Usage: VHDLTest [options] [tests]
             
             Options:
-              -h, --help                   Display help
+              -h, -?, --help               Display help
               -v, --version                Display version
               --silent                     Silence console output
               --verbose                    Verbose output
