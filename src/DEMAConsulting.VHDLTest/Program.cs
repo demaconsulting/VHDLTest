@@ -159,7 +159,7 @@ public static class Program
               --silent                     Silence console output
               --verbose                    Verbose output
               --validate                   Perform self-validation
-              --depth <n>                  Validation report depth
+              --depth <n>                  Validation report depth (default: 1)
               -l, --log <log.txt>          Log output to file
               -c, --config <config.yaml>   Specify configuration
               -r, --results <out.trx>      Specify test results file
