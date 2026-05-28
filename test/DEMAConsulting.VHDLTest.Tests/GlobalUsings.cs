@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 // Disable test parallelization to prevent file collisions
-[assembly: DoNotParallelize]
+[assembly: CollectionBehavior(DisableTestParallelization = true)]

@@ -26,31 +26,30 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for the Mock simulator
 /// </summary>
-[TestClass]
 public class MockSimulatorTests
 {
     /// <summary>
     /// Test the simulator name of the mock simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_SimulatorName_ReturnsMock()
     {
-        Assert.AreEqual("Mock", MockSimulator.Instance.SimulatorName);
+        Assert.Equal("Mock", MockSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
     /// Test that the mock simulator reports unavailable (no path)
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_Available_WithNullPath_ReturnsFalse()
     {
-        Assert.IsFalse(MockSimulator.Instance.Available());
+        Assert.False(MockSimulator.Instance.Available());
     }
 
     /// <summary>
     /// Test mock simulator compile processor with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = MockSimulator.CompileProcessor.Parse(
@@ -59,22 +58,22 @@ public class MockSimulatorTests
             "Compile\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator compile processor with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = MockSimulator.CompileProcessor.Parse(
@@ -83,22 +82,22 @@ public class MockSimulatorTests
             "Compile\nInfo: Compile Info",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nInfo: Compile Info", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Info: Compile Info", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nInfo: Compile Info", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Info: Compile Info", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator compile processor with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = MockSimulator.CompileProcessor.Parse(
@@ -107,22 +106,22 @@ public class MockSimulatorTests
             "Compile\nWarning: Compile Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nWarning: Compile Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Warning: Compile Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nWarning: Compile Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Warning: Compile Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator compile processor with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = MockSimulator.CompileProcessor.Parse(
@@ -131,22 +130,22 @@ public class MockSimulatorTests
             "Compile\nError: Compile Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nError: Compile Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Error: Compile Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nError: Compile Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator test processor with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = MockSimulator.TestProcessor.Parse(
@@ -155,22 +154,22 @@ public class MockSimulatorTests
             "Test\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator test processor with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = MockSimulator.TestProcessor.Parse(
@@ -179,22 +178,22 @@ public class MockSimulatorTests
             "Test\nInfo: Test Info",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nInfo: Test Info", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Info: Test Info", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nInfo: Test Info", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Info: Test Info", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator test processor with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = MockSimulator.TestProcessor.Parse(
@@ -203,22 +202,22 @@ public class MockSimulatorTests
             "Test\nWarning: Test Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nWarning: Test Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Warning: Test Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nWarning: Test Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Warning: Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator test processor with a failure message (maps to Error)
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
     {
         var results = MockSimulator.TestProcessor.Parse(
@@ -227,22 +226,22 @@ public class MockSimulatorTests
             "Test\nFailure: Test Failure",
             0);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nFailure: Test Failure", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Failure: Test Failure", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nFailure: Test Failure", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Failure: Test Failure", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test mock simulator test processor with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void MockSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = MockSimulator.TestProcessor.Parse(
@@ -251,15 +250,15 @@ public class MockSimulatorTests
             "Test\nError: Test Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nError: Test Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Error: Test Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nError: Test Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Error: Test Error", results.Lines[1].Text);
     }
 }

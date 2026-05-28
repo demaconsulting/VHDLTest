@@ -368,6 +368,8 @@ steps:
 
 Example Jenkinsfile:
 
+<!-- cspell:ignore mstest -->
+
 ```groovy
 pipeline {
     agent any

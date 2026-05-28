@@ -26,22 +26,21 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for the ActiveHDL simulator
 /// </summary>
-[TestClass]
 public class ActiveHdlSimulatorTests
 {
     /// <summary>
     /// Check name of ActiveHDL simulator name
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL()
     {
-        Assert.AreEqual("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
+        Assert.Equal("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator compile with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = ActiveHdlSimulator.CompileProcessor.Parse(
@@ -50,22 +49,22 @@ public class ActiveHdlSimulatorTests
             "Compile\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator compile with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = ActiveHdlSimulator.CompileProcessor.Parse(
@@ -74,22 +73,22 @@ public class ActiveHdlSimulatorTests
             "Compile\nKERNEL: Warning: Compile Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nKERNEL: Warning: Compile Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("KERNEL: Warning: Compile Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nKERNEL: Warning: Compile Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("KERNEL: Warning: Compile Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator compile with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = ActiveHdlSimulator.CompileProcessor.Parse(
@@ -98,22 +97,22 @@ public class ActiveHdlSimulatorTests
             "Compile\nKERNEL: Fatal Error: Compile Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nKERNEL: Fatal Error: Compile Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("KERNEL: Fatal Error: Compile Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nKERNEL: Fatal Error: Compile Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("KERNEL: Fatal Error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator test with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
@@ -122,22 +121,22 @@ public class ActiveHdlSimulatorTests
             "Test\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator test with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
@@ -146,22 +145,22 @@ public class ActiveHdlSimulatorTests
             "Test\nEXECUTION:: NOTE Test Note",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nEXECUTION:: NOTE Test Note", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("EXECUTION:: NOTE Test Note", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nEXECUTION:: NOTE Test Note", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("EXECUTION:: NOTE Test Note", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator test with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
@@ -170,22 +169,22 @@ public class ActiveHdlSimulatorTests
             "Test\nEXECUTION:: WARNING Test Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nEXECUTION:: WARNING Test Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("EXECUTION:: WARNING Test Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nEXECUTION:: WARNING Test Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("EXECUTION:: WARNING Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test ActiveHDL simulator test with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = ActiveHdlSimulator.TestProcessor.Parse(
@@ -194,15 +193,15 @@ public class ActiveHdlSimulatorTests
             "Test\nEXECUTION:: ERROR Test Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nEXECUTION:: ERROR Test Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("EXECUTION:: ERROR Test Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nEXECUTION:: ERROR Test Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("EXECUTION:: ERROR Test Error", results.Lines[1].Text);
     }
 }

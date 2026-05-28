@@ -26,22 +26,21 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for GHDL simulator
 /// </summary>
-[TestClass]
 public class GhdlSimulatorTests
 {
     /// <summary>
     /// Check name of GHDL simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_SimulatorName_ReturnsGHDL()
     {
-        Assert.AreEqual("GHDL", GhdlSimulator.Instance.SimulatorName);
+        Assert.Equal("GHDL", GhdlSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
     /// Test GHDL simulator compile with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = GhdlSimulator.CompileProcessor.Parse(
@@ -50,22 +49,22 @@ public class GhdlSimulatorTests
             "Compile\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test GHDL simulator compile with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = GhdlSimulator.CompileProcessor.Parse(
@@ -74,22 +73,22 @@ public class GhdlSimulatorTests
             "Compile\nCompile:1:1:warning: Compile Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile:1:1:warning: Compile Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Compile:1:1:warning: Compile Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nCompile:1:1:warning: Compile Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Compile:1:1:warning: Compile Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test GHDL simulator compile with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = GhdlSimulator.CompileProcessor.Parse(
@@ -98,22 +97,22 @@ public class GhdlSimulatorTests
             "Compile\nCompile:error: Compile Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile:error: Compile Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Compile:error: Compile Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nCompile:error: Compile Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Compile:error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test GHDL simulator test with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
@@ -122,22 +121,22 @@ public class GhdlSimulatorTests
             "Test\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test GHDL simulator test with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
@@ -146,22 +145,22 @@ public class GhdlSimulatorTests
             "Test\nTest:(report note): Test Note",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nTest:(report note): Test Note", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Test:(report note): Test Note", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nTest:(report note): Test Note", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Test:(report note): Test Note", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test GHDL simulator test with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
@@ -170,22 +169,22 @@ public class GhdlSimulatorTests
             "Test\nTest:(report warning): Test Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nTest:(report warning): Test Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Test:(report warning): Test Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nTest:(report warning): Test Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Test:(report warning): Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test GHDL simulator test with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void GhdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = GhdlSimulator.TestProcessor.Parse(
@@ -194,15 +193,15 @@ public class GhdlSimulatorTests
             "Test\nTest:(report error): Test Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nTest:(report error): Test Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Test:(report error): Test Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nTest:(report error): Test Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test:(report error): Test Error", results.Lines[1].Text);
     }
 }

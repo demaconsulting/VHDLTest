@@ -26,22 +26,21 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for QuestaSim simulator
 /// </summary>
-[TestClass]
 public class QuestaSimSimulatorTests
 {
     /// <summary>
     /// Check name of QuestaSim simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_SimulatorName_ReturnsQuestaSim()
     {
-        Assert.AreEqual("QuestaSim", QuestaSimSimulator.Instance.SimulatorName);
+        Assert.Equal("QuestaSim", QuestaSimSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
     /// Test QuestaSim simulator compile with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = QuestaSimSimulator.CompileProcessor.Parse(
@@ -50,22 +49,22 @@ public class QuestaSimSimulatorTests
             "Compile\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test QuestaSim simulator compile with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = QuestaSimSimulator.CompileProcessor.Parse(
@@ -74,22 +73,22 @@ public class QuestaSimSimulatorTests
             "Compile\nError: Compile Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nError: Compile Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Error: Compile Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nError: Compile Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test QuestaSim simulator test with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = QuestaSimSimulator.TestProcessor.Parse(
@@ -98,22 +97,22 @@ public class QuestaSimSimulatorTests
             "Test\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test QuestaSim simulator test with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = QuestaSimSimulator.TestProcessor.Parse(
@@ -122,22 +121,22 @@ public class QuestaSimSimulatorTests
             "Test\nNote: Test Note",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNote: Test Note", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Note: Test Note", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nNote: Test Note", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Note: Test Note", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test QuestaSim simulator test with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = QuestaSimSimulator.TestProcessor.Parse(
@@ -146,22 +145,22 @@ public class QuestaSimSimulatorTests
             "Test\nWarning: Test Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nWarning: Test Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Warning: Test Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nWarning: Test Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Warning: Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test QuestaSim simulator test with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = QuestaSimSimulator.TestProcessor.Parse(
@@ -170,22 +169,22 @@ public class QuestaSimSimulatorTests
             "Test\nError: Test Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nError: Test Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Error: Test Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nError: Test Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Error: Test Error", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test QuestaSim simulator test with a failure message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void QuestaSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
     {
         var results = QuestaSimSimulator.TestProcessor.Parse(
@@ -194,15 +193,15 @@ public class QuestaSimSimulatorTests
             "Test\nFailure: Test Failure",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nFailure: Test Failure", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Failure: Test Failure", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nFailure: Test Failure", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Failure: Test Failure", results.Lines[1].Text);
     }
 }

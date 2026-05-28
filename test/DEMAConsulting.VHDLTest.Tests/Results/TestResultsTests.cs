@@ -28,13 +28,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 /// <summary>
 /// Tests for <see cref="TestResults"/> class.
 /// </summary>
-[TestClass]
 public class TestResultsTests
 {
     /// <summary>
     /// Test saving test results to a TRX file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResults_SaveResults_WithTrxExtension_CreatesTrxFile()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
@@ -58,7 +57,7 @@ public class TestResultsTests
         try
         {
             results.SaveResults("TestResults.trx");
-            Assert.IsTrue(File.Exists("TestResults.trx"));
+            Assert.True(File.Exists("TestResults.trx"));
 
             // Verify it's valid XML
             var content = File.ReadAllText("TestResults.trx");
@@ -77,7 +76,7 @@ public class TestResultsTests
     /// <summary>
     /// Test saving test results to a JUnit XML file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
@@ -101,7 +100,7 @@ public class TestResultsTests
         try
         {
             results.SaveResults("TestResults.xml");
-            Assert.IsTrue(File.Exists("TestResults.xml"));
+            Assert.True(File.Exists("TestResults.xml"));
 
             // Verify it's valid JUnit XML
             var content = File.ReadAllText("TestResults.xml");
@@ -120,7 +119,7 @@ public class TestResultsTests
     /// <summary>
     /// Test saving failed test results to a JUnit XML file.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
@@ -144,7 +143,7 @@ public class TestResultsTests
         try
         {
             results.SaveResults("TestResults.xml");
-            Assert.IsTrue(File.Exists("TestResults.xml"));
+            Assert.True(File.Exists("TestResults.xml"));
 
             // Verify it contains failure information
             var content = File.ReadAllText("TestResults.xml");
@@ -163,7 +162,7 @@ public class TestResultsTests
     /// <summary>
     /// Test backward compatibility with SaveToTrx method.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResults_SaveToTrx_WithTestResults_CreatesTrxFile()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
@@ -187,7 +186,7 @@ public class TestResultsTests
         try
         {
             results.SaveToTrx("TestResults.trx");
-            Assert.IsTrue(File.Exists("TestResults.trx"));
+            Assert.True(File.Exists("TestResults.trx"));
         }
         finally
         {
@@ -201,20 +200,20 @@ public class TestResultsTests
     /// <summary>
     /// Test that SaveResults throws ArgumentException for null/empty file name.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResults_SaveResults_WithNullFileName_ThrowsArgumentException()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
 
-        Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults(null!));
-        Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults(string.Empty));
-        Assert.ThrowsExactly<ArgumentException>(() => results.SaveResults("   "));
+        Assert.Throws<ArgumentException>(() => results.SaveResults(null!));
+        Assert.Throws<ArgumentException>(() => results.SaveResults(string.Empty));
+        Assert.Throws<ArgumentException>(() => results.SaveResults("   "));
     }
 
     /// <summary>
     /// Test that SaveResults defaults to TRX for unknown extensions.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile()
     {
         var results = new TestResults("TestRun", "TestCodeBase");
@@ -238,7 +237,7 @@ public class TestResultsTests
         try
         {
             results.SaveResults("TestResults.unknown");
-            Assert.IsTrue(File.Exists("TestResults.unknown"));
+            Assert.True(File.Exists("TestResults.unknown"));
 
             // Verify it's TRX format
             var content = File.ReadAllText("TestResults.unknown");

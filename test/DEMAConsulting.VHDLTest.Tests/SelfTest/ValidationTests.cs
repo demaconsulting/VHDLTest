@@ -25,13 +25,12 @@ namespace DEMAConsulting.VHDLTest.Tests.SelfTest;
 /// <summary>
 /// Tests for validation
 /// </summary>
-[TestClass]
 public class ValidationTests
 {
     /// <summary>
     /// Test usage information is reported when no arguments are specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess()
     {
         // Run the application
@@ -43,7 +42,7 @@ public class ValidationTests
             "--validate");
 
         // Verify success
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify validation passed
         Assert.Contains("Validation Passed", output);
@@ -52,7 +51,7 @@ public class ValidationTests
     /// <summary>
     /// Test usage information is reported when no arguments are specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth()
     {
         // Run the application
@@ -65,7 +64,7 @@ public class ValidationTests
             "--depth", "3");
 
         // Verify success
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify validation depth
         Assert.Contains("### DEMAConsulting.VHDLTest", output);
@@ -74,7 +73,7 @@ public class ValidationTests
     /// <summary>
     /// Test validation results can be saved to file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults()
     {
         try
@@ -89,10 +88,10 @@ public class ValidationTests
                 "--results", "validation_results.trx");
 
             // Verify success
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
 
             // Verify results file written
-            Assert.IsTrue(File.Exists("validation_results.trx"));
+            Assert.True(File.Exists("validation_results.trx"));
 
             // Read the results file.
             var text = File.ReadAllText("validation_results.trx");
@@ -110,7 +109,7 @@ public class ValidationTests
     /// <summary>
     /// Test validation output contains OS Version field in the information table
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_ValidateFlag_IncludesOSVersionInReport()
     {
         // Run the application
@@ -122,7 +121,7 @@ public class ValidationTests
             "--validate");
 
         // Verify success
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify OS Version field is present in output
         Assert.Contains("| OS Version", output);

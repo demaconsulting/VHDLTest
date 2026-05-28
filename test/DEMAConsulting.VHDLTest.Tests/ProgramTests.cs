@@ -25,23 +25,22 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// <summary>
 /// Unit tests for <see cref="Program"/> class.
 /// </summary>
-[TestClass]
 public class ProgramTests
 {
     /// <summary>
     /// Test that the version string is not empty
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Version_IsNotEmpty()
     {
         // Assert - verify version is populated
-        Assert.IsFalse(string.IsNullOrEmpty(Program.Version));
+        Assert.False(string.IsNullOrEmpty(Program.Version));
     }
 
     /// <summary>
     /// Test that Run returns zero exit code when version flag is given
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithVersionFlag_ReturnsZeroExitCode()
     {
         // Arrange - create a silent context with version flag
@@ -51,13 +50,13 @@ public class ProgramTests
         Program.Run(context);
 
         // Assert - verify zero exit code
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
     /// Test that Run returns zero exit code when help flag is given
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithHelpFlag_ReturnsZeroExitCode()
     {
         // Arrange - create a silent context with help flag
@@ -67,13 +66,13 @@ public class ProgramTests
         Program.Run(context);
 
         // Assert - verify zero exit code
-        Assert.AreEqual(0, context.ExitCode);
+        Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
     /// Test that Run displays usage information when no configuration file argument is provided
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithNoConfigFileArgument_DisplaysUsage()
     {
         // Arrange: create a log file to capture output; no config file argument is passed
@@ -88,7 +87,7 @@ public class ProgramTests
 
             // Assert: verify usage text was written to the log
             var output = File.ReadAllText(logFile);
-            Assert.IsTrue(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
+            Assert.True(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
         }
         finally
         {
@@ -99,7 +98,7 @@ public class ProgramTests
     /// <summary>
     /// Test that Run returns non-zero exit code when no config is given
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Program_Run_WithNoConfig_ReturnsNonZeroExitCode()
     {
         // Arrange - create a silent context with no config file
@@ -109,6 +108,6 @@ public class ProgramTests
         Program.Run(context);
 
         // Assert - verify non-zero exit code
-        Assert.AreNotEqual(0, context.ExitCode);
+        Assert.NotEqual(0, context.ExitCode);
     }
 }

@@ -25,13 +25,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Run;
 /// <summary>
 /// Tests for <see cref="RunProcessor"/> class.
 /// </summary>
-[TestClass]
 public class RunProcessorTests
 {
     /// <summary>
     /// Test running a missing program.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunProcessor_Execute_MissingProgram_ThrowsException()
     {
         // Construct the processor
@@ -55,7 +54,7 @@ public class RunProcessorTests
     /// <summary>
     /// Test running a program with an error.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunProcessor_Execute_ProgramWithError_ReturnsErrorResult()
     {
         // Construct the processor
@@ -68,13 +67,13 @@ public class RunProcessorTests
         var result = processor.Execute("dotnet", "", "unknown-command");
 
         // Check the result
-        Assert.AreEqual(RunLineType.Error, result.Summary);
+        Assert.Equal(RunLineType.Error, result.Summary);
     }
 
     /// <summary>
     /// Test running a program producing passing output.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult()
     {
         // Construct the processor
@@ -87,6 +86,6 @@ public class RunProcessorTests
         var result = processor.Execute("dotnet", "", "help");
 
         // Check the result
-        Assert.AreEqual(RunLineType.Info, result.Summary);
+        Assert.Equal(RunLineType.Info, result.Summary);
     }
 }

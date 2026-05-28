@@ -26,7 +26,6 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// System-level integration tests for VHDLTest.
 /// These tests run the VHDLTest tool as a whole and verify end-to-end behavior.
 /// </summary>
-[TestClass]
 public partial class IntegrationTests
 {
     /// <summary>
@@ -39,7 +38,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test usage information is reported when no arguments are specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_NoArguments_DisplaysUsageAndReturnsError()
     {
         // Run the application
@@ -49,7 +48,7 @@ public partial class IntegrationTests
             "DEMAConsulting.VHDLTest.dll");
 
         // Verify error
-        Assert.AreNotEqual(0, exitCode);
+        Assert.NotEqual(0, exitCode);
 
         // Verify usage reported
         Assert.Contains("Error: Missing arguments", output);
@@ -59,7 +58,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test usage information is reported when the '-h' parameter is specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess()
     {
         // Run the application
@@ -70,7 +69,7 @@ public partial class IntegrationTests
             "-h");
 
         // Verify no error
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify usage reported
         Assert.Contains("Usage: VHDLTest", output);
@@ -79,7 +78,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test usage information is reported when the '-?' parameter is specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess()
     {
         // Run the application
@@ -90,7 +89,7 @@ public partial class IntegrationTests
             "-?");
 
         // Verify no error
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify usage reported
         Assert.Contains("Usage: VHDLTest", output);
@@ -99,7 +98,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test usage information is reported when the '--help' parameter is specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess()
     {
         // Run the application
@@ -110,7 +109,7 @@ public partial class IntegrationTests
             "--help");
 
         // Verify no error
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify usage reported
         Assert.Contains("Usage: VHDLTest", output);
@@ -119,7 +118,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test version information is reported when the '-v' parameter is specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess()
     {
         // Query version
@@ -130,16 +129,16 @@ public partial class IntegrationTests
             "-v");
 
         // Verify success
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify version reported
-        Assert.MatchesRegex(VersionRegex(), output);
+        Assert.Matches(VersionRegex(), output);
     }
 
     /// <summary>
     /// Test version information is reported when the '--version' parameter is specified
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess()
     {
         // Query version
@@ -150,16 +149,16 @@ public partial class IntegrationTests
             "--version");
 
         // Verify success
-        Assert.AreEqual(0, exitCode);
+        Assert.Equal(0, exitCode);
 
         // Verify version reported
-        Assert.MatchesRegex(VersionRegex(), output);
+        Assert.Matches(VersionRegex(), output);
     }
 
     /// <summary>
     /// Test non-zero exit code with compile errors
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_CompileError_ReturnsNonZeroExitCode()
     {
         try
@@ -184,7 +183,7 @@ public partial class IntegrationTests
                 "--config", "test_compile_error.yaml");
 
             // Verify error reported
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -195,7 +194,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test non-zero exit code with test-execution errors
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode()
     {
         try
@@ -220,7 +219,7 @@ public partial class IntegrationTests
                 "--config", "test_execution_error.yaml");
 
             // Verify error reported
-            Assert.AreNotEqual(0, exitCode);
+            Assert.NotEqual(0, exitCode);
         }
         finally
         {
@@ -231,7 +230,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test zero exit code is returned when exit-0 is specified and tests fail
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode()
     {
         try
@@ -257,7 +256,7 @@ public partial class IntegrationTests
                 "--exit-0");
 
             // Verify error suppressed
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {
@@ -268,7 +267,7 @@ public partial class IntegrationTests
     /// <summary>
     /// Test zero exit code is returned when all tests pass
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void IntegrationTest_TestsPassed_ReturnsZeroExitCode()
     {
         try
@@ -293,7 +292,7 @@ public partial class IntegrationTests
                 "--config", "test_execution_pass.yaml");
 
             // Verify no error
-            Assert.AreEqual(0, exitCode);
+            Assert.Equal(0, exitCode);
         }
         finally
         {

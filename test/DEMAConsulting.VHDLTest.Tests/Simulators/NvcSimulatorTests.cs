@@ -26,22 +26,21 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for NVC simulator
 /// </summary>
-[TestClass]
 public class NvcSimulatorTests
 {
     /// <summary>
     /// Check name of NVC simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_SimulatorName_ReturnsNVC()
     {
-        Assert.AreEqual("NVC", NvcSimulator.Instance.SimulatorName);
+        Assert.Equal("NVC", NvcSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
     /// Test NVC simulator compile with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
@@ -50,22 +49,22 @@ public class NvcSimulatorTests
             "Compile\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator compile with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
@@ -74,22 +73,22 @@ public class NvcSimulatorTests
             "Compile\nCompile Note: Compile Note",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile Note: Compile Note", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Compile Note: Compile Note", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nCompile Note: Compile Note", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Compile Note: Compile Note", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator compile with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
@@ -98,22 +97,22 @@ public class NvcSimulatorTests
             "Compile\nCompile Warning: Compile Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile Warning: Compile Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Compile Warning: Compile Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Compile\nCompile Warning: Compile Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Compile Warning: Compile Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator compile with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = NvcSimulator.CompileProcessor.Parse(
@@ -122,22 +121,22 @@ public class NvcSimulatorTests
             "Compile\nCompile Error: Compile Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Compile\nCompile Error: Compile Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Compile", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Compile Error: Compile Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nCompile Error: Compile Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Compile Error: Compile Error", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator test with clean output
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
@@ -146,22 +145,22 @@ public class NvcSimulatorTests
             "Test\nNo Issues",
             0);
 
-        Assert.AreEqual(RunLineType.Text, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nNo Issues", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Text, results.Lines[1].Type);
-        Assert.AreEqual("No Issues", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Text, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nNo Issues", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Text, results.Lines[1].Type);
+        Assert.Equal("No Issues", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator test with an info message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
@@ -170,22 +169,22 @@ public class NvcSimulatorTests
             "Test\nTest Note: Test Note",
             0);
 
-        Assert.AreEqual(RunLineType.Info, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nTest Note: Test Note", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Info, results.Lines[1].Type);
-        Assert.AreEqual("Test Note: Test Note", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nTest Note: Test Note", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Test Note: Test Note", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator test with a warning message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
@@ -194,22 +193,22 @@ public class NvcSimulatorTests
             "Test\nTest Warning: Test Warning",
             0);
 
-        Assert.AreEqual(RunLineType.Warning, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.AreEqual("Test\nTest Warning: Test Warning", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Warning, results.Lines[1].Type);
-        Assert.AreEqual("Test Warning: Test Warning", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(0, results.ExitCode);
+        Assert.Equal("Test\nTest Warning: Test Warning", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Test Warning: Test Warning", results.Lines[1].Text);
     }
 
     /// <summary>
     /// Test NVC simulator test with an error message
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
         var results = NvcSimulator.TestProcessor.Parse(
@@ -218,15 +217,15 @@ public class NvcSimulatorTests
             "Test\nTest Error: Test Error",
             1);
 
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.AreEqual(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
-        Assert.AreEqual(5.0, results.Duration, 0.1);
-        Assert.AreEqual(1, results.ExitCode);
-        Assert.AreEqual("Test\nTest Error: Test Error", results.Output);
-        Assert.HasCount(2, results.Lines);
-        Assert.AreEqual(RunLineType.Text, results.Lines[0].Type);
-        Assert.AreEqual("Test", results.Lines[0].Text);
-        Assert.AreEqual(RunLineType.Error, results.Lines[1].Type);
-        Assert.AreEqual("Test Error: Test Error", results.Lines[1].Text);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nTest Error: Test Error", results.Output);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test Error: Test Error", results.Lines[1].Text);
     }
 }

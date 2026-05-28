@@ -27,14 +27,13 @@ namespace DEMAConsulting.VHDLTest.Tests.Run;
 /// These tests verify that <see cref="RunProcessor"/>, <see cref="RunProgram"/>, and
 /// <see cref="RunResults"/> work together to execute programs and classify their output.
 /// </summary>
-[TestClass]
 public class RunSubsystemTests
 {
     /// <summary>
     /// Test that RunProcessor executes a real program via RunProgram, and produces a
     /// RunResults object with correctly classified output lines.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults()
     {
         // Arrange - create a processor with an Info classification rule
@@ -47,19 +46,19 @@ public class RunSubsystemTests
         var results = processor.Execute("dotnet", "", "help");
 
         // Assert - RunProgram ran the program and RunProcessor classified the output into RunResults
-        Assert.IsNotNull(results);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.IsTrue(results.Output.Length > 0);
-        Assert.IsTrue(results.Lines.Count > 0);
-        Assert.IsTrue(results.Lines.Any(l => l.Type == RunLineType.Info));
-        Assert.IsTrue(results.Duration >= 0.0);
+        Assert.NotNull(results);
+        Assert.Equal(0, results.ExitCode);
+        Assert.True(results.Output.Length > 0);
+        Assert.True(results.Lines.Count > 0);
+        Assert.Contains(results.Lines, line => line.Type == RunLineType.Info);
+        Assert.True(results.Duration >= 0.0);
     }
 
     /// <summary>
     /// Test that RunProcessor correctly surfaces a non-zero exit code from RunProgram
     /// as an Error summary in the RunResults.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults()
     {
         // Arrange - create a processor with no special classification rules
@@ -69,8 +68,8 @@ public class RunSubsystemTests
         var results = processor.Execute("dotnet", "", "unknown-command");
 
         // Assert - RunResults reflects the non-zero exit code as an error summary
-        Assert.IsNotNull(results);
-        Assert.AreNotEqual(0, results.ExitCode);
-        Assert.AreEqual(RunLineType.Error, results.Summary);
+        Assert.NotNull(results);
+        Assert.NotEqual(0, results.ExitCode);
+        Assert.Equal(RunLineType.Error, results.Summary);
     }
 }

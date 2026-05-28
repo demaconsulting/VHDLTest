@@ -25,7 +25,6 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// <summary>
 /// Tests for configuration documents
 /// </summary>
-[TestClass]
 public class ConfigDocumentTests
 {
     /// <summary>
@@ -50,16 +49,16 @@ public class ConfigDocumentTests
     /// <summary>
     /// Test reading a missing configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException()
     {
-        Assert.ThrowsExactly<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
+        Assert.Throws<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
     }
 
     /// <summary>
     /// Test reading a valid configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully()
     {
         try
@@ -71,13 +70,13 @@ public class ConfigDocumentTests
             var config = ConfigDocument.ReadFile(ConfigFile);
 
             // Check the content
-            Assert.IsNotNull(config);
-            Assert.HasCount(2, config.Files);
-            Assert.AreEqual("file1.vhd", config.Files[0]);
-            Assert.AreEqual("file2.vhd", config.Files[1]);
-            Assert.HasCount(2, config.Tests);
-            Assert.AreEqual("test1", config.Tests[0]);
-            Assert.AreEqual("test2", config.Tests[1]);
+            Assert.NotNull(config);
+            Assert.Equal(2, config.Files.Length);
+            Assert.Equal("file1.vhd", config.Files[0]);
+            Assert.Equal("file2.vhd", config.Files[1]);
+            Assert.Equal(2, config.Tests.Length);
+            Assert.Equal("test1", config.Tests[0]);
+            Assert.Equal("test2", config.Tests[1]);
         }
         finally
         {

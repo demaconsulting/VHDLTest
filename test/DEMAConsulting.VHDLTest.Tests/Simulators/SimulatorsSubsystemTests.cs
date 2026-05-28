@@ -28,14 +28,13 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// These tests verify that <see cref="SimulatorFactory"/> and the simulator
 /// processors work together to select and classify simulator output.
 /// </summary>
-[TestClass]
 public class SimulatorsSubsystemTests
 {
     /// <summary>
     /// Test that the factory returns the GHDL simulator by name, and that the
     /// simulator's compile processor correctly classifies error output.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError()
     {
         // Arrange - obtain GHDL simulator via the factory
@@ -49,17 +48,17 @@ public class SimulatorsSubsystemTests
             1);
 
         // Assert - factory returned GHDL and processor classified the line as an error
-        Assert.IsNotNull(simulator);
-        Assert.AreEqual("GHDL", simulator.SimulatorName);
-        Assert.AreEqual(RunLineType.Error, results.Summary);
-        Assert.IsTrue(results.Lines.Any(l => l.Type == RunLineType.Error));
+        Assert.NotNull(simulator);
+        Assert.Equal("GHDL", simulator.SimulatorName);
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Contains(results.Lines, line => line.Type == RunLineType.Error);
     }
 
     /// <summary>
     /// Test that the factory returns null for an unrecognized simulator name, and
     /// that the NVC simulator's test processor correctly classifies clean output.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText()
     {
         // Arrange - attempt to obtain an unknown simulator via the factory
@@ -73,7 +72,7 @@ public class SimulatorsSubsystemTests
             0);
 
         // Assert - unknown simulator yields null; processor classified clean output as text
-        Assert.IsNull(simulator);
-        Assert.AreEqual(RunLineType.Text, results.Summary);
+        Assert.Null(simulator);
+        Assert.Equal(RunLineType.Text, results.Summary);
     }
 }

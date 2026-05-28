@@ -30,14 +30,13 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 /// These tests verify that <see cref="VHDLTestResult"/> and <see cref="VHDLTestResults"/>
 /// work together to collect, summarize, and persist test results.
 /// </summary>
-[TestClass]
 public class ResultsSubsystemTests
 {
     /// <summary>
     /// Test that TestResult and TestResults work together to correctly track
     /// pass and fail counts across a collection of test outcomes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts()
     {
         // Arrange - create passing and failing RunResults objects
@@ -64,9 +63,9 @@ public class ResultsSubsystemTests
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test3", failRunResults));
 
         // Assert - TestResults correctly aggregates pass and fail counts
-        Assert.AreEqual(3, testResults.Tests.Count);
-        Assert.AreEqual(2, testResults.Passes.Count());
-        Assert.AreEqual(1, testResults.Fails.Count());
+        Assert.Equal(3, testResults.Tests.Count);
+        Assert.Equal(2, testResults.Passes.Count());
+        Assert.Single(testResults.Fails);
     }
 
     /// <summary>
@@ -74,7 +73,7 @@ public class ResultsSubsystemTests
     /// a TRX file, verifying that TestResult and TestResults integrate through
     /// the serialization pipeline.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts()
     {
         const string resultsFile = "results-subsystem-test.trx";
@@ -106,10 +105,10 @@ public class ResultsSubsystemTests
             testResults.SaveResults(resultsFile);
 
             // Assert - file was created and contains both test results
-            Assert.IsTrue(File.Exists(resultsFile));
+            Assert.True(File.Exists(resultsFile));
             var content = File.ReadAllText(resultsFile);
-            Assert.IsTrue(content.Contains("Test1"));
-            Assert.IsTrue(content.Contains("Test2"));
+            Assert.Contains("Test1", content);
+            Assert.Contains("Test2", content);
         }
         finally
         {

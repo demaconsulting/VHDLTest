@@ -25,7 +25,6 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// <summary>
 /// Tests for parsing options
 /// </summary>
-[TestClass]
 public class OptionsTests
 {
     /// <summary>
@@ -50,27 +49,27 @@ public class OptionsTests
     /// <summary>
     /// Test parsing options with no configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_NoConfigProvided_ThrowsInvalidOperationException()
     {
         var arguments = Context.Create([]);
-        Assert.ThrowsExactly<InvalidOperationException>(() => Options.Parse(arguments));
+        Assert.Throws<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
     /// <summary>
     /// Test parsing options with missing configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_MissingConfigFile_ThrowsFileNotFoundException()
     {
         var arguments = Context.Create(["-c", "missing-config.yaml"]);
-        Assert.ThrowsExactly<FileNotFoundException>(() => Options.Parse(arguments));
+        Assert.Throws<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
     /// <summary>
     /// Test parsing options with configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_ValidConfigFile_ParsesSuccessfully()
     {
         try
@@ -83,13 +82,13 @@ public class OptionsTests
             var options = Options.Parse(arguments);
 
             // Check the options
-            Assert.IsNotNull(options);
-            Assert.HasCount(2, options.Config.Files);
-            Assert.AreEqual("file1.vhd", options.Config.Files[0]);
-            Assert.AreEqual("file2.vhd", options.Config.Files[1]);
-            Assert.HasCount(2, options.Config.Tests);
-            Assert.AreEqual("test1", options.Config.Tests[0]);
-            Assert.AreEqual("test2", options.Config.Tests[1]);
+            Assert.NotNull(options);
+            Assert.Equal(2, options.Config.Files.Length);
+            Assert.Equal("file1.vhd", options.Config.Files[0]);
+            Assert.Equal("file2.vhd", options.Config.Files[1]);
+            Assert.Equal(2, options.Config.Tests.Length);
+            Assert.Equal("test1", options.Config.Tests[0]);
+            Assert.Equal("test2", options.Config.Tests[1]);
         }
         finally
         {
@@ -101,7 +100,7 @@ public class OptionsTests
     /// <summary>
     /// Test parsing options with verbose flag
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_WithVerboseFlag_ParsesSuccessfully()
     {
         try
@@ -114,7 +113,7 @@ public class OptionsTests
             var options = Options.Parse(arguments);
 
             // Check the options
-            Assert.IsNotNull(options);
+            Assert.NotNull(options);
         }
         finally
         {
@@ -126,7 +125,7 @@ public class OptionsTests
     /// <summary>
     /// Test parsing options with custom test
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_WithCustomTest_ParsesSuccessfully()
     {
         try
@@ -139,7 +138,7 @@ public class OptionsTests
             var options = Options.Parse(arguments);
 
             // Check the options
-            Assert.IsNotNull(options);
+            Assert.NotNull(options);
         }
         finally
         {

@@ -25,13 +25,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// <summary>
 /// Tests for argument parsing
 /// </summary>
-[TestClass]
 public class ContextTests
 {
     /// <summary>
     /// Test parsing arguments with no arguments
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_NoArguments_ReturnsDefaultContext()
     {
         // Arrange - Prepare empty arguments array
@@ -40,30 +39,30 @@ public class ContextTests
         var arguments = Context.Create([]);
 
         // Assert - Verify default context is returned with all properties set to defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with unknown argument
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_UnknownArgument_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for unknown argument
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--unknown"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--unknown"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a config file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithConfigFile_SetsConfigFile()
     {
         // Arrange - Prepare arguments with config file option
@@ -72,30 +71,30 @@ public class ContextTests
         var arguments = Context.Create(["-c", "config.json"]);
 
         // Assert - Verify config file is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.AreEqual("config.json", arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Equal("config.json", arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a missing config file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MissingConfigValue_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for missing config value
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-c"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-c"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a results file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithResultsFile_SetsResultsFile()
     {
         // Arrange - Prepare arguments with results file option
@@ -104,30 +103,30 @@ public class ContextTests
         var arguments = Context.Create(["-r", "results.trx"]);
 
         // Assert - Verify results file is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.AreEqual("results.trx", arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Equal("results.trx", arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a missing results file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MissingResultsValue_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for missing results value
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-r"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-r"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a specified simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithSimulator_SetsSimulator()
     {
         // Arrange - Prepare arguments with simulator option
@@ -136,30 +135,30 @@ public class ContextTests
         var arguments = Context.Create(["-s", "GHDL"]);
 
         // Assert - Verify simulator is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.AreEqual("GHDL", arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Equal("GHDL", arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a missing simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for missing simulator value
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-s"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-s"]));
     }
 
     /// <summary>
     /// Test parsing arguments with verbose
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithVerbose_SetsVerboseFlag()
     {
         // Arrange - Prepare arguments with verbose flag
@@ -168,20 +167,20 @@ public class ContextTests
         var arguments = Context.Create(["--verbose"]);
 
         // Assert - Verify verbose flag is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsTrue(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.True(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with exit-zero flag
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithExitZero_SetsExitZeroFlag()
     {
         // Arrange - Prepare arguments with exit-zero flag
@@ -190,20 +189,20 @@ public class ContextTests
         var arguments = Context.Create(["--exit-0"]);
 
         // Assert - Verify exit-zero flag is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsTrue(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.True(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with validate flag
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithValidate_SetsValidateFlag()
     {
         // Arrange - Prepare arguments with validate flag
@@ -212,64 +211,64 @@ public class ContextTests
         var arguments = Context.Create(["--validate"]);
 
         // Assert - Verify validate flag is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsTrue(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.True(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a valid depth value
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithDepth_SetsDepth()
     {
         // Act - Parse the arguments
         var arguments = Context.Create(["--depth", "2"]);
 
         // Assert - Verify depth is set
-        Assert.IsNotNull(arguments);
-        Assert.AreEqual(2, arguments.Depth);
+        Assert.NotNull(arguments);
+        Assert.Equal(2, arguments.Depth);
     }
 
     /// <summary>
     /// Test parsing arguments with a non-integer depth value
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithInvalidDepth_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for non-integer depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "abc"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "abc"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a zero depth value (out of range)
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithZeroDepth_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for zero depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "0"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "0"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a negative depth value (out of range)
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithNegativeDepth_ThrowsInvalidOperationException()
     {
         // Act & Assert - Verify InvalidOperationException is thrown for negative depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "-1"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "-1"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a custom test
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithCustomTest_SetsCustomTest()
     {
         // Arrange - Prepare arguments with single custom test name
@@ -278,22 +277,22 @@ public class ContextTests
         var arguments = Context.Create(["custom_test"]);
 
         // Assert - Verify custom test is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNotNull(arguments.CustomTests);
-        Assert.HasCount(1, arguments.CustomTests);
-        Assert.AreEqual("custom_test", arguments.CustomTests[0]);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.NotNull(arguments.CustomTests);
+        Assert.Single(arguments.CustomTests);
+        Assert.Equal("custom_test", arguments.CustomTests[0]);
     }
 
     /// <summary>
     /// Test parsing arguments with multiple custom tests
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithCustomTests_SetsCustomTests()
     {
         // Arrange - Prepare arguments with multiple custom test names
@@ -302,16 +301,16 @@ public class ContextTests
         var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);
 
         // Assert - Verify all custom tests are set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNotNull(arguments.CustomTests);
-        Assert.HasCount(2, arguments.CustomTests);
-        Assert.AreEqual("custom_test1", arguments.CustomTests[0]);
-        Assert.AreEqual("custom_test2", arguments.CustomTests[1]);
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.NotNull(arguments.CustomTests);
+        Assert.Equal(2, arguments.CustomTests.Count);
+        Assert.Equal("custom_test1", arguments.CustomTests[0]);
+        Assert.Equal("custom_test2", arguments.CustomTests[1]);
     }
 }

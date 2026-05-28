@@ -25,87 +25,86 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for <see cref="SimulatorFactory"/> class.
 /// </summary>
-[TestClass]
 public class SimulatorFactoryTests
 {
     /// <summary>
     /// Test querying the simulator factory for GHDL
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("ghdl"));
-        Assert.IsNotNull(SimulatorFactory.Get("GHDL"));
+        Assert.NotNull(SimulatorFactory.Get("ghdl"));
+        Assert.NotNull(SimulatorFactory.Get("GHDL"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for ModelSim
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("modelsim"));
-        Assert.IsNotNull(SimulatorFactory.Get("ModelSim"));
+        Assert.NotNull(SimulatorFactory.Get("modelsim"));
+        Assert.NotNull(SimulatorFactory.Get("ModelSim"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for Vivado
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("vivado"));
-        Assert.IsNotNull(SimulatorFactory.Get("Vivado"));
+        Assert.NotNull(SimulatorFactory.Get("vivado"));
+        Assert.NotNull(SimulatorFactory.Get("Vivado"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for ActiveHDL
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("activehdl"));
-        Assert.IsNotNull(SimulatorFactory.Get("ActiveHDL"));
+        Assert.NotNull(SimulatorFactory.Get("activehdl"));
+        Assert.NotNull(SimulatorFactory.Get("ActiveHDL"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for NVC
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("nvc"));
-        Assert.IsNotNull(SimulatorFactory.Get("NVC"));
+        Assert.NotNull(SimulatorFactory.Get("nvc"));
+        Assert.NotNull(SimulatorFactory.Get("NVC"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for QuestaSim
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("questasim"));
-        Assert.IsNotNull(SimulatorFactory.Get("QuestaSim"));
+        Assert.NotNull(SimulatorFactory.Get("questasim"));
+        Assert.NotNull(SimulatorFactory.Get("QuestaSim"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for an unknown simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_UnknownSimulator_ReturnsNull()
     {
-        Assert.IsNull(SimulatorFactory.Get("unknown"));
-        Assert.IsNull(SimulatorFactory.Get("Unknown"));
+        Assert.Null(SimulatorFactory.Get("unknown"));
+        Assert.Null(SimulatorFactory.Get("Unknown"));
     }
 
     /// <summary>
     /// Test querying the simulator factory for the mock simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("mock"));
-        Assert.IsNotNull(SimulatorFactory.Get("Mock"));
-        Assert.IsNotNull(SimulatorFactory.Get("MOCK"));
+        Assert.NotNull(SimulatorFactory.Get("mock"));
+        Assert.NotNull(SimulatorFactory.Get("Mock"));
+        Assert.NotNull(SimulatorFactory.Get("MOCK"));
     }
 }

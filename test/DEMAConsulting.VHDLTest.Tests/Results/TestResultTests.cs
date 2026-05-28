@@ -27,13 +27,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 /// <summary>
 /// Tests for <see cref="VHDLTestResult"/> class.
 /// </summary>
-[TestClass]
 public class TestResultTests
 {
     /// <summary>
     /// Test constructing a test result with info
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResult_Constructor_WithInfoResult_CreatesPassedTest()
     {
         // Construct the result
@@ -52,17 +51,17 @@ public class TestResultTests
                 ])
             ));
 
-        Assert.AreEqual("test", result.ClassName);
-        Assert.AreEqual("test", result.TestName);
-        Assert.AreEqual(RunLineType.Info, result.RunResults.Summary);
-        Assert.IsTrue(result.Passed);
-        Assert.IsFalse(result.Failed);
+        Assert.Equal("test", result.ClassName);
+        Assert.Equal("test", result.TestName);
+        Assert.Equal(RunLineType.Info, result.RunResults.Summary);
+        Assert.True(result.Passed);
+        Assert.False(result.Failed);
     }
 
     /// <summary>
     /// Test constructing a test result with error
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void TestResult_Constructor_WithErrorResult_CreatesFailedTest()
     {
         // Construct the result
@@ -81,10 +80,10 @@ public class TestResultTests
                 ])
             ));
 
-        Assert.AreEqual("test", result.ClassName);
-        Assert.AreEqual("test", result.TestName);
-        Assert.AreEqual(RunLineType.Error, result.RunResults.Summary);
-        Assert.IsFalse(result.Passed);
-        Assert.IsTrue(result.Failed);
+        Assert.Equal("test", result.ClassName);
+        Assert.Equal("test", result.TestName);
+        Assert.Equal(RunLineType.Error, result.RunResults.Summary);
+        Assert.False(result.Passed);
+        Assert.True(result.Failed);
     }
 }
