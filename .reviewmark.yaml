@@ -198,6 +198,7 @@ reviews:
       - docs/design/vhdltest/run/run-results.md  # design
       - src/DEMAConsulting.VHDLTest/Run/RunResults.cs  # source
       - test/**/Run/RunResultsTests.cs  # unit tests
+      - docs/verification/vhdltest/run/run-results.md  # verification document
 
   # Run types unit review (RunLine, RunLineRule, RunLineType)
   - id: VHDLTest-Run-RunTypes
@@ -214,14 +215,16 @@ reviews:
       - src/DEMAConsulting.VHDLTest/Run/RunLineType.cs  # source
       - test/**/Run/RunLineRuleTests.cs  # RunLineRule unit tests
       - test/**/Run/RunProcessorTests.cs  # indirect coverage via RunProcessor
-
-  # Results subsystem review
+      - docs/verification/vhdltest/run/run-line.md  # verification document
+      - docs/verification/vhdltest/run/run-line-rule.md  # verification document
+      - docs/verification/vhdltest/run/run-line-type.md  # verification document
   - id: VHDLTest-Results
     title: Review that VHDLTest Results Subsystem Satisfies Subsystem Requirements
     paths:
       - docs/reqstream/vhdltest/results/results.yaml  # subsystem requirements
       - docs/design/vhdltest/results.md  # subsystem design
       - test/**/Results/ResultsSubsystemTests.cs  # subsystem integration tests
+      - docs/verification/vhdltest/results.md  # verification document
 
   # TestResult unit review
   - id: VHDLTest-Results-TestResult
@@ -231,6 +234,7 @@ reviews:
       - docs/design/vhdltest/results/test-result.md  # design
       - src/DEMAConsulting.VHDLTest/Results/TestResult.cs  # source
       - test/**/Results/TestResultTests.cs  # unit tests
+      - docs/verification/vhdltest/results/test-result.md  # verification document
 
   # TestResults unit review
   - id: VHDLTest-Results-TestResults
@@ -240,6 +244,7 @@ reviews:
       - docs/design/vhdltest/results/test-results.md  # design
       - src/DEMAConsulting.VHDLTest/Results/TestResults.cs  # source
       - test/**/Results/TestResultsTests.cs  # unit tests
+      - docs/verification/vhdltest/results/test-results.md  # verification document
 
   # Simulators subsystem review
   - id: VHDLTest-Simulators

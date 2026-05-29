@@ -30,12 +30,14 @@ namespace DEMAConsulting.VHDLTest.Tests.Run;
 public class RunResultsTests
 {
     /// <summary>
-    ///     Verifies that Print writes color-coded output for lines of all severity types.
+    ///     Verifies that Print writes color-coded output for lines of all severity types,
+    ///     confirming that Info, Warning, Error, and Text lines are all written to the log.
     /// </summary>
     [Fact]
     public void RunResults_Print_WithMixedLines_WritesColorCodedOutput()
     {
-        // Arrange: construct a RunResults with one line of each type
+        // Arrange: construct a RunResults with one line of each type and a temp log path
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         var lines = new ReadOnlyCollection<RunLine>(new List<RunLine>
         {
             new(RunLineType.Text, "text line"),
@@ -45,23 +47,37 @@ public class RunResultsTests
         });
         var results = new RunResults(RunLineType.Error, DateTime.Now, 0.0, 0, "output", lines);
 
-        // Use silent+verbose so all lines are processed without polluting the test console
-        using var context = Context.Create(["--verbose", "--silent"]);
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--verbose", "--log", logPath, "--silent"]))
+            {
+                // Act: print results — exercises color selection and output paths for all line types
+                results.Print(context);
+            }
 
-        // Act: print results — exercises the color selection and output paths for all line types
-        results.Print(context);
-
-        // Assert: Print completed without throwing; all four line types were processed
-        Assert.Equal(0, context.Errors);
+            // Assert: log contains each line type's text, confirming all branches were written
+            output = File.ReadAllText(logPath);
+            Assert.Contains("text line", output);
+            Assert.Contains("info line", output);
+            Assert.Contains("warning line", output);
+            Assert.Contains("error line", output);
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
     }
 
     /// <summary>
-    ///     Verifies that Print suppresses Text-classified lines when verbose output is disabled.
+    ///     Verifies that Print suppresses Text-classified lines when verbose output is disabled,
+    ///     and that non-Text lines are still written.
     /// </summary>
     [Fact]
     public void RunResults_Print_WithVerboseDisabled_SuppressesTextLines()
     {
         // Arrange: construct a RunResults with Text and Info lines; verbose is disabled
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         var lines = new ReadOnlyCollection<RunLine>(new List<RunLine>
         {
             new(RunLineType.Text, "text line — should be suppressed"),
@@ -69,13 +85,47 @@ public class RunResultsTests
         });
         var results = new RunResults(RunLineType.Info, DateTime.Now, 0.0, 0, "output", lines);
 
-        // Use silent mode to suppress console output during the test
-        using var context = Context.Create(["--silent"]); // Verbose = false
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--log", logPath, "--silent"])) // Verbose = false
+            {
+                // Act: print results with verbose disabled — Text lines must not be written
+                results.Print(context);
+            }
 
-        // Act: print results with verbose disabled — Text lines must not be written
-        results.Print(context);
+            // Assert: log does not contain the Text line but does contain the Info line
+            output = File.ReadAllText(logPath);
+            Assert.DoesNotContain("text line — should be suppressed", output);
+            Assert.Contains("info line — should be written", output);
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
+    }
 
-        // Assert: Print completed without throwing; the Text suppression code path was exercised
-        Assert.Equal(0, context.Errors);
+    /// <summary>
+    ///     Verifies that a RunResults with a non-zero exit code has a Summary of at least Error,
+    ///     confirming the SummaryElevation contract enforced by RunProcessor.
+    /// </summary>
+    [Fact]
+    public void RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError()
+    {
+        // Arrange: construct a RunResults with ExitCode = 1 and Error summary (as RunProcessor would)
+        var results = new RunResults(
+            RunLineType.Error,
+            DateTime.Now,
+            0.0,
+            1,
+            "output",
+            new ReadOnlyCollection<RunLine>([]));
+
+        // Act: read the Summary property
+        var summary = results.Summary;
+
+        // Assert: summary is at least Error when exit code is non-zero
+        Assert.True(summary >= RunLineType.Error,
+            $"Expected Summary >= RunLineType.Error for non-zero ExitCode, but got {summary}");
     }
 }

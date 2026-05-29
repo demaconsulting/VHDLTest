@@ -28,8 +28,8 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     It is the rule element that <see cref="RunProcessor"/> applies in order to classify
 ///     each captured line; the first matching rule in the ordered rule set wins.
 /// </summary>
-/// <param name="Type">Run Line Type</param>
-/// <param name="Pattern">Text Match Pattern</param>
+/// <param name="Type">The severity category to assign to any output line whose text matches <paramref name="Pattern"/>. Any valid <see cref="RunLineType"/> value is accepted.</param>
+/// <param name="Pattern">The compiled regular expression used to test each simulator output line. Must not be null.</param>
 public record RunLineRule(RunLineType Type, Regex Pattern)
 {
     /// <summary>
@@ -55,12 +55,10 @@ public record RunLineRule(RunLineType Type, Regex Pattern)
     ///     Thrown (as <see cref="System.Text.RegularExpressions.RegexParseException"/>, a
     ///     subtype) when <paramref name="pattern"/> is not a syntactically valid regular expression.
     /// </exception>
-    /// <exception cref="System.Text.RegularExpressions.RegexMatchTimeoutException">
-    ///     Propagated during matching (in <see cref="RunProcessor.Parse"/>) when pattern
-    ///     evaluation of an output line exceeds the 100 ms timeout.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pattern"/> is null.</exception>
     public static RunLineRule Create(RunLineType type, string pattern)
     {
+        ArgumentNullException.ThrowIfNull(pattern);
         return new RunLineRule(
             type,
             new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(100)));

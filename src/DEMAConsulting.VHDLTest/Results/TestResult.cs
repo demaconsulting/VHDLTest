@@ -27,7 +27,8 @@ namespace DEMAConsulting.VHDLTest.Results;
 ///     Immutable record capturing the outcome of a single VHDL test bench execution.
 /// </summary>
 /// <remarks>
-///     TestResult is a passive data container; it performs no I/O and throws no exceptions.
+///     TestResult throws no exceptions. I/O in <see cref="PrintSummary"/> is fully delegated to the injected
+///     <see cref="Cli.Context"/> and is not performed by <c>TestResult</c> directly.
 ///     The pass/fail determination is derived solely from the severity summary of the
 ///     wrapped <see cref="RunResults"/>. Constructed by concrete <c>Simulator</c> implementations
 ///     and held by <see cref="TestResults"/>.
@@ -45,13 +46,25 @@ namespace DEMAConsulting.VHDLTest.Results;
 public sealed record TestResult(string ClassName, string TestName, RunResults RunResults)
 {
     /// <summary>
-    ///     Test ID
+    ///     Gets the unique identifier for this test definition in the TRX report format.
     /// </summary>
+    /// <remarks>
+    ///     Initialized to a fresh <see cref="Guid"/> at construction via <see cref="Guid.NewGuid()"/>. The
+    ///     <c>init</c> accessor allows the value to be overridden at object-initializer time only; it is
+    ///     immutable after construction. Used by the TRX serializer to uniquely identify the test definition
+    ///     entry.
+    /// </remarks>
     public Guid TestId { get; init; } = Guid.NewGuid();
 
     /// <summary>
-    ///     Test Execution ID
+    ///     Gets the unique identifier for this specific test execution in the TRX report format.
     /// </summary>
+    /// <remarks>
+    ///     Initialized to a fresh <see cref="Guid"/> at construction via <see cref="Guid.NewGuid()"/>. The
+    ///     <c>init</c> accessor allows the value to be overridden at object-initializer time only; it is
+    ///     immutable after construction. Used by the TRX serializer to correlate the execution record with the
+    ///     test definition.
+    /// </remarks>
     public Guid ExecutionId { get; init; } = Guid.NewGuid();
 
     /// <summary>

@@ -16,7 +16,7 @@ sections:
                   produce output that RunProcessor and the Results subsystem interpret identically,
                   regardless of the underlying simulator's output format or terminology.
                 tests:
-                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
-                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
-                  - RunProcessor_Parse_OutputWithWarningPattern_ReturnsWarningSummary
-                  - RunProcessor_Parse_OutputWithNoMatchingPattern_ReturnsTextClassification
+                  - RunLineType_Ordinal_Text_IsLessThan_Info
+                  - RunLineType_Ordinal_Info_IsLessThan_Warning
+                  - RunLineType_Ordinal_Warning_IsLessThan_Error
+                  - RunLineType_Ordinal_Error_IsGreaterThan_Warning

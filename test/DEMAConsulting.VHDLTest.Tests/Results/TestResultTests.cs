@@ -31,7 +31,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 public class TestResultTests
 {
     /// <summary>
-    /// Test constructing a test result with info
+    /// Verifies that constructing a TestResult with an info-level RunResults produces Passed == true and Failed == false.
     /// </summary>
     [Fact]
     public void TestResult_Constructor_WithInfoResult_CreatesPassedTest()
@@ -60,7 +60,7 @@ public class TestResultTests
     }
 
     /// <summary>
-    /// Test constructing a test result with error
+    /// Verifies that constructing a TestResult with an error-level RunResults produces Passed == false and Failed == true.
     /// </summary>
     [Fact]
     public void TestResult_Constructor_WithErrorResult_CreatesFailedTest()
@@ -119,6 +119,7 @@ public class TestResultTests
             output = File.ReadAllText(logPath);
             Assert.Contains("Passed", output);
             Assert.Contains("MyPassingTest", output);
+            Assert.Contains("3.0", output);  // duration formatted to one decimal place
         }
         finally
         {
@@ -157,10 +158,62 @@ public class TestResultTests
             output = File.ReadAllText(logPath);
             Assert.Contains("Failed", output);
             Assert.Contains("MyFailingTest", output);
+            Assert.Contains("2.0", output);  // duration formatted to one decimal place
         }
         finally
         {
             File.Delete(logPath);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that constructing a TestResult with a Warning-level RunResults produces
+    ///     Passed == true, confirming the pass threshold is strictly below Error.
+    /// </summary>
+    [Fact]
+    public void TestResult_Constructor_WithWarningResult_CreatesPassedTest()
+    {
+        // Arrange: define run results with warning-level severity (boundary case: Warning < Error)
+        var runResults = new RunResults(
+            RunLineType.Warning,
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            5.0,
+            0,
+            "Warning: timing constraint not met",
+            new ReadOnlyCollection<RunLine>([
+                new RunLine(RunLineType.Warning, "Warning: timing constraint not met")
+            ]));
+
+        // Act: construct the TestResult record
+        var result = new VHDLTestResult("test", "test", runResults);
+
+        // Assert: warning-level result is considered passed (threshold is < Error)
+        Assert.True(result.Passed, "Warning-level result should be Passed");
+        Assert.False(result.Failed, "Warning-level result should not be Failed");
+    }
+
+    /// <summary>
+    ///     Verifies that each TestResult construction produces unique TestId and ExecutionId values,
+    ///     confirming that identifiers are initialized to fresh GUIDs per instance.
+    /// </summary>
+    [Fact]
+    public void TestResult_Constructor_CreatesUniqueTestAndExecutionIds()
+    {
+        // Arrange: define a shared RunResults for two independent TestResult instances
+        var runResults = new RunResults(
+            RunLineType.Info,
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            1.0,
+            0,
+            "Passed",
+            new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Info, "Passed")]));
+
+        // Act: construct two separate TestResult instances
+        var result1 = new VHDLTestResult("test", "test1", runResults);
+        var result2 = new VHDLTestResult("test", "test2", runResults);
+
+        // Assert: each instance has distinct TestId and ExecutionId
+        Assert.NotEqual(result1.TestId, result2.TestId);
+        Assert.NotEqual(result1.ExecutionId, result2.ExecutionId);
     }
 }

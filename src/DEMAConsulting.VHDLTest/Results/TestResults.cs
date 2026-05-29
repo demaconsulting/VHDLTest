@@ -202,6 +202,13 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Save results to a file (TRX or JUnit based on file extension)
     /// </summary>
+    /// <remarks>
+    ///     Selects TRX format for <c>.trx</c> extensions and JUnit XML for <c>.xml</c> extensions;
+    ///     all other extensions default to TRX. Writes the serialized content to disk via
+    ///     <see cref="File.WriteAllText(string, string)"/>; the file is created or overwritten. Throws
+    ///     <see cref="ArgumentException"/> before any I/O if <paramref name="fileName"/> is
+    ///     null, empty, or whitespace-only.
+    /// </remarks>
     /// <param name="fileName">File name (extension determines format: .trx for TRX, .xml for JUnit, others default to TRX)</param>
     /// <exception cref="ArgumentException">Thrown when fileName is null or empty</exception>
     public void SaveResults(string fileName)
@@ -261,6 +268,11 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Save results to TRX file (backward compatibility)
     /// </summary>
+    /// <remarks>
+    ///     Backward-compatibility wrapper that delegates unconditionally to
+    ///     <see cref="SaveResults"/>. Retained so callers that previously used
+    ///     <c>SaveToTrx</c> continue to work without modification.
+    /// </remarks>
     /// <param name="fileName">TRX file name</param>
     public void SaveToTrx(string fileName)
     {
@@ -270,6 +282,13 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Print test results summary
     /// </summary>
+    /// <remarks>
+    ///     Writes a separator line, then one summary line per test in <see cref="Tests"/> via
+    ///     <see cref="TestResult.PrintSummary"/>. After the per-test lines, writes a closing
+    ///     separator, then aggregate "Passed N of M" (green) and/or "Failed N of M" (red)
+    ///     totals. All output goes through the injected <paramref name="context"/>; the method
+    ///     has no other side effects. <paramref name="context"/> must not be null.
+    /// </remarks>
     /// <param name="context">Program context</param>
     public void PrintSummary(Context context)
     {

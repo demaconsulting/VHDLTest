@@ -28,12 +28,31 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     the primary return value from <see cref="RunProcessor"/> and the data source for
 ///     simulator pass/fail decisions, result serialization, and console output display.
 /// </summary>
-/// <param name="Summary">Result summary</param>
-/// <param name="Start">Start time</param>
-/// <param name="Duration">Duration</param>
-/// <param name="ExitCode">Exit code</param>
-/// <param name="Output">Output text</param>
-/// <param name="Lines">Result lines</param>
+/// <param name="Summary">
+///     Highest-severity <see cref="RunLineType"/> across all classified output lines. Elevated to at least
+///     <see cref="RunLineType.Error"/> when <paramref name="ExitCode"/> is non-zero, ensuring downstream
+///     pass/fail decisions always reflect a simulator-reported error.
+/// </param>
+/// <param name="Start">
+///     Wall-clock timestamp recorded immediately before the simulator process was launched. Used to compute
+///     <paramref name="Duration"/> and stored in test-result reports for traceability.
+/// </param>
+/// <param name="Duration">
+///     Elapsed time in seconds between <paramref name="Start"/> and process exit. Must be non-negative.
+///     Formatted to one decimal place in summary output.
+/// </param>
+/// <param name="ExitCode">
+///     Raw process exit code returned by the simulator. Zero indicates success; any non-zero value indicates
+///     failure and causes <paramref name="Summary"/> to be elevated to at least <see cref="RunLineType.Error"/>.
+/// </param>
+/// <param name="Output">
+///     Full combined stdout and stderr text captured from the simulator process, unmodified. May be empty;
+///     never null.
+/// </param>
+/// <param name="Lines">
+///     Ordered collection of classified output lines produced by <see cref="RunProcessor.Parse"/>. Each entry
+///     pairs the original text with its assigned <see cref="RunLineType"/>. May be empty; never null.
+/// </param>
 public sealed record RunResults(
     RunLineType Summary,
     DateTime Start,
@@ -51,8 +70,11 @@ public sealed record RunResults(
     ///     Context used for colored console output. Must not be null. The <c>Verbose</c>
     ///     property controls whether <see cref="RunLineType.Text"/> lines are written.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     public void Print(Context context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         // Filter and write all lines
         foreach (var line in Lines.Where(l => context.Verbose || l.Type != RunLineType.Text))
         {

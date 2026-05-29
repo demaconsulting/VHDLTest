@@ -15,5 +15,4 @@ sections:
                   record provides a strongly typed value that passes cleanly between RunProcessor
                   and downstream consumers, avoiding raw string comparisons in downstream logic.
                 tests:
-                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
-                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+                  - RunLine_Constructor_SetsTypeAndTextProperties

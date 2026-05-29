@@ -12,7 +12,7 @@ and result serialization.
 
 | Property   | Type                          | Description                                                |
 | ---------- | ----------------------------- | ---------------------------------------------------------- |
-| `Summary`  | `RunLineType`                 | Highest-severity line type; at least `Error` when the exit code is non-zero. |
+| `Summary`  | `RunLineType`                 | Highest-severity line type; at least `Error` if non-zero.  |
 | `Start`    | `DateTime`                    | Timestamp recorded before `RunProgram.Run` is called.      |
 | `Duration` | `double`                      | Elapsed time in seconds between `Start` and process exit.  |
 | `ExitCode` | `int`                         | Raw process exit code returned by the simulator.           |
@@ -25,6 +25,7 @@ and result serialization.
 
 Iterates over `Lines` and writes each line to the console using a color determined by
 its `RunLineType`: `Info` → white, `Warning` → yellow, `Error` → red, `Text` → gray.
+Any unrecognized `RunLineType` value also maps to gray.
 When `context.Verbose` is false, lines with type `Text` are suppressed.
 
 - *Preconditions*: `context` is not null.

@@ -39,4 +39,27 @@ public class RunLineRuleTests
         // Act / Assert: creating a rule with an invalid pattern must throw ArgumentException
         Assert.ThrowsAny<ArgumentException>(() => RunLineRule.Create(RunLineType.Error, invalidPattern));
     }
+
+    /// <summary>
+    ///     Verifies that RunLineRule.Create with a valid pattern returns a rule whose Type and
+    ///     Pattern are correctly set and whose Pattern can match a sample line.
+    /// </summary>
+    [Fact]
+    public void RunLineRule_Create_ValidPattern_ReturnsRuleWithMatchingProperties()
+    {
+        // Arrange: define a valid pattern and the expected type
+        const string pattern = "Error:";
+        const RunLineType expectedType = RunLineType.Error;
+
+        // Act: create the rule
+        var rule = RunLineRule.Create(expectedType, pattern);
+
+        // Assert: rule has correct Type and Pattern that matches the expected text
+        Assert.Equal(expectedType, rule.Type);
+        Assert.NotNull(rule.Pattern);
+        Assert.True(rule.Pattern.IsMatch("Error: something went wrong"),
+            "Pattern should match a line containing 'Error:'");
+        Assert.False(rule.Pattern.IsMatch("Info: all is well"),
+            "Pattern should not match a line not containing 'Error:'");
+    }
 }

@@ -24,16 +24,44 @@ sections:
                 tests:
                   - TestResult_Constructor_WithErrorResult_CreatesFailedTest
 
-              - id: VHDLTest-Results-TestResult-PrintSummary
+              - id: VHDLTest-Results-TestResult-PrintSummary-Label
                 title: >-
-                  TestResult shall display a colored pass/fail summary line containing the test
-                  name and execution duration.
+                  TestResult shall display a colored pass/fail label word ("Passed" or "Failed")
+                  in the summary line.
                 justification: |
-                  Color-coded output with test name and duration gives developers instant
-                  at-a-glance feedback on each test bench outcome directly in the terminal.
-                  In CI/CD environments this aids rapid triage: green Passed lines confirm
-                  correct behavior; red Failed lines with duration signal which test bench
-                  regressed and approximately how long it ran.
+                  Color-coded pass/fail words give developers immediate at-a-glance feedback
+                  on each test bench outcome in the terminal and in CI/CD log output.
                 tests:
                   - TestResult_PrintSummary_PassedResult_WritesPassLine
                   - TestResult_PrintSummary_FailedResult_WritesFailLine
+
+              - id: VHDLTest-Results-TestResult-PrintSummary-Name
+                title: >-
+                  TestResult shall include the test bench name in the summary line.
+                justification: |
+                  Including the test name alongside the pass/fail label lets developers quickly
+                  identify which test bench passed or failed without cross-referencing other output.
+                tests:
+                  - TestResult_PrintSummary_PassedResult_WritesPassLine
+                  - TestResult_PrintSummary_FailedResult_WritesFailLine
+
+              - id: VHDLTest-Results-TestResult-PrintSummary-Duration
+                title: >-
+                  TestResult shall include the execution duration in the summary line.
+                justification: |
+                  Showing the duration in the summary line helps users identify slow test benches
+                  and diagnose timing-related failures without examining full simulator output.
+                tests:
+                  - TestResult_PrintSummary_PassedResult_WritesPassLine
+                  - TestResult_PrintSummary_FailedResult_WritesFailLine
+
+              - id: VHDLTest-Results-TestResult-Identifiers
+                title: >-
+                  TestResult shall carry unique test and execution identifiers for TRX report format.
+                justification: |
+                  TRX report format requires distinct GUIDs for each test definition and each
+                  test execution. Generating fresh GUIDs at construction ensures that every
+                  TestResult instance is uniquely identifiable in the report, which is required
+                  for correct integration with Azure DevOps and Visual Studio test infrastructure.
+                tests:
+                  - TestResult_Constructor_CreatesUniqueTestAndExecutionIds

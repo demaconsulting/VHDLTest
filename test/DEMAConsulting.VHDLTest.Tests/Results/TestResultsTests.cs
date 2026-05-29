@@ -107,6 +107,7 @@ public class TestResultsTests
     public void TestResults_SaveResults_WithTrxExtension_CreatesTrxFile()
     {
         // Arrange: create TestResults with a single passing test
+        var trxFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".trx");
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -128,19 +129,19 @@ public class TestResultsTests
         try
         {
             // Act: save to TRX file
-            results.SaveResults("TestResults.trx");
+            results.SaveResults(trxFile);
 
             // Assert: file exists and is valid TRX XML
-            Assert.True(File.Exists("TestResults.trx"));
-            var content = File.ReadAllText("TestResults.trx");
+            Assert.True(File.Exists(trxFile));
+            var content = File.ReadAllText(trxFile);
             Assert.Contains("<?xml", content);
             Assert.Contains("TestRun", content);
         }
         finally
         {
-            if (File.Exists("TestResults.trx"))
+            if (File.Exists(trxFile))
             {
-                File.Delete("TestResults.trx");
+                File.Delete(trxFile);
             }
         }
     }
@@ -152,6 +153,7 @@ public class TestResultsTests
     public void TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile()
     {
         // Arrange: create TestResults with a single passing test
+        var xmlFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".xml");
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -173,19 +175,19 @@ public class TestResultsTests
         try
         {
             // Act: save to XML file
-            results.SaveResults("TestResults.xml");
+            results.SaveResults(xmlFile);
 
             // Assert: file exists and is valid JUnit XML
-            Assert.True(File.Exists("TestResults.xml"));
-            var content = File.ReadAllText("TestResults.xml");
+            Assert.True(File.Exists(xmlFile));
+            var content = File.ReadAllText(xmlFile);
             Assert.Contains("<?xml", content);
             Assert.Contains("testsuites", content);
         }
         finally
         {
-            if (File.Exists("TestResults.xml"))
+            if (File.Exists(xmlFile))
             {
-                File.Delete("TestResults.xml");
+                File.Delete(xmlFile);
             }
         }
     }
@@ -197,6 +199,7 @@ public class TestResultsTests
     public void TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure()
     {
         // Arrange: create TestResults with a single failing test
+        var xmlFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".xml");
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -218,19 +221,19 @@ public class TestResultsTests
         try
         {
             // Act: save to XML file
-            results.SaveResults("TestResults.xml");
+            results.SaveResults(xmlFile);
 
             // Assert: file contains failure information
-            Assert.True(File.Exists("TestResults.xml"));
-            var content = File.ReadAllText("TestResults.xml");
+            Assert.True(File.Exists(xmlFile));
+            var content = File.ReadAllText(xmlFile);
             Assert.Contains("failure", content);
             Assert.Contains("Error occurred", content);
         }
         finally
         {
-            if (File.Exists("TestResults.xml"))
+            if (File.Exists(xmlFile))
             {
-                File.Delete("TestResults.xml");
+                File.Delete(xmlFile);
             }
         }
     }
@@ -242,6 +245,7 @@ public class TestResultsTests
     public void TestResults_SaveToTrx_WithTestResults_CreatesTrxFile()
     {
         // Arrange: create TestResults with a single passing test
+        var trxFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".trx");
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -263,19 +267,19 @@ public class TestResultsTests
         try
         {
             // Act: save via backward-compatible SaveToTrx
-            results.SaveToTrx("TestResults.trx");
+            results.SaveToTrx(trxFile);
 
             // Assert: file exists and is valid TRX XML
-            Assert.True(File.Exists("TestResults.trx"));
-            var content = File.ReadAllText("TestResults.trx");
+            Assert.True(File.Exists(trxFile));
+            var content = File.ReadAllText(trxFile);
             Assert.Contains("<?xml", content);
             Assert.Contains("TestRun", content);
         }
         finally
         {
-            if (File.Exists("TestResults.trx"))
+            if (File.Exists(trxFile))
             {
-                File.Delete("TestResults.trx");
+                File.Delete(trxFile);
             }
         }
     }
@@ -302,6 +306,7 @@ public class TestResultsTests
     public void TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile()
     {
         // Arrange: create TestResults with a single passing test
+        var unknownFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".unknown");
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -323,20 +328,38 @@ public class TestResultsTests
         try
         {
             // Act: save with an unrecognized extension
-            results.SaveResults("TestResults.unknown");
+            results.SaveResults(unknownFile);
 
             // Assert: file exists and defaults to TRX format
-            Assert.True(File.Exists("TestResults.unknown"));
-            var content = File.ReadAllText("TestResults.unknown");
+            Assert.True(File.Exists(unknownFile));
+            var content = File.ReadAllText(unknownFile);
             Assert.Contains("<?xml", content);
             Assert.Contains("TestRun", content);
         }
         finally
         {
-            if (File.Exists("TestResults.unknown"))
+            if (File.Exists(unknownFile))
             {
-                File.Delete("TestResults.unknown");
+                File.Delete(unknownFile);
             }
         }
+    }
+
+    /// <summary>
+    ///     Verifies that TestResults.Execute throws InvalidOperationException with the message
+    ///     "Build Failed" when the build step produces an Error-level result via MockSimulator.
+    /// </summary>
+    [Fact]
+    public void TestResults_Execute_WithBuildFailure_ThrowsInvalidOperationException()
+    {
+        // Arrange: configure an options object with a file that triggers a build error in MockSimulator
+        var config = new ConfigDocument { Files = ["_error_file.vhd"], Tests = [] };
+        var options = new Options(Path.GetTempPath(), config);
+        using var context = Context.Create(["--silent"]);
+
+        // Act / Assert: executing with a build-failing config must throw InvalidOperationException
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => TestResults.Execute(context, "UnitTestRun", "TestCodeBase", options, MockSimulator.Instance));
+        Assert.Equal("Build Failed", ex.Message);
     }
 }

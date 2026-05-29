@@ -41,7 +41,8 @@ formatted to one decimal place in parentheses.
 
 #### Error Handling
 
-`TestResult` is a passive record; it performs no I/O and throws no exceptions. Error conditions are
+`TestResult` throws no exceptions. I/O in `PrintSummary` is fully delegated to the injected `Context`
+and is not performed by `TestResult` directly. Error conditions are
 captured in `RunResults.Summary` and `RunResults.Lines` by the Run subsystem before construction.
 
 #### Dependencies

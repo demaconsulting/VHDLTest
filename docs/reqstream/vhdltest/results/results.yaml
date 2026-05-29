@@ -30,7 +30,7 @@ sections:
               caller receives a fully populated results object regardless of which
               simulator is in use.
             tests:
-              - ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts
+              - ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes
             children:
               - VHDLTest-Results-TestResults-Execute
 
@@ -44,12 +44,12 @@ sections:
               view of the test run outcome without requiring them to parse serialized
               report files.
             tests:
-              - ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts
+              - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
             children:
               - VHDLTest-Results-TestResults-PrintSummary
 
           - id: VHDLTest-Results-Save
-            title: VHDLTest shall save a collection of test results to a results file.
+            title: The Results subsystem shall save a collection of test results to a results file.
             justification: |
               Persisting the collected test results to a file enables integration with CI/CD
               platforms and test reporting tools that consume standard test result formats.

@@ -21,27 +21,38 @@
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-///     Type of run line
+///     Classifies a simulator output line into one of four severity categories, used throughout the Run and
+///     Results subsystems to drive color-coded output, verbose suppression, and pass/fail decisions.
 /// </summary>
+/// <remarks>
+///     Ordinal values encode severity rank intentionally: higher ordinal means higher
+///     severity. <see cref="RunProcessor"/> uses the <c>&gt;</c> operator to compute
+///     the highest-severity summary across all output lines, and downstream code
+///     compares values with <c>&gt;=</c> to determine pass/fail thresholds.
+/// </remarks>
+// Ordinal values are intentional: RunProcessor uses > to compute the highest-severity summary.
 public enum RunLineType
 {
     /// <summary>
-    ///     Normal text
+    ///     Normal unclassified text. Lowest severity (ordinal 0); suppressed by <see cref="RunResults.Print"/>
+    ///     when verbose output is disabled.
     /// </summary>
     Text,
 
     /// <summary>
-    ///     Informational message
+    ///     Informational message. Severity level 1; always written by <see cref="RunResults.Print"/> in white.
     /// </summary>
     Info,
 
     /// <summary>
-    ///     Warning message
+    ///     Warning message. Severity level 2; written by <see cref="RunResults.Print"/> in yellow. A result
+    ///     with <see cref="Warning"/> summary is considered passed.
     /// </summary>
     Warning,
 
     /// <summary>
-    ///     Error message
+    ///     Error message. Highest severity (ordinal 3); written by <see cref="RunResults.Print"/> in red. A
+    ///     result with <see cref="Error"/> summary or higher is considered failed.
     /// </summary>
     Error
 }

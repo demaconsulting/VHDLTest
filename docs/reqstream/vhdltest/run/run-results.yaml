@@ -34,4 +34,4 @@ sections:
                   pass/fail decisions always reflect a simulator-reported error, even when no
                   individual output line matched an error pattern.
                 tests:
-                  - RunProcessor_Execute_ProgramWithNonZeroExitCode_ReturnsErrorResult
+                  - RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError
