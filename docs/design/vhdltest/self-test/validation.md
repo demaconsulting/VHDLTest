@@ -38,6 +38,9 @@ passed.
 
 Calls `RunValidation`, then checks that the exit code is 0, the output contains
 `"Passed full_adder_pass_tb"`, and the output contains `"Passed half_adder_pass_tb"`.
+Because `RunValidation` always passes `--exit-0` to the inner VHDLTest invocation (see
+`RunValidation`), an exit code of 0 confirms there was no tool-level error; pass/fail
+determination is made solely from the log output.
 Each call to `ValidateTestPasses` and `ValidateTestFails` invokes `RunValidation` independently,
 performing a separate subprocess run so that each validation scenario is fully isolated from the
 other.
@@ -51,10 +54,9 @@ failed.
 - *Postconditions*: a `TestResult` for `VHDLTest_TestFails` has been added to `results`.
 
 Calls `RunValidation`, then checks that the exit code is 0, the output contains
-`"Failed full_adder_fail_tb"`, and the output contains `"Failed half_adder_fail_tb"`. The
-`--exit-0` flag is passed to the inner VHDLTest invocation so that a non-zero exit code signals a
-tool-level error (e.g., simulator not found) rather than a test failure — pass/fail determination
-is made solely from the log output.
+`"Failed full_adder_fail_tb"`, and the output contains `"Failed half_adder_fail_tb"`. Pass/fail
+determination is made solely from the log output; see `RunValidation` for the `--exit-0` flag
+rationale.
 
 **RunValidation** (public static): Runs VHDLTest on embedded validation files and returns the
 captured log.
@@ -69,7 +71,9 @@ captured log.
 Creates `validation.tmp/`, calls `ExtractValidationFiles` to populate it, constructs VHDLTest
 arguments (`--log output.log --silent --config validate.yaml --exit-0`, optionally
 `--simulator <name>`), calls `RunVhdlTest` in the folder, reads the log, then deletes the folder in
-a `finally` block.
+a `finally` block. The `--exit-0` flag is always passed so that a non-zero exit code signals a
+tool-level error (e.g., simulator not found) rather than a test-level failure; callers inspect the
+log output to determine pass/fail status.
 
 **ExtractValidationFiles** (private static): Extracts embedded validation resource files to a
 directory.

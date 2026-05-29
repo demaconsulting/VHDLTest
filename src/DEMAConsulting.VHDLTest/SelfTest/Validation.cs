@@ -181,6 +181,8 @@ internal static class Validation
     ///     resources into it, invokes <see cref="RunVhdlTest(string, string[])"/>, reads the
     ///     captured log file, and deletes the temporary directory in a <c>finally</c> block
     ///     (best-effort; delete failures are swallowed).
+    ///     Not safe to call concurrently from the same working directory; both callers would
+    ///     attempt to create and delete the same <c>validation.tmp</c> temporary folder.
     /// </remarks>
     public static int RunValidation(out string results, string? simulator)
     {
