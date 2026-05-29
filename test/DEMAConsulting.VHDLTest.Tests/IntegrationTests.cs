@@ -41,18 +41,18 @@ public partial class IntegrationTests
     /// Test usage information is reported when no arguments are specified
     /// </summary>
     [Fact]
-    public void IntegrationTest_NoArguments_DisplaysUsageAndReturnsError()
+    public void VHDLTest_NoArguments_DisplaysUsageAndReturnsError()
     {
-        // Run the application
+        // Arrange: (none — application is invoked directly)
+
+        // Act: run the application with no arguments
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll");
 
-        // Verify error
+        // Assert: verify error exit code and usage message
         Assert.NotEqual(0, exitCode);
-
-        // Verify usage reported
         Assert.Contains("Error: Missing arguments", output);
         Assert.Contains("Usage: VHDLTest", output);
     }
@@ -61,19 +61,19 @@ public partial class IntegrationTests
     /// Test usage information is reported when the '-h' parameter is specified
     /// </summary>
     [Fact]
-    public void IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess()
+    public void VHDLTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess()
     {
-        // Run the application
+        // Arrange: (none — application is invoked directly)
+
+        // Act: run the application with -h flag
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
             "-h");
 
-        // Verify no error
+        // Assert: verify success and usage message
         Assert.Equal(0, exitCode);
-
-        // Verify usage reported
         Assert.Contains("Usage: VHDLTest", output);
     }
 
@@ -81,19 +81,19 @@ public partial class IntegrationTests
     /// Test usage information is reported when the '-?' parameter is specified
     /// </summary>
     [Fact]
-    public void IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess()
+    public void VHDLTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess()
     {
-        // Run the application
+        // Arrange: (none — application is invoked directly)
+
+        // Act: run the application with -? flag
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
             "-?");
 
-        // Verify no error
+        // Assert: verify success and usage message
         Assert.Equal(0, exitCode);
-
-        // Verify usage reported
         Assert.Contains("Usage: VHDLTest", output);
     }
 
@@ -101,19 +101,19 @@ public partial class IntegrationTests
     /// Test usage information is reported when the '--help' parameter is specified
     /// </summary>
     [Fact]
-    public void IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess()
+    public void VHDLTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess()
     {
-        // Run the application
+        // Arrange: (none — application is invoked directly)
+
+        // Act: run the application with --help flag
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
             "--help");
 
-        // Verify no error
+        // Assert: verify success and usage message
         Assert.Equal(0, exitCode);
-
-        // Verify usage reported
         Assert.Contains("Usage: VHDLTest", output);
     }
 
@@ -121,19 +121,19 @@ public partial class IntegrationTests
     /// Test version information is reported when the '-v' parameter is specified
     /// </summary>
     [Fact]
-    public void IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess()
+    public void VHDLTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess()
     {
-        // Query version
+        // Arrange: (none — application is invoked directly)
+
+        // Act: query version with -v flag
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
             "-v");
 
-        // Verify success
+        // Assert: verify success and version reported
         Assert.Equal(0, exitCode);
-
-        // Verify version reported
         Assert.Matches(VersionRegex(), output);
     }
 
@@ -141,19 +141,19 @@ public partial class IntegrationTests
     /// Test version information is reported when the '--version' parameter is specified
     /// </summary>
     [Fact]
-    public void IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess()
+    public void VHDLTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess()
     {
-        // Query version
+        // Arrange: (none — application is invoked directly)
+
+        // Act: query version with --version flag
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
             "--version");
 
-        // Verify success
+        // Assert: verify success and version reported
         Assert.Equal(0, exitCode);
-
-        // Verify version reported
         Assert.Matches(VersionRegex(), output);
     }
 
@@ -161,13 +161,14 @@ public partial class IntegrationTests
     /// Test non-zero exit code with compile errors
     /// </summary>
     [Fact]
-    public void IntegrationTest_CompileError_ReturnsNonZeroExitCode()
+    public void VHDLTest_CompileError_ReturnsNonZeroExitCode()
     {
+        // Arrange: create a config file pointing to a file that will trigger a compile error
         var configFile = CreateConfigurationFile("test_compile_error", "file_error_test.vhd", "file_error_test_tb");
 
         try
         {
-            // Run the application using the mock simulator
+            // Act: run the application using the mock simulator
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -175,7 +176,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify error reported
+            // Assert: verify non-zero exit code
             Assert.NotEqual(0, exitCode);
         }
         finally
@@ -188,13 +189,14 @@ public partial class IntegrationTests
     /// Test non-zero exit code with test-execution errors
     /// </summary>
     [Fact]
-    public void IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode()
+    public void VHDLTest_TestExecutionError_ReturnsNonZeroExitCode()
     {
+        // Arrange: create a config file for a test that will fail during execution
         var configFile = CreateConfigurationFile("test_execution_error", "file_test.vhd", "file_error_test_tb");
 
         try
         {
-            // Run the application using the mock simulator
+            // Act: run the application using the mock simulator
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -202,7 +204,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify error reported
+            // Assert: verify non-zero exit code
             Assert.NotEqual(0, exitCode);
         }
         finally
@@ -215,11 +217,11 @@ public partial class IntegrationTests
     /// Test zero exit code is returned when exit-0 is specified and tests fail
     /// </summary>
     [Fact]
-    public void IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode()
+    public void VHDLTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode()
     {
         try
         {
-            // Write a config file
+            // Arrange: write a config file for a test that will fail
             File.WriteAllText("test_execution_error_exit0.yaml",
                 """
                 files:
@@ -230,7 +232,7 @@ public partial class IntegrationTests
                 """
             );
 
-            // Run the application using the mock simulator
+            // Act: run the application using the mock simulator with --exit-0
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -239,7 +241,7 @@ public partial class IntegrationTests
                 "--config", "test_execution_error_exit0.yaml",
                 "--exit-0");
 
-            // Verify error suppressed
+            // Assert: verify error suppressed
             Assert.Equal(0, exitCode);
         }
         finally
@@ -252,13 +254,14 @@ public partial class IntegrationTests
     /// Test zero exit code is returned when all tests pass
     /// </summary>
     [Fact]
-    public void IntegrationTest_TestsPassed_ReturnsZeroExitCode()
+    public void VHDLTest_TestsPassed_ReturnsZeroExitCode()
     {
+        // Arrange: create a config file for a test that will pass
         var configFile = CreateConfigurationFile("test_execution_pass", "file_test.vhd", "file_test_tb");
 
         try
         {
-            // Run the application using the mock simulator
+            // Act: run the application using the mock simulator
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -266,7 +269,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify no error
+            // Assert: verify no error
             Assert.Equal(0, exitCode);
         }
         finally
@@ -279,13 +282,14 @@ public partial class IntegrationTests
     /// Test the verbose flag enables additional diagnostic output
     /// </summary>
     [Fact]
-    public void IntegrationTest_VerboseFlag_DisplaysDetailedOutput()
+    public void VHDLTest_VerboseFlag_DisplaysDetailedOutput()
     {
+        // Arrange: create a config file for a passing test
         var configFile = CreateConfigurationFile("test_verbose", "file_test.vhd", "file_test_tb");
 
         try
         {
-            // Run a normal execution for comparison
+            // Act: run normal and verbose executions for comparison
             var normalExitCode = Runner.Run(
                 out var normalOutput,
                 "dotnet",
@@ -293,7 +297,6 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Run a verbose execution
             var verboseExitCode = Runner.Run(
                 out var verboseOutput,
                 "dotnet",
@@ -302,7 +305,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify both executions succeeded
+            // Assert: verify both succeeded and verbose has additional output
             Assert.Equal(0, normalExitCode);
             Assert.Equal(0, verboseExitCode);
 
@@ -322,13 +325,14 @@ public partial class IntegrationTests
     /// Test the silent flag suppresses non-essential output
     /// </summary>
     [Fact]
-    public void IntegrationTest_SilentFlag_SuppressesOutput()
+    public void VHDLTest_SilentFlag_SuppressesOutput()
     {
+        // Arrange: create a config file for a passing test
         var configFile = CreateConfigurationFile("test_silent", "file_test.vhd", "file_test_tb");
 
         try
         {
-            // Run the application with silent mode enabled
+            // Act: run with silent mode enabled
             var exitCode = Runner.Run(
                 out var output,
                 "dotnet",
@@ -337,10 +341,8 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify the run succeeded
+            // Assert: verify success and suppressed output
             Assert.Equal(0, exitCode);
-
-            // Verify informational output was suppressed
             Assert.DoesNotContain("Building with Mock...", output);
             Assert.DoesNotContain("Passed 1 of 1 tests", output);
             Assert.True(string.IsNullOrWhiteSpace(output));
@@ -355,14 +357,15 @@ public partial class IntegrationTests
     /// Test the log flag writes output to the requested log file
     /// </summary>
     [Fact]
-    public void IntegrationTest_LogFlag_WritesLogFile()
+    public void VHDLTest_LogFlag_WritesLogFile()
     {
+        // Arrange: create a config file and a unique log file path
         var configFile = CreateConfigurationFile("test_log", "file_test.vhd", "file_test_tb");
         var logFile = Path.Combine(Environment.CurrentDirectory, $"test_log_{Guid.NewGuid():N}.log");
 
         try
         {
-            // Run the application with log file output enabled
+            // Act: run with log file output enabled
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -371,7 +374,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify the run succeeded and the log file was written
+            // Assert: verify success and log file content
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(logFile));
             var logContent = File.ReadAllText(logFile);
@@ -389,14 +392,15 @@ public partial class IntegrationTests
     /// Test the results flag writes a TRX results file
     /// </summary>
     [Fact]
-    public void IntegrationTest_ResultsFlag_WritesTrxFile()
+    public void VHDLTest_ResultsFlag_WritesTrxFile()
     {
+        // Arrange: create a config file and a unique TRX results file path
         var configFile = CreateConfigurationFile("test_results_trx", "file_test.vhd", "file_test_tb");
         var resultsFile = Path.Combine(Environment.CurrentDirectory, $"test_results_{Guid.NewGuid():N}.trx");
 
         try
         {
-            // Run the application with TRX results output enabled
+            // Act: run with TRX results output enabled
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -405,7 +409,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify the run succeeded and the TRX file was written
+            // Assert: verify success and TRX file content
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(resultsFile));
             var resultsContent = File.ReadAllText(resultsFile);
@@ -423,14 +427,15 @@ public partial class IntegrationTests
     /// Test the results flag writes a JUnit XML results file
     /// </summary>
     [Fact]
-    public void IntegrationTest_ResultsFlag_WritesJUnitFile()
+    public void VHDLTest_ResultsFlag_WritesJUnitFile()
     {
+        // Arrange: create a config file and a unique JUnit XML results file path
         var configFile = CreateConfigurationFile("test_results_xml", "file_test.vhd", "file_test_tb");
         var resultsFile = Path.Combine(Environment.CurrentDirectory, $"test_results_{Guid.NewGuid():N}.xml");
 
         try
         {
-            // Run the application with JUnit XML results output enabled
+            // Act: run with JUnit XML results output enabled
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -439,7 +444,7 @@ public partial class IntegrationTests
                 "--simulator", "mock",
                 "--config", configFile);
 
-            // Verify the run succeeded and the JUnit XML file was written
+            // Assert: verify success and JUnit file content
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(resultsFile));
             var resultsContent = File.ReadAllText(resultsFile);
@@ -457,8 +462,9 @@ public partial class IntegrationTests
     /// Test the simulator path override environment variable is honored
     /// </summary>
     [Fact]
-    public void IntegrationTest_SimulatorEnvPath_OverridesPath()
+    public void VHDLTest_SimulatorEnvPath_OverridesPath()
     {
+        // Arrange: create a config file and a fake GHDL simulator directory
         var configFile = CreateConfigurationFile("test_env_path", "fake_test.vhd", "fake_test_tb");
         var simulatorDirectory = Path.Combine(Environment.CurrentDirectory, $"fake_ghdl_{Guid.NewGuid():N}");
 
@@ -502,7 +508,7 @@ public partial class IntegrationTests
                     UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
             }
 
-            // Run the application using the environment override for GHDL discovery
+            // Act: run with environment variable override for GHDL path
             var exitCode = Runner.Run(
                 out var output,
                 "dotnet",
@@ -514,7 +520,7 @@ public partial class IntegrationTests
                 "--simulator", "ghdl",
                 "--config", configFile);
 
-            // Verify the override allowed the run to complete successfully
+            // Assert: verify the override allowed the run to complete successfully
             Assert.Equal(0, exitCode);
             Assert.Contains("Passed fake_test_tb", output);
         }
@@ -529,7 +535,7 @@ public partial class IntegrationTests
     /// Test that each enumerated simulator name is recognized and does not produce an unknown-simulator error
     /// </summary>
     [Fact]
-    public void IntegrationTest_SimulatorSelect_AcceptsEnumeratedValues()
+    public void VHDLTest_SimulatorSelect_AcceptsEnumeratedValues()
     {
         var configFile = CreateConfigurationFile("test_simulator_select", "file_test.vhd", "file_test_tb");
 

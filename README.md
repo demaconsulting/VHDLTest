@@ -74,6 +74,12 @@ Generate a test results file for CI environments:
 dotnet vhdltest --config test_suite.yaml --results test_results.trx
 ```
 
+To generate a JUnit XML test results file instead, use a `.xml` extension:
+
+```bash
+dotnet vhdltest --config test_suite.yaml --results test_results.xml
+```
+
 Full command-line options:
 
 ```text

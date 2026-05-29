@@ -154,4 +154,4 @@ Data moves through VHDLTest in the following sequence:
 | Invalid configuration YAML | `ConfigDocument.ReadFile` throws `InvalidOperationException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
 | Unknown simulator name | `SimulatorFactory.Get` returns null | `Program.Run` throws `InvalidOperationException("Simulator not found")`, exits non-zero |
 | Simulator executable absent | Simulator `Compile` or `Test` throws `InvalidOperationException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
-| Results file write failure | `TestResults.SaveResults` throws any exception | Propagates out of `Program.Run`; runtime reports unhandled exception, exits non-zero |
+| Results file write failure | `TestResults.SaveResults` throws any exception | Caught in `Program.Run`; writes "Error: Failed to write results file: ..." message, exits non-zero |

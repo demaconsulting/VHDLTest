@@ -12,14 +12,14 @@ options and file lists.
 `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
 **CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for xvhdl output.
-Classifies lines matching `Error:` as Error. The trailing space in each pattern prevents false matches on
-identifiers that contain the keyword as a prefix (for example, `ErrorDetails:`). Lines not matching any rule
-are left unclassified.
+Classifies lines matching `` `Error: ` `` as Error. The trailing space after the colon ensures the
+pattern only matches when a space follows the colon, preventing false matches on lines like
+`ErrorDetails: ...`. Lines not matching any rule are left unclassified.
 
 **TestProcessor**: `RunProcessor` (public static readonly) — output classifier for xelab simulation output.
-Classifies `Note:` as Info, `Warning:` as Warning, and `Error:` or `Failure:` as Error. The trailing
-space in each pattern prevents false matches on identifiers that contain the keyword as a prefix (for
-example, `ErrorDetails:`).
+Classifies `` `Note: ` `` as Info, `` `Warning: ` `` as Warning, and `` `Error: ` `` or `` `Failure: ` `` as
+Error. The trailing space after the colon ensures the pattern only matches when a space follows the colon,
+preventing false matches on lines like `ErrorDetails: ...`.
 
 #### Key Methods
 

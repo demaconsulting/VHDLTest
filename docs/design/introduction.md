@@ -168,4 +168,4 @@ Review-sets: defined in `.reviewmark.yaml`
 
 ## References
 
-- [VHDLTest releases](https://github.com/demaconsulting/VHDLTest/releases)
+None.

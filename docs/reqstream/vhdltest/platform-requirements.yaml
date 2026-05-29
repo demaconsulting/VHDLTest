@@ -58,9 +58,9 @@ sections:
           - id: VHDLTest-Plt-Net10
             title: VHDLTest shall support .NET 10.0 runtime.
             justification: |
-              .NET 10.0 is the upcoming Long-Term Support (LTS) release scheduled for November
-              2025. Supporting .NET 10.0 ensures VHDLTest remains compatible with the latest
-              long-term supported runtime and benefits from future performance and security updates.
+              .NET 10.0 is a Long-Term Support (LTS) release. Supporting .NET 10.0 ensures VHDLTest
+              remains compatible with the latest long-term supported runtime and benefits from the
+              latest performance and security improvements.
             tests:
               - dotnet10.x@VHDLTest_TestPasses
               - dotnet10.x@VHDLTest_TestFails

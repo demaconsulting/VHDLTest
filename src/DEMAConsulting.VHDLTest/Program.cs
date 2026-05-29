@@ -139,7 +139,14 @@ public static class Program
             // Save the test results
             if (context.ResultsFile != null)
             {
-                results.SaveResults(context.ResultsFile);
+                try
+                {
+                    results.SaveResults(context.ResultsFile);
+                }
+                catch (Exception ex)
+                {
+                    context.WriteError($"Error: Failed to write results file: {ex.Message}");
+                }
             }
 
             // If we got failures then exit with an error code

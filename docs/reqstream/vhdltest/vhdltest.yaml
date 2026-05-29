@@ -11,7 +11,7 @@ sections:
               forgotten the command syntax. This improves user experience by making the tool
               self-documenting and reduces the need for external documentation lookups.
             tests:
-              - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
+              - VHDLTest_NoArguments_DisplaysUsageAndReturnsError
             children:
               - VHDLTest-Program-NoArgs
               - VHDLTest-Program-NoConfig
@@ -23,8 +23,8 @@ sections:
               for troubleshooting, compatibility checks, and ensuring reproducible builds. This
               is a standard practice for CLI tools and supports issue reporting.
             tests:
-              - IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess
-              - IntegrationTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess
+              - VHDLTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess
+              - VHDLTest_VersionLongFlag_DisplaysVersionAndReturnsSuccess
             children:
               - VHDLTest-Program-Version
 
@@ -35,9 +35,9 @@ sections:
               allowing users to quickly reference available options and syntax without
               consulting external documentation. Supports multiple help flags for user convenience.
             tests:
-              - IntegrationTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess
-              - IntegrationTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess
-              - IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess
+              - VHDLTest_HelpShortFlag_DisplaysUsageAndReturnsSuccess
+              - VHDLTest_HelpQuestionFlag_DisplaysUsageAndReturnsSuccess
+              - VHDLTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess
             children:
               - VHDLTest-Program-Help
 
@@ -49,7 +49,7 @@ sections:
               and diagnostic information needed to diagnose issues without requiring manual
               simulator invocation.
             tests:
-              - IntegrationTest_VerboseFlag_DisplaysDetailedOutput
+              - VHDLTest_VerboseFlag_DisplaysDetailedOutput
             children:
               - VHDLTest-Cli-Context-WriteVerboseLine
 
@@ -60,7 +60,7 @@ sections:
               while retaining error output. This is important for large pipelines where noise
               in log output increases review time and obscures actionable failures.
             tests:
-              - IntegrationTest_SilentFlag_SuppressesOutput
+              - VHDLTest_SilentFlag_SuppressesOutput
             children:
               - VHDLTest-Cli-Context-Write
               - VHDLTest-Cli-Context-WriteLine
@@ -72,7 +72,7 @@ sections:
               trails for compliance workflows. It decouples diagnostic information from the
               interactive terminal session.
             tests:
-              - IntegrationTest_LogFlag_WritesLogFile
+              - VHDLTest_LogFlag_WritesLogFile
             children:
               - VHDLTest-Cli-Context-LogFile
 
@@ -85,7 +85,7 @@ sections:
               codes to determine test success or failure. A zero exit code is the standard
               convention for successful command execution in Unix-like systems.
             tests:
-              - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+              - VHDLTest_TestsPassed_ReturnsZeroExitCode
             children:
               - VHDLTest-Cli-Pipeline
               - VHDLTest-Simulators-Factory-Select
@@ -100,7 +100,7 @@ sections:
               halt the build process appropriately. This prevents invalid or incomplete designs
               from progressing through the development pipeline.
             tests:
-              - IntegrationTest_CompileError_ReturnsNonZeroExitCode
+              - VHDLTest_CompileError_ReturnsNonZeroExitCode
             children:
               - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
@@ -112,7 +112,7 @@ sections:
               action (e.g., failing the build, sending notifications). This is essential for
               continuous integration and maintaining code quality.
             tests:
-              - IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode
+              - VHDLTest_TestExecutionError_ReturnsNonZeroExitCode
             children:
               - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
@@ -124,7 +124,7 @@ sections:
               analyzed without failing the build process. Useful for generating test reports
               in pipelines where failures are handled by separate post-processing steps.
             tests:
-              - IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode
+              - VHDLTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode
             children:
               - VHDLTest-Cli-Pipeline
 
@@ -135,7 +135,7 @@ sections:
               and how the simulator should be configured. Requiring the path via a named option
               makes the invocation explicit and consistent with the published command-line interface.
             tests:
-              - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+              - VHDLTest_TestsPassed_ReturnsZeroExitCode
             children:
               - VHDLTest-Cli-Pipeline
               - VHDLTest-Cli-ConfigDoc-Read
@@ -149,7 +149,7 @@ sections:
               result consumption from the tool's standard output stream and enables asynchronous
               processing.
             tests:
-              - IntegrationTest_ResultsFlag_WritesTrxFile
+              - VHDLTest_ResultsFlag_WritesTrxFile
             children:
               - VHDLTest-Results-TestResults-Trx
 
@@ -160,7 +160,7 @@ sections:
               the .NET ecosystem. Supporting JUnit XML output allows VHDLTest to integrate with
               heterogeneous build pipelines and reporting infrastructure.
             tests:
-              - IntegrationTest_ResultsFlag_WritesJUnitFile
+              - VHDLTest_ResultsFlag_WritesJUnitFile
             children:
               - VHDLTest-Results-TestResults-JUnit
 
@@ -171,8 +171,8 @@ sections:
               environments and organizations that have standardized on different VHDL simulators.
               The explicit selection option ensures deterministic simulator choice in CI pipelines.
             tests:
-              - IntegrationTest_TestsPassed_ReturnsZeroExitCode
-              - IntegrationTest_SimulatorSelect_AcceptsEnumeratedValues
+              - VHDLTest_TestsPassed_ReturnsZeroExitCode
+              - VHDLTest_SimulatorSelect_AcceptsEnumeratedValues
             children:
               - VHDLTest-Simulators-Factory-Select
 
@@ -183,9 +183,23 @@ sections:
               to point VHDLTest at non-standard simulator installation locations without modifying
               configuration files or the system PATH, which may be locked down in managed environments.
             tests:
-              - IntegrationTest_SimulatorEnvPath_OverridesPath
+              - VHDLTest_SimulatorEnvPath_OverridesPath
             children:
               - VHDLTest-Simulators-Factory-Select
+
+          - id: VHDLTest-Test-Filter
+            title: VHDLTest shall support filtering test execution to named test bench(es).
+            justification: |
+              Users need to run a specific subset of test benches from a configuration file
+              without modifying it. Positional arguments after options (or after `--`) are
+              treated as test-filter names, restricting execution to those benches only.
+            tests:
+              - Context_Create_WithCustomTest_SetsCustomTest
+              - Context_Create_WithCustomTests_SetsCustomTests
+              - Options_Parse_WithCustomTest_ParsesSuccessfully
+            children:
+              - VHDLTest-Cli-Context-Parse
+              - VHDLTest-Cli-Options-Parse
 
       - title: Self-Validation
         requirements:
@@ -195,12 +209,14 @@ sections:
               A built-in self-validation mode allows users to confirm that VHDLTest is correctly
               installed and functioning after deployment, reducing support burden and enabling
               automated installation verification in provisioning scripts.
+              The tests for this requirement use the SelfTest_ prefix (SelfTest_Validate_*)
+              because they reside in SelfTest/ValidationTests.cs and are directly owned by
+              the SelfTest subsystem; this is an accepted architectural constraint.
             tests:
               - SelfTest_Validate_MockSimulator_ReturnsSuccess
             children:
               - VHDLTest-Program-Validate
               - VHDLTest-SelfTest-Run
-              - VHDLTest-Validate-Depth
 
           - id: VHDLTest-Validate-Depth
             title: VHDLTest shall support a --depth <n> option that controls the Markdown heading level in validation reports.
@@ -209,5 +225,8 @@ sections:
               reports within larger compliance documents that use different heading hierarchies.
               The default depth of 1 matches existing behavior; specifying a higher value shifts
               all headings down by the corresponding number of levels.
+              The test for this requirement uses the SelfTest_ prefix (SelfTest_ValidateWithDepth_*)
+              because it resides in SelfTest/ValidationTests.cs and is directly owned by
+              the SelfTest subsystem; this is an accepted architectural constraint.
             tests:
               - SelfTest_ValidateWithDepth_MockSimulator_RendersDepthHeadings

@@ -31,6 +31,25 @@ VHDLTest supports the following command line options:
 - `-0, --exit-0` - Exit with code 0 even if tests fail
 - `--` - End of options marker
 
+## Filtering Tests
+
+To run only specific test benches from the configuration file, provide their names as
+positional arguments after the options (or after `--` to separate them from option flags):
+
+```bash
+dotnet vhdltest --config test_suite.yaml full_adder_pass_tb
+```
+
+Multiple test bench names may be specified:
+
+```bash
+dotnet vhdltest --config test_suite.yaml -- full_adder_pass_tb full_adder_fail_tb
+```
+
+Only the named test benches are executed; any other benches listed in the configuration
+file are skipped. When no positional arguments are given, all test benches in the
+configuration file are executed.
+
 ## Generating Test Results
 
 To generate a TRX test results file for CI/CD integration:

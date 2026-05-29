@@ -15,8 +15,7 @@ sections:
             tags: [ots]
             tests:
               - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
-              - IntegrationTest_ResultsFlag_WritesTrxFile
-
+              - VHDLTest_ResultsFlag_WritesTrxFile
           - id: VHDLTest-OTS-TestResults-JUnit
             title: DemaConsulting.TestResults shall generate JUnit XML test results files from VHDLTest run outcomes.
             justification: |

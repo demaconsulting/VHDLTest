@@ -26,16 +26,15 @@ reported as failed.
 **Consumed Interfaces**:
 
 - **`Cli.Context`** — consumed by `Validation.Run` for all output writes and flag reading; provides the
-  I/O channels and `context.Validate`, `context.Simulator`, and `context.ResultsFile` flags.
-- **`context.Depth`** — consumed by `Validation.Run` to control the Markdown heading level used in
-  validation output.
-  - *Type*: `int` property on `Cli.Context`.
+  I/O channels and `context.Validate`, `context.Simulator`, `context.ResultsFile`, and `context.Depth` flags.
+  `context.Depth` is read once at the start of `Run` to produce the heading prefix
+  (`new string('#', context.Depth)`) written before the system information table; the same depth
+  value controls all Markdown heading levels throughout the validation output.
+  - *Type*: in-process .NET API.
   - *Role*: Consumer.
-  - *Contract*: `context.Depth` is read once at the start of `Run` to produce the heading prefix
-    (`new string('#', context.Depth)`) written before the system information table. The same depth
-    value controls all Markdown heading levels throughout the validation output.
-  - *Constraints*: Must be a positive integer; the value is supplied by the caller via the
-    `--depth` command-line argument (e.g., `--depth 3` produces `###`-level headings).
+  - *Contract*: `context.Depth` must be a positive integer, supplied via the `--depth` command-line
+    argument (e.g., `--depth 3` produces `###`-level headings).
+  - *Constraints*: The caller must not dispose `context` before `Run` returns.
 - **`Program`** — invoked in-process via `Program.Run` to execute each embedded validation test scenario
   as a re-entrant call; `RunVhdlTest` supplies a fresh `Context` per validation scenario.
 - **`Results.TestResults`** / **`Results.TestResult`** — used to collect individual validation pass/fail
