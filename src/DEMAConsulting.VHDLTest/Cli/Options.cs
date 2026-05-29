@@ -52,10 +52,14 @@ public record Options(string WorkingDirectory,
     ///     is read. Must not be null.
     /// </param>
     /// <returns>A non-null <see cref="Options"/> record with <see cref="WorkingDirectory"/> set to the absolute directory of the configuration file and <see cref="Config"/> populated from the YAML content.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="args"/> is null.</exception>
     /// <exception cref="InvalidOperationException">Thrown when no configuration file is specified in <paramref name="args"/>, or when the configuration file path cannot be resolved to a containing directory.</exception>
     /// <exception cref="FileNotFoundException">Thrown when the specified configuration file does not exist on disk.</exception>
     public static Options Parse(Context args)
     {
+        // Validate args before dereferencing
+        ArgumentNullException.ThrowIfNull(args);
+
         // Verify a configuration file was specified
         if (args.ConfigFile == null)
         {

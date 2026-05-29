@@ -5,7 +5,7 @@ sections:
       - title: Run Requirements
         requirements:
           - id: VHDLTest-Run-Execute
-            title: VHDLTest shall execute the configured simulator program and capture its exit code.
+            title: VHDLTest shall execute the configured simulator program and use its exit code to determine the run outcome.
             justification: |
               Executing the simulator as an external process allows VHDLTest to work with any
               command-line VHDL simulator without requiring programmatic integration. Capturing

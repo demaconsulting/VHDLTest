@@ -28,11 +28,39 @@ namespace DEMAConsulting.VHDLTest.Tests;
 public class ProgramTests
 {
     /// <summary>
+    /// Configuration file contents for a run that should pass.
+    /// </summary>
+    private const string PassingConfigContent =
+        """
+        files:
+        - file1.vhd
+
+        tests:
+        - test1
+        """;
+
+    /// <summary>
+    /// Configuration file contents for a run that should fail (test name contains _fail_).
+    /// </summary>
+    private const string FailingConfigContent =
+        """
+        files:
+        - file1.vhd
+
+        tests:
+        - test_fail_1
+        """;
+
+    /// <summary>
     /// Test that the version string is not empty
     /// </summary>
     [Fact]
     public void Program_Version_IsNotEmpty()
     {
+        // Arrange: no setup required — Program.Version is a static property initialized at startup
+
+        // Act: read the version string
+
         // Assert - verify version is populated
         Assert.False(string.IsNullOrEmpty(Program.Version));
     }
@@ -178,5 +206,112 @@ public class ProgramTests
 
         // Assert: the validate dispatch path completed; exit code is zero for the mock simulator
         Assert.Equal(0, context.ExitCode);
+    }
+
+    /// <summary>
+    ///     Verifies that Run executes the test suite successfully when a valid configuration file
+    ///     and the mock simulator are provided.
+    /// </summary>
+    [Fact]
+    public void Program_Run_RunTests_WithMockSimulator_RunsSuccessfully()
+    {
+        // Arrange: write a passing configuration file and create a silent context
+        var configFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(configFile, PassingConfigContent);
+            using var context = Context.Create(["-c", configFile, "--simulator", "mock", "--silent"]);
+
+            // Act: run the program with the valid configuration
+            Program.Run(context);
+
+            // Assert: the test suite ran without errors and exit code is zero
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(configFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run returns a non-zero exit code when tests fail and --exit-0 is not set.
+    /// </summary>
+    [Fact]
+    public void Program_Run_FailureExitCode_WithFailingTests_ReturnsNonZeroExitCode()
+    {
+        // Arrange: write a configuration file whose test names trigger mock failures
+        var configFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(configFile, FailingConfigContent);
+            using var context = Context.Create(["-c", configFile, "--simulator", "mock", "--silent"]);
+
+            // Act: run the program with failing tests and no --exit-0 flag
+            Program.Run(context);
+
+            // Assert: the exit code is non-zero because tests failed
+            Assert.NotEqual(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(configFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run returns a zero exit code when tests fail but --exit-0 is set.
+    /// </summary>
+    [Fact]
+    public void Program_Run_ExitZero_WithFailingTestsAndExitZeroFlag_ReturnsZeroExitCode()
+    {
+        // Arrange: write a configuration file whose test names trigger mock failures
+        var configFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(configFile, FailingConfigContent);
+            using var context = Context.Create(["-c", configFile, "--simulator", "mock", "--exit-0", "--silent"]);
+
+            // Act: run the program with failing tests and the --exit-0 flag
+            Program.Run(context);
+
+            // Assert: the exit code is zero because --exit-0 suppresses failure exit codes
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(configFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run creates a results file at the specified path when --results is given.
+    /// </summary>
+    [Fact]
+    public void Program_Run_SaveResults_WithResultsFile_CreatesResultsFile()
+    {
+        // Arrange: write a passing configuration file and prepare a unique results file path
+        var configFile = Path.GetTempFileName();
+        var resultsFile = Path.Combine(Path.GetTempPath(), $"results_{Guid.NewGuid():N}.trx");
+        try
+        {
+            File.WriteAllText(configFile, PassingConfigContent);
+            using var context = Context.Create(
+                ["-c", configFile, "--simulator", "mock", "-r", resultsFile, "--silent"]);
+
+            // Act: run the program with the results flag
+            Program.Run(context);
+
+            // Assert: the results file was created at the specified path
+            Assert.True(File.Exists(resultsFile), $"Results file '{resultsFile}' should have been created");
+        }
+        finally
+        {
+            File.Delete(configFile);
+            if (File.Exists(resultsFile))
+            {
+                File.Delete(resultsFile);
+            }
+        }
     }
 }

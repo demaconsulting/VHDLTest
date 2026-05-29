@@ -48,11 +48,12 @@ public static class RunProgram
     /// </remarks>
     /// <param name="output">
     ///     Receives the combined text from the program's standard output and standard error
-    ///     streams, concatenated in the order they were read.
+    ///     streams, with stdout content followed by stderr content.
     /// </param>
     /// <param name="application">
     ///     Path or name of the executable to launch. Must not be pre-quoted even if it contains
-    ///     spaces; <c>ArgumentList</c> handles quoting automatically.
+    ///     spaces; the CLR passes the path directly to the OS, which handles spaces natively
+    ///     without shell quoting.
     /// </param>
     /// <param name="workingDirectory">Working directory for the launched process.</param>
     /// <param name="arguments">

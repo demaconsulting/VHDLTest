@@ -31,6 +31,21 @@ the YAML content, resolves the full path of the config file via `Path.GetFullPat
 extracts the parent directory via `Path.GetDirectoryName`. Throws `InvalidOperationException`
 if the directory cannot be resolved.
 
+**ResolveWorkingDirectory** (internal): Resolves the absolute directory path containing
+the specified configuration file.
+
+- *Parameters*: `string configFile` — path to the configuration file; must not be null.
+- *Returns*: `string` — the absolute directory path containing `configFile`.
+- *Preconditions*: `configFile` is not null.
+- *Postconditions*: The returned path is an absolute, non-null directory path.
+
+Calls `Path.GetFullPath` to normalize `configFile` to an absolute path, then calls
+`Path.GetDirectoryName` to extract the parent directory. Throws `InvalidOperationException`
+when `Path.GetDirectoryName` returns null, which occurs only for file-system root paths such
+as `/` or `C:\`. This method is extracted from `Parse` to allow direct unit testing of the
+defensive null guard — `Parse` cannot easily be driven to supply a root path through normal
+argument processing.
+
 #### Error Handling
 
 `Parse` throws `InvalidOperationException` if `args.ConfigFile` is null ("Configuration file

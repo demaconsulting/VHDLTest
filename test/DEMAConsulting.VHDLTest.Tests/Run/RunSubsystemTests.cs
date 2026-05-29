@@ -72,6 +72,9 @@ public class RunSubsystemTests
         Assert.NotNull(results);
         Assert.NotEqual(0, results.ExitCode);
         Assert.Equal(RunLineType.Error, results.Summary);
+
+        // Assert: with no classification rules, every output line falls back to Text type
+        Assert.All(results.Lines, line => Assert.Equal(RunLineType.Text, line.Type));
     }
 
     /// <summary>

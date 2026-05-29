@@ -33,9 +33,11 @@ returns its result.
 
 **`Execute(string application, string workingDirectory, string[] arguments) → RunResults`**
 
-Records the start time, calls `RunProgram.Run` to launch the process and capture
-output, records the end time, then calls `Parse` and returns the result. No logging
-is performed.
+Records the start time using `DateTime.Now` (local wall-clock time) immediately before process
+launch, calls `RunProgram.Run` to launch the process and capture output, then records the end
+time with `DateTime.Now` immediately after exit. Local time is used intentionally — results are
+displayed to end users who expect local timestamps in run logs. Calls `Parse` and returns
+the result. No logging is performed.
 
 - *Preconditions*: `application` identifies a reachable executable.
 - *Postconditions*: Returns a `RunResults` with all fields populated.

@@ -7,17 +7,21 @@ sections:
           - title: RunProcessor Requirements
             requirements:
               - id: VHDLTest-Run-RunProcessor-Pass
-                title: RunProcessor shall classify simulator output as a pass when pass patterns match.
+                title: >-
+                  RunProcessor shall classify simulator output lines as Info type when patterns
+                  configured to classify lines as Info type match.
                 justification: |
-                  Correct classification of pass output is essential for accurate test reporting and
+                  Correct classification of info output is essential for accurate test reporting and
                   for distinguishing successful test bench executions from failures.
                 tests:
                   - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
 
               - id: VHDLTest-Run-RunProcessor-Fail
-                title: RunProcessor shall classify simulator output as a fail when fail patterns match.
+                title: >-
+                  RunProcessor shall classify simulator output lines as Error type when patterns
+                  configured to classify lines as Error type match.
                 justification: |
-                  Correct classification of fail output enables VHDLTest to accurately identify
+                  Correct classification of error output enables VHDLTest to accurately identify
                   test failures and report them to the user and CI/CD system.
                 tests:
                   - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
@@ -41,3 +45,27 @@ sections:
                   silent pass results when the simulator aborts without producing recognizable output.
                 tests:
                   - RunProcessor_Execute_ProgramWithNonZeroExitCode_ReturnsErrorResult
+
+              - id: VHDLTest-Run-RunProcessor-VerboseLogging
+                title: >-
+                  RunProcessor shall log the working directory and command to the context when
+                  executing a simulator on behalf of a caller that provides a Context.
+                justification: |
+                  Verbose logging of the run directory and command enables users and CI operators to
+                  diagnose simulator invocation issues without resorting to external process tracing.
+                  Logging is gated on the context verbose flag so it does not clutter normal output.
+                tests:
+                  - RunSubsystem_ExecuteWithContext_LogsCommandToContext
+                  - RunProcessor_Execute_WithContext_LogsRunInfo
+
+              - id: VHDLTest-Run-RunProcessor-WindowsWrapping
+                title: >-
+                  RunProcessor shall support invocation of Windows batch files by wrapping the
+                  command with cmd /c on Windows.
+                justification: |
+                  Windows batch files (.bat/.cmd) cannot be launched directly as a process — they
+                  require a command interpreter. Wrapping with cmd /c ensures that batch-file-based
+                  simulator launchers work correctly on Windows without requiring callers to know
+                  about this platform difference.
+                tests:
+                  - windows@RunSubsystem_ExecuteWithContext_LogsCommandToContext

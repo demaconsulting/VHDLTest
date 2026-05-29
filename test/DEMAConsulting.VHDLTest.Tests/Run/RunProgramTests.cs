@@ -57,4 +57,21 @@ public class RunProgramTests
         // Assert: the non-zero exit code is returned to the caller
         Assert.NotEqual(0, exitCode);
     }
+
+    /// <summary>
+    ///     Verifies that stderr output from the launched program is captured and included in
+    ///     the combined output string.
+    /// </summary>
+    [Fact]
+    public void RunProgram_Run_ProgramWithStderr_CapturesBothStreamsInOutput()
+    {
+        // Arrange: dotnet with an unrecognized command writes a recognizable error to stderr
+
+        // Act: launch dotnet with an unknown command that produces stderr output
+        RunProgram.Run(out var output, "dotnet", "", "unknown-command");
+
+        // Assert: the combined output includes text from stderr; the unknown command name
+        // appears in dotnet's error message confirming stderr was captured
+        Assert.Contains("unknown", output, StringComparison.OrdinalIgnoreCase);
+    }
 }

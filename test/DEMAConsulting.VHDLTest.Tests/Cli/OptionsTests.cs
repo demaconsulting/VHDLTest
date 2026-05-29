@@ -92,6 +92,7 @@ public class OptionsTests
             Assert.Equal(2, options.Config.Tests.Length);
             Assert.Equal("test1", options.Config.Tests[0]);
             Assert.Equal("test2", options.Config.Tests[1]);
+            Assert.Equal(Path.GetDirectoryName(Path.GetFullPath(configFile)), options.WorkingDirectory);
         }
         finally
         {

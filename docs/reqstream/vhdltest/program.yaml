@@ -51,3 +51,39 @@ sections:
               principles.
             tests:
               - Program_Run_WithValidateFlag_DispatchesToValidation
+
+          - id: VHDLTest-Program-RunTests
+            title: Program shall execute the test suite when a valid configuration file and simulator are provided.
+            justification: |
+              The primary purpose of VHDLTest is to execute VHDL test benches via a configured
+              simulator. When a valid configuration file is supplied and the simulator is available,
+              Program.Run must delegate to TestResults.Execute and complete without error.
+            tests:
+              - Program_Run_RunTests_WithMockSimulator_RunsSuccessfully
+
+          - id: VHDLTest-Program-FailureExitCode
+            title: Program shall return a non-zero exit code when tests fail and the exit-zero flag is not set.
+            justification: |
+              CI pipelines depend on a non-zero exit code to detect test failures. When any test
+              reports a failure and --exit-0 is not given, Program.Run must signal failure via the
+              context error channel so that the exit code is non-zero.
+            tests:
+              - Program_Run_FailureExitCode_WithFailingTests_ReturnsNonZeroExitCode
+
+          - id: VHDLTest-Program-ExitZero
+            title: Program shall return a zero exit code when tests fail but the exit-zero flag is set.
+            justification: |
+              Some CI environments require the tool to exit 0 regardless of test outcomes so that
+              downstream steps always execute. The --exit-0 flag provides this behavior without
+              suppressing test failure reporting.
+            tests:
+              - Program_Run_ExitZero_WithFailingTestsAndExitZeroFlag_ReturnsZeroExitCode
+
+          - id: VHDLTest-Program-SaveResults
+            title: Program shall save test results to the specified file when the results flag is given.
+            justification: |
+              Saving results to a TRX file enables integration with external test reporting tools
+              and CI dashboards. When --results is specified, Program.Run must create the results
+              file so that downstream consumers can read the test outcome data.
+            tests:
+              - Program_Run_SaveResults_WithResultsFile_CreatesResultsFile

@@ -18,31 +18,33 @@ sections:
                   - Options_Parse_WithCustomTest_ParsesSuccessfully
 
               - id: VHDLTest-Cli-Options-NoConfig
-                title: The Options class shall throw InvalidOperationException when no config file is provided.
+                title: The Options class shall report an error and halt processing when no configuration file is provided.
                 justification: |
                   Validating that a configuration file is specified before attempting to parse options
-                  provides an early and clear error message, improving user experience.
+                  provides an early and clear error message, improving user experience. The error is
+                  surfaced as an InvalidOperationException so that Program.Run can catch and report it
+                  via the context error channel.
                 tests:
                   - Options_Parse_NoConfigProvided_ThrowsInvalidOperationException
 
               - id: VHDLTest-Cli-Options-MissingConfig
-                title: The Options class shall throw FileNotFoundException for a missing configuration file.
+                title: The Options class shall report an error and halt processing when the specified configuration file does not exist.
                 justification: |
                   A clear error for a missing configuration file is critical for CI pipeline
                   reliability — users must be able to quickly identify and fix misconfigured
-                  pipelines without interpreting cryptic exceptions. Surfacing FileNotFoundException
-                  directly gives the user the file path that could not be found, enabling
-                  immediate diagnosis.
+                  pipelines without interpreting cryptic exceptions. The error is surfaced as a
+                  FileNotFoundException, which gives the user the file path that could not be found,
+                  enabling immediate diagnosis.
                 tests:
                   - Options_Parse_MissingConfigFile_ThrowsFileNotFoundException
 
               - id: VHDLTest-Cli-Options-InvalidPath
                 title: >-
-                  Options shall throw InvalidOperationException when the configuration file path
+                  Options shall report an error and halt processing when the configuration file path
                   cannot be resolved to a containing directory.
                 justification: |
                   Path.GetDirectoryName returns null for root paths such as "/" or "C:\", meaning
-                  there is no valid parent directory. Throwing InvalidOperationException in this case
+                  there is no valid parent directory. Raising an InvalidOperationException in this case
                   is a defensive guard that ensures WorkingDirectory is always a valid, absolute path
                   before it is used by downstream units. Without this guard, a null WorkingDirectory
                   would cause a NullReferenceException deep in the test execution path, making

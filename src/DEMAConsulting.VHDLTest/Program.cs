@@ -51,6 +51,7 @@ public static class Program
     ///     exit code.
     /// </remarks>
     /// <param name="args">Program arguments</param>
+    /// <exception cref="Exception">Thrown when an unexpected error occurs that cannot be attributed to an operational condition; the exception propagates to the runtime unhandled.</exception>
     public static void Main(string[] args)
     {
         try

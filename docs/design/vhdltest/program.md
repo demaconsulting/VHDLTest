@@ -18,7 +18,7 @@ sets the process exit code on return.
 - *Parameters*: `string[] args` — raw command-line argument array from the host environment.
 - *Returns*: void; sets `Environment.ExitCode` on normal exit.
 - *Preconditions*: none.
-- *Postconditions*: `Environment.ExitCode` is 0 on success or 1 on failure.
+- *Postconditions*: `Environment.ExitCode` is 0 on success or non-zero on failure.
 
 Creates a `Context` from `args`, delegates to `Run`, then assigns `context.ExitCode` to
 `Environment.ExitCode`. Catches `InvalidOperationException` to print a red error message and exit
