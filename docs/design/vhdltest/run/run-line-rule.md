@@ -21,13 +21,15 @@ Static factory method that compiles `pattern` into a `Regex` with `RegexOptions.
 and a 100 ms evaluation timeout, then constructs and returns a new `RunLineRule`. The
 timeout guards against catastrophic backtracking on pathological input lines.
 
-- *Preconditions*: `pattern` is a syntactically valid regular expression string.
+- *Preconditions*: `pattern` must not be null; `pattern` is a syntactically valid regular
+  expression string.
 - *Postconditions*: Returns a `RunLineRule` whose `Pattern` is compiled and ready for
   use.
 
 #### Error Handling
 
-`Regex` construction throws `ArgumentException` if `pattern` is syntactically invalid;
+`Create` throws `ArgumentNullException` when `pattern` is null; this propagates to the
+caller. `Regex` construction throws `ArgumentException` if `pattern` is syntactically invalid;
 this propagates to the caller. During matching in `RunProcessor.Parse`, a
 `RegexMatchTimeoutException` is thrown if pattern evaluation exceeds 100 ms; this
 propagates to the caller and is not caught within the Run subsystem.

@@ -89,10 +89,10 @@ public class TestResultsTests
                 testResults.PrintSummary(context);
             }
 
-            // Assert: output contains pass and fail indicators
+            // Assert: output contains formatted pass and fail count lines
             output = File.ReadAllText(logPath);
-            Assert.Contains("Passed", output);
-            Assert.Contains("Failed", output);
+            Assert.Contains("Passed 1 of 2 tests", output);
+            Assert.Contains("Failed 1 of 2 tests", output);
         }
         finally
         {

@@ -28,8 +28,14 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     It is the rule element that <see cref="RunProcessor"/> applies in order to classify
 ///     each captured line; the first matching rule in the ordered rule set wins.
 /// </summary>
-/// <param name="Type">The severity category to assign to any output line whose text matches <paramref name="Pattern"/>. Any valid <see cref="RunLineType"/> value is accepted.</param>
-/// <param name="Pattern">The compiled regular expression used to test each simulator output line. Must not be null.</param>
+/// <param name="Type">
+///     The severity category to assign to any output line whose text matches
+///     <paramref name="Pattern"/>. Any valid <see cref="RunLineType"/> value is accepted.
+/// </param>
+/// <param name="Pattern">
+///     The compiled regular expression used to test each simulator output line.
+///     Must not be null.
+/// </param>
 public record RunLineRule(RunLineType Type, Regex Pattern)
 {
     /// <summary>

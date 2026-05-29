@@ -89,7 +89,7 @@ public class TestResultTests
     }
 
     /// <summary>
-    /// Test that PrintSummary writes a green "Passed" line for a passing test result.
+    ///     Validates that PrintSummary writes a "Passed" line for a passing test result.
     /// </summary>
     [Fact]
     public void TestResult_PrintSummary_PassedResult_WritesPassLine()
@@ -128,7 +128,7 @@ public class TestResultTests
     }
 
     /// <summary>
-    /// Test that PrintSummary writes a red "Failed" line for a failing test result.
+    ///     Validates that PrintSummary writes a "Failed" line for a failing test result.
     /// </summary>
     [Fact]
     public void TestResult_PrintSummary_FailedResult_WritesFailLine()

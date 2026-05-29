@@ -26,8 +26,8 @@ sections:
 
               - id: VHDLTest-Run-RunResults-SummaryElevation
                 title: >-
-                  RunResults shall elevate the summary to at least Error when the simulator process
-                  exits with a non-zero exit code.
+                  The Summary property of a RunResults instance shall be at least RunLineType.Error
+                  whenever ExitCode is non-zero.
                 justification: |
                   A non-zero exit code is the simulator's primary failure signal. Elevating the
                   summary to at least Error when the exit code is non-zero ensures that downstream

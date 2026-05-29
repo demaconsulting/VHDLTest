@@ -26,11 +26,13 @@ sections:
 
               - id: VHDLTest-Results-TestResult-PrintSummary-Label
                 title: >-
-                  TestResult shall display a colored pass/fail label word ("Passed" or "Failed")
+                  TestResult shall display a pass/fail label word ("Passed" or "Failed")
                   in the summary line.
                 justification: |
-                  Color-coded pass/fail words give developers immediate at-a-glance feedback
-                  on each test bench outcome in the terminal and in CI/CD log output.
+                  The label word written to the log confirms which outcome occurred for each
+                  test bench. The color applied to the console output is a cosmetic display
+                  feature not verifiable via the log-based test approach because
+                  Context.Write logs the text content without color metadata.
                 tests:
                   - TestResult_PrintSummary_PassedResult_WritesPassLine
                   - TestResult_PrintSummary_FailedResult_WritesFailLine

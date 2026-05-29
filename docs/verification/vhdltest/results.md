@@ -24,6 +24,10 @@ N/A - standard test environment.
 - `TestResults.SaveResults` produces valid TRX XML for `.trx` extensions.
 - `TestResults.SaveResults` produces valid JUnit XML for `.xml` extensions.
 - `TestResults.SaveResults` throws `ArgumentException` for null or empty file names.
+- `Execute` with a valid config and MockSimulator returns a `TestResults` instance with
+  `BuildResults` populated and `Tests` containing at least one outcome.
+- `PrintSummary` writes per-test names and aggregate "Passed N of M" and/or "Failed N of M"
+  indicators to the output.
 
 ### Test Scenarios
 
@@ -39,3 +43,16 @@ valid file whose XML content contains both test names, confirming the serializat
 integration across `TestResult` and `TestResults`.
 This scenario is tested by
 `ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts`.
+
+**Execute_WithMockSimulator_CollectsBuildAndTestOutcomes**: Verifies that `Execute` with
+MockSimulator completes the full compile-and-test workflow, returning a `TestResults` instance
+with `BuildResults` populated and `Tests` containing one outcome whose `TestName` matches the
+configured test bench name.
+This scenario is tested by
+`ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes`.
+
+**PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput**: Verifies that `PrintSummary`
+writes per-test names and aggregate pass/fail indicators (including test name strings and
+pass/fail label words) to the log output for a mixed result set.
+This scenario is tested by
+`ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput`.

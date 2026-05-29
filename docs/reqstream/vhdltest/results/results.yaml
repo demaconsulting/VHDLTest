@@ -20,9 +20,8 @@ sections:
 
           - id: VHDLTest-Results-Execute
             title: >-
-              The Results subsystem shall compile VHDL sources and execute test benches
-              by delegating to the configured simulator, collecting outcomes into a
-              TestResults object.
+              The Results subsystem shall compile VHDL sources and execute each configured
+              test bench, collecting the compile and test outcomes into a TestResults object.
             justification: |
               Centralizing the compile-and-test execution sequence in the Results
               subsystem ensures a consistent, ordered workflow: sources are always

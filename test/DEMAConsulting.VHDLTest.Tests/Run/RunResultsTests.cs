@@ -106,26 +106,26 @@ public class RunResultsTests
     }
 
     /// <summary>
-    ///     Verifies that a RunResults with a non-zero exit code has a Summary of at least Error,
-    ///     confirming the SummaryElevation contract enforced by RunProcessor.
+    ///     Verifies that RunProcessor.Parse produces a RunResults with Summary at least
+    ///     RunLineType.Error when the exit code is non-zero and no rule matches the output,
+    ///     confirming the exit-code escalation logic in RunProcessor.Parse satisfies the
+    ///     SummaryElevation data invariant independently of pattern matching.
     /// </summary>
     [Fact]
     public void RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError()
     {
-        // Arrange: construct a RunResults with ExitCode = 1 and Error summary (as RunProcessor would)
-        var results = new RunResults(
-            RunLineType.Error,
-            DateTime.Now,
-            0.0,
-            1,
-            "output",
-            new ReadOnlyCollection<RunLine>([]));
+        // Arrange: create a processor with no rules so no line elevates the summary via pattern
+        // matching; use fixed timestamps so the duration calculation is deterministic
+        var processor = new RunProcessor([]);
+        var start = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Local);
+        var end = new DateTime(2024, 1, 1, 0, 0, 1, DateTimeKind.Local);
 
-        // Act: read the Summary property
-        var summary = results.Summary;
+        // Act: parse output with exit code 1 — the non-zero exit code must escalate the summary
+        // even though no error pattern exists in the rule set
+        var results = processor.Parse(start, end, "no error pattern present", exitCode: 1);
 
-        // Assert: summary is at least Error when exit code is non-zero
-        Assert.True(summary >= RunLineType.Error,
-            $"Expected Summary >= RunLineType.Error for non-zero ExitCode, but got {summary}");
+        // Assert: summary is at least Error solely due to the non-zero exit code
+        Assert.True(results.Summary >= RunLineType.Error,
+            $"Expected Summary >= RunLineType.Error for non-zero ExitCode, but got {results.Summary}");
     }
 }

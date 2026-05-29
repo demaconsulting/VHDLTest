@@ -214,6 +214,8 @@ reviews:
       - src/DEMAConsulting.VHDLTest/Run/RunLineRule.cs  # source
       - src/DEMAConsulting.VHDLTest/Run/RunLineType.cs  # source
       - test/**/Run/RunLineRuleTests.cs  # RunLineRule unit tests
+      - test/**/Run/RunLineTests.cs  # RunLine unit tests
+      - test/**/Run/RunLineTypeTests.cs  # RunLineType unit tests
       - test/**/Run/RunProcessorTests.cs  # indirect coverage via RunProcessor
       - docs/verification/vhdltest/run/run-line.md  # verification document
       - docs/verification/vhdltest/run/run-line-rule.md  # verification document

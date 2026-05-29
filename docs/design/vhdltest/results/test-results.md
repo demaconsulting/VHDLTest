@@ -62,7 +62,8 @@ appending the resulting `TestResult` to `Tests`.
 - *Returns*: void.
 - *Preconditions*: `fileName` is not null or empty; the destination directory is writable.
 - *Postconditions*: a file at `fileName` has been written; format is JUnit XML for the `.xml`
-  extension, TRX for all other extensions.
+  extension, TRX for all other extensions. For each failed test, the error message is formed
+  by joining all `RunLineType.Error` output lines with a newline separator.
 - Throws `ArgumentException` when `fileName` is null, empty, or whitespace-only.
 
 **SaveToTrx**: Backward-compatibility wrapper; delegates to `SaveResults`.

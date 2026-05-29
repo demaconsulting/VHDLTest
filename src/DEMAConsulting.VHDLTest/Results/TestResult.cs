@@ -27,11 +27,10 @@ namespace DEMAConsulting.VHDLTest.Results;
 ///     Immutable record capturing the outcome of a single VHDL test bench execution.
 /// </summary>
 /// <remarks>
-///     TestResult throws no exceptions. I/O in <see cref="PrintSummary"/> is fully delegated to the injected
-///     <see cref="Cli.Context"/> and is not performed by <c>TestResult</c> directly.
 ///     The pass/fail determination is derived solely from the severity summary of the
-///     wrapped <see cref="RunResults"/>. Constructed by concrete <c>Simulator</c> implementations
-///     and held by <see cref="TestResults"/>.
+///     wrapped <see cref="RunResults"/>. I/O in <see cref="PrintSummary"/> is fully delegated to
+///     the injected <see cref="Cli.Context"/>. Constructed by concrete <c>Simulator</c>
+///     implementations and held by <see cref="TestResults"/>.
 /// </remarks>
 /// <param name="ClassName">
 ///     Fully qualified test class name used as the TRX class identifier. Must not be null.
@@ -70,11 +69,19 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     /// <summary>
     ///     Gets a value indicating whether the test passed
     /// </summary>
+    /// <remarks>
+    ///     True when <see cref="RunResults.Summary"/> is less than <see cref="RunLineType.Error"/>
+    ///     (i.e., Text, Info, or Warning severity); false otherwise.
+    /// </remarks>
     public bool Passed => RunResults.Summary < RunLineType.Error;
 
     /// <summary>
     ///     Gets a value indicating whether the test failed
     /// </summary>
+    /// <remarks>
+    ///     True when <see cref="RunResults.Summary"/> is at or above <see cref="RunLineType.Error"/>
+    ///     (i.e., Error severity); false otherwise.
+    /// </remarks>
     public bool Failed => RunResults.Summary >= RunLineType.Error;
 
     /// <summary>
@@ -87,8 +94,12 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     ///     via <see cref="Context.WriteLine"/>.
     /// </remarks>
     /// <param name="context">Output channel to write to. Must not be null.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     public void PrintSummary(Context context)
     {
+        // Validate the context before dereferencing it for output
+        ArgumentNullException.ThrowIfNull(context);
+
         // Print the colored summary word
         context.Write(
             Passed ? ConsoleColor.Green : ConsoleColor.Red,
