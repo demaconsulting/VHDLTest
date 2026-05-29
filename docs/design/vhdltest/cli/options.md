@@ -36,7 +36,10 @@ if the directory cannot be resolved.
 `Parse` throws `InvalidOperationException` if `args.ConfigFile` is null ("Configuration file
 not specified"). It propagates `FileNotFoundException` and `InvalidOperationException` from
 `ConfigDocument.ReadFile` for missing or invalid configuration files. `Path.GetDirectoryName`
-returning null (indicating an unresolvable path) also throws `InvalidOperationException`. All
+returning null (indicating a root path such as `/` or `C:\` with no parent directory) also throws
+`InvalidOperationException`; this is a defensive guard ensuring `WorkingDirectory` is always a
+valid, absolute path before it reaches downstream units. This null-return path is unreachable with
+well-formed file system paths on supported operating systems and is not directly unit-testable. All
 exceptions propagate to `Program.Run`, which catches and reports them via `Context.WriteError`.
 
 #### Dependencies

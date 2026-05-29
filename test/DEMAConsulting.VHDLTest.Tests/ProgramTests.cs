@@ -162,4 +162,21 @@ public class ProgramTests
         // Assert - verify non-zero exit code
         Assert.NotEqual(0, context.ExitCode);
     }
+
+    /// <summary>
+    ///     Verifies that Run dispatches to the self-validation runner when the validate flag is given.
+    /// </summary>
+    [Fact]
+    public void Program_Run_WithValidateFlag_DispatchesToValidation()
+    {
+        // Arrange: create a silent context with the validate flag and the mock simulator so that
+        // no external simulator binary is required during the unit test
+        using var context = Context.Create(["--validate", "--simulator", "mock", "--silent"]);
+
+        // Act: run the program with the validate flag — must not throw an unhandled exception
+        Program.Run(context);
+
+        // Assert: the validate dispatch path completed; exit code is zero for the mock simulator
+        Assert.Equal(0, context.ExitCode);
+    }
 }

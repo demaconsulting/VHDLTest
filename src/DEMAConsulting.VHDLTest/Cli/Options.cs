@@ -37,7 +37,20 @@ public record Options(string WorkingDirectory,
     /// <summary>
     ///     Parse options from command line arguments
     /// </summary>
-    /// <param name="args">Command line arguments</param>
+    /// <remarks>
+    ///     Combines the configuration file path stored in <paramref name="args"/> with the parsed
+    ///     YAML content to produce a fully resolved <see cref="Options"/> value. The absolute path
+    ///     resolution via <c>Path.GetFullPath</c> ensures that <see cref="WorkingDirectory"/> is
+    ///     always an absolute path regardless of the current working directory at call time, so
+    ///     downstream units can resolve relative VHDL file paths correctly without depending on
+    ///     ambient CWD state. This method is stateless and thread-safe; it does not modify any
+    ///     shared state and may be called concurrently on different <paramref name="args"/>
+    ///     instances.
+    /// </remarks>
+    /// <param name="args">
+    ///     A fully initialised <see cref="Context"/> from which <see cref="Context.ConfigFile"/>
+    ///     is read. Must not be null.
+    /// </param>
     /// <returns>A non-null <see cref="Options"/> record with <see cref="WorkingDirectory"/> set to the absolute directory of the configuration file and <see cref="Config"/> populated from the YAML content.</returns>
     /// <exception cref="InvalidOperationException">Thrown when no configuration file is specified in <paramref name="args"/>, or when the configuration file path cannot be resolved to a containing directory.</exception>
     /// <exception cref="FileNotFoundException">Thrown when the specified configuration file does not exist on disk.</exception>

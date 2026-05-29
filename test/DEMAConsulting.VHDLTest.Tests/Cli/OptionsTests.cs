@@ -28,11 +28,6 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 public class OptionsTests
 {
     /// <summary>
-    /// Configuration file name
-    /// </summary>
-    private const string ConfigFile = "options-test.yaml";
-
-    /// <summary>
     /// Configuration file contents
     /// </summary>
     private const string ConfigContent =
@@ -78,13 +73,15 @@ public class OptionsTests
     [Fact]
     public void Options_Parse_ValidConfigFile_ParsesSuccessfully()
     {
+        // Arrange: use a unique per-test temp file to avoid cross-test file conflicts
+        var configFile = Path.Combine(Path.GetTempPath(), $"options_test_{Guid.NewGuid():N}.yaml");
         try
         {
             // Arrange: write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            File.WriteAllText(configFile, ConfigContent);
 
             // Act: parse the options
-            var arguments = Context.Create(["-c", ConfigFile]);
+            var arguments = Context.Create(["-c", configFile]);
             var options = Options.Parse(arguments);
 
             // Assert: check the options
@@ -99,7 +96,7 @@ public class OptionsTests
         finally
         {
             // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(configFile);
         }
     }
 
@@ -109,13 +106,15 @@ public class OptionsTests
     [Fact]
     public void Options_Parse_WithVerboseFlag_ParsesSuccessfully()
     {
+        // Arrange: use a unique per-test temp file to avoid cross-test file conflicts
+        var configFile = Path.Combine(Path.GetTempPath(), $"options_test_{Guid.NewGuid():N}.yaml");
         try
         {
             // Arrange: write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            File.WriteAllText(configFile, ConfigContent);
 
             // Act: parse the options
-            var arguments = Context.Create(["-c", ConfigFile, "--verbose"]);
+            var arguments = Context.Create(["-c", configFile, "--verbose"]);
             var options = Options.Parse(arguments);
 
             // Assert: verify options are non-null, working directory is absolute, and config is populated
@@ -127,7 +126,7 @@ public class OptionsTests
         finally
         {
             // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(configFile);
         }
     }
 
@@ -137,13 +136,15 @@ public class OptionsTests
     [Fact]
     public void Options_Parse_WithCustomTest_ParsesSuccessfully()
     {
+        // Arrange: use a unique per-test temp file to avoid cross-test file conflicts
+        var configFile = Path.Combine(Path.GetTempPath(), $"options_test_{Guid.NewGuid():N}.yaml");
         try
         {
             // Arrange: write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            File.WriteAllText(configFile, ConfigContent);
 
             // Act: parse the options
-            var arguments = Context.Create(["-c", ConfigFile, "custom_test"]);
+            var arguments = Context.Create(["-c", configFile, "custom_test"]);
             var options = Options.Parse(arguments);
 
             // Assert: verify options are non-null, working directory is absolute, and config is populated
@@ -155,7 +156,7 @@ public class OptionsTests
         finally
         {
             // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(configFile);
         }
     }
 }

@@ -41,7 +41,9 @@ Dispatches in this order:
 4. If `context.Validate` — calls `Validation.Run` and returns.
 5. If `context.ConfigFile` is null — writes an error, calls `PrintUsage`, and returns.
 6. Otherwise — calls `SimulatorFactory.Get`, `Options.Parse`, `TestResults.Execute`,
-   `results.PrintSummary`, and optionally `results.SaveResults`. Catches
+   `results.PrintSummary`, and optionally `results.SaveResults`. If `context.ExitZero` is
+   false and `results.Fails` is non-empty, `context.WriteError(null)` is called to record a
+   failure and cause `context.ExitCode` to return non-zero. Catches
    `InvalidOperationException` and generic exceptions, writing them as errors.
 
 **PrintUsage** (private): Writes the usage/help text to the context output channel.

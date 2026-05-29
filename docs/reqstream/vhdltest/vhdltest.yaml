@@ -197,4 +197,5 @@ sections:
             tests:
               - SelfTest_Validate_MockSimulator_ReturnsSuccess
             children:
+              - VHDLTest-Program-Validate
               - VHDLTest-SelfTest-Run

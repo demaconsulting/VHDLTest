@@ -162,7 +162,15 @@ public static class Program
     /// <summary>
     ///     Print usage information
     /// </summary>
-    /// <param name="context">Program context</param>
+    /// <remarks>
+    ///     Writes the usage/help text to the context output channel. The method is stateless —
+    ///     it only reads from the constant usage string and writes to <paramref name="context"/>;
+    ///     it has no side effects beyond writing to the context. It is not responsible for setting
+    ///     an error condition; callers must call <see cref="Context.WriteError"/> separately if a
+    ///     non-zero exit code is required. Stateless and thread-safe provided the caller does not
+    ///     share <paramref name="context"/> across threads.
+    /// </remarks>
+    /// <param name="context">Output target that receives the usage text. Must not be null.</param>
     private static void PrintUsage(Context context)
     {
         context.WriteLine(

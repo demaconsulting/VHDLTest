@@ -35,3 +35,16 @@ sections:
                   immediate diagnosis.
                 tests:
                   - Options_Parse_MissingConfigFile_ThrowsFileNotFoundException
+
+              - id: VHDLTest-Cli-Options-InvalidPath
+                title: >-
+                  Options shall throw InvalidOperationException when the configuration file path
+                  cannot be resolved to a containing directory.
+                justification: |
+                  Path.GetDirectoryName returns null for root paths such as "/" or "C:\", meaning
+                  there is no valid parent directory. Throwing InvalidOperationException in this case
+                  is a defensive guard that ensures WorkingDirectory is always a valid, absolute path
+                  before it is used by downstream units. Without this guard, a null WorkingDirectory
+                  would cause a NullReferenceException deep in the test execution path, making
+                  diagnosis difficult. This path is unreachable with well-formed file system paths
+                  on supported operating systems and cannot be exercised by conventional unit tests.

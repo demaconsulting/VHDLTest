@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Run;
@@ -71,5 +72,51 @@ public class RunSubsystemTests
         Assert.NotNull(results);
         Assert.NotEqual(0, results.ExitCode);
         Assert.Equal(RunLineType.Error, results.Summary);
+    }
+
+    /// <summary>
+    ///     Verifies that the <c>Execute(Context, string, string, string[])</c> overload logs
+    ///     the working directory and run command to the context before delegating to the
+    ///     process execution path.
+    /// </summary>
+    [Fact]
+    public void RunSubsystem_ExecuteWithContext_LogsCommandToContext()
+    {
+        // Arrange: create a verbose context backed by a log file so that verbose output can
+        // be read back after execution; use a unique filename to avoid cross-test conflicts
+        var logFile = Path.Combine(Path.GetTempPath(), $"run_test_{Guid.NewGuid():N}.log");
+        try
+        {
+            RunResults results;
+            using (var context = Context.Create(["--verbose", "--log", logFile, "--silent"]))
+            {
+                var processor = new RunProcessor(
+                [
+                    RunLineRule.Create(RunLineType.Info, "Usage")
+                ]);
+
+                // Act: call the Execute overload that accepts a Context — this overload writes
+                // verbose log lines for the working directory and command before running
+                results = processor.Execute(context, "dotnet", "", "help");
+            }
+
+            // Assert: RunResults contain expected classified output from the real program
+            Assert.NotNull(results);
+            Assert.Equal(0, results.ExitCode);
+            Assert.True(results.Lines.Count > 0, "Expected at least one classified output line");
+            Assert.Contains(results.Lines, line => line.Type == RunLineType.Info);
+
+            // Assert: the Context captured the verbose log lines written before execution
+            var logContent = File.ReadAllText(logFile);
+            Assert.Contains("Run Directory", logContent);
+            Assert.Contains("Run Command", logContent);
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
     }
 }

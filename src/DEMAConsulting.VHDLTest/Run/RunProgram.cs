@@ -98,7 +98,7 @@ public static class RunProgram
         // Collect all output
         output = stdoutTask.GetAwaiter().GetResult() + stderrTask.GetAwaiter().GetResult();
 
-        // Return the output
+        // Return the exit code
         return p.ExitCode;
     }
 }

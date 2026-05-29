@@ -13,6 +13,7 @@ sections:
             tests:
               - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
+              - RunSubsystem_ExecuteWithContext_LogsCommandToContext
             children:
               - VHDLTest-Run-RunProcessor-MissingProgram
               - VHDLTest-Run-RunProcessor-ExitCodeFail
@@ -22,8 +23,8 @@ sections:
 
           - id: VHDLTest-Run-Classify
             title: >-
-              VHDLTest shall classify simulator output lines against configurable regex rules and
-              aggregate the results.
+              VHDLTest shall classify each simulator output line by matching it against configurable
+              regex rules, assigning the first matching rule's type or Text when no rule matches.
             justification: |
               Pattern-based classification of output lines allows each simulator integration to
               define its own output rules without changing the core execution logic, making it

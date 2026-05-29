@@ -123,7 +123,9 @@ test/DEMAConsulting.VHDLTest.Tests/
 ├── Run/
 │   ├── RunProcessorTests.cs    — RunProcessor unit tests
 │   ├── RunProgramTests.cs      — RunProgram unit tests
-│   └── RunLineRuleTests.cs     — RunLineRule unit tests
+│   ├── RunLineRuleTests.cs     — RunLineRule unit tests
+│   ├── RunResultsTests.cs      — RunResults unit tests
+│   └── RunSubsystemTests.cs    — Run subsystem integration tests
 ├── Results/
 │   ├── TestResultTests.cs      — TestResult unit tests
 │   └── TestResultsTests.cs     — TestResults unit tests

@@ -33,6 +33,10 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     that line. Lines that match no rule are assigned <see cref="RunLineType.Text"/>.
 ///     The overall run summary is the maximum severity across all classified lines; a non-zero
 ///     process exit code forces the summary to at least <see cref="RunLineType.Error"/>.
+///     Thread-safety: the <c>rules</c> array is immutable after construction, so multiple
+///     threads may call <see cref="Execute(string,string,string[])"/> or
+///     <see cref="Parse"/> concurrently on the same instance without synchronization,
+///     provided each call uses its own process and output string.
 /// </remarks>
 /// <param name="rules">
 ///     Ordered classification rules applied to each captured output line. Rules are evaluated
@@ -48,11 +52,19 @@ public class RunProcessor(RunLineRule[] rules)
     /// are responsible for ensuring that individual arguments do not contain shell
     /// metacharacters that would be misinterpreted by <c>cmd.exe</c>.
     /// </summary>
-    /// <param name="context">Program context for verbose logging</param>
+    /// <param name="context">Program context for verbose logging. Must not be null.</param>
     /// <param name="application">Program to run</param>
     /// <param name="workingDirectory">Working directory</param>
     /// <param name="arguments">Program arguments</param>
     /// <returns>Run results</returns>
+    /// <exception cref="System.ComponentModel.Win32Exception">
+    ///     Thrown on Windows when the simulator executable cannot be found or cannot be started.
+    ///     Propagated from <see cref="RunProgram.Run"/>.
+    /// </exception>
+    /// <exception cref="System.IO.FileNotFoundException">
+    ///     Thrown on non-Windows platforms when the simulator executable path does not exist.
+    ///     Propagated from <see cref="RunProgram.Run"/>.
+    /// </exception>
     public RunResults Execute(
         Context context,
         string application,
@@ -86,6 +98,14 @@ public class RunProcessor(RunLineRule[] rules)
     /// <param name="workingDirectory">Working directory</param>
     /// <param name="arguments">Program arguments</param>
     /// <returns>Run results</returns>
+    /// <exception cref="System.ComponentModel.Win32Exception">
+    ///     Thrown on Windows when the simulator executable cannot be found or cannot be started.
+    ///     Propagated from <see cref="RunProgram.Run"/>.
+    /// </exception>
+    /// <exception cref="System.IO.FileNotFoundException">
+    ///     Thrown on non-Windows platforms when the simulator executable path does not exist.
+    ///     Propagated from <see cref="RunProgram.Run"/>.
+    /// </exception>
     public RunResults Execute(
         string application,
         string workingDirectory = "",
@@ -111,11 +131,15 @@ public class RunProcessor(RunLineRule[] rules)
     /// <summary>
     /// Parse the output of a program
     /// </summary>
-    /// <param name="start">Start time</param>
-    /// <param name="end">End time</param>
+    /// <param name="start">Wall-clock timestamp recorded immediately before the simulator process was launched.</param>
+    /// <param name="end">Wall-clock timestamp recorded immediately after the simulator process exited.</param>
     /// <param name="output">Program output</param>
     /// <param name="exitCode">Program exit code</param>
     /// <returns>Run results</returns>
+    /// <exception cref="System.Text.RegularExpressions.RegexMatchTimeoutException">
+    ///     Thrown when a <see cref="RunLineRule"/> pattern match exceeds its configured timeout
+    ///     during line classification. Propagates to the caller without being caught.
+    /// </exception>
     public RunResults Parse(
         DateTime start,
         DateTime end,
