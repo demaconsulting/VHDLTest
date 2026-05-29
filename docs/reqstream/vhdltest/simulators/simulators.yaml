@@ -5,7 +5,7 @@ sections:
       - title: Simulators Requirements
         requirements:
           - id: VHDLTest-Simulators-Factory-Select
-            title: The Simulators subsystem shall select a simulator by name using SimulatorFactory.
+            title: The Simulators subsystem shall provide selection of a simulator instance by name.
             justification: |
               A factory pattern for simulator selection decouples test execution from the
               concrete simulator implementation. Verifying that the factory correctly selects

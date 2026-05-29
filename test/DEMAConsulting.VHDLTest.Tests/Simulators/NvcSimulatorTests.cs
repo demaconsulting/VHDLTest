@@ -34,6 +34,8 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_SimulatorName_ReturnsNVC()
     {
+        // Arrange: no setup required — NvcSimulator.Instance is initialized at class load time
+
         // Act / Assert: simulator name is the fixed string "NVC"
         Assert.Equal("NVC", NvcSimulator.Instance.SimulatorName);
     }

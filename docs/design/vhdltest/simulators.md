@@ -40,7 +40,19 @@ QuestaSimSimulator, VivadoSimulator, ActiveHdlSimulator, MockSimulator.
   and returns pass/fail status with diagnostic output.
 - *Constraints*: Throws `InvalidOperationException` when the simulator is not installed (SimulatorPath is null).
 
-**Run Subsystem**: Process execution and output classification.
+**Simulator Output Processors**: Each concrete simulator class exposes output classification
+processors as public static properties.
+
+- *Type*: In-process .NET public API.
+- *Role*: Provider.
+- *Contract*: `CompileProcessor` is a `RunProcessor` (public static) that classifies lines from
+  the simulator's compilation step. `TestProcessor` is a `RunProcessor` (public static) that
+  classifies lines from the simulator's test execution step. Both are initialized at class load
+  time and are accessed as `GhdlSimulator.CompileProcessor`, `GhdlSimulator.TestProcessor`,
+  `NvcSimulator.CompileProcessor`, `NvcSimulator.TestProcessor`, and so on for each concrete
+  simulator class. Callers may invoke `Parse` directly on these processors in tests or wherever
+  offline output classification is required without launching the simulator process.
+- *Constraints*: Processors are stateless after construction and are safe to access from any thread.
 
 - *Type*: In-process .NET internal API.
 - *Role*: Consumer.

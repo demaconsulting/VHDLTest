@@ -48,6 +48,11 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <summary>
     ///     Gets the name of the simulator
     /// </summary>
+    /// <returns>
+    ///     The display name of this simulator instance (for example, "GHDL" or "NVC"). This
+    ///     value is guaranteed non-null; it is set from the constructor's
+    ///     <c>simulatorName</c> parameter at initialization time.
+    /// </returns>
     public string SimulatorName => simulatorName;
 
     /// <summary>
@@ -80,7 +85,11 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     ///     Parsed command-line options providing working directory, configuration, and verbosity
     ///     settings. Must not be null.
     /// </param>
-    /// <returns>Compile Results</returns>
+    /// <returns>
+    ///     The ordered list of parsed output lines produced by the compilation, each classified
+    ///     by severity type (Text, Info, Warning, or Error) according to the simulator's compile
+    ///     output patterns.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Thrown by implementations when SimulatorPath is null.</exception>
     public abstract RunResults Compile(Context context, Options options);
 
@@ -95,14 +104,23 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     ///     settings. Must not be null.
     /// </param>
     /// <param name="test">Test name</param>
-    /// <returns>Test Results</returns>
+    /// <returns>
+    ///     The ordered list of parsed output lines produced by the test execution, each classified
+    ///     by severity type (Text, Info, Warning, or Error) according to the simulator's test
+    ///     output patterns, wrapped in a <see cref="TestResult"/> with pass/fail status.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Thrown by implementations when SimulatorPath is null.</exception>
     public abstract TestResult Test(Context context, Options options, string test);
 
     /// <summary>
     ///     Find the path of a potential application
     /// </summary>
-    /// <param name="application">Application</param>
+    /// <param name="application">
+    ///     Bare executable name without any path prefix or file extension (for example,
+    ///     <c>"ghdl"</c> or <c>"nvc"</c>). On Windows, PATHEXT extensions (such as
+    ///     <c>.COM</c>, <c>.EXE</c>, <c>.BAT</c>, <c>.CMD</c>) are appended automatically
+    ///     when building the candidate file list.
+    /// </param>
     /// <returns>Application path or null if not found</returns>
     protected static string? Where(string application)
     {
@@ -146,7 +164,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     }
 
     /// <summary>
-    /// Test if a path is legal
+    ///     Test if a path is legal
     /// </summary>
     /// <param name="path">Path to test</param>
     /// <returns>True if legal</returns>
@@ -158,7 +176,8 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             return false;
         }
 
-        // This static helper accepts any non-empty, non-whitespace path string
+        // No additional canonicalization is needed here; Path.GetFullPath in the caller will
+        // normalize any valid non-whitespace path.
         return true;
     }
 }

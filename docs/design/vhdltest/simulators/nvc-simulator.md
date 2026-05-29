@@ -25,9 +25,12 @@ Uses the same classification patterns as CompileProcessor.
 - *Parameters*: `Context context` — verbose logging. `Options options` — file list and working directory.
 - *Returns*: `RunResults` — classified compile output.
 - *Preconditions*: SimulatorPath must be non-null.
-- *Postconditions*: Creates `VHDLTest.out/NVC/` if absent. Writes `VHDLTest.out/NVC/compile.rsp` listing
+- *Postconditions*: Creates `VHDLTest.out/NVC/` if absent (path resolved relative to
+  `options.WorkingDirectory`). Writes `VHDLTest.out/NVC/compile.rsp` listing
   all source files. Runs
   `nvc --std=2008 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp`.
+  All paths in the `nvc` command arguments are relative to `options.WorkingDirectory`,
+  which is also passed as the working directory to `CompileProcessor.Execute`.
 
 **Test**: Elaborates and runs a single test bench in a single NVC invocation.
 

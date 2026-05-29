@@ -43,7 +43,9 @@ sections:
                   - GhdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
 
               - id: VHDLTest-Simulators-GhdlSimulator-FindPath
-                title: GhdlSimulator.FindPath() shall locate the GHDL installation directory.
+                title: >-
+                  GhdlSimulator shall locate the GHDL installation directory, respecting the
+                  VHDLTEST_GHDL_PATH environment variable override when set.
                 justification: |
                   Reliable path discovery ensures VHDLTest can locate GHDL across different
                   installation layouts and environments. The VHDLTEST_GHDL_PATH environment

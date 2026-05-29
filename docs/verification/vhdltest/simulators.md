@@ -37,8 +37,14 @@ factory and processor interface work together.
 This scenario is tested by
 `SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError`.
 
-**GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText**: Verifies that
-the factory returns null for an unrecognised name and that the NVC test processor classifies
-clean output as `RunLineType.Text`, confirming null handling and processor correctness.
+**GetUnknownSimulatorByName_ReturnsNull**: Verifies that the factory returns null when given
+an unrecognised simulator name, confirming that the null-return contract is upheld for any
+name that does not match a registered simulator.
 This scenario is tested by
-`SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText`.
+`SimulatorsSubsystem_GetUnknownSimulatorByName_ReturnsNull`.
+
+**NvcProcessorWithCleanOutput_ClassifiesAsText**: Verifies that the NVC test processor
+classifies clean output (output containing no diagnostic patterns) as `RunLineType.Text`,
+confirming baseline processor correctness for the NVC simulator.
+This scenario is tested by
+`SimulatorsSubsystem_NvcProcessorWithCleanOutput_ClassifiesAsText`.

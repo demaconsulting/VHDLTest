@@ -84,6 +84,24 @@ public class SimulatorTests
     }
 
     /// <summary>
+    /// Test that Where returns a non-null path when searching for an executable that is
+    /// guaranteed to be present on the system PATH in the CI environment.
+    /// Satisfies <c>VHDLTest-Simulators-Simulator-Where</c>: PATH search succeeds and returns
+    /// a non-null path when the named executable is installed.
+    /// </summary>
+    [Fact]
+    public void Simulator_Where_ExistingExecutable_ReturnsNonNull()
+    {
+        // Arrange: "dotnet" is guaranteed to be on PATH in the CI environment
+
+        // Act: search the system PATH for the dotnet executable
+        var result = TestableSimulator.CallWhere("dotnet");
+
+        // Assert: the executable is found and a non-null path is returned
+        Assert.NotNull(result);
+    }
+
+    /// <summary>
     /// Test that Available() returns true when SimulatorPath is non-null.
     /// </summary>
     [Fact]

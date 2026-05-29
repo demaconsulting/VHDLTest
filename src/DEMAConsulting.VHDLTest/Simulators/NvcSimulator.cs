@@ -95,7 +95,9 @@ public sealed class NvcSimulator : Simulator
     public static NvcSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the NVC simulator
+    ///     Private constructor that prevents external instantiation and enforces use of the
+    ///     singleton <see cref="Instance"/>. Passes the fixed name <c>"NVC"</c> and the path
+    ///     resolved by <see cref="FindPath()"/> to the base class.
     /// </summary>
     private NvcSimulator() : base("NVC", FindPath())
     {

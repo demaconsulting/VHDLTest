@@ -113,7 +113,9 @@ public sealed class GhdlSimulator : Simulator
     public static GhdlSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the GHDL simulator
+    ///     Private constructor that prevents external instantiation and enforces use of the
+    ///     singleton <see cref="Instance"/>. Passes the fixed name <c>"GHDL"</c> and the path
+    ///     resolved by <see cref="FindPath()"/> to the base class.
     /// </summary>
     private GhdlSimulator() : base("GHDL", FindPath())
     {

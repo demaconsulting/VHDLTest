@@ -24,12 +24,20 @@ sections:
               - id: VHDLTest-Simulators-Simulator-Where
                 title: >-
                   VHDLTest shall locate a simulator executable by searching the system PATH at
-                  runtime and return null when the executable is not found.
+                  runtime.
                 justification: |
                   Runtime PATH-based discovery lets VHDLTest use simulator installations without
-                  requiring users to hard-code absolute paths for every environment. Returning
-                  null when an executable is unavailable lets callers report a clear installation
-                  problem instead of proceeding with an invalid path.
+                  requiring users to hard-code absolute paths for every environment.
+                tests:
+                  - Simulator_Where_ExistingExecutable_ReturnsNonNull
+
+              - id: VHDLTest-Simulators-Simulator-Where-NotFound
+                title: >-
+                  VHDLTest shall return null when a simulator executable cannot be found on the
+                  system PATH.
+                justification: |
+                  Returning null when an executable is unavailable lets callers report a clear
+                  installation problem instead of proceeding with an invalid path.
                 tests:
                   - Simulator_Where_UnknownExecutable_ReturnsNull
 

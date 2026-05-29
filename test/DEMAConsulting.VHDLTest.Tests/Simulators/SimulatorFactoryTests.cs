@@ -28,7 +28,9 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 public class SimulatorFactoryTests
 {
     /// <summary>
-    /// Test querying the simulator factory for GHDL
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="GhdlSimulator"/>
+    /// instance for both lower-case and upper-case spellings of the GHDL name, confirming that
+    /// name matching is case-insensitive and the GHDL integration is registered correctly.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator()
@@ -41,7 +43,9 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for ModelSim
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="ModelSimSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the ModelSim name, confirming
+    /// case-insensitive registration for the ModelSim integration.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator()
@@ -54,7 +58,9 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for Vivado
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="VivadoSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the Vivado name, confirming
+    /// case-insensitive registration for the Vivado integration.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator()
@@ -67,7 +73,9 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for ActiveHDL
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns an <see cref="ActiveHdlSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the ActiveHDL name, confirming
+    /// case-insensitive registration for the Active-HDL integration.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator()
@@ -80,7 +88,9 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for NVC
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns an <see cref="NvcSimulator"/>
+    /// instance for both lower-case and upper-case spellings of the NVC name, confirming
+    /// case-insensitive registration for the NVC integration.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator()
@@ -93,7 +103,9 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for QuestaSim
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="QuestaSimSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the QuestaSim name, confirming
+    /// case-insensitive registration for the QuestaSim integration.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator()
@@ -106,7 +118,10 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for an unknown simulator
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns null for any name that does not
+    /// match a registered simulator, satisfying the null-return contract for
+    /// <c>VHDLTest-Simulators-SimulatorFactory-Unknown</c>. Callers must handle null to report
+    /// a clear "simulator not found" error rather than a NullReferenceException.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_UnknownSimulator_ReturnsNull()
@@ -119,7 +134,10 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory for the mock simulator
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="MockSimulator"/>
+    /// instance for all case variants of the mock name, confirming that the test-double
+    /// simulator is registered and accessible for pipeline tests that must not invoke real
+    /// simulator processes.
     /// </summary>
     [Fact]
     public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
@@ -151,6 +169,6 @@ public class SimulatorFactoryTests
 
         // Assert: result is null (no simulator installed) or a Simulator instance (not MockSimulator,
         // since MockSimulator.Available() always returns false and is excluded from auto-discovery)
-        Assert.True(result == null || ((result != null) && result is not MockSimulator));
+        Assert.True(result is not MockSimulator);
     }
 }

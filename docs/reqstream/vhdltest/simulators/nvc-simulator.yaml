@@ -47,7 +47,7 @@ sections:
                   - NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult
 
               - id: VHDLTest-Simulators-NvcSimulator-FindPath
-                title: NvcSimulator.FindPath() shall locate the NVC installation directory.
+                title: NvcSimulator shall locate the NVC installation directory.
                 justification: |
                   Reliable path discovery ensures VHDLTest can locate NVC across different
                   installation layouts and environments. The VHDLTEST_NVC_PATH environment

@@ -31,7 +31,9 @@ Applies nine classification rules in order:
 - *Parameters*: `Context context` — verbose logging. `Options options` — VHDL file list and working
   directory.
 - *Returns*: `RunResults` — classified compile output.
-- *Preconditions*: SimulatorPath must be non-null.
+- *Preconditions*: SimulatorPath must be non-null. `Options.Config.Files` is guaranteed
+  non-null by all callers (the configuration loader validates the file list before invoking
+  any simulator method).
 - *Postconditions*: Creates `VHDLTest.out/GHDL/` if absent. Writes `VHDLTest.out/GHDL/compile.rsp`
   listing all source files one per line. Runs
   `ghdl -a --std=08 --workdir=VHDLTest.out/GHDL @VHDLTest.out/GHDL/compile.rsp`.
