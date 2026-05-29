@@ -163,33 +163,24 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_CompileError_ReturnsNonZeroExitCode()
     {
+        var configFile = CreateConfigurationFile("test_compile_error", "file_error_test.vhd", "file_error_test_tb");
+
         try
         {
-            // Write a config file
-            File.WriteAllText("test_compile_error.yaml",
-                """
-                files:
-                 - file_error_test.vhd
-                
-                tests:
-                 - file_error_test_tb
-                """
-                );
-
             // Run the application using the mock simulator
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
                 "DEMAConsulting.VHDLTest.dll",
                 "--simulator", "mock",
-                "--config", "test_compile_error.yaml");
+                "--config", configFile);
 
             // Verify error reported
             Assert.NotEqual(0, exitCode);
         }
         finally
         {
-            File.Delete("test_compile_error.yaml");
+            DeleteFileIfExists(configFile);
         }
     }
 
@@ -199,33 +190,24 @@ public partial class IntegrationTests
     [Fact]
     public void IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode()
     {
+        var configFile = CreateConfigurationFile("test_execution_error", "file_test.vhd", "file_error_test_tb");
+
         try
         {
-            // Write a config file
-            File.WriteAllText("test_execution_error.yaml",
-                """
-                files:
-                 - file_test.vhd
-
-                tests:
-                 - file_error_test_tb
-                """
-            );
-
             // Run the application using the mock simulator
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
                 "DEMAConsulting.VHDLTest.dll",
                 "--simulator", "mock",
-                "--config", "test_execution_error.yaml");
+                "--config", configFile);
 
             // Verify error reported
             Assert.NotEqual(0, exitCode);
         }
         finally
         {
-            File.Delete("test_execution_error.yaml");
+            DeleteFileIfExists(configFile);
         }
     }
 
@@ -539,6 +521,46 @@ public partial class IntegrationTests
         finally
         {
             DeleteDirectoryIfExists(simulatorDirectory);
+            DeleteFileIfExists(configFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that each enumerated simulator name is recognized and does not produce an unknown-simulator error
+    /// </summary>
+    [Fact]
+    public void IntegrationTest_SimulatorSelect_AcceptsEnumeratedValues()
+    {
+        var configFile = CreateConfigurationFile("test_simulator_select", "file_test.vhd", "file_test_tb");
+
+        try
+        {
+            // Arrange: the six simulator names specified in the --simulator option contract
+            var simulatorNames = new[] { "ghdl", "nvc", "modelsim", "questasim", "vivado", "activehdl" };
+
+            Assert.Multiple(() =>
+            {
+                foreach (var simulatorName in simulatorNames)
+                {
+                    // Act: run VHDLTest with the named simulator (simulator may not be installed)
+                    Runner.Run(
+                        out var output,
+                        "dotnet",
+                        "DEMAConsulting.VHDLTest.dll",
+                        "--simulator", simulatorName,
+                        "--config", configFile);
+
+                    // Assert: the simulator name is recognized — "Simulator not found" indicates an
+                    // unrecognized name; any other error means the name was accepted
+                    Assert.DoesNotContain(
+                        "Simulator not found",
+                        output,
+                        StringComparison.OrdinalIgnoreCase);
+                }
+            });
+        }
+        finally
+        {
             DeleteFileIfExists(configFile);
         }
     }

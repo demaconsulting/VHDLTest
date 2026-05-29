@@ -6,7 +6,9 @@ invokes a VHDL simulator, processes the simulation output, and reports test pass
 ## Architecture
 
 VHDLTest is structured as a single system containing five subsystems and one top-level unit. The `Program`
-unit is the sole entry point and orchestrates all subsystems. No subsystem calls back into `Program`.
+unit is the sole entry point and orchestrates all subsystems. The one exception is `Validation` (in the
+`SelfTest` subsystem), which calls back into `Program.Run` in-process as a re-entrant call to execute each
+embedded validation test scenario; this is the only circular dependency in the design.
 
 ```mermaid
 flowchart TD
@@ -55,6 +57,7 @@ flowchart TD
     Results --> Run
     Results --> Simulators
     Run --> Simulators
+    SelfTest --> Program
 ```
 
 ## External Interfaces
@@ -140,3 +143,15 @@ Data moves through VHDLTest in the following sequence:
   new simulator requires only a new subclass registered in `SimulatorFactory`.
 - **No unsafe code**: all code must compile without unsafe blocks; pointer arithmetic is prohibited.
 - **Nullable reference types**: enabled throughout; all public APIs must be null-annotated.
+
+## Error Handling
+
+| Error Condition | Detection | Response |
+| --- | --- | --- |
+| Unknown CLI option | `Context.Create` parser encounters unrecognised flag | Writes error message, prints usage, exits non-zero |
+| Missing config file path | `Context.ConfigFile` is null | Writes "Error: Missing arguments", prints usage, exits non-zero |
+| Missing config file on disk | `ConfigDocument.ReadFile` throws `FileNotFoundException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
+| Invalid configuration YAML | `ConfigDocument.ReadFile` throws `InvalidOperationException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
+| Unknown simulator name | `SimulatorFactory.Get` returns null | `Program.Run` throws `InvalidOperationException("Simulator not found")`, exits non-zero |
+| Simulator executable absent | Simulator `Compile` or `Test` throws `InvalidOperationException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
+| Results file write failure | `TestResults.SaveResults` throws any exception | Propagates out of `Program.Run`; runtime reports unhandled exception, exits non-zero |

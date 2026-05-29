@@ -39,7 +39,8 @@ example, `ErrorDetails:`).
 - *Returns*: `TestResult` — simulation outcome.
 - *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
 - *Postconditions*: Writes `test.do` containing `-nolog`, `-standalone`, `-runall`, and the test entity
-  name. Runs `xelab -file test.do` from the library directory; `RunProcessor` handles platform-specific execution transparently.
+  name. Runs `xelab -file test.do` from the library directory; `RunProcessor` handles
+  platform-specific execution transparently.
 
 **FindPath** (public static): Resolves the path to the Vivado installation directory.
 

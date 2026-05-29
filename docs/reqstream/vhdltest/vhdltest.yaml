@@ -172,6 +172,7 @@ sections:
               The explicit selection option ensures deterministic simulator choice in CI pipelines.
             tests:
               - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+              - IntegrationTest_SimulatorSelect_AcceptsEnumeratedValues
             children:
               - VHDLTest-Simulators-Factory-Select
 
@@ -199,3 +200,14 @@ sections:
             children:
               - VHDLTest-Program-Validate
               - VHDLTest-SelfTest-Run
+              - VHDLTest-Validate-Depth
+
+          - id: VHDLTest-Validate-Depth
+            title: VHDLTest shall support a --depth <n> option that controls the Markdown heading level in validation reports.
+            justification: |
+              Allowing users to configure the heading depth makes it easier to embed validation
+              reports within larger compliance documents that use different heading hierarchies.
+              The default depth of 1 matches existing behavior; specifying a higher value shifts
+              all headings down by the corresponding number of levels.
+            tests:
+              - SelfTest_ValidateWithDepth_MockSimulator_RendersDepthHeadings

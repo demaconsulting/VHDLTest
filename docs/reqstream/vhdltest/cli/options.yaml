@@ -48,3 +48,5 @@ sections:
                   would cause a NullReferenceException deep in the test execution path, making
                   diagnosis difficult. This path is unreachable with well-formed file system paths
                   on supported operating systems and cannot be exercised by conventional unit tests.
+                tests:
+                  - Options_ResolveWorkingDirectory_RootPath_ThrowsInvalidOperationException

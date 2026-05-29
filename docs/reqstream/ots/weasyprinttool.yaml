@@ -11,5 +11,7 @@ sections:
               and is used in the build pipeline to produce PDF versions of design and requirements
               documentation for formal review and release archiving. Correct PDF output from
               the design documents confirms the tool is functioning as required.
+              The tool is exercised on every CI run; FileAssert-based output verification
+              is planned once the generated file paths are stabilised.
             tags: [ots]
             tests: []

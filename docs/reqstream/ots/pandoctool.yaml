@@ -11,5 +11,7 @@ sections:
               used in the build pipeline to render Markdown design documentation into HTML
               as an intermediate step for PDF generation via WeasyprintTool. Correct HTML
               output from the design documents confirms the tool is functioning as required.
+              The tool is exercised on every CI run; FileAssert-based output verification
+              is planned once the generated file paths are stabilised.
             tags: [ots]
             tests: []

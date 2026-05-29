@@ -159,4 +159,17 @@ public class OptionsTests
             File.Delete(configFile);
         }
     }
+
+    /// <summary>
+    /// Test that a root config path throws InvalidOperationException
+    /// </summary>
+    [Fact]
+    public void Options_ResolveWorkingDirectory_RootPath_ThrowsInvalidOperationException()
+    {
+        // Arrange: determine the root path for the current platform (e.g. "C:\" on Windows, "/" on Linux)
+        var rootPath = Path.GetPathRoot(Path.GetFullPath("."))!;
+
+        // Act + Assert: a root path has no parent directory and should throw
+        Assert.Throws<InvalidOperationException>(() => Options.ResolveWorkingDirectory(rootPath));
+    }
 }

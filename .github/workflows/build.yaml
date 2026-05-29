@@ -576,7 +576,7 @@ jobs:
           echo "Capturing tool versions..."
           dotnet versionmark --capture --job-id "build-docs" \
             --output "artifacts/versionmark-build-docs.json" -- \
-            dotnet git node npm pandoc weasyprint sarifmark sonarmark reqstream buildmark versionmark reviewmark
+            dotnet git node npm pandoc weasyprint sarifmark sonarmark reqstream buildmark versionmark reviewmark fileassert dictionarymark
           echo "✓ Tool versions captured"
 
       # === CAPTURE OTS SELF-VALIDATION RESULTS ===
@@ -600,6 +600,12 @@ jobs:
 
       - name: Run ReviewMark self-validation
         run: dotnet reviewmark --validate --results artifacts/reviewmark-self-validation.trx
+
+      - name: Run FileAssert self-validation
+        run: dotnet fileassert --validate --results artifacts/fileassert-self-validation.trx
+
+      - name: Run DictionaryMark self-validation
+        run: dotnet dictionarymark --validate --results artifacts/dictionarymark-self-validation.trx
 
       # === GENERATE MARKDOWN REPORTS ===
       # This section generates all markdown reports from various tools and sources.

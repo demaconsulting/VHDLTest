@@ -10,8 +10,12 @@ sections:
               dotnet-sonarscanner wraps the .NET build pipeline to collect code metrics,
               coverage data, and static analysis findings as part of the CI workflow,
               maintaining continuous code quality visibility for the VHDLTest project.
+              SonarMark quality-gate retrieval confirms that SonarCloud has received and
+              processed the analysis data, providing indirect evidence that static analysis
+              ran successfully.
             tags: [ots]
-            tests: []
+            tests:
+              - SonarMark_QualityGateRetrieval
 
           - id: VHDLTest-OTS-SonarScanner-Publish
             title: dotnet-sonarscanner shall publish analysis results to SonarCloud.
@@ -21,5 +25,8 @@ sections:
               a continuous quality monitoring record for the VHDLTest project. Issues
               surfaced by SonarCloud are tracked and resolved as part of the development
               workflow, maintaining code quality standards.
+              SonarMark quality-gate retrieval confirms that SonarCloud received the published
+              results and made them available via the SonarCloud API.
             tags: [ots]
-            tests: []
+            tests:
+              - SonarMark_QualityGateRetrieval

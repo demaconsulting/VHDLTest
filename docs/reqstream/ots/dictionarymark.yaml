@@ -12,4 +12,7 @@ sections:
               This maintains consistent terminology and catches typographical errors in design
               documents before they are formally reviewed.
             tags: [ots]
-            tests: []
+            tests:
+              - DictionaryMark_BulletGeneration
+              - DictionaryMark_TableGeneration
+              - DictionaryMark_ConflictDetection

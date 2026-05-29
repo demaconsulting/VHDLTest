@@ -23,6 +23,15 @@ reported as failed.
 - *Constraints*: Requires a writable filesystem for the temporary validation folder and a configured
   simulator. The caller must not dispose `context` before `Run` returns.
 
+**Consumed Interfaces**:
+
+- **`Cli.Context`** — consumed by `Validation.Run` for all output writes and flag reading; provides the
+  I/O channels and `context.Validate`, `context.Simulator`, and `context.ResultsFile` flags.
+- **`Program`** — invoked in-process via `Program.Run` to execute each embedded validation test scenario
+  as a re-entrant call; `RunVhdlTest` supplies a fresh `Context` per validation scenario.
+- **`Results.TestResults`** / **`Results.TestResult`** — used to collect individual validation pass/fail
+  outcomes and optionally persist them to a results file via `SaveResults`.
+
 ### Design
 
 1. `Program` calls `Validation.Run(context)` when `context.Validate` is true.

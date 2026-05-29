@@ -25,6 +25,8 @@ OTS items:
 
 - **YamlDotNet**: integration and usage design.
 - **DemaConsulting.TestResults**: integration and usage design.
+- Build and analysis tool OTS items (PandocTool, WeasyprintTool, FileAssert, DictionaryMark, SonarScanner, and
+  others): see *OTS Software Design*.
 
 The following topics are out of scope:
 
@@ -111,7 +113,7 @@ src/DEMAConsulting.VHDLTest/
     └── Validation.cs           — self-validation test runner
 
 test/DEMAConsulting.VHDLTest.Tests/
-├── VHDLTestTests.cs            — system-level integration tests
+├── IntegrationTests.cs         — system-level integration tests
 ├── Cli/
 │   ├── ContextTests.cs         — Context unit tests
 │   ├── ConfigDocumentTests.cs  — ConfigDocument unit tests
@@ -147,7 +149,7 @@ under `test/DEMAConsulting.VHDLTest.Tests/`.
 
 Each local software item has corresponding artifacts in parallel directory trees:
 
-- Requirements: `docs/reqstream/vhdltest/vhdltest.yaml`,
+- Requirements: `docs/reqstream/vhdltest/vhdltest.yaml`, `docs/reqstream/vhdltest/platform-requirements.yaml`,
   `docs/reqstream/vhdltest[/{subsystem-name}...]/{item}.yaml`
 - Design: `docs/design/vhdltest.md`,
   `docs/design/vhdltest[/{subsystem-name}...]/{item}.md`

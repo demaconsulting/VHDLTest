@@ -12,4 +12,7 @@ sections:
               unintentional changes to generated documentation and traceability reports from
               silently passing the build.
             tags: [ots]
-            tests: []
+            tests:
+              - FileAssert_Results
+              - FileAssert_Exists
+              - FileAssert_Contains

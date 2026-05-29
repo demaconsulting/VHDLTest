@@ -66,13 +66,33 @@ public record Options(string WorkingDirectory,
         var config = ConfigDocument.ReadFile(args.ConfigFile);
 
         // Get the working directory
-        var absConfigFile = Path.GetFullPath(args.ConfigFile);
-        var workingDir = Path.GetDirectoryName(absConfigFile)
-                         ?? throw new InvalidOperationException($"Invalid configuration file {absConfigFile}");
+        var workingDir = ResolveWorkingDirectory(args.ConfigFile);
 
         // Return the new options object
         return new Options(
             workingDir,
             config);
+    }
+
+    /// <summary>
+    ///     Resolves the absolute path of the directory containing the specified configuration file.
+    /// </summary>
+    /// <remarks>
+    ///     This internal helper is extracted from <see cref="Parse"/> to allow direct unit testing
+    ///     of the defensive null guard. <c>Path.GetDirectoryName</c> returns null for root paths
+    ///     such as <c>/</c> or <c>C:\</c>; throwing <see cref="InvalidOperationException"/> in that
+    ///     case ensures <see cref="WorkingDirectory"/> is always a valid, absolute path.
+    /// </remarks>
+    /// <param name="configFile">Path to the configuration file. Must not be null.</param>
+    /// <returns>The absolute directory path containing <paramref name="configFile"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the fully-resolved path of <paramref name="configFile"/> has no parent directory
+    ///     (i.e., it is a file-system root such as <c>/</c> or <c>C:\</c>).
+    /// </exception>
+    internal static string ResolveWorkingDirectory(string configFile)
+    {
+        var absConfigFile = Path.GetFullPath(configFile);
+        return Path.GetDirectoryName(absConfigFile)
+               ?? throw new InvalidOperationException($"Invalid configuration file {absConfigFile}");
     }
 }

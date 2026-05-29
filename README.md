@@ -21,7 +21,7 @@ The tool is designed for use in regulated industries that require evidence of to
 ## Features
 
 - Runs VHDL test benches via a simple YAML configuration file
-- Generates standard `.trx` test results files compatible with CI/CD pipelines
+- Generates standard `.trx` or JUnit XML test results files compatible with CI/CD pipelines
 - Supports [GHDL](https://github.com/ghdl/ghdl), [ModelSim](https://eda.sw.siemens.com/en-US/ic/modelsim/),
   [QuestaSim](https://eda.sw.siemens.com/en-US/ic/questa-one/simulation/),
   [Active-HDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl),
@@ -88,7 +88,7 @@ Options:
   --depth <n>                  Validation report depth (default: 1)
   -l, --log <log.txt>          Log output to file
   -c, --config <config.yaml>   Specify configuration
-  -r, --results <out.trx>      Specify test results file
+  -r, --results <out.trx|out.xml>  Specify test results file (.trx or JUnit XML)
   -s, --simulator <name>       Specify simulator
   -0, --exit-0                 Exit with code 0 if test fail
   --                           End of options

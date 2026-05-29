@@ -14,8 +14,8 @@ This guide covers installation and prerequisites, supported VHDL simulators and 
 configuration, command-line options and usage examples, self-validation for regulated industries, CI/CD integration
 for GitHub Actions, Azure DevOps, and Jenkins, and troubleshooting common issues.
 
-The guide requires .NET SDK 8.0 or later and at least one supported VHDL simulator. It applies to both Windows and
-Linux platforms.
+The guide requires .NET SDK 8.0 or later and at least one supported VHDL simulator. It applies to Windows, Linux, and
+macOS platforms.
 
 ## References
 

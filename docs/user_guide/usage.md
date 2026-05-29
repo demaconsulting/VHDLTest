@@ -26,7 +26,7 @@ VHDLTest supports the following command line options:
 - `--depth <n>` - Validation report depth (default: 1)
 - `-l, --log <log.txt>` - Log output to file
 - `-c, --config <config.yaml>` - Specify configuration file
-- `-r, --results <out.trx>` - Specify test results output file
+- `-r, --results <out.trx|out.xml>` - Specify test results output file
 - `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, modelsim, nvc, questasim, vivado)
 - `-0, --exit-0` - Exit with code 0 even if tests fail
 - `--` - End of options marker
@@ -38,6 +38,17 @@ To generate a TRX test results file for CI/CD integration:
 ```bash
 dotnet vhdltest --config test_suite.yaml --results test_results.trx
 ```
+
+To generate a JUnit XML test results file instead, use a `.xml` extension:
+
+```bash
+dotnet vhdltest --config test_suite.yaml --results test_results.xml
+```
+
+The file format is determined by the extension of the results file:
+
+- `.trx` — Microsoft Visual Studio Test Results (TRX) format
+- `.xml` — JUnit XML format
 
 The TRX file format is compatible with most CI/CD systems and can be displayed in:
 
@@ -52,7 +63,7 @@ The TRX file format is compatible with most CI/CD systems and can be displayed i
 VHDLTest returns the following exit codes:
 
 - `0` - All tests passed (or `--exit-0` was used)
-- `Non-zero` - One or more tests failed
+- `Non-zero` - Compilation failed or one or more tests failed
 
 ## Self-Validation
 

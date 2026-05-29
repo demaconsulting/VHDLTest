@@ -13,7 +13,7 @@ implementations and the output-processing pipeline.
 
 | Field   | Type            | Description                                                          |
 | ------- | --------------- | -------------------------------------------------------------------- |
-| `rules` | `RunLineRule[]` | Ordered classification rules injected at construction; immutable for the lifetime of the instance. |
+| `rules` | `RunLineRule[]` | Ordered rules injected at construction; immutable for the instance lifetime. |
 
 #### Key Methods
 
