@@ -62,6 +62,7 @@ sections:
                   capture output so that CI systems retain complete diagnostic records.
                 tests:
                   - Context_Write_WithLogFile_WritesToLog
+                  - Context_Write_SilentMode_WritesToLogFile
 
               - id: VHDLTest-Cli-Context-WriteLine
                 title: Context shall write a message with a line terminator to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
@@ -80,6 +81,7 @@ sections:
                   supporting both CI use and developer debugging.
                 tests:
                   - Context_WriteVerboseLine_VerboseMode_WritesToLog
+                  - Context_WriteVerboseLine_NonVerboseMode_ProducesNoOutput
 
               - id: VHDLTest-Cli-Context-WriteError-Message
                 title: Context shall write the provided error message to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
@@ -133,3 +135,4 @@ sections:
                   be available or reliable in all execution environments.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
+                  - Context_Create_WithLongLogOption_WritesToLogFile
