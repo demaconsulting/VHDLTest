@@ -35,7 +35,9 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 ///     <see cref="Simulator.SimulatorPath"/> so that <see cref="Simulator.Available"/>
 ///     always returns false, preventing the mock from being auto-selected by
 ///     <c>SimulatorFactory</c> during normal test runs. It must be requested explicitly
-///     by name (e.g., <c>--simulator mock</c>).
+///     by name (e.g., <c>--simulator mock</c>). Stateless and thread-safe — <see cref="Compile"/>
+///     and <see cref="Test"/> use only stack-allocated locals and do not access any shared
+///     mutable state.
 /// </remarks>
 public sealed class MockSimulator : Simulator
 {
@@ -108,6 +110,15 @@ public sealed class MockSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Pattern-matching algorithm: each filename in <paramref name="options"/>.Config.Files is
+    ///     checked for the substrings <c>_error_</c>, <c>_warning_</c>, and <c>_info_</c> (in that
+    ///     order); the first match determines the output line emitted for that file. Files matching
+    ///     none of these patterns produce a plain "Compiled {file}" line. No <see cref="Simulator.SimulatorPath"/>
+    ///     check is performed because MockSimulator is always "available" for self-validation use.
+    ///     Both <c>DateTime.Now</c> captures occur without intervening work, so the reported
+    ///     duration is intentionally trivial and does not reflect real compilation time.
+    /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -151,6 +162,16 @@ public sealed class MockSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Pattern-matching algorithm: the <paramref name="test"/> name is checked for the
+    ///     substrings <c>_warning_</c>, <c>_info_</c>, <c>_error_</c>, and <c>_fail_</c>;
+    ///     multiple patterns may match, producing multiple output lines. When <c>_error_</c>
+    ///     matches, the exit code is set to 1. Tests matching none of these patterns produce
+    ///     a plain "Passed: {test}" line. No <see cref="Simulator.SimulatorPath"/> check is
+    ///     performed because MockSimulator is always "available" for self-validation use.
+    ///     Both <c>DateTime.Now</c> captures occur without intervening work, so the reported
+    ///     duration is intentionally trivial and does not reflect real simulation time.
+    /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command

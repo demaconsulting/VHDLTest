@@ -53,7 +53,9 @@ Text (not Warning). Classifies `KERNEL:\s*Warning:` and `KERNEL:\s*WARNING:` as 
 
 `FindPath` returns null when Active-HDL is not installed, causing `Available()` to return false. Calling
 `Compile` or `Test` when `SimulatorPath` is null throws `InvalidOperationException` with message "ActiveHDL
-Simulator not available". The TCL script includes `onerror {exit -code 1}` to propagate errors as non-zero
+Simulator not available". If `Test` is called before a successful `Compile` run, `File.WriteAllText`
+propagates a `DirectoryNotFoundException` because the library output directory (`VHDLTest.out/ActiveHDL/`)
+has not been created. The TCL script includes `onerror {exit -code 1}` to propagate errors as non-zero
 exit codes. The Lattice Edition license advisory lines are explicitly classified as Text in TestProcessor
 to prevent them from being promoted to Warning severity and causing false positive test failures.
 

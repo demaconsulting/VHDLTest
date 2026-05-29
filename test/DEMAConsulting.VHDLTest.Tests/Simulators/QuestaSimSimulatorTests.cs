@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 
@@ -225,5 +226,30 @@ public class QuestaSimSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Failure: Test Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    ///     Verifies that calling Compile when QuestaSim is not installed throws
+    ///     <see cref="InvalidOperationException"/> indicating the simulator is not available.
+    ///     This test is skipped in environments where QuestaSim is installed.
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when QuestaSim is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (QuestaSimSimulator.Instance.Available())
+        {
+            return;
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Compile throws when QuestaSim is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => QuestaSimSimulator.Instance.Compile(context, options));
+        Assert.Contains("QuestaSim Simulator not available", ex.Message);
     }
 }

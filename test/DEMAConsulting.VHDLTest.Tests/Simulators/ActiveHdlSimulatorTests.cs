@@ -28,6 +28,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for the ActiveHDL simulator
 /// </summary>
+[Collection("SimulatorEnvVarTests")]
 public class ActiveHdlSimulatorTests
 {
     /// <summary>
@@ -71,7 +72,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator compile with an info message
+    /// Test ActiveHDL simulator compile with a warning message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()

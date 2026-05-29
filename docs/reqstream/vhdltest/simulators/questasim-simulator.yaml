@@ -37,3 +37,13 @@ sections:
                   - QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
                   - QuestaSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
 
+              - id: VHDLTest-Simulators-QuestaSimSimulator-Unavailable
+                title: >-
+                  When QuestaSim is not available, VHDLTest shall report that the QuestaSim
+                  simulator is not available when compile or test is invoked.
+                justification: |
+                  Clear error reporting when the simulator is not installed prevents silent
+                  failures and gives users an actionable message when the simulator binary
+                  cannot be located.
+                tests:
+                  - QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException

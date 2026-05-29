@@ -21,6 +21,8 @@ Live simulator integration: CI environment with ModelSim installed on PATH.
 - `ModelSimSimulator.Instance.SimulatorName` returns `"ModelSim"`.
 - The compile processor correctly classifies clean and error output patterns.
 - The test processor correctly classifies clean, info, warning, error, and failure output patterns.
+- Calling `Compile()` or `Test()` when the simulator is not installed throws `InvalidOperationException`.
+- `FindPath()` returns the value of `VHDLTEST_MODELSIM_PATH` when that environment variable is set.
 
 #### Test Scenarios
 
@@ -56,4 +58,22 @@ This scenario is tested by the test error output test in `ModelSimSimulatorTests
 simulation output is classified as `RunLineType.Error`, confirming that VHDL assertion
 failure lines are treated as errors.
 This scenario is tested by `ModelSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult`
+in `ModelSimSimulatorTests.cs`.
+
+**Compile_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Compile()`
+throws `InvalidOperationException` with message containing `"ModelSim Simulator not available"`
+when `SimulatorPath` is null. This test is skipped in environments where ModelSim is installed.
+This scenario is tested by `ModelSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException`
+in `ModelSimSimulatorTests.cs`.
+
+**Test_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Test()`
+throws `InvalidOperationException` with message containing `"ModelSim Simulator not available"`
+when `SimulatorPath` is null. This test is skipped in environments where ModelSim is installed.
+This scenario is tested by `ModelSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException`
+in `ModelSimSimulatorTests.cs`.
+
+**FindPath_WithEnvVar_ReturnsEnvVarValue**: Verifies that `FindPath()` returns the value of the
+`VHDLTEST_MODELSIM_PATH` environment variable when it is set, confirming that the env var
+override takes precedence over PATH discovery.
+This scenario is tested by `ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
 in `ModelSimSimulatorTests.cs`.

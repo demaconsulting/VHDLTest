@@ -26,6 +26,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for GHDL simulator
 /// </summary>
+[Collection("SimulatorEnvVarTests")]
 public class GhdlSimulatorTests
 {
     /// <summary>

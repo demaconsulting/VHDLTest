@@ -13,13 +13,13 @@ registered name ("QuestaSim"), its path environment variable, and its working di
 "QuestaSim"; `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
 **CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for QuestaSim compile
-output. Classifies lines matching `.*Error:` (trailing space prevents false positives on identifiers
-ending with "Error") as Error. Lines not matching any rule are left unclassified.
+output. Classifies lines matching `.*Error:` (trailing space after the colon prevents false positives
+on identifiers ending with "Error") as Error. Lines not matching any rule are left unclassified as Text.
 
 **TestProcessor**: `RunProcessor` (public static readonly) — output classifier for QuestaSim simulation
 output. Classifies `.*Note:` as Info, `.*Warning:` as Warning, and `.*Error:` or `.*Failure:` as
-Error (each pattern includes a trailing space to prevent false positives on identifiers ending with
-the pattern keyword).
+Error (each pattern includes a trailing space after the colon to prevent false positives on identifiers
+ending with the pattern keyword). Lines not matching any rule are left unclassified as Text.
 
 #### Key Methods
 

@@ -12,13 +12,14 @@ bench simulation.
 "ModelSim"; `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
 **CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for ModelSim compile
-output. Classifies lines matching `.*Error:` (trailing space prevents false matches on identifiers
-that end with "Error") as Error. Lines not matching any rule are left unclassified.
+output. Classifies lines matching `.*Error:` (trailing space after the colon requires a space
+character to follow the colon in the matched line, preventing false matches on identifiers that end
+with "Error") as Error. Lines not matching any rule are left unclassified as Text.
 
 **TestProcessor**: `RunProcessor` (public static readonly) — output classifier for ModelSim simulation
 output. Classifies `.*Note:` as Info, `.*Warning:` as Warning, and `.*Error:` or `.*Failure:` as
-Error (each pattern includes a trailing space to prevent false matches on identifiers ending with the
-keyword).
+Error (each pattern includes a trailing space after the colon, which requires a space character to
+follow the colon in the matched line, preventing false matches on identifiers ending with the keyword).
 
 #### Key Methods
 
@@ -34,7 +35,9 @@ keyword).
 **Test**: Simulates a single test bench using ModelSim's vsim utility via a TCL do-script.
 
 - *Parameters*: `Context context` — verbose logging. `Options options` — working directory.
-  `string test` — test bench entity name.
+  `string test` — VHDL entity name or library-qualified entity name (e.g., `my_tb` or `lib.my_tb`);
+  must not contain whitespace or TCL metacharacters because the name is interpolated directly
+  into the TCL script without escaping.
 - *Returns*: `TestResult` — simulation outcome.
 - *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
 - *Postconditions*: Writes `test.do` containing `onerror {exit -code 1}`, `set worklib work`,

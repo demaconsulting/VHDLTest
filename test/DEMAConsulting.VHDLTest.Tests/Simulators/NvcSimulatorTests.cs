@@ -26,6 +26,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for NVC simulator
 /// </summary>
+[Collection("SimulatorEnvVarTests")]
 public class NvcSimulatorTests
 {
     /// <summary>

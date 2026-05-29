@@ -18,7 +18,7 @@ sections:
 
               - id: VHDLTest-Simulators-MockSimulator-Compile
                 title: >-
-                  MockSimulator shall simulate compilation with pass, warning, and error
+                  MockSimulator shall simulate compilation with pass, info, warning, and error
                   outcomes based on filename patterns.
                 justification: |
                   Deterministic compile simulation based on filename patterns allows self-validation
@@ -36,7 +36,7 @@ sections:
 
               - id: VHDLTest-Simulators-MockSimulator-Test
                 title: >-
-                  MockSimulator shall simulate test execution with pass, warning, fail, and
+                  MockSimulator shall simulate test execution with pass, info, warning, fail, and
                   error outcomes based on test name patterns.
                 justification: |
                   Deterministic test simulation based on test name patterns allows self-validation

@@ -21,6 +21,7 @@ Live simulator integration: CI environment with QuestaSim installed on PATH.
 - `QuestaSimSimulator.Instance.SimulatorName` returns `"QuestaSim"`.
 - The compile processor correctly classifies clean and error output patterns.
 - The test processor correctly classifies clean, info, warning, error, and failure output patterns.
+- Calling `Compile()` when the simulator is not installed throws `InvalidOperationException`.
 
 #### Test Scenarios
 
@@ -56,4 +57,10 @@ This scenario is tested by the test error output test in `QuestaSimSimulatorTest
 simulation output is classified as `RunLineType.Error`, confirming that VHDL assertion
 failure lines are treated as errors.
 This scenario is tested by `QuestaSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult`
+in `QuestaSimSimulatorTests.cs`.
+
+**Compile_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Compile()`
+throws `InvalidOperationException` when `SimulatorPath` is null (QuestaSim not installed).
+This test is skipped in environments where QuestaSim is installed.
+This scenario is tested by `QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException`
 in `QuestaSimSimulatorTests.cs`.

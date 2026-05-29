@@ -103,7 +103,12 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     ///     Parsed command-line options providing working directory, configuration, and verbosity
     ///     settings. Must not be null.
     /// </param>
-    /// <param name="test">Test name</param>
+    /// <param name="test">
+    ///     VHDL entity name to simulate. May be a simple name (e.g., <c>"my_tb"</c>) or a
+    ///     library-qualified name (e.g., <c>"lib.my_tb"</c>). Must not be null, empty, or contain
+    ///     whitespace or TCL metacharacters, because the name is interpolated directly into a TCL
+    ///     script without escaping.
+    /// </param>
     /// <returns>
     ///     The ordered list of parsed output lines produced by the test execution, each classified
     ///     by severity type (Text, Info, Warning, or Error) according to the simulator's test

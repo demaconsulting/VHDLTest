@@ -40,6 +40,12 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 public sealed class VivadoSimulator : Simulator
 {
     /// <summary>
+    ///     Relative path (from the working directory) to the Vivado library output directory
+    ///     where compiled work libraries and do-scripts are stored.
+    /// </summary>
+    private const string OutputSubDirectory = "VHDLTest.out/Vivado";
+
+    /// <summary>
     ///     Output classifier for xvhdl compilation output.
     /// </summary>
     /// <remarks>
@@ -108,7 +114,7 @@ public sealed class VivadoSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/Vivado");
+        var libDir = Path.Combine(options.WorkingDirectory, OutputSubDirectory);
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
         {
@@ -139,13 +145,15 @@ public sealed class VivadoSimulator : Simulator
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command
-        context.WriteVerboseLine($"Starting Vivado test {test}...");        // Fail if we cannot find the simulator
+        context.WriteVerboseLine($"Starting Vivado test {test}...");
+
+        // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("Vivado Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/Vivado");
+        var libDir = Path.Combine(options.WorkingDirectory, OutputSubDirectory);
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Build the batch file

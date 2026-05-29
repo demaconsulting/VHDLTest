@@ -101,6 +101,11 @@ line is classified as `RunLineType.Error`.
 This scenario is tested by `ActiveHdlSimulator_TestProcessor_RuntimeFatalError_ReturnsErrorResult`
 in `ActiveHdlSimulatorTests.cs`.
 
+**TestProcessor_VsimError_ReturnsErrorResult**: Verifies that a `VSIM: Error:` line in simulation
+output is classified as `RunLineType.Error`.
+This scenario is tested by `ActiveHdlSimulator_TestProcessor_VsimError_ReturnsErrorResult`
+in `ActiveHdlSimulatorTests.cs`.
+
 **Test_WithCleanConfig_AppendsTclExitCode**: Verifies that the TCL test script written by
 `ActiveHdlSimulator.Test()` contains `exit -code 0` to signal successful simulation
 completion to vsimsa.

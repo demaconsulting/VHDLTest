@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 
@@ -26,6 +27,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for ModelSim simulator
 /// </summary>
+[Collection("SimulatorEnvVarTests")]
 public class ModelSimSimulatorTests
 {
     /// <summary>
@@ -221,5 +223,82 @@ public class ModelSimSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Failure: Test Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    ///     Verifies that calling Compile when ModelSim is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where ModelSim is installed.
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when ModelSim is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (ModelSimSimulator.Instance.Available())
+        {
+            return;
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Compile throws when ModelSim is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => ModelSimSimulator.Instance.Compile(context, options));
+        Assert.Contains("ModelSim Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that calling Test when ModelSim is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where ModelSim is installed.
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when ModelSim is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (ModelSimSimulator.Instance.Available())
+        {
+            return;
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Test throws when ModelSim is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => ModelSimSimulator.Instance.Test(context, options, "test_tb"));
+        Assert.Contains("ModelSim Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that FindPath returns the value of the VHDLTEST_MODELSIM_PATH
+    ///     environment variable when it is set.
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
+    {
+        // Arrange: set the VHDLTEST_MODELSIM_PATH environment variable to a known value
+        var expectedPath = "/custom/modelsim/path";
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_MODELSIM_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_MODELSIM_PATH", expectedPath);
+
+        try
+        {
+            // Act: call FindPath()
+            var result = ModelSimSimulator.FindPath();
+
+            // Assert: result is the env var value
+            Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_MODELSIM_PATH", previousValue);
+        }
     }
 }

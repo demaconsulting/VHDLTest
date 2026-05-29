@@ -24,6 +24,7 @@ sections:
                 tests:
                   - ModelSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
                   - ModelSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+                  - ModelSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
 
               - id: VHDLTest-Simulators-ModelSimSimulator-Test
                 title: ModelSimSimulator shall classify ModelSim simulation output lines by severity.
@@ -36,4 +37,16 @@ sections:
                   - ModelSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
                   - ModelSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
                   - ModelSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+                  - ModelSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException
 
+              - id: VHDLTest-Simulators-ModelSimSimulator-FindPath
+                title: >-
+                  ModelSimSimulator shall locate the ModelSim installation directory, respecting
+                  the VHDLTEST_MODELSIM_PATH environment variable override when set.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate ModelSim across different
+                  installation layouts and environments. The VHDLTEST_MODELSIM_PATH environment
+                  variable override enables CI pipelines and non-standard installations to
+                  specify the ModelSim path explicitly without modifying PATH.
+                tests:
+                  - ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
