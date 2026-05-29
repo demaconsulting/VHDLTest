@@ -14,4 +14,5 @@ sections:
               test with results output confirms the library is functioning correctly.
             tags: [ots]
             tests:
-              - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+              - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
+              - IntegrationTest_ResultsFlag_WritesTrxFile

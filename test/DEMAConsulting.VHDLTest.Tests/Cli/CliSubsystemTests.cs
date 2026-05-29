@@ -88,7 +88,7 @@ public class CliSubsystemTests
     public void CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException()
     {
         // Arrange - create context specifying a non-existent config file
-        var context = Context.Create(["-c", "missing-config.yaml"]);
+        using var context = Context.Create(["-c", "missing-config.yaml"]);
 
         // Act & Assert - verify the subsystem surfaces the missing file error from Options.Parse
         Assert.Throws<FileNotFoundException>(() => Options.Parse(context));

@@ -106,4 +106,26 @@ public class ConfigDocumentTests
             File.Delete(invalidFile);
         }
     }
+
+    /// <summary>
+    /// Test reading a configuration file with malformed YAML content
+    /// (should throw InvalidOperationException, not a raw YamlException)
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException()
+    {
+        // Arrange: write a file with syntactically invalid YAML
+        var malformedFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(malformedFile, "key: : invalid\n");
+
+            // Act + Assert: reading the file should throw InvalidOperationException (not YamlException)
+            Assert.Throws<InvalidOperationException>(() => ConfigDocument.ReadFile(malformedFile));
+        }
+        finally
+        {
+            File.Delete(malformedFile);
+        }
+    }
 }

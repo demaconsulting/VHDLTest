@@ -36,13 +36,25 @@ namespace DEMAConsulting.VHDLTest.Cli;
 public class ConfigDocument
 {
     /// <summary>
-    ///     List of VHDL files
+    ///     Gets or sets the list of VHDL source files to compile.
     /// </summary>
+    /// <value>
+    ///     An array of relative or absolute paths to VHDL source files, populated from the
+    ///     <c>files</c> YAML key (using the <c>HyphenatedNamingConvention</c>). Defaults to
+    ///     an empty array when the key is absent from the YAML document. Callers may iterate
+    ///     this collection safely without a null check.
+    /// </value>
     public string[] Files { get; set; } = [];
 
     /// <summary>
-    ///     List of tests
+    ///     Gets or sets the list of VHDL test bench entity names to run.
     /// </summary>
+    /// <value>
+    ///     An array of VHDL test bench entity names, populated from the <c>tests</c> YAML
+    ///     key (using the <c>HyphenatedNamingConvention</c>). Defaults to an empty array when
+    ///     the key is absent from the YAML document. Callers may iterate this collection
+    ///     safely without a null check.
+    /// </value>
     public string[] Tests { get; set; } = [];
 
     /// <summary>
@@ -63,8 +75,20 @@ public class ConfigDocument
             .Build();
 
         // Parse the document
-        var doc = deserializer.Deserialize<ConfigDocument?>(content) ??
-                  throw new InvalidOperationException($"Configuration document {filename} invalid");
+        ConfigDocument? doc;
+        try
+        {
+            doc = deserializer.Deserialize<ConfigDocument?>(content);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Configuration document {filename} is invalid", ex);
+        }
+
+        if (doc == null)
+        {
+            throw new InvalidOperationException($"Configuration document {filename} is null");
+        }
 
         // Return the document
         return doc;

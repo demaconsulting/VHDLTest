@@ -11,7 +11,7 @@ consumed by ReqStream.
 
 ### Test Environment
 
-CI/CD pipeline environment — GitHub Actions runner on Ubuntu (build-docs job). The
+CI/CD pipeline environment — GitHub Actions runner on Windows (build-docs job). The
 evidence store at `https://raw.githubusercontent.com/demaconsulting/VHDLTest/reviews/index.json`
 must be accessible for the `--enforce` flag to be enabled; currently the pipeline runs
 without `--enforce` until the reviews branch is populated.

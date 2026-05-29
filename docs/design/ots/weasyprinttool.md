@@ -7,10 +7,6 @@ HTML documents into PDF/A-3u compliance artifacts. It is used in the CI document
 pipeline to produce formal PDF versions of all design, requirements, code quality, and
 build notes documents. WeasyprintTool is not deployed with VHDLTest.
 
-### Version Used
-
-DemaConsulting.WeasyprintTool 68.1.0 (dotnet tool `demaconsulting.weasyprinttool`).
-
 ### Features Used
 
 - **HTML to PDF conversion**: reads an HTML input file and writes a PDF output file.

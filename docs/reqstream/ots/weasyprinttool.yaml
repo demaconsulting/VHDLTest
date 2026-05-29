@@ -12,5 +12,4 @@ sections:
               documentation for formal review and release archiving. Correct PDF output from
               the design documents confirms the tool is functioning as required.
             tags: [ots]
-            tests:
-              - WeasyprintTool_HtmlToPdfConversion
+            tests: []

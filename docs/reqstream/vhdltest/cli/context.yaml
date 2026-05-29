@@ -42,23 +42,22 @@ sections:
                   - Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException
 
               - id: VHDLTest-Cli-Context-Write
-                title: Context shall write a message without a line terminator to all configured outputs unless silent mode is active.
+                title: Context shall write a message without a line terminator to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
                 justification: |
-                  Providing a Write method that targets both the console and the log file simultaneously
-                  ensures all output channels stay synchronized without requiring callers to manage
-                  multiple output targets.
+                  Distinguishing console and log-file behavior explicitly prevents callers from
+                  assuming all outputs are suppressed in silent mode; the log file must always
+                  capture output so that CI systems retain complete diagnostic records.
                 tests:
                   - Context_Write_WithLogFile_WritesToLog
 
               - id: VHDLTest-Cli-Context-WriteLine
-                title: Context shall write a message with a line terminator to all configured outputs unless silent mode is active.
+                title: Context shall write a message with a line terminator to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
                 justification: |
                   The majority of VHDLTest output is line-oriented; a dedicated WriteLine that
-                  respects the silent flag prevents callers from having to check Silent before
-                  every output statement, keeping the calling code clean.
+                  respects the silent flag for the console but always writes to the log file
+                  prevents callers from having to manage multiple output targets.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
-                  - Program_Run_WithNoConfigFileArgument_DisplaysUsage
 
               - id: VHDLTest-Cli-Context-WriteVerboseLine
                 title: Context shall write a verbose message with a line terminator only when verbose mode is active.
@@ -85,7 +84,6 @@ sections:
                   failure without parsing individual messages.
                 tests:
                   - Context_WriteError_WithMessage_IncrementsErrors
-                  - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
 
               - id: VHDLTest-Cli-Context-WriteError-Silent
                 title: Context shall write error output to configured log outputs regardless of silent mode.
@@ -102,8 +100,8 @@ sections:
                   Environment.ExitCode from a single source of truth, and allows tests to verify
                   process exit behavior without capturing Environment.ExitCode directly.
                 tests:
-                  - Program_Run_WithVersionFlag_ReturnsZeroExitCode
-                  - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
+                  - Context_ExitCode_NoErrors_ReturnsZero
+                  - Context_WriteError_WithMessage_IncrementsErrors
 
               - id: VHDLTest-Cli-Context-Dispose
                 title: Context shall implement IDisposable and close any open log-file writer on disposal.
@@ -122,4 +120,3 @@ sections:
                   be available or reliable in all execution environments.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
-                  - Program_Run_WithNoConfigFileArgument_DisplaysUsage

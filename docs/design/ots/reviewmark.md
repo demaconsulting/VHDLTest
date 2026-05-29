@@ -8,10 +8,6 @@ the evidence store. It also generates a review plan document and a review report
 When run with `--enforce`, ReviewMark fails the build if any file in a review-set lacks
 current review evidence. ReviewMark is not deployed with VHDLTest.
 
-### Version Used
-
-DemaConsulting.ReviewMark 1.2.0 (dotnet tool `demaconsulting.reviewmark`).
-
 ### Features Used
 
 - **Review plan generation**: `reviewmark --plan ...` produces a markdown document listing
@@ -19,7 +15,8 @@ DemaConsulting.ReviewMark 1.2.0 (dotnet tool `demaconsulting.reviewmark`).
 - **Review report generation**: `reviewmark --report ...` produces a markdown document
   showing the review status of each file against the evidence store.
 - **Enforcement mode**: `reviewmark --enforce` exits non-zero if any file in a review-set
-  lacks evidence, making unreviewed artifacts a build-breaking condition.
+  lacks evidence, making unreviewed artifacts a build-breaking condition. This feature is
+  planned for future activation once the reviews branch is populated with review evidence.
 - **Lint**: `reviewmark --lint` validates `.reviewmark.yaml` syntax.
 - **Self-validation**: `reviewmark --validate --results ...` writes internal test TRX results.
 

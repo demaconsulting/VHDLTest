@@ -12,5 +12,4 @@ sections:
               This maintains consistent terminology and catches typographical errors in design
               documents before they are formally reviewed.
             tags: [ots]
-            tests:
-              - DictionaryMark_SpellCheckPasses
+            tests: []

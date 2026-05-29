@@ -8,10 +8,6 @@ project-defined word list and fails the build when unrecognized words are encoun
 maintaining consistent terminology and preventing typographical errors in reviewed
 documents. DictionaryMark is not deployed with VHDLTest.
 
-### Version Used
-
-DemaConsulting.DictionaryMark 0.1.0-beta.1 (dotnet tool `demaconsulting.dictionarymark`).
-
 ### Features Used
 
 - **Custom dictionary enforcement**: validates documentation files against a project
@@ -22,9 +18,10 @@ DemaConsulting.DictionaryMark 0.1.0-beta.1 (dotnet tool `demaconsulting.dictiona
 ### Integration Pattern
 
 DictionaryMark is available as a local dotnet tool (`.config/dotnet-tools.json`) and is
-invoked in the CI quality-checks pipeline step to enforce spelling standards across
-design, requirements, and verification documentation before the documentation is formally
-compiled and reviewed.
+invoked in the `quality-checks` job of `.github/workflows/build.yaml` to enforce spelling
+standards across design, requirements, and verification documentation before the
+documentation is formally compiled and reviewed. It is invoked with default project
+configuration (no explicit config file argument required):
 
 ```bash
 dotnet dictionarymark

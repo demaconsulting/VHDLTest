@@ -8,10 +8,6 @@ command before `dotnet build` and an `end` command after `dotnet test`, collecti
 metrics, coverage data, and static analysis findings and publishing them to SonarCloud.
 dotnet-sonarscanner is not deployed with VHDLTest.
 
-### Version Used
-
-dotnet-sonarscanner 11.2.1 (dotnet tool `dotnet-sonarscanner`).
-
 ### Features Used
 
 - **Analysis begin**: `dotnet-sonarscanner begin` configures the analysis context,

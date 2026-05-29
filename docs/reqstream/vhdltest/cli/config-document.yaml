@@ -32,3 +32,4 @@ sections:
                   which is critical for CI pipeline reliability.
                 tests:
                   - ConfigDocument_ReadFile_InvalidContent_ThrowsInvalidOperationException
+                  - ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException

@@ -7,10 +7,6 @@ documentation into HTML as an intermediate step for PDF generation. It is used i
 documentation pipeline to produce HTML versions of all design, requirements, code quality,
 and build notes documents. PandocTool is not deployed with VHDLTest.
 
-### Version Used
-
-DemaConsulting.PandocTool 3.9.0.2 (dotnet tool `demaconsulting.pandoctool`).
-
 ### Features Used
 
 - **Markdown to HTML conversion**: processes multiple input Markdown files defined in a

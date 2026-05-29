@@ -3,11 +3,12 @@
 ### Verification Approach
 
 YamlDotNet is verified through integration tests in
-`test/DEMAConsulting.VHDLTest.Tests/Cli/ConfigDocumentTests.cs`. The
-`ConfigDocument.ReadFile` method under test calls the YamlDotNet deserializer directly;
-passing tests confirm that YamlDotNet correctly deserializes YAML configuration files
-into `ConfigDocument` instances. No mocking of YamlDotNet is performed — the real
-library is exercised in all test scenarios.
+`test/DEMAConsulting.VHDLTest.Tests/Cli/OptionsTests.cs`. The `Options.Parse` method under
+test calls `ConfigDocument.ReadFile`, which invokes the YamlDotNet deserializer directly;
+passing tests confirm that YamlDotNet correctly deserializes YAML configuration files into
+`ConfigDocument` instances. YamlDotNet is exercised transitively through the call chain
+`Options.Parse → ConfigDocument.ReadFile → YamlDotNet Deserializer`. No mocking of YamlDotNet
+is performed — the real library is exercised in all test scenarios.
 
 ### Test Environment
 
@@ -16,9 +17,9 @@ Ubuntu, Windows, and macOS in the CI matrix.
 
 ### Acceptance Criteria
 
-All `ConfigDocumentTests` tests pass under `dotnet test` on all supported platforms.
-A passing test run constitutes evidence that YamlDotNet deserialized YAML content
-correctly for all tested input scenarios.
+All `OptionsTests` tests pass under `dotnet test` on all supported platforms. A passing test
+run constitutes evidence that YamlDotNet deserialized YAML content correctly for all tested
+input scenarios.
 
 ### Test Scenarios
 

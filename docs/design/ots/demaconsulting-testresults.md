@@ -7,10 +7,6 @@ the serialization logic that converts the in-memory collection of `TestResult` r
 the TRX XML format consumed by CI/CD platforms, coverage tools, and requirements traceability
 tools.
 
-### Version Used
-
-DemaConsulting.TestResults 1.7.0 (NuGet package `DemaConsulting.TestResults`).
-
 ### Features Used
 
 - **TRX serialization**: the library's API is used to create a test run record and serialize

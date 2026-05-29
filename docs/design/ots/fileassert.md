@@ -7,10 +7,6 @@ reference baselines in the CI pipeline. It prevents unintentional changes to gen
 documentation and traceability reports from silently passing the build. FileAssert is not
 deployed with VHDLTest.
 
-### Version Used
-
-DemaConsulting.FileAssert 0.3.0 (dotnet tool `demaconsulting.fileassert`).
-
 ### Features Used
 
 - **File comparison**: compares a generated output file against a committed baseline file

@@ -12,5 +12,4 @@ sections:
               as an intermediate step for PDF generation via WeasyprintTool. Correct HTML
               output from the design documents confirms the tool is functioning as required.
             tags: [ots]
-            tests:
-              - PandocTool_MarkdownToHtmlConversion
+            tests: []

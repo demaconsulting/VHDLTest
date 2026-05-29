@@ -227,6 +227,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithDepth_SetsDepth()
     {
+        // Arrange: no setup required
+
         // Act - Parse the arguments
         var arguments = Context.Create(["--depth", "2"]);
 
@@ -241,6 +243,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithInvalidDepth_ThrowsInvalidOperationException()
     {
+        // Arrange: no setup required
+
         // Act & Assert - Verify InvalidOperationException is thrown for non-integer depth
         Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "abc"]));
     }
@@ -251,6 +255,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithZeroDepth_ThrowsInvalidOperationException()
     {
+        // Arrange: no setup required
+
         // Act & Assert - Verify InvalidOperationException is thrown for zero depth
         Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "0"]));
     }
@@ -261,6 +267,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithNegativeDepth_ThrowsInvalidOperationException()
     {
+        // Arrange: no setup required
+
         // Act & Assert - Verify InvalidOperationException is thrown for negative depth
         Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "-1"]));
     }
@@ -320,6 +328,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithVersionFlag_SetsVersionFlag()
     {
+        // Arrange: no setup required
+
         // Act: parse the arguments
         var arguments = Context.Create(["--version"]);
 
@@ -334,6 +344,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithShortVersionFlag_SetsVersionFlag()
     {
+        // Arrange: no setup required
+
         // Act: parse the arguments
         var arguments = Context.Create(["-v"]);
 
@@ -348,6 +360,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithHelpFlag_SetsHelpFlag()
     {
+        // Arrange: no setup required
+
         // Act: parse the arguments
         var arguments = Context.Create(["--help"]);
 
@@ -362,6 +376,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithShortHelpFlag_SetsHelpFlag()
     {
+        // Arrange: no setup required
+
         // Act: parse the arguments
         var arguments = Context.Create(["-h"]);
 
@@ -376,6 +392,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithQuestionHelpFlag_SetsHelpFlag()
     {
+        // Arrange: no setup required
+
         // Act: parse the arguments
         var arguments = Context.Create(["-?"]);
 
@@ -390,12 +408,30 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithSilentFlag_SetsSilentFlag()
     {
+        // Arrange: no setup required
+
         // Act: parse the arguments
         var arguments = Context.Create(["--silent"]);
 
         // Assert: verify silent flag is set
         Assert.NotNull(arguments);
         Assert.True(arguments.Silent);
+    }
+
+    /// <summary>
+    /// Test that ExitCode returns zero when no errors have been reported
+    /// </summary>
+    [Fact]
+    public void Context_ExitCode_NoErrors_ReturnsZero()
+    {
+        // Arrange: create a context with no arguments
+        using var context = Context.Create([]);
+
+        // Act: read the exit code without writing any errors
+        var exitCode = context.ExitCode;
+
+        // Assert: verify exit code is zero when no errors have been reported
+        Assert.Equal(0, exitCode);
     }
 
     /// <summary>

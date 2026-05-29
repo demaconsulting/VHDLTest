@@ -12,5 +12,4 @@ sections:
               unintentional changes to generated documentation and traceability reports from
               silently passing the build.
             tags: [ots]
-            tests:
-              - FileAssert_ComparesFiles
+            tests: []
