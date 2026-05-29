@@ -23,7 +23,13 @@ using DEMAConsulting.VHDLTest.Tests;
 namespace DEMAConsulting.VHDLTest.Tests.SelfTest;
 
 /// <summary>
-/// Tests for validation
+///     Integration tests for the <c>Validation</c> class in the SelfTest subsystem. Each test runs
+///     the VHDLTest executable end-to-end as a subprocess using <c>Runner</c> with
+///     <c>--validate --simulator mock</c>, exercising the complete self-validation pipeline:
+///     embedded VHDL file extraction, in-process VHDLTest invocation, log capture, result
+///     reporting, heading-depth configuration, results-file serialization, system-information
+///     table output (OS Version and .NET runtime), and graceful error handling when an
+///     unrecognized simulator name is supplied.
 /// </summary>
 public class ValidationTests
 {
@@ -74,6 +80,8 @@ public class ValidationTests
     [Fact]
     public void SelfTest_ValidateWithResultsFile_MockSimulator_SavesResults()
     {
+        // Use a unique temp path to avoid interference from parallel test runs
+        var resultsFile = Path.Combine(Path.GetTempPath(), $"validation_results_{Guid.NewGuid():N}.trx");
         try
         {
             // Arrange: use the mock simulator and specify a results file path
@@ -84,12 +92,12 @@ public class ValidationTests
                 "DEMAConsulting.VHDLTest.dll",
                 "--simulator", "mock",
                 "--validate",
-                "--results", "validation_results.trx");
+                "--results", resultsFile);
 
             // Assert: exit code is 0 and results file was written with expected content
             Assert.Equal(0, exitCode);
-            Assert.True(File.Exists("validation_results.trx"));
-            var text = File.ReadAllText("validation_results.trx");
+            Assert.True(File.Exists(resultsFile));
+            var text = File.ReadAllText(resultsFile);
             Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestPasses" />""", text);
             Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestFails" />""", text);
             Assert.Contains("""<Counters total="2" executed="2" passed="2" failed="0" />""", text);
@@ -97,7 +105,7 @@ public class ValidationTests
         finally
         {
             // Delete results file
-            File.Delete("validation_results.trx");
+            File.Delete(resultsFile);
         }
     }
 
@@ -119,6 +127,7 @@ public class ValidationTests
         // Assert: exit code is 0 and OS Version field is present in output
         Assert.Equal(0, exitCode);
         Assert.Contains("| OS Version", output);
+        Assert.Contains("| DotNet Runtime", output);
     }
 
     /// <summary>
@@ -132,13 +141,14 @@ public class ValidationTests
 
         // Act: run validation with the invalid simulator name
         var exitCode = Runner.Run(
-            out _,
+            out var output,
             "dotnet",
             "DEMAConsulting.VHDLTest.dll",
             "--simulator", invalidSimulator,
             "--validate");
 
-        // Assert: VHDLTest exits with a non-zero code when the simulator is invalid
+        // Assert: VHDLTest exits with a non-zero code and output contains a descriptive error
         Assert.NotEqual(0, exitCode);
+        Assert.Contains("Simulator not found", output, StringComparison.OrdinalIgnoreCase);
     }
 }

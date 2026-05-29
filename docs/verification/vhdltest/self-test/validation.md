@@ -30,21 +30,27 @@ any external VHDL simulator installation.
 completes with exit code 0 and writes `"Validation Passed"` to the output, confirming
 the embedded VHDL test files are correctly extracted, executed by the mock simulator,
 and their pass/fail outcomes are correctly evaluated.
-This scenario is tested by `IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess`.
+This scenario is tested by `SelfTest_Validate_MockSimulator_ReturnsSuccess`.
 
 **ValidateFlagWithDepth_PerformsValidationWithDepth**: Verifies that the `--depth 3` flag
 causes the validation system information heading to use depth-3 Markdown headers
 (`"### DEMAConsulting.VHDLTest"`), confirming the depth parameter is passed through
 `Context` and applied to the output.
-This scenario is tested by `IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth`.
+This scenario is tested by `SelfTest_ValidateWithDepth_MockSimulator_RendersDepthHeadings`.
 
-**ValidateFlagWithResultsFile_SavesValidationResults**: Verifies that specifying
-`--results validation_results.trx` causes `Validation.Run` to write a TRX file containing
+**ValidateFlagWithResultsFile_SavesValidationResults**: Verifies that specifying a
+`--results <file>` path causes `Validation.Run` to write a TRX file containing
 entries for `VHDLTest_TestPasses` and `VHDLTest_TestFails` with a counter of 2 passed and
 0 failed, confirming the results collection and serialization path works correctly.
-This scenario is tested by `IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults`.
+This scenario is tested by `SelfTest_ValidateWithResultsFile_MockSimulator_SavesResults`.
 
 **ValidateFlag_IncludesOSVersionInReport**: Verifies that the validation report contains the
-`"| OS Version"` row in the system information Markdown table, confirming that environment
-metadata collection is functional and included in the validation output.
-This scenario is tested by `IntegrationTest_ValidateFlag_IncludesOSVersionInReport`.
+`"| OS Version"` and `"| DotNet Runtime"` rows in the system information Markdown table,
+confirming that environment metadata collection is functional and included in the validation
+output.
+This scenario is tested by `SelfTest_Validate_MockSimulator_IncludesOSVersionInReport`.
+
+**ValidateFlag_InvalidSimulator_ReturnsFailure**: Verifies that `Validation.Run` exits with a
+non-zero code and produces a descriptive error message when given an unrecognized simulator
+name, confirming that the tool fails gracefully rather than silently crashing.
+This scenario is tested by `SelfTest_Validate_InvalidSimulator_ReturnsFailure`.

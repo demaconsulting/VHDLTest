@@ -353,6 +353,7 @@ reviews:
       - docs/reqstream/vhdltest/self-test/self-test.yaml  # subsystem requirements
       - docs/design/vhdltest/self-test.md  # subsystem design
       - test/**/SelfTest/ValidationTests.cs  # subsystem integration tests
+      - docs/verification/vhdltest/self-test.md  # verification document
 
   # Validation unit review
   - id: VHDLTest-SelfTest-Validation
@@ -362,3 +363,4 @@ reviews:
       - docs/design/vhdltest/self-test/validation.md  # design
       - src/DEMAConsulting.VHDLTest/SelfTest/Validation.cs  # source
       - test/**/SelfTest/ValidationTests.cs  # unit/integration tests
+      - docs/verification/vhdltest/self-test/validation.md  # verification document

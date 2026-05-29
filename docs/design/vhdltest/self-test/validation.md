@@ -11,6 +11,8 @@ correctly installed and that the configured simulator is functioning.
 
 N/A - `Validation` is a static class with no instance state. The constant `ValidationFolder`
 (`"validation.tmp"`) holds the temporary working directory name used during test execution.
+Note that `RunValidation` is not safe to call concurrently from the same working directory
+because both callers would attempt to create and delete the same fixed-name temporary folder.
 
 #### Key Methods
 
@@ -22,7 +24,7 @@ N/A - `Validation` is a static class with no instance state. The constant `Valid
 - *Postconditions*: validation results have been written to the context; `context.Errors` is greater
   than 0 if any validation failed; optionally a results file has been written.
 
-Writes a system information table (VHDLTest version, machine name, OS description, .NET runtime,
+Writes a system information table (VHDLTest version, machine name, OS Version, .NET runtime,
 UTC timestamp), constructs a `TestResults` instance, calls `ValidateTestPasses` and
 `ValidateTestFails`, optionally calls `results.SaveResults`, and writes a final pass/fail summary.
 
@@ -36,6 +38,9 @@ passed.
 
 Calls `RunValidation`, then checks that the exit code is 0, the output contains
 `"Passed full_adder_pass_tb"`, and the output contains `"Passed half_adder_pass_tb"`.
+Each call to `ValidateTestPasses` and `ValidateTestFails` invokes `RunValidation` independently,
+performing a separate subprocess run so that each validation scenario is fully isolated from the
+other.
 
 **ValidateTestFails** (public static): Checks that VHDLTest correctly reports failing tests as
 failed.
@@ -46,7 +51,10 @@ failed.
 - *Postconditions*: a `TestResult` for `VHDLTest_TestFails` has been added to `results`.
 
 Calls `RunValidation`, then checks that the exit code is 0, the output contains
-`"Failed full_adder_fail_tb"`, and the output contains `"Failed half_adder_fail_tb"`.
+`"Failed full_adder_fail_tb"`, and the output contains `"Failed half_adder_fail_tb"`. The
+`--exit-0` flag is passed to the inner VHDLTest invocation so that a non-zero exit code signals a
+tool-level error (e.g., simulator not found) rather than a test failure — pass/fail determination
+is made solely from the log output.
 
 **RunValidation** (public static): Runs VHDLTest on embedded validation files and returns the
 captured log.

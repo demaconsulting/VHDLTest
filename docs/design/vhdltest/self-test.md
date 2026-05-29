@@ -27,7 +27,7 @@ reported as failed.
 
 1. `Program` calls `Validation.Run(context)` when `context.Validate` is true.
 2. `Validation.Run` writes a Markdown-formatted system information table to the context (VHDLTest
-   version, machine name, OS description, .NET runtime, UTC timestamp).
+   version, machine name, OS Version, .NET runtime, UTC timestamp).
 3. It calls `ValidateTestPasses` and `ValidateTestFails`, each of which:
    - Calls `RunValidation` to extract embedded VHDL files to a temporary folder, execute VHDLTest
      on them, capture the log output, and clean up the folder.

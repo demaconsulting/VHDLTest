@@ -237,7 +237,9 @@ internal static class Validation
     /// <param name="start">Test start time-stamp</param>
     /// <param name="duration">Test duration</param>
     /// <param name="exitCode">Program exit-code</param>
-    /// <param name="output">Output text</param>
+    /// <param name="output">Raw captured log content from the inner VHDLTest run. May be empty
+    ///     but is never null. Line endings may be CR, LF, or CRLF depending on the platform and
+    ///     the log writer.</param>
     /// <param name="succeeded">True if test succeeded</param>
     private static void ReportTestResult(
         Context context,
