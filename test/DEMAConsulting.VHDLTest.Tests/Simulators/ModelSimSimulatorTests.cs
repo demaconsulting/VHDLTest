@@ -29,11 +29,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 public class ModelSimSimulatorTests
 {
     /// <summary>
-    /// Check name of GHDL simulator
+    /// Check name of ModelSim simulator
     /// </summary>
     [Fact]
     public void ModelSimSimulator_SimulatorName_ReturnsModelSim()
     {
+        // Act / Assert: simulator name is the fixed string "ModelSim"
         Assert.Equal("ModelSim", ModelSimSimulator.Instance.SimulatorName);
     }
 
@@ -43,12 +44,15 @@ public class ModelSimSimulatorTests
     [Fact]
     public void ModelSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
+        // Arrange: output with no diagnostic patterns
+        // Act: parse two plain-text lines
         var results = ModelSimSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nNo Issues",
             0);
 
+        // Assert: summary is Text and all lines are classified as Text
         Assert.Equal(RunLineType.Text, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -62,17 +66,20 @@ public class ModelSimSimulatorTests
     }
 
     /// <summary>
-    /// Test ModelSim simulator compile with an info message
+    /// Test ModelSim simulator compile with an error message
     /// </summary>
     [Fact]
     public void ModelSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
+        // Arrange: output containing the ModelSim error pattern
+        // Act: parse an error line
         var results = ModelSimSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nError: Compile Error",
             1);
 
+        // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -91,12 +98,15 @@ public class ModelSimSimulatorTests
     [Fact]
     public void ModelSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
+        // Arrange: output with no diagnostic patterns
+        // Act: parse two plain-text lines
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNo Issues",
             0);
 
+        // Assert: summary is Text and all lines are classified as Text
         Assert.Equal(RunLineType.Text, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -115,12 +125,15 @@ public class ModelSimSimulatorTests
     [Fact]
     public void ModelSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
+        // Arrange: output containing the ModelSim note pattern
+        // Act: parse an info line
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNote: Test Note",
             0);
 
+        // Assert: summary is Info and the diagnostic line is classified as Info
         Assert.Equal(RunLineType.Info, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -139,12 +152,15 @@ public class ModelSimSimulatorTests
     [Fact]
     public void ModelSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
+        // Arrange: output containing the ModelSim warning pattern
+        // Act: parse a warning line
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nWarning: Test Warning",
             0);
 
+        // Assert: summary is Warning and the diagnostic line is classified as Warning
         Assert.Equal(RunLineType.Warning, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -163,12 +179,15 @@ public class ModelSimSimulatorTests
     [Fact]
     public void ModelSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
+        // Arrange: output containing the ModelSim error pattern
+        // Act: parse an error line
         var results = ModelSimSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nError: Test Error",
             1);
 
+        // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -179,5 +198,28 @@ public class ModelSimSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Error: Test Error", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test ModelSim simulator test with a failure message
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the ModelSim failure pattern
+        // Act: parse a failure line
+        var results = ModelSimSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nFailure: Test Failure",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Failure: Test Failure", results.Lines[1].Text);
     }
 }

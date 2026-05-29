@@ -27,56 +27,108 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest.Results;
 
 /// <summary>
-///     Test Results class
+///     Aggregate container for a complete VHDLTest run, driving build and test execution
+///     through a simulator and serializing outcomes to standard report formats.
 /// </summary>
-/// <param name="runName">Test Run Name</param>
-/// <param name="codeBase">Code Base</param>
+/// <remarks>
+///     TestResults owns the compile-then-test workflow: <c>Execute</c> invokes the
+///     simulator for the build step and for each test bench in sequence, collecting
+///     <see cref="TestResult"/> instances in <see cref="Tests"/>. After execution callers
+///     can print a human-readable summary via <see cref="PrintSummary"/> and persist the
+///     collection as TRX or JUnit XML via <see cref="SaveResults"/>.
+/// </remarks>
+/// <param name="runName">
+///     Human-readable label for this test run used in generated reports. Must not be null.
+/// </param>
+/// <param name="codeBase">
+///     Path or label identifying the source tree under test, stored in TRX output for
+///     traceability. Must not be null.
+/// </param>
 public sealed class TestResults(string runName, string codeBase)
 {
     /// <summary>
     ///     Gets the Test Run ID
     /// </summary>
+    /// <remarks>
+    ///     Unique identifier for this test run instance; correlates TRX output back to a
+    ///     specific VHDLTest invocation.
+    /// </remarks>
     public Guid RunId { get; init; } = Guid.NewGuid();
 
     /// <summary>
     ///     Gets the Test Run Name
     /// </summary>
+    /// <remarks>
+    ///     Human-readable label set at construction; used in generated reports to identify
+    ///     who ran the tests and when.
+    /// </remarks>
     public string RunName => runName;
 
     /// <summary>
     ///     Gets the Code Base
     /// </summary>
+    /// <remarks>
+    ///     Path or label identifying the source tree under test; stored in TRX output so
+    ///     report consumers can trace results back to the code revision.
+    /// </remarks>
     public string CodeBase => codeBase;
 
     /// <summary>
     ///     Gets or sets the build run information
     /// </summary>
+    /// <remarks>
+    ///     Null before <c>Execute</c> completes; set once compilation finishes
+    ///     regardless of whether the build passed or failed.
+    /// </remarks>
     public RunResults? BuildResults { get; set; }
 
     /// <summary>
     ///     Gets the tests
     /// </summary>
+    /// <remarks>
+    ///     Ordered list of individual test bench outcomes, one per configured test bench;
+    ///     populated in order by the <c>Execute</c> method.
+    /// </remarks>
     public List<TestResult> Tests { get; init; } = [];
 
     /// <summary>
     ///     Gets the passed tests
     /// </summary>
+    /// <remarks>
+    ///     Lazily enumerated view over <see cref="Tests"/> containing only outcomes where
+    ///     the test bench ran without error; used by <see cref="PrintSummary"/> to compute
+    ///     pass counts.
+    /// </remarks>
     public IEnumerable<TestResult> Passes => Tests.Where(r => r.Passed);
 
     /// <summary>
     ///     Gets the failing tests
     /// </summary>
+    /// <remarks>
+    ///     Lazily enumerated view over <see cref="Tests"/> containing only outcomes where
+    ///     the test bench encountered an error; used by <see cref="PrintSummary"/> to
+    ///     compute fail counts.
+    /// </remarks>
     public IEnumerable<TestResult> Fails => Tests.Where(r => r.Failed);
 
     /// <summary>
     ///     Execute the requested tests
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="options">Test options</param>
-    /// <param name="simulator">Simulator</param>
-    /// <returns>Test results</returns>
+    /// <remarks>
+    ///     Convenience overload that derives the run name from the current user, machine
+    ///     name, and local timestamp, and the code base from the options working directory.
+    ///     Delegates to the explicit overload; stateless and safe to call concurrently for
+    ///     independent contexts.
+    /// </remarks>
+    /// <param name="context">Program context providing output channels. Must not be null.</param>
+    /// <param name="options">Test options supplying working directory and test list. Must not be null.</param>
+    /// <param name="simulator">Simulator to use for compilation and test execution. Must not be null.</param>
+    /// <returns>Populated <see cref="TestResults"/> instance with build and test outcomes.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the build step reports errors.</exception>
     public static TestResults Execute(Context context, Options options, Simulator simulator)
     {
+        // Delegate to the explicit overload, deriving the run name from the current user and
+        // machine context and the code base from the options working directory
         return Execute(
             context,
             $"{Environment.UserName}@{Environment.MachineName} {DateTime.Now}",
@@ -88,12 +140,22 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Execute the requested tests
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="runName">Run name</param>
-    /// <param name="codeBase">Code base</param>
-    /// <param name="options">Test options</param>
-    /// <param name="simulator">Simulator</param>
-    /// <returns>Test results</returns>
+    /// <remarks>
+    ///     Primary execution method. Invokes the simulator's compile step; throws
+    ///     <see cref="InvalidOperationException"/> with the message "Build Failed" if the
+    ///     build reports errors. On success iterates <see cref="Context.CustomTests"/> when
+    ///     set, or <c>options.Config.Tests</c>, calling the simulator's test step for each
+    ///     and appending a <see cref="TestResult"/> to <see cref="Tests"/>. Stateless with
+    ///     respect to <c>this</c>; each call constructs a fresh <see cref="TestResults"/>
+    ///     instance.
+    /// </remarks>
+    /// <param name="context">Program context providing output channels. Must not be null.</param>
+    /// <param name="runName">Human-readable run label used in generated reports. Must not be null.</param>
+    /// <param name="codeBase">Path or label identifying the code under test. Must not be null.</param>
+    /// <param name="options">Test options supplying working directory and test list. Must not be null.</param>
+    /// <param name="simulator">Simulator to use for compilation and test execution. Must not be null.</param>
+    /// <returns>Populated <see cref="TestResults"/> instance with build and test outcomes.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the build step reports errors.</exception>
     public static TestResults Execute(Context context, string runName, string codeBase, Options options, Simulator simulator)
     {
         // Construct the results

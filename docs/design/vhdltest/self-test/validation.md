@@ -1,20 +1,119 @@
-# Validation Unit Design
+### Validation
 
-## Overview
+#### Purpose
 
-`SelfTest/Validation.cs` implements the self-validation test runner for VHDLTest.
-It uses a set of embedded VHDL files to verify the tool is correctly installed
-and that the configured simulator is functioning correctly.
+`Validation.cs` implements the self-validation test runner for VHDLTest. It extracts embedded VHDL
+reference files to a temporary folder, runs VHDLTest against them in-process, checks the captured
+log for expected pass/fail markers, and reports the outcomes. It is used to verify that the tool is
+correctly installed and that the configured simulator is functioning.
 
-## Responsibilities
+#### Data Model
 
-- Execute a set of built-in VHDL tests using the available simulator
-- Report validation results via the `Context` output channels
-- Optionally save results to a TRX or JUnit file
-- Include system information (OS, .NET runtime) in the validation report
+N/A - `Validation` is a static class with no instance state. The constant `ValidationFolder`
+(`"validation.tmp"`) holds the temporary working directory name used during test execution.
 
-## Interactions
+#### Key Methods
 
-- Called by `Program.cs` when `--validate` is present in the `Context`
-- Uses `SimulatorFactory` to obtain the active simulator
-- Uses `Results/TestResults.cs` to build and serialize the results report
+**Run** (public static): Executes the full self-validation sequence and reports results.
+
+- *Parameters*: `Context context` — the program context providing flags, I/O, and simulator name.
+- *Returns*: void.
+- *Preconditions*: `context` is not null.
+- *Postconditions*: validation results have been written to the context; `context.Errors` is greater
+  than 0 if any validation failed; optionally a results file has been written.
+
+Writes a system information table (VHDLTest version, machine name, OS description, .NET runtime,
+UTC timestamp), constructs a `TestResults` instance, calls `ValidateTestPasses` and
+`ValidateTestFails`, optionally calls `results.SaveResults`, and writes a final pass/fail summary.
+
+**ValidateTestPasses** (public static): Checks that VHDLTest correctly reports passing tests as
+passed.
+
+- *Parameters*: `Context context`, `TestResults results`.
+- *Returns*: void.
+- *Preconditions*: `context` and `results` are not null.
+- *Postconditions*: a `TestResult` for `VHDLTest_TestPasses` has been added to `results`.
+
+Calls `RunValidation`, then checks that the exit code is 0, the output contains
+`"Passed full_adder_pass_tb"`, and the output contains `"Passed half_adder_pass_tb"`.
+
+**ValidateTestFails** (public static): Checks that VHDLTest correctly reports failing tests as
+failed.
+
+- *Parameters*: `Context context`, `TestResults results`.
+- *Returns*: void.
+- *Preconditions*: `context` and `results` are not null.
+- *Postconditions*: a `TestResult` for `VHDLTest_TestFails` has been added to `results`.
+
+Calls `RunValidation`, then checks that the exit code is 0, the output contains
+`"Failed full_adder_fail_tb"`, and the output contains `"Failed half_adder_fail_tb"`.
+
+**RunValidation** (public static): Runs VHDLTest on embedded validation files and returns the
+captured log.
+
+- *Parameters*: `out string results` — the captured log file content on return.
+- *Parameters*: `string? simulator` — optional simulator name override; null uses the default.
+- *Returns*: `int` — exit code from VHDLTest.
+- *Preconditions*: the filesystem is writable.
+- *Postconditions*: `ValidationFolder` has been deleted; `results` contains the captured log, or an
+  empty string if the log file was not written.
+
+Creates `validation.tmp/`, calls `ExtractValidationFiles` to populate it, constructs VHDLTest
+arguments (`--log output.log --silent --config validate.yaml --exit-0`, optionally
+`--simulator <name>`), calls `RunVhdlTest` in the folder, reads the log, then deletes the folder in
+a `finally` block.
+
+**ExtractValidationFiles** (private static): Extracts embedded validation resource files to a
+directory.
+
+- *Parameters*: `string path` — destination directory.
+- *Returns*: void.
+- *Preconditions*: `path` exists and is writable.
+- *Postconditions*: all embedded resources with the prefix
+  `DEMAConsulting.VHDLTest.ValidationFiles.` have been written to `path`.
+
+Reflects over the assembly manifest resource names, filters by the
+`DEMAConsulting.VHDLTest.ValidationFiles.` prefix, and copies each resource stream to a file named
+by the suffix after the prefix in `path`. Throws `InvalidOperationException` if a resource stream
+cannot be opened.
+
+**RunVhdlTest** (internal static, two overloads): Runs VHDLTest in-process.
+
+- *Overload 1*: `string[] args` — creates a `Context`, calls `Program.Run`, returns
+  `context.ExitCode`.
+- *Overload 2*: `string workingFolder`, `string[] args` — changes the working directory to
+  `workingFolder`, delegates to overload 1, restores the working directory in a `finally` block.
+
+**ReportTestResult** (private static): Records and reports a single validation test outcome.
+
+- *Parameters*: `Context context`, `TestResults results`, `string testName`, `DateTime start`,
+  `double duration`, `int exitCode`, `string output`, `bool succeeded`.
+- *Returns*: void.
+- *Preconditions*: all parameters are not null.
+- *Postconditions*: a check or cross symbol line has been written to the context; a `TestResult` has
+  been appended to `results.Tests`.
+
+Writes `"✓ VHDLTest_{testName} - Passed"` or `"✗ VHDLTest_{testName} - Failed"` (with indented
+exit code and output lines on failure) to the context. Constructs a `RunResults` from a single
+outcome `RunLine` and wraps it in a `TestResult` with class name `"VHDLTest.Validation"`.
+
+#### Error Handling
+
+`Run` validates that `context` is not null via `ArgumentNullException.ThrowIfNull`. `RunValidation`
+uses a `finally` block for best-effort cleanup of the temporary folder and swallows
+`Directory.Delete` exceptions to avoid masking earlier failures. `ExtractValidationFiles` throws
+`InvalidOperationException` if an embedded resource stream cannot be opened.
+
+#### Dependencies
+
+- **Context** — provides I/O channels, simulator name, depth setting, results file path, and error
+  counter.
+- **Program** — invoked in-process by `RunVhdlTest` to execute the validation tests.
+- **TestResults** — collects and serializes the validation test outcomes.
+- **TestResult** — represents each individual validation outcome.
+- **RunResults** — wraps the outcome of each validation scenario.
+- **RunLine** — represents the single outcome line passed into `RunResults`.
+
+#### Callers
+
+- **Program** — calls `Validation.Run(context)` when `context.Validate` is true.

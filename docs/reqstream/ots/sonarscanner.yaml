@@ -1,0 +1,16 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: SonarScanner Requirements
+        requirements:
+          - id: VHDLTest-OTS-SonarScanner
+            title: dotnet-sonarscanner shall perform static analysis of VHDLTest source code and publish results to SonarCloud.
+            justification: |
+              dotnet-sonarscanner (v11.2.1) integrates with the .NET build to collect code metrics,
+              coverage data, and static analysis findings, then publishes them to SonarCloud for
+              continuous quality monitoring. Issues surfaced by SonarCloud are tracked and resolved
+              as part of the development workflow, maintaining code quality standards.
+            tags: [ots]
+            tests:
+              - SonarScanner_AnalysisCompletes

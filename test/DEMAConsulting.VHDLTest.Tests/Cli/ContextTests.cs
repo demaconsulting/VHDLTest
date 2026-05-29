@@ -313,4 +313,209 @@ public class ContextTests
         Assert.Equal("custom_test1", arguments.CustomTests[0]);
         Assert.Equal("custom_test2", arguments.CustomTests[1]);
     }
+
+    /// <summary>
+    /// Test parsing arguments with version flag (long form)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithVersionFlag_SetsVersionFlag()
+    {
+        // Act: parse the arguments
+        var arguments = Context.Create(["--version"]);
+
+        // Assert: verify version flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Version);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with version flag (short form)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithShortVersionFlag_SetsVersionFlag()
+    {
+        // Act: parse the arguments
+        var arguments = Context.Create(["-v"]);
+
+        // Assert: verify version flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Version);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with help flag (long form)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithHelpFlag_SetsHelpFlag()
+    {
+        // Act: parse the arguments
+        var arguments = Context.Create(["--help"]);
+
+        // Assert: verify help flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Help);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with help flag (short form -h)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithShortHelpFlag_SetsHelpFlag()
+    {
+        // Act: parse the arguments
+        var arguments = Context.Create(["-h"]);
+
+        // Assert: verify help flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Help);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with help flag (short form -?)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithQuestionHelpFlag_SetsHelpFlag()
+    {
+        // Act: parse the arguments
+        var arguments = Context.Create(["-?"]);
+
+        // Assert: verify help flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Help);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with silent flag
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithSilentFlag_SetsSilentFlag()
+    {
+        // Act: parse the arguments
+        var arguments = Context.Create(["--silent"]);
+
+        // Assert: verify silent flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Silent);
+    }
+
+    /// <summary>
+    /// Test that the log option writes output to the specified log file
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithLogOption_WritesToLogFile()
+    {
+        // Arrange: create a temporary log file path
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["-l", logFile]))
+            {
+                // Act: write a line through the context
+                arguments.WriteLine("test output");
+            }
+
+            // Assert: verify the output was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("test output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine writes to the log file when verbose mode is active
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_VerboseMode_WritesToLog()
+    {
+        // Arrange: create a context with verbose mode and a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--verbose", "-l", logFile]))
+            {
+                // Act: write a verbose line
+                arguments.WriteVerboseLine("verbose output");
+            }
+
+            // Assert: verify the verbose output was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("verbose output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that WriteError increments the error counter
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_WithMessage_IncrementsErrors()
+    {
+        // Arrange: create a silent context (to suppress console output)
+        var arguments = Context.Create(["--silent"]);
+
+        // Act: write an error message
+        arguments.WriteError("test error");
+
+        // Assert: verify the error counter was incremented and exit code reflects the error
+        Assert.Equal(1, arguments.Errors);
+        Assert.NotEqual(0, arguments.ExitCode);
+    }
+
+    /// <summary>
+    /// Test that WriteError writes to the log file even when silent mode is enabled
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_SilentMode_WritesToLogFile()
+    {
+        // Arrange: create a silent context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--silent", "-l", logFile]))
+            {
+                // Act: write an error through the context
+                arguments.WriteError("test error");
+            }
+
+            // Assert: verify the error was written to the log file despite silent mode
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("test error", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Write sends output to the log file
+    /// </summary>
+    [Fact]
+    public void Context_Write_WithLogFile_WritesToLog()
+    {
+        // Arrange: create a context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["-l", logFile]))
+            {
+                // Act: write colored text through the context
+                arguments.Write(ConsoleColor.White, "colored output");
+            }
+
+            // Assert: verify the text was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("colored output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
 }

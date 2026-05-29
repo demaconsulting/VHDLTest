@@ -1,0 +1,19 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Run Requirements
+        sections:
+          - title: RunLine Requirements
+            requirements:
+              - id: VHDLTest-Run-RunLine
+                title: >-
+                  The RunLine unit shall represent a single line of simulator output, capturing its
+                  text and classification for downstream processing.
+                justification: |
+                  Encapsulating each output line together with its classification into a RunLine
+                  record provides a strongly typed value that passes cleanly between RunProcessor
+                  and downstream consumers, avoiding raw string comparisons in downstream logic.
+                tests:
+                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult

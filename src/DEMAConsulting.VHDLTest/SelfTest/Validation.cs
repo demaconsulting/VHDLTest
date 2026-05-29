@@ -27,7 +27,8 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.SelfTest;
 
 /// <summary>
-/// Validation runner
+///     Executes VHDLTest's self-validation sequence, running embedded VHDL reference test benches
+///     through the configured simulator and reporting pass/fail outcomes.
 /// </summary>
 internal static class Validation
 {
@@ -40,6 +41,14 @@ internal static class Validation
     ///     Run self-validation
     /// </summary>
     /// <param name="context">Program context</param>
+    /// <remarks>
+    ///     Writes a Markdown-formatted system information table (VHDLTest version, machine name,
+    ///     OS description, .NET runtime, UTC timestamp) then calls
+    ///     <see cref="ValidateTestPasses"/> and <see cref="ValidateTestFails"/>.
+    ///     If <c>context.ResultsFile</c> is non-null, saves results to that path.
+    ///     Writes a final summary with total/passed/failed counts and, when no errors occurred,
+    ///     a "Validation Passed" line.
+    /// </remarks>
     public static void Run(Context context)
     {
         // Validate input
@@ -94,10 +103,14 @@ internal static class Validation
     }
 
     /// <summary>
-    ///     Validate test passes are reported
+    ///     Checks that VHDLTest correctly reports passing tests as passed.
     /// </summary>
     /// <param name="context">Program context</param>
     /// <param name="results">Test results</param>
+    /// <remarks>
+    ///     Calls <see cref="RunValidation"/> and verifies that the exit code is 0 and the log
+    ///     contains <c>"Passed full_adder_pass_tb"</c> and <c>"Passed half_adder_pass_tb"</c>.
+    /// </remarks>
     public static void ValidateTestPasses(Context context, TestResults results)
     {
         // Run the validation files
@@ -124,10 +137,14 @@ internal static class Validation
     }
 
     /// <summary>
-    ///     Validate test fails are reported
+    ///     Checks that VHDLTest correctly reports failing tests as failed.
     /// </summary>
     /// <param name="context">Program context</param>
     /// <param name="results">Test results</param>
+    /// <remarks>
+    ///     Calls <see cref="RunValidation"/> and verifies that the exit code is 0 and the log
+    ///     contains <c>"Failed full_adder_fail_tb"</c> and <c>"Failed half_adder_fail_tb"</c>.
+    /// </remarks>
     public static void ValidateTestFails(Context context, TestResults results)
     {
         // Run the validation files
@@ -154,11 +171,17 @@ internal static class Validation
     }
 
     /// <summary>
-    ///     Run the simulator
+    ///     Runs VHDLTest in-process on the embedded VHDL reference files and returns the captured log.
     /// </summary>
     /// <param name="results">Results output</param>
     /// <param name="simulator">Simulator to use</param>
     /// <returns>Exit code</returns>
+    /// <remarks>
+    ///     Creates a temporary <c>validation.tmp</c> directory, extracts embedded validation
+    ///     resources into it, invokes <see cref="RunVhdlTest(string, string[])"/>, reads the
+    ///     captured log file, and deletes the temporary directory in a <c>finally</c> block
+    ///     (best-effort; delete failures are swallowed).
+    /// </remarks>
     public static int RunValidation(out string results, string? simulator)
     {
         try
@@ -278,7 +301,7 @@ internal static class Validation
     /// Extract the validation resources to the specified path
     /// </summary>
     /// <param name="path">Extraction path</param>
-    /// <exception cref="InvalidOperationException">Thrown on error</exception>
+    /// <exception cref="InvalidOperationException">Thrown when a manifest resource stream cannot be opened (resource returned null from <see cref="System.Reflection.Assembly.GetManifestResourceStream(string)"/>).</exception>
     private static void ExtractValidationFiles(string path)
     {
         const string prefix = "DEMAConsulting.VHDLTest.ValidationFiles.";
@@ -330,6 +353,10 @@ internal static class Validation
     /// <param name="workingFolder">Working folder</param>
     /// <param name="args">Arguments</param>
     /// <returns>Exit code</returns>
+    /// <remarks>
+    ///     This overload calls <see cref="Directory.SetCurrentDirectory"/> which is a process-global
+    ///     operation; it is not safe to call concurrently from multiple threads.
+    /// </remarks>
     internal static int RunVhdlTest(string workingFolder, string[] args)
     {
         var cwd = Directory.GetCurrentDirectory();

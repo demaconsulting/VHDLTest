@@ -1,0 +1,22 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Run Requirements
+        sections:
+          - title: RunLineType Requirements
+            requirements:
+              - id: VHDLTest-Run-RunLineType
+                title: >-
+                  RunLineType shall classify simulator output lines into defined categories
+                  (Text, Info, Warning, Error) enabling consistent interpretation across all
+                  simulator integrations.
+                justification: |
+                  A shared enumeration of line categories ensures that all simulator integrations
+                  produce output that RunProcessor and the Results subsystem interpret identically,
+                  regardless of the underlying simulator's output format or terminology.
+                tests:
+                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+                  - RunProcessor_Parse_OutputWithWarningPattern_ReturnsWarningSummary
+                  - RunProcessor_Parse_OutputWithNoMatchingPattern_ReturnsTextClassification

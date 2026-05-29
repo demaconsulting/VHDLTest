@@ -60,7 +60,7 @@ public class CliSubsystemTests
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Act - run the full Cli pipeline: args -> Context -> Options
-            var context = Context.Create(["-c", ConfigFile, "--verbose"]);
+            using var context = Context.Create(["-c", ConfigFile, "--verbose"]);
             var options = Options.Parse(context);
 
             // Assert - verify the subsystem produced the correct options

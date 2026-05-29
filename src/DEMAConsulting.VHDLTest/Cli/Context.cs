@@ -21,8 +21,17 @@
 namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
-/// Program Arguments Class
+///     Parses the raw command-line argument array and aggregates all typed CLI options,
+///     output channels, and runtime state for the lifetime of a single VHDLTest invocation.
 /// </summary>
+/// <remarks>
+///     Context is the single point of truth for all command-line–derived state. It aggregates
+///     parsed flags and path options, owns the optional log-file <see cref="StreamWriter"/>,
+///     and exposes unified output methods so callers do not need to manage multiple output
+///     targets. Implements <see cref="IDisposable"/> to ensure the log-file writer is closed
+///     deterministically; always construct via <see cref="Create"/> and wrap in a
+///     <c>using</c> statement.
+/// </remarks>
 public sealed class Context : IDisposable
 {
     /// <summary>
@@ -113,8 +122,13 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write colored text
+    ///     Writes colored text without a line terminator to the console (unless silent mode is
+    ///     active) and to the log file.
     /// </summary>
+    /// <remarks>
+    ///     The log-file write is unconditional with respect to the Silent flag; only the console
+    ///     write is suppressed.
+    /// </remarks>
     /// <param name="color">Text color</param>
     /// <param name="text">Text to write</param>
     public void Write(ConsoleColor color, string text)
@@ -132,8 +146,12 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write text to output
+    ///     Writes a line of text to all configured outputs only when verbose mode is active.
     /// </summary>
+    /// <remarks>
+    ///     If <see cref="Verbose"/> is false the call is a no-op. When Verbose is true the line
+    ///     is written to the console (unless <see cref="Silent"/> is true) and to the log file.
+    /// </remarks>
     /// <param name="text">Text to write</param>
     public void WriteVerboseLine(string text)
     {
@@ -154,8 +172,12 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write text to output
+    ///     Writes a line of text to all configured outputs unless silent mode is active.
     /// </summary>
+    /// <remarks>
+    ///     Always writes to the log file when one is open, regardless of the Silent flag.
+    ///     Console output is suppressed when <see cref="Silent"/> is true.
+    /// </remarks>
     /// <param name="text">Text to write</param>
     public void WriteLine(string text)
     {
@@ -170,8 +192,15 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write an error message to output
+    ///     Increments the error counter and writes an error message to all configured outputs
+    ///     regardless of silent mode.
     /// </summary>
+    /// <remarks>
+    ///     <see cref="Errors"/> is always incremented, even when <paramref name="message"/> is
+    ///     null. The message, when non-null, is written to both the console (in
+    ///     <see cref="ConsoleColor.Red"/>) and the log file regardless of the
+    ///     <see cref="Silent"/> flag.
+    /// </remarks>
     /// <param name="message">Error message to write</param>
     public void WriteError(string? message)
     {

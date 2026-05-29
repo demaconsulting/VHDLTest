@@ -1,12 +1,72 @@
-# ActiveHdlSimulator Unit Design
+### ActiveHdlSimulator
 
-## Overview
+#### Purpose
 
-`ActiveHdlSimulator.cs` implements VHDL simulation using the Active-HDL simulator
-from Aldec.
+Concrete Simulator implementation for the Active-HDL simulator from Aldec. Drives the `vsimsa`
+batch-mode command-line tool using TCL do-scripts: `acom` for VHDL-2008 compilation and `asim`/`run`
+for test execution. Suppresses nuisance license-edition warnings produced by the Active-HDL Lattice
+Edition to prevent false positive diagnostics.
 
-## Responsibilities
+#### Data Model
 
-- Invoke Active-HDL compilation commands for each test file
-- Invoke Active-HDL simulation for each test bench
-- Parse Active-HDL output to determine pass/fail status
+**Instance**: `ActiveHdlSimulator` (public static readonly) — singleton instance. `SimulatorName` is
+"ActiveHdl"; `SimulatorPath` is resolved by `FindPath()` at class initialization.
+
+**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for `vsimsa` compile
+output. Classifies `KERNEL:\s*Warning:` as Warning; `Error:` and `RUNTIME:\s*Fatal Error` as Error.
+
+**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for `vsimsa` simulation
+output. Explicitly suppresses the Aldec Lattice Edition license advisory messages by classifying them as
+Text (not Warning). Classifies `KERNEL:\s*Warning:` and `KERNEL:\s*WARNING:` as Warning;
+`EXECUTION::\s*NOTE` as Info; `EXECUTION::\s*WARNING` as Warning; `EXECUTION::\s*ERROR`,
+`EXECUTION::\s*FAILURE`, `KERNEL:\s*ERROR`, `RUNTIME:\s*Fatal Error:`, and `VSIM:\s*Error:` as Error.
+
+#### Key Methods
+
+**Compile**: Compiles all VHDL source files using Active-HDL's acom utility via a TCL do-script.
+
+- *Parameters*: `Context context` — verbose logging. `Options options` — file list and working directory.
+- *Returns*: `RunResults` — classified compile output.
+- *Preconditions*: SimulatorPath must be non-null.
+- *Postconditions*: Creates `VHDLTest.out/ActiveHDL/` if absent. Writes `compile.do` containing
+  `onerror {exit -code 1}`, `alib work VHDLTest.out/ActiveHDL`, `set worklib work`, and
+  `acom -2008 -dbg {file}` for each source file. Runs
+  `vsimsa -do VHDLTest.out/ActiveHDL/compile.do` from the working directory.
+
+**Test**: Simulates a single test bench using Active-HDL's asim utility via a TCL do-script.
+
+- *Parameters*: `Context context` — verbose logging. `Options options` — working directory.
+  `string test` — test bench entity name.
+- *Returns*: `TestResult` — simulation outcome.
+- *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
+- *Postconditions*: Writes `test.do` containing `onerror {exit -code 1}`, `set worklib work`,
+  `asim {test}`, `run -all`, `endsim`, and `exit -code 0`. Runs `vsimsa -do VHDLTest.out/ActiveHDL/test.do` from the
+  working directory.
+
+**FindPath** (public static): Resolves the path to the Active-HDL installation directory.
+
+- *Returns*: `string?` — directory path, or null if Active-HDL is not found.
+- *Postconditions*: Returns the value of the `VHDLTEST_ACTIVEHDL_PATH` environment variable when set.
+  Otherwise searches PATH for the `vsimsa` executable and returns its parent directory.
+
+#### Error Handling
+
+`FindPath` returns null when Active-HDL is not installed, causing `Available()` to return false. Calling
+`Compile` or `Test` when `SimulatorPath` is null throws `InvalidOperationException` with message "ActiveHDL
+Simulator not available". The TCL script includes `onerror {exit -code 1}` to propagate errors as non-zero
+exit codes. The Lattice Edition license advisory lines are explicitly classified as Text in TestProcessor
+to prevent them from being promoted to Warning severity and causing false positive test failures.
+
+#### Dependencies
+
+- **Simulator** — base class providing `SimulatorName`, `SimulatorPath`, `Available()`, and `Where()`.
+- **Context** — verbose logging during compile and test.
+- **Options** — VHDL file list and working directory.
+- **RunProcessor** — process execution and output classification.
+- **RunLineRule** — output classification rules for CompileProcessor and TestProcessor.
+- **RunResults** — return type of `RunProcessor.Execute`.
+- **TestResult** — wraps `RunResults` for a single test bench result.
+
+#### Callers
+
+- **SimulatorFactory** — holds `ActiveHdlSimulator.Instance` in the Simulators array.

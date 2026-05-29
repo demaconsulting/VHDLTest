@@ -1,0 +1,35 @@
+## DemaConsulting.ReqStream Verification
+
+### Verification Approach
+
+DemaConsulting.ReqStream is verified through CI pipeline execution. The `build-docs` job
+in `.github/workflows/build.yaml` invokes ReqStream in `--enforce` mode, which exits
+non-zero if any requirement lacks a linked passing test. A passing `build-docs` job is
+evidence that ReqStream correctly processed all requirements and all requirements have
+linked passing tests. ReqStream also provides an explicit `--validate` self-validation
+mode that writes TRX test results consumed by ReqStream itself.
+
+### Test Environment
+
+CI/CD pipeline environment — GitHub Actions runner on Ubuntu (build-docs job). All TRX
+test result files from the build, integration, and validation jobs must be available as
+artifacts before the ReqStream step runs.
+
+### Acceptance Criteria
+
+The ReqStream step in the `build-docs` CI job completes with exit code 0. This means
+every requirement in `requirements.yaml` has at least one linked passing test recorded
+in the collected TRX files.
+
+### Test Scenarios
+
+- **Requirements processing and traceability matrix generation**: `dotnet reqstream`
+  processes `requirements.yaml` and all `artifacts/**/*.trx` files to generate a
+  requirements document, justifications document, and trace matrix. Successful generation
+  confirms that ReqStream read all inputs correctly.
+- **Enforcement mode**: the `--enforce` flag ensures a non-zero exit code if any
+  requirement has no linked passing test; a zero exit code confirms all requirements
+  are satisfied.
+- **Self-validation TRX output**: `dotnet reqstream --validate --results artifacts/reqstream-self-validation.trx`
+  executes ReqStream's internal test suite and writes TRX results to verify the
+  requirement `VHDLTest-OTS-ReqStream` is satisfied.

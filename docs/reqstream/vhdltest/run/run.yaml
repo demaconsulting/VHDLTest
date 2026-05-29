@@ -2,21 +2,41 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Run Subsystem
+      - title: Run Requirements
         requirements:
           - id: VHDLTest-Run-Execute
-            title: VHDLTest shall execute simulator programs and capture their classified output.
+            title: VHDLTest shall execute the configured simulator program and capture its exit code.
             justification: |
-              Executing the simulator as an external process and classifying its output allows
-              VHDLTest to work with any command-line VHDL simulator without requiring
-              programmatic integration.
+              Executing the simulator as an external process allows VHDLTest to work with any
+              command-line VHDL simulator without requiring programmatic integration. Capturing
+              the exit code provides the primary signal for whether the simulator reported an error.
             tests:
               - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
             children:
-              - VHDLTest-RunProcessor-Pass
-              - VHDLTest-RunProcessor-Fail
-              - VHDLTest-RunProcessor-MissingProgram
-              - VHDLTest-RunProgram-Execute
-              - VHDLTest-RunResults-Print
-              - VHDLTest-RunTypes-Classify
+              - VHDLTest-Run-RunProcessor-MissingProgram
+              - VHDLTest-Run-RunProcessor-ExitCodeFail
+              - VHDLTest-Run-RunProgram-Execute
+              - VHDLTest-Run-RunProgram-Output
+              - VHDLTest-Run-RunResults-SummaryElevation
+
+          - id: VHDLTest-Run-Classify
+            title: >-
+              VHDLTest shall classify simulator output lines against configurable regex rules and
+              aggregate the results.
+            justification: |
+              Pattern-based classification of output lines allows each simulator integration to
+              define its own output rules without changing the core execution logic, making it
+              straightforward to add support for new simulators or update patterns when simulator
+              output formats change.
+            tests:
+              - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
+              - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
+            children:
+              - VHDLTest-Run-RunProcessor-Pass
+              - VHDLTest-Run-RunProcessor-Fail
+              - VHDLTest-Run-RunResults-Print
+              - VHDLTest-Run-RunResults-VerboseSuppression
+              - VHDLTest-Run-RunLineRule-Classify
+              - VHDLTest-Run-RunLine
+              - VHDLTest-Run-RunLineType

@@ -1,0 +1,16 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: PandocTool Requirements
+        requirements:
+          - id: VHDLTest-OTS-PandocTool
+            title: PandocTool shall convert Markdown design documents into HTML for downstream processing.
+            justification: |
+              DemaConsulting.PandocTool (v3.9.0.2) wraps the Pandoc document converter and is
+              used in the build pipeline to render Markdown design documentation into HTML
+              as an intermediate step for PDF generation via WeasyprintTool. Correct HTML
+              output from the design documents confirms the tool is functioning as required.
+            tags: [ots]
+            tests:
+              - PandocTool_MarkdownToHtmlConversion

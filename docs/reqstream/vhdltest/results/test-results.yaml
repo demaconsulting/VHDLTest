@@ -2,33 +2,60 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: TestResults Unit
-        requirements:
-          - id: VHDLTest-TestResults-Trx
-            title: TestResults shall serialize test results to TRX format.
-            justification: |
-              TRX is the standard test results format for .NET and Microsoft tooling. Saving
-              results in TRX format enables integration with Visual Studio, Azure DevOps, and
-              other .NET-ecosystem CI/CD tools.
-            tests:
-              - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
-              - TestResults_SaveToTrx_WithTestResults_CreatesTrxFile
-              - TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile
+      - title: Results Requirements
+        sections:
+          - title: TestResults Requirements
+            requirements:
+              - id: VHDLTest-Results-TestResults-Execute
+                title: >-
+                  TestResults shall compile VHDL sources and execute all configured test benches
+                  using the provided simulator, collecting each test outcome.
+                justification: |
+                  Encapsulating the build-then-test sequence in TestResults.Execute ensures
+                  that every run follows the same ordered workflow — compile first, then
+                  test — and that all outcomes are captured in one object. This keeps callers
+                  free from orchestration logic and enables consistent error handling when
+                  the build step fails.
+                tests:
+                  - TestResults_Execute_WithMockSimulator_CollectsTestOutcomes
 
-          - id: VHDLTest-TestResults-JUnit
-            title: TestResults shall serialize test results to JUnit XML format.
-            justification: |
-              JUnit XML is the de-facto standard test results format for CI/CD systems such as
-              Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables
-              broad CI/CD integration.
-            tests:
-              - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
-              - TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure
+              - id: VHDLTest-Results-TestResults-PrintSummary
+                title: >-
+                  TestResults shall print a formatted summary of test results including the
+                  total count of passed and failed tests.
+                justification: |
+                  Printing an aggregate summary alongside individual per-test lines lets
+                  developers see the overall outcome of a run at a glance without counting
+                  individual lines. CI/CD pipelines benefit from the numeric totals when
+                  parsing output for pass/fail decisions.
+                tests:
+                  - TestResults_PrintSummary_WithMixedResults_WritesSummaryToOutput
 
-          - id: VHDLTest-TestResults-NullFile
-            title: TestResults shall raise an exception when a null file path is provided.
-            justification: |
-              Raising a clear exception for a null path prevents silent failures and provides
-              callers with an actionable error message.
-            tests:
-              - TestResults_SaveResults_WithNullFileName_ThrowsArgumentException
+              - id: VHDLTest-Results-TestResults-Trx
+                title: TestResults shall serialize test results to TRX format.
+                justification: |
+                  TRX is the standard test results format for .NET and Microsoft tooling. Saving
+                  results in TRX format enables integration with Visual Studio, Azure DevOps, and
+                  other .NET-ecosystem CI/CD tools.
+                tests:
+                  - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
+                  - TestResults_SaveToTrx_WithTestResults_CreatesTrxFile
+                  - TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile
+
+              - id: VHDLTest-Results-TestResults-JUnit
+                title: TestResults shall serialize test results to JUnit XML format.
+                justification: |
+                  JUnit XML is the de-facto standard test results format for CI/CD systems such as
+                  Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables
+                  broad CI/CD integration.
+                tests:
+                  - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
+                  - TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure
+
+              - id: VHDLTest-Results-TestResults-NullFile
+                title: TestResults shall raise an exception when a null, empty, or whitespace file path is provided.
+                justification: |
+                  Raising a clear exception for a null, empty, or whitespace-only path prevents
+                  silent failures and provides callers with an actionable error message.
+                tests:
+                  - TestResults_SaveResults_WithNullFileName_ThrowsArgumentException

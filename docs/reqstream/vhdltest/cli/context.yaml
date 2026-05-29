@@ -2,32 +2,124 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Context Unit
-        requirements:
-          - id: VHDLTest-Context-Parse
-            title: The Context class shall parse all supported command-line flags and arguments.
-            justification: |
-              Comprehensive flag parsing ensures all command-line options are correctly interpreted
-              and stored as typed properties, providing a reliable interface between the CLI and
-              application logic.
-            tests:
-              - Context_Create_NoArguments_ReturnsDefaultContext
-              - Context_Create_WithConfigFile_SetsConfigFile
-              - Context_Create_WithResultsFile_SetsResultsFile
-              - Context_Create_WithSimulator_SetsSimulator
-              - Context_Create_WithVerbose_SetsVerboseFlag
-              - Context_Create_WithExitZero_SetsExitZeroFlag
-              - Context_Create_WithValidate_SetsValidateFlag
-              - Context_Create_WithCustomTest_SetsCustomTest
-              - Context_Create_WithCustomTests_SetsCustomTests
+      - title: Cli Requirements
+        sections:
+          - title: Context Requirements
+            requirements:
+              - id: VHDLTest-Cli-Context-Parse
+                title: The Context class shall parse all supported command-line flags and arguments.
+                justification: |
+                  Comprehensive flag parsing ensures all command-line options are correctly interpreted
+                  and stored as typed properties, providing a reliable interface between the CLI and
+                  application logic.
+                tests:
+                  - Context_Create_NoArguments_ReturnsDefaultContext
+                  - Context_Create_WithConfigFile_SetsConfigFile
+                  - Context_Create_WithResultsFile_SetsResultsFile
+                  - Context_Create_WithSimulator_SetsSimulator
+                  - Context_Create_WithVerbose_SetsVerboseFlag
+                  - Context_Create_WithExitZero_SetsExitZeroFlag
+                  - Context_Create_WithValidate_SetsValidateFlag
+                  - Context_Create_WithCustomTest_SetsCustomTest
+                  - Context_Create_WithCustomTests_SetsCustomTests
+                  - Context_Create_WithVersionFlag_SetsVersionFlag
+                  - Context_Create_WithShortVersionFlag_SetsVersionFlag
+                  - Context_Create_WithHelpFlag_SetsHelpFlag
+                  - Context_Create_WithShortHelpFlag_SetsHelpFlag
+                  - Context_Create_WithQuestionHelpFlag_SetsHelpFlag
+                  - Context_Create_WithSilentFlag_SetsSilentFlag
+                  - Context_Create_WithLogOption_WritesToLogFile
 
-          - id: VHDLTest-Context-Error
-            title: The Context class shall throw InvalidOperationException for unrecognized arguments.
-            justification: |
-              Throwing a typed exception for unrecognized arguments allows the application entry
-              point to provide a clear error message and prevents silent misconfiguration.
-            tests:
-              - Context_Create_UnknownArgument_ThrowsInvalidOperationException
-              - Context_Create_MissingConfigValue_ThrowsInvalidOperationException
-              - Context_Create_MissingResultsValue_ThrowsInvalidOperationException
-              - Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException
+              - id: VHDLTest-Cli-Context-Error
+                title: The Context class shall throw InvalidOperationException for unrecognized arguments.
+                justification: |
+                  Throwing a typed exception for unrecognized arguments allows the application entry
+                  point to provide a clear error message and prevents silent misconfiguration.
+                tests:
+                  - Context_Create_UnknownArgument_ThrowsInvalidOperationException
+                  - Context_Create_MissingConfigValue_ThrowsInvalidOperationException
+                  - Context_Create_MissingResultsValue_ThrowsInvalidOperationException
+                  - Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Cli-Context-Write
+                title: Context shall write a message without a line terminator to all configured outputs unless silent mode is active.
+                justification: |
+                  Providing a Write method that targets both the console and the log file simultaneously
+                  ensures all output channels stay synchronized without requiring callers to manage
+                  multiple output targets.
+                tests:
+                  - Context_Write_WithLogFile_WritesToLog
+
+              - id: VHDLTest-Cli-Context-WriteLine
+                title: Context shall write a message with a line terminator to all configured outputs unless silent mode is active.
+                justification: |
+                  The majority of VHDLTest output is line-oriented; a dedicated WriteLine that
+                  respects the silent flag prevents callers from having to check Silent before
+                  every output statement, keeping the calling code clean.
+                tests:
+                  - Context_Create_WithLogOption_WritesToLogFile
+                  - Program_Run_WithNoConfigFileArgument_DisplaysUsage
+
+              - id: VHDLTest-Cli-Context-WriteVerboseLine
+                title: Context shall write a verbose message with a line terminator only when verbose mode is active.
+                justification: |
+                  Verbose output must be gated on the verbose flag so that normal invocations
+                  produce concise output while diagnostic invocations produce detailed traces,
+                  supporting both CI use and developer debugging.
+                tests:
+                  - Context_WriteVerboseLine_VerboseMode_WritesToLog
+
+              - id: VHDLTest-Cli-Context-WriteError-Message
+                title: Context shall write the provided error message to all configured outputs.
+                justification: |
+                  Writing the error text through the shared output paths ensures users and log
+                  consumers receive the same failure information without callers duplicating
+                  output logic.
+                tests:
+                  - Context_WriteError_SilentMode_WritesToLogFile
+
+              - id: VHDLTest-Cli-Context-WriteError-Counter
+                title: Context shall increment the error counter each time an error is reported.
+                justification: |
+                  The error counter drives the process exit code, enabling callers to detect
+                  failure without parsing individual messages.
+                tests:
+                  - Context_WriteError_WithMessage_IncrementsErrors
+                  - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
+
+              - id: VHDLTest-Cli-Context-WriteError-Silent
+                title: Context shall write error output to configured log outputs regardless of silent mode.
+                justification: |
+                  Error messages must still reach configured log outputs when silent mode suppresses
+                  console output so that CI systems retain complete failure diagnostics.
+                tests:
+                  - Context_WriteError_SilentMode_WritesToLogFile
+
+              - id: VHDLTest-Cli-Context-ExitCode
+                title: Context shall expose an ExitCode property that returns 0 when no errors have been reported and a non-zero value when errors have been reported.
+                justification: |
+                  Exposing a computed ExitCode property allows Program.Main to set
+                  Environment.ExitCode from a single source of truth, and allows tests to verify
+                  process exit behavior without capturing Environment.ExitCode directly.
+                tests:
+                  - Program_Run_WithVersionFlag_ReturnsZeroExitCode
+                  - Program_Run_WithNoConfig_ReturnsNonZeroExitCode
+
+              - id: VHDLTest-Cli-Context-Dispose
+                title: Context shall implement IDisposable and close any open log-file writer on disposal.
+                justification: |
+                  Implementing IDisposable ensures the log-file StreamWriter is flushed and
+                  closed deterministically when the caller disposes the Context, preventing data
+                  loss or file-locking issues in test and CI environments.
+                tests:
+                  - Context_Create_WithLogOption_WritesToLogFile
+
+              - id: VHDLTest-Cli-Context-LogFile
+                title: Context shall write all output to the specified log file when the --log option is provided.
+                justification: |
+                  Writing all output to a log file enables CI pipelines and automated tools to
+                  capture VHDLTest output without relying on console redirection, which may not
+                  be available or reliable in all execution environments.
+                tests:
+                  - Context_Create_WithLogOption_WritesToLogFile
+                  - Program_Run_WithNoConfigFileArgument_DisplaysUsage

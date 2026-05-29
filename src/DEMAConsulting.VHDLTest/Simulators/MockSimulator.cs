@@ -26,13 +26,33 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     Mock Simulator Class
+///     Mock simulator test double that simulates compilation and test execution
+///     without invoking any external VHDL simulator process, enabling self-validation
+///     of the VHDLTest pipeline in environments where no real simulator is installed.
 /// </summary>
+/// <remarks>
+///     The mock simulator is intentionally constructed with a null
+///     <see cref="Simulator.SimulatorPath"/> so that <see cref="Simulator.Available"/>
+///     always returns false, preventing the mock from being auto-selected by
+///     <c>SimulatorFactory</c> during normal test runs. It must be requested explicitly
+///     by name (e.g., <c>--simulator mock</c>).
+/// </remarks>
 public sealed class MockSimulator : Simulator
 {
     /// <summary>
-    /// Compile processor
+    ///     Output classifier for mock compilation output lines.
     /// </summary>
+    /// <remarks>
+    ///     Classification rules:
+    ///     <list type="bullet">
+    ///         <item><description><c>Info:</c> — classified as Info.</description></item>
+    ///         <item><description><c>Warning:</c> — classified as Warning.</description></item>
+    ///         <item><description><c>Error:</c> — classified as Error.</description></item>
+    ///     </list>
+    ///     The mock <see cref="Compile"/> method generates these prefixed lines based on
+    ///     filename patterns (<c>_info_</c>, <c>_warning_</c>, <c>_error_</c>), so the
+    ///     processor is exercised with controlled inputs during self-validation.
+    /// </remarks>
     public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, "Info:"),
@@ -42,8 +62,20 @@ public sealed class MockSimulator : Simulator
     );
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for mock test-execution output lines.
     /// </summary>
+    /// <remarks>
+    ///     Classification rules:
+    ///     <list type="bullet">
+    ///         <item><description><c>Info:</c> — classified as Info.</description></item>
+    ///         <item><description><c>Warning:</c> — classified as Warning.</description></item>
+    ///         <item><description><c>Failure:</c> — classified as Error.</description></item>
+    ///         <item><description><c>Error:</c> — classified as Error.</description></item>
+    ///     </list>
+    ///     The mock <see cref="Test"/> method generates these prefixed lines based on
+    ///     test-name patterns (<c>_warning_</c>, <c>_info_</c>, <c>_error_</c>, <c>_fail_</c>),
+    ///     enabling controlled exercising of pass, warning, fail, and error paths.
+    /// </remarks>
     public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, "Info:"),
@@ -54,8 +86,12 @@ public sealed class MockSimulator : Simulator
     );
 
     /// <summary>
-    ///     Mock simulator instance
+    ///     Singleton <see cref="MockSimulator"/> instance shared across the application.
     /// </summary>
+    /// <remarks>
+    ///     Constructed with <c>SimulatorPath = null</c> so that <see cref="Simulator.Available"/>
+    ///     always returns false, preventing accidental auto-selection by the simulator factory.
+    /// </remarks>
     public static MockSimulator Instance { get; } = new();
 
     /// <summary>
@@ -111,7 +147,7 @@ public sealed class MockSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting Mock test {test}...");
 
         // Simulate test, and produce output

@@ -24,11 +24,24 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Results;
 
 /// <summary>
-/// Test result class
+///     Immutable record capturing the outcome of a single VHDL test bench execution.
 /// </summary>
-/// <param name="ClassName">Class name</param>
-/// <param name="TestName">Test name</param>
-/// <param name="RunResults">Test run results</param>
+/// <remarks>
+///     TestResult is a passive data container; it performs no I/O and throws no exceptions.
+///     The pass/fail determination is derived solely from the severity summary of the
+///     wrapped <see cref="RunResults"/>. Constructed by concrete <c>Simulator</c> implementations
+///     and held by <see cref="TestResults"/>.
+/// </remarks>
+/// <param name="ClassName">
+///     Fully qualified test class name used as the TRX class identifier. Must not be null.
+/// </param>
+/// <param name="TestName">
+///     Test bench name used as the logical test identifier in reports. Must not be null.
+/// </param>
+/// <param name="RunResults">
+///     The raw execution results from the simulator, including exit code, captured output
+///     lines, duration, and the highest-severity line type. Must not be null.
+/// </param>
 public sealed record TestResult(string ClassName, string TestName, RunResults RunResults)
 {
     /// <summary>
@@ -54,7 +67,13 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     /// <summary>
     ///     Print a summary line to the console
     /// </summary>
-    /// <param name="context">Program context</param>
+    /// <remarks>
+    ///     Writes the word "Passed" in green or "Failed" in red, followed by the test name
+    ///     and the duration formatted to one decimal place in parentheses. The colored word
+    ///     is written via <see cref="Context.Write(ConsoleColor, string)"/> and the remainder
+    ///     via <see cref="Context.WriteLine"/>.
+    /// </remarks>
+    /// <param name="context">Output channel to write to. Must not be null.</param>
     public void PrintSummary(Context context)
     {
         // Print the colored summary word

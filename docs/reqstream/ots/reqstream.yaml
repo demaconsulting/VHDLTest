@@ -2,7 +2,7 @@
 sections:
   - title: OTS Software Requirements
     sections:
-      - title: ReqStream
+      - title: ReqStream Requirements
         requirements:
           - id: VHDLTest-OTS-ReqStream
             title: ReqStream shall enforce that every requirement is linked to passing test evidence.

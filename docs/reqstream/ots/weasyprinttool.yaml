@@ -1,0 +1,16 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: WeasyprintTool Requirements
+        requirements:
+          - id: VHDLTest-OTS-WeasyprintTool
+            title: WeasyprintTool shall render HTML design documents into PDF release artifacts.
+            justification: |
+              DemaConsulting.WeasyprintTool (v68.1.0) wraps the WeasyPrint CSS-based PDF renderer
+              and is used in the build pipeline to produce PDF versions of design and requirements
+              documentation for formal review and release archiving. Correct PDF output from
+              the design documents confirms the tool is functioning as required.
+            tags: [ots]
+            tests:
+              - WeasyprintTool_HtmlToPdfConversion

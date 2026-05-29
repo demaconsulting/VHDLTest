@@ -25,10 +25,24 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     Simulator Interface
+///     Abstract base class defining the uniform compile-and-test contract that all
+///     VHDL simulator integrations must implement.
 /// </summary>
-/// <param name="simulatorName">Simulator name</param>
-/// <param name="simulatorPath">Simulator path</param>
+/// <remarks>
+///     The abstract base class pattern ensures that every concrete simulator exposes
+///     the same interface — <see cref="SimulatorName"/>, <see cref="SimulatorPath"/>,
+///     <see cref="Available"/>, <see cref="Compile"/>, and <see cref="Test"/> — so
+///     the core run logic in <c>TestResults</c> can invoke any supported simulator
+///     without coupling to simulator-specific details. Concrete implementations are
+///     obligated to throw <see cref="InvalidOperationException"/> from
+///     <see cref="Compile"/> and <see cref="Test"/> when <see cref="SimulatorPath"/>
+///     is null, because the base class cannot enforce this precondition itself.
+/// </remarks>
+/// <param name="simulatorName">Display name of the simulator (e.g., "GHDL"). Must not be null.</param>
+/// <param name="simulatorPath">
+///     Absolute path to the directory containing the simulator executable, or null when
+///     the simulator is not installed.
+/// </param>
 public abstract class Simulator(string simulatorName, string? simulatorPath)
 {
     /// <summary>
@@ -56,6 +70,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <param name="context">Program context</param>
     /// <param name="options">Options</param>
     /// <returns>Compile Results</returns>
+    /// <exception cref="InvalidOperationException">Thrown by implementations when SimulatorPath is null.</exception>
     public abstract RunResults Compile(Context context, Options options);
 
     /// <summary>
@@ -65,6 +80,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <param name="options">Options</param>
     /// <param name="test">Test name</param>
     /// <returns>Test Results</returns>
+    /// <exception cref="InvalidOperationException">Thrown by implementations when SimulatorPath is null.</exception>
     public abstract TestResult Test(Context context, Options options, string test);
 
     /// <summary>
@@ -124,7 +140,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             return false;
         }
 
-        // Consider other sanity-checks
+        // Current implementation accepts any non-null path; subclasses may override for additional validation
         return true;
     }
 }

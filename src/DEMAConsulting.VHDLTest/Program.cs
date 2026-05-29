@@ -32,7 +32,7 @@ namespace DEMAConsulting.VHDLTest;
 public static class Program
 {
     /// <summary>
-    ///     Gets the version of this programs assembly
+    ///     Gets the version of this program's assembly.
     /// </summary>
     public static string Version { get; } =
         typeof(Program).Assembly
@@ -42,6 +42,14 @@ public static class Program
     /// <summary>
     ///     Application entry point
     /// </summary>
+    /// <remarks>
+    ///     The primary output channel is <see cref="System.Environment.ExitCode"/>, set from
+    ///     <see cref="Context.ExitCode"/> after <see cref="Run"/> completes. Two exception
+    ///     layers are present: <see cref="InvalidOperationException"/> is caught and reported
+    ///     as a formatted error message with exit code 1; all other exceptions are reported
+    ///     and re-thrown so that the runtime reports an unhandled exception with a non-zero
+    ///     exit code.
+    /// </remarks>
     /// <param name="args">Program arguments</param>
     public static void Main(string[] args)
     {
@@ -71,6 +79,14 @@ public static class Program
     /// <summary>
     ///     Run the program context
     /// </summary>
+    /// <remarks>
+    ///     Dispatch order: version display → help display → self-validation → normal test run.
+    ///     Each early-exit path returns without setting an error on <paramref name="context"/>,
+    ///     so <see cref="Context.ExitCode"/> remains 0 on normal dispatch. Results from test
+    ///     execution are communicated through <paramref name="context"/> via
+    ///     <see cref="Context.WriteError"/>, which increments <see cref="Context.Errors"/> and
+    ///     causes <see cref="Context.ExitCode"/> to return non-zero.
+    /// </remarks>
     /// <param name="context">Program context</param>
     public static void Run(Context context)
     {

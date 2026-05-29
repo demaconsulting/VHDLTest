@@ -2,22 +2,33 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: ConfigDocument Unit
-        requirements:
-          - id: VHDLTest-ConfigDoc-Read
-            title: The ConfigDocument class shall deserialize a YAML configuration file.
-            justification: |
-              Deserializing the YAML configuration into a typed object ensures configuration
-              values are validated at load time and provides a clear interface for downstream
-              code to access test parameters.
-            tests:
-              - ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully
+      - title: Cli Requirements
+        sections:
+          - title: ConfigDocument Requirements
+            requirements:
+              - id: VHDLTest-Cli-ConfigDoc-Read
+                title: The ConfigDocument class shall deserialize a YAML configuration file.
+                justification: |
+                  Deserializing the YAML configuration into a typed object ensures configuration
+                  values are validated at load time and provides a clear interface for downstream
+                  code to access test parameters.
+                tests:
+                  - ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully
 
-          - id: VHDLTest-ConfigDoc-Missing
-            title: The ConfigDocument class shall throw FileNotFoundException for missing files.
-            justification: |
-              Throwing a descriptive exception for missing configuration files allows the
-              application to surface a clear error message to the user rather than a
-              cryptic null-reference error.
-            tests:
-              - ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException
+              - id: VHDLTest-Cli-ConfigDoc-Missing
+                title: The ConfigDocument class shall throw FileNotFoundException for missing files.
+                justification: |
+                  Throwing a descriptive exception for missing configuration files allows the
+                  application to surface a clear error message to the user rather than a
+                  cryptic null-reference error.
+                tests:
+                  - ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException
+
+              - id: VHDLTest-Cli-ConfigDoc-Invalid
+                title: The ConfigDocument class shall throw InvalidOperationException when the configuration file content is invalid or cannot be deserialised.
+                justification: |
+                  Throwing a descriptive exception for invalid YAML content ensures the application can surface
+                  a clear error to the user rather than silently returning a null or default configuration instance,
+                  which is critical for CI pipeline reliability.
+                tests:
+                  - ConfigDocument_ReadFile_InvalidContent_ThrowsInvalidOperationException

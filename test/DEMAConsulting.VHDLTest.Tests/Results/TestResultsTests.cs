@@ -19,8 +19,10 @@
 // SOFTWARE.
 
 using System.Collections.ObjectModel;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Results;
 using DEMAConsulting.VHDLTest.Run;
+using DEMAConsulting.VHDLTest.Simulators;
 using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 
 namespace DEMAConsulting.VHDLTest.Tests.Results;
@@ -31,11 +33,80 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 public class TestResultsTests
 {
     /// <summary>
+    /// Test that Execute compiles sources and collects test outcomes using MockSimulator.
+    /// </summary>
+    [Fact]
+    public void TestResults_Execute_WithMockSimulator_CollectsTestOutcomes()
+    {
+        // Arrange: set up options with a known test bench name via MockSimulator config
+        var config = new ConfigDocument { Files = ["test.vhd"], Tests = ["my_passing_test"] };
+        var options = new Options(Path.GetTempPath(), config);
+        using var context = Context.Create(["--silent"]);
+
+        // Act: execute via the explicit overload with MockSimulator
+        var results = TestResults.Execute(context, "UnitTestRun", "TestCodeBase", options, MockSimulator.Instance);
+
+        // Assert: build results captured and one test outcome collected
+        Assert.NotNull(results.BuildResults);
+        Assert.Single(results.Tests);
+        Assert.Equal("my_passing_test", results.Tests[0].TestName);
+    }
+
+    /// <summary>
+    /// Test that PrintSummary writes a formatted summary including pass and fail indicators.
+    /// </summary>
+    [Fact]
+    public void TestResults_PrintSummary_WithMixedResults_WritesSummaryToOutput()
+    {
+        // Arrange: build a mixed result set and a log path for capturing output
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var passRunResults = new RunResults(
+            RunLineType.Info,
+            new DateTime(2024, 8, 10, 0, 0, 0, DateTimeKind.Utc),
+            1.0,
+            0,
+            "Passed",
+            new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Info, "Passed")]));
+
+        var failRunResults = new RunResults(
+            RunLineType.Error,
+            new DateTime(2024, 8, 10, 0, 0, 1, DateTimeKind.Utc),
+            1.0,
+            1,
+            "Error: assertion failed",
+            new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Error, "Error: assertion failed")]));
+
+        var testResults = new TestResults("TestRun", "TestCodeBase");
+        testResults.Tests.Add(new VHDLTestResult("Suite", "PassingTest", passRunResults));
+        testResults.Tests.Add(new VHDLTestResult("Suite", "FailingTest", failRunResults));
+
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--log", logPath, "--silent"]))
+            {
+                // Act: call PrintSummary on the mixed result set
+                testResults.PrintSummary(context);
+            }
+
+            // Assert: output contains pass and fail indicators
+            output = File.ReadAllText(logPath);
+            Assert.Contains("Passed", output);
+            Assert.Contains("Failed", output);
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
+    }
+
+    /// <summary>
     /// Test saving test results to a TRX file.
     /// </summary>
     [Fact]
     public void TestResults_SaveResults_WithTrxExtension_CreatesTrxFile()
     {
+        // Arrange: create TestResults with a single passing test
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -56,10 +127,11 @@ public class TestResultsTests
 
         try
         {
+            // Act: save to TRX file
             results.SaveResults("TestResults.trx");
-            Assert.True(File.Exists("TestResults.trx"));
 
-            // Verify it's valid XML
+            // Assert: file exists and is valid TRX XML
+            Assert.True(File.Exists("TestResults.trx"));
             var content = File.ReadAllText("TestResults.trx");
             Assert.Contains("<?xml", content);
             Assert.Contains("TestRun", content);
@@ -79,6 +151,7 @@ public class TestResultsTests
     [Fact]
     public void TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile()
     {
+        // Arrange: create TestResults with a single passing test
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -99,10 +172,11 @@ public class TestResultsTests
 
         try
         {
+            // Act: save to XML file
             results.SaveResults("TestResults.xml");
-            Assert.True(File.Exists("TestResults.xml"));
 
-            // Verify it's valid JUnit XML
+            // Assert: file exists and is valid JUnit XML
+            Assert.True(File.Exists("TestResults.xml"));
             var content = File.ReadAllText("TestResults.xml");
             Assert.Contains("<?xml", content);
             Assert.Contains("testsuites", content);
@@ -122,6 +196,7 @@ public class TestResultsTests
     [Fact]
     public void TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure()
     {
+        // Arrange: create TestResults with a single failing test
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -142,10 +217,11 @@ public class TestResultsTests
 
         try
         {
+            // Act: save to XML file
             results.SaveResults("TestResults.xml");
-            Assert.True(File.Exists("TestResults.xml"));
 
-            // Verify it contains failure information
+            // Assert: file contains failure information
+            Assert.True(File.Exists("TestResults.xml"));
             var content = File.ReadAllText("TestResults.xml");
             Assert.Contains("failure", content);
             Assert.Contains("Error occurred", content);
@@ -165,6 +241,7 @@ public class TestResultsTests
     [Fact]
     public void TestResults_SaveToTrx_WithTestResults_CreatesTrxFile()
     {
+        // Arrange: create TestResults with a single passing test
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -185,8 +262,14 @@ public class TestResultsTests
 
         try
         {
+            // Act: save via backward-compatible SaveToTrx
             results.SaveToTrx("TestResults.trx");
+
+            // Assert: file exists and is valid TRX XML
             Assert.True(File.Exists("TestResults.trx"));
+            var content = File.ReadAllText("TestResults.trx");
+            Assert.Contains("<?xml", content);
+            Assert.Contains("TestRun", content);
         }
         finally
         {
@@ -203,8 +286,10 @@ public class TestResultsTests
     [Fact]
     public void TestResults_SaveResults_WithNullFileName_ThrowsArgumentException()
     {
+        // Arrange: create a TestResults instance with no tests
         var results = new TestResults("TestRun", "TestCodeBase");
 
+        // Act + Assert: null, empty, and whitespace paths all throw ArgumentException
         Assert.Throws<ArgumentException>(() => results.SaveResults(null!));
         Assert.Throws<ArgumentException>(() => results.SaveResults(string.Empty));
         Assert.Throws<ArgumentException>(() => results.SaveResults("   "));
@@ -216,6 +301,7 @@ public class TestResultsTests
     [Fact]
     public void TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile()
     {
+        // Arrange: create TestResults with a single passing test
         var results = new TestResults("TestRun", "TestCodeBase");
         results.Tests.Add(
             new VHDLTestResult(
@@ -236,10 +322,11 @@ public class TestResultsTests
 
         try
         {
+            // Act: save with an unrecognized extension
             results.SaveResults("TestResults.unknown");
-            Assert.True(File.Exists("TestResults.unknown"));
 
-            // Verify it's TRX format
+            // Assert: file exists and defaults to TRX format
+            Assert.True(File.Exists("TestResults.unknown"));
             var content = File.ReadAllText("TestResults.unknown");
             Assert.Contains("<?xml", content);
             Assert.Contains("TestRun", content);

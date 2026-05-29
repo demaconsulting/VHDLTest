@@ -96,6 +96,58 @@ public class ProgramTests
     }
 
     /// <summary>
+    /// Test that Run displays version information when version flag is given
+    /// </summary>
+    [Fact]
+    public void Program_Run_WithVersionFlag_DisplaysVersion()
+    {
+        // Arrange: create a log file to capture output; pass the version flag
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var context = Context.Create(["--version", "--log", logFile, "--silent"]))
+            {
+                // Act: run the program with the version flag
+                Program.Run(context);
+            }
+
+            // Assert: verify the version string was written to the log
+            var output = File.ReadAllText(logFile);
+            Assert.True(output.Contains(Program.Version), $"Expected version '{Program.Version}' in output:\n{output}");
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Run displays help information when help flag is given
+    /// </summary>
+    [Fact]
+    public void Program_Run_WithHelpFlag_DisplaysHelp()
+    {
+        // Arrange: create a log file to capture output; pass the help flag
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var context = Context.Create(["--help", "--log", logFile, "--silent"]))
+            {
+                // Act: run the program with the help flag
+                Program.Run(context);
+            }
+
+            // Assert: verify help text was written to the log
+            var output = File.ReadAllText(logFile);
+            Assert.True(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
     /// Test that Run returns non-zero exit code when no config is given
     /// </summary>
     [Fact]

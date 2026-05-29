@@ -52,7 +52,10 @@ public class OptionsTests
     [Fact]
     public void Options_Parse_NoConfigProvided_ThrowsInvalidOperationException()
     {
+        // Arrange: create a context with no configuration file
         var arguments = Context.Create([]);
+
+        // Act + Assert: parsing without a config file should throw
         Assert.Throws<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
@@ -62,7 +65,10 @@ public class OptionsTests
     [Fact]
     public void Options_Parse_MissingConfigFile_ThrowsFileNotFoundException()
     {
+        // Arrange: create a context referencing a non-existent configuration file
         var arguments = Context.Create(["-c", "missing-config.yaml"]);
+
+        // Act + Assert: parsing with a missing config file should throw
         Assert.Throws<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
@@ -74,14 +80,14 @@ public class OptionsTests
     {
         try
         {
-            // Write the config file
+            // Arrange: write the config file
             File.WriteAllText(ConfigFile, ConfigContent);
 
-            // Parse the options
+            // Act: parse the options
             var arguments = Context.Create(["-c", ConfigFile]);
             var options = Options.Parse(arguments);
 
-            // Check the options
+            // Assert: check the options
             Assert.NotNull(options);
             Assert.Equal(2, options.Config.Files.Length);
             Assert.Equal("file1.vhd", options.Config.Files[0]);
@@ -105,15 +111,18 @@ public class OptionsTests
     {
         try
         {
-            // Write the config file
+            // Arrange: write the config file
             File.WriteAllText(ConfigFile, ConfigContent);
 
-            // Parse the options
+            // Act: parse the options
             var arguments = Context.Create(["-c", ConfigFile, "--verbose"]);
             var options = Options.Parse(arguments);
 
-            // Check the options
+            // Assert: verify options are non-null, working directory is absolute, and config is populated
             Assert.NotNull(options);
+            Assert.True(Path.IsPathRooted(options.WorkingDirectory), "WorkingDirectory should be an absolute path");
+            Assert.NotNull(options.Config);
+            Assert.Equal(2, options.Config.Files.Length);
         }
         finally
         {
@@ -130,15 +139,18 @@ public class OptionsTests
     {
         try
         {
-            // Write the config file
+            // Arrange: write the config file
             File.WriteAllText(ConfigFile, ConfigContent);
 
-            // Parse the options
+            // Act: parse the options
             var arguments = Context.Create(["-c", ConfigFile, "custom_test"]);
             var options = Options.Parse(arguments);
 
-            // Check the options
+            // Assert: verify options are non-null, working directory is absolute, and config is populated
             Assert.NotNull(options);
+            Assert.True(Path.IsPathRooted(options.WorkingDirectory), "WorkingDirectory should be an absolute path");
+            Assert.NotNull(options.Config);
+            Assert.Equal(2, options.Config.Tests.Length);
         }
         finally
         {

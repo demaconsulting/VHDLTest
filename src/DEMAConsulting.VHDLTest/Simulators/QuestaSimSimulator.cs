@@ -26,13 +26,27 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     QuestaSim Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the QuestaSim commercial VHDL simulator
+///     by Mentor/Siemens.
 /// </summary>
+/// <remarks>
+///     Structurally identical to <see cref="ModelSimSimulator"/>: drives <c>vsim</c> via TCL
+///     do-scripts using <c>vcom</c> for VHDL-2008 compilation and <c>vsim</c>/<c>run</c> for
+///     test bench simulation. Distinguished from <see cref="ModelSimSimulator"/> by its registered
+///     name ("QuestaSim"), its path environment variable (<c>VHDLTEST_QUESTASIM_PATH</c>), and its
+///     working directory path. Implemented as a singleton (<see cref="Instance"/>) initialized at
+///     class load time; stateless after construction and therefore thread-safe.
+/// </remarks>
 public sealed class QuestaSimSimulator : Simulator
 {
     /// <summary>
-    /// Compile processor
+    ///     Output classifier for QuestaSim compilation (<c>vcom</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies one classification rule: lines matching <c>.*Error: </c> (trailing space
+    ///     prevents false positives on identifiers ending with "Error") are classified as Error.
+    ///     Lines not matching any rule are left unclassified as Text.
+    /// </remarks>
     public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Error, ".*Error: ")
@@ -40,8 +54,18 @@ public sealed class QuestaSimSimulator : Simulator
     );
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for QuestaSim simulation (<c>vsim</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies four classification rules in order (each includes a trailing space to
+    ///     prevent false positives on identifiers ending with the keyword):
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.*Note: </c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.*Warning: </c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.*Error: </c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.*Failure: </c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
     public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, ".*Note: "),
@@ -113,7 +137,7 @@ public sealed class QuestaSimSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting QuestaSim test {test}...");
 
         // Fail if we cannot find the simulator

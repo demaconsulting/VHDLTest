@@ -26,13 +26,31 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     NVC Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the NVC open-source VHDL simulator.
 /// </summary>
+/// <remarks>
+///     Drives the <c>nvc</c> command-line tool using a combined elaboration-and-simulation
+///     design: the <c>Test</c> method passes both <c>-e {test}</c> (elaboration) and
+///     <c>-r {test}</c> (simulation) as arguments in a single <c>nvc</c> invocation,
+///     so NVC handles elaboration and execution in one step. Implemented as a singleton
+///     (<see cref="Instance"/>) initialized at class load time; stateless after construction
+///     and therefore thread-safe.
+/// </remarks>
 public sealed class NvcSimulator : Simulator
 {
     /// <summary>
-    /// Compile processor
+    ///     Output classifier for NVC compilation (<c>nvc -a</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies five classification rules in order:
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.* Note:</c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.* Warning:</c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.* Error:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Failure:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Fatal:</c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
     public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, ".* Note:"),
@@ -44,8 +62,18 @@ public sealed class NvcSimulator : Simulator
     );
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for NVC simulation (<c>nvc -r</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies the same five classification rules as <see cref="CompileProcessor"/>:
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.* Note:</c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.* Warning:</c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.* Error:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Failure:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Fatal:</c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
     public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, ".* Note:"),
@@ -114,7 +142,7 @@ public sealed class NvcSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting NVC test {test}...");
 
         // Fail if we cannot find the simulator

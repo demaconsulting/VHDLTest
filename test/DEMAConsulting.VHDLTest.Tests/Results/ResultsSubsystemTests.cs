@@ -71,12 +71,12 @@ public class ResultsSubsystemTests
     /// <summary>
     /// Test that TestResults correctly saves a combined pass/fail result set to
     /// a TRX file, verifying that TestResult and TestResults integrate through
-    /// the serialization pipeline.
+    /// the serialization pipeline including pass/fail outcome encoding.
     /// </summary>
     [Fact]
     public void ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts()
     {
-        const string resultsFile = "results-subsystem-test.trx";
+        var resultsFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
         try
         {
@@ -104,11 +104,13 @@ public class ResultsSubsystemTests
             // Act - save the combined results to a TRX file
             testResults.SaveResults(resultsFile);
 
-            // Assert - file was created and contains both test results
+            // Assert - file was created and encodes pass/fail outcomes correctly
             Assert.True(File.Exists(resultsFile));
             var content = File.ReadAllText(resultsFile);
             Assert.Contains("Test1", content);
             Assert.Contains("Test2", content);
+            Assert.Contains("outcome=\"Passed\"", content);
+            Assert.Contains("outcome=\"Failed\"", content);
         }
         finally
         {

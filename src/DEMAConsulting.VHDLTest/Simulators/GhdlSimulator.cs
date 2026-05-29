@@ -26,13 +26,38 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     GHDL Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the GHDL open-source VHDL simulator.
 /// </summary>
+/// <remarks>
+///     Drives the <c>ghdl</c> command-line tool in a two-phase workflow: the <c>Compile</c>
+///     method runs <c>ghdl -a</c> (analysis) for all source files, and the <c>Test</c> method
+///     runs <c>ghdl -e</c> (elaboration) followed by <c>ghdl -r</c> (simulation) for each
+///     individual test bench. The elaboration step is explicit and mandatory for some GHDL
+///     backends. Implemented as a singleton (<see cref="Instance"/>) initialized at class
+///     load time; stateless after construction and therefore thread-safe.
+/// </remarks>
 public sealed class GhdlSimulator : Simulator
 {
     /// <summary>
-    /// Compile processor
+    ///     Output classifier for GHDL analysis (<c>ghdl -a</c>) and elaboration (<c>ghdl -e</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies three classification rules in order:
+    ///     <list type="bullet">
+    ///         <item><description>
+    ///             Lines matching <c>.*:\d+:\d+:warning:</c> are classified as Warning.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:\d+:\d+: </c> (trailing space prevents false matches on
+    ///             warning-prefixed lines) are classified as Error.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:error:</c> or <c>.*: cannot open</c> are classified as Error.
+    ///         </description></item>
+    ///     </list>
+    ///     This processor is also reused for the elaboration step in <c>Test</c> because elaboration
+    ///     output follows the same diagnostic format as analysis output.
+    /// </remarks>
     public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
@@ -43,8 +68,26 @@ public sealed class GhdlSimulator : Simulator
     );
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for GHDL simulation (<c>ghdl -r</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies classification rules matching GHDL's VHDL assertion and report message format:
+    ///     <list type="bullet">
+    ///         <item><description>
+    ///             Lines matching <c>.*:\(assertion note\):</c> or <c>.*:\(report note\):</c>
+    ///             are classified as Info.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:\(assertion warning\):</c> or <c>.*:\(report warning\):</c>
+    ///             are classified as Warning.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:\(assertion error\):</c>, <c>.*:\(report error\):</c>,
+    ///             <c>.*:\(assertion failure\):</c>, <c>.*:\(report failure\):</c>, or
+    ///             <c>.*:error:</c> are classified as Error.
+    ///         </description></item>
+    ///     </list>
+    /// </remarks>
     public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
@@ -165,9 +208,13 @@ public sealed class GhdlSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the GHDL installation directory by locating the <c>ghdl</c> executable
+    ///     on the system PATH, returning null when GHDL is not installed.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>
+    ///     The directory containing the <c>ghdl</c> executable, or null if GHDL is not found.
+    ///     The <c>VHDLTEST_GHDL_PATH</c> environment variable, when set, overrides PATH search.
+    /// </returns>
     public static string? FindPath()
     {
         // Look for an environment variable

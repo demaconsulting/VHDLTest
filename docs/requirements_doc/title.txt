@@ -1,7 +1,12 @@
 ---
-title: 'VHDLTest Requirements'
-subtitle: 'Requirements Specification'
-author: 'DEMA Consulting'
-description: 'Comprehensive requirements specification for VHDLTest VHDL test bench automation tool'
-keywords: [VHDL, testing, requirements, specification, automation]
+title: "VHDLTest Requirements Document"
+subtitle: "VHDL unit test runner for .NET"
+author: "DEMA Consulting"
+description: "Requirements Document for VHDLTest"
+lang: en-US
+keywords:
+  - Requirements
+  - VHDL
+  - Testing
+  - Automation
 ---

@@ -1,0 +1,17 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: DemaConsulting.TestResults Requirements
+        requirements:
+          - id: VHDLTest-OTS-TestResults
+            title: DemaConsulting.TestResults shall generate TRX test results files from VHDLTest run outcomes.
+            justification: |
+              DemaConsulting.TestResults (v1.7.0) is the TRX file generation library used by
+              VHDLTest to write structured test result files. When --results is specified,
+              TestResults.SaveResults delegates to this library to produce a TRX file consumed
+              by CI/CD platforms and requirements traceability tools. A successful integration
+              test with results output confirms the library is functioning correctly.
+            tags: [ots]
+            tests:
+              - IntegrationTest_TestsPassed_ReturnsZeroExitCode

@@ -1,13 +1,12 @@
 ---
-title: VHDLTest Review Report
-subtitle: File Review Report for VHDLTest
-author: DEMA Consulting
-description: File Review Report for VHDLTest
+title: "VHDLTest Code Review Report"
+subtitle: "VHDL unit test runner for .NET"
+author: "DEMA Consulting"
+description: "Code Review Report for VHDLTest"
 lang: en-US
 keywords:
+  - Code Review
   - VHDLTest
-  - Review Report
-  - File Reviews
   - .NET
   - VHDL
 ---

@@ -28,12 +28,13 @@ namespace DEMAConsulting.VHDLTest.Tests.SelfTest;
 public class ValidationTests
 {
     /// <summary>
-    /// Test usage information is reported when no arguments are specified
+    /// Test that VHDLTest self-validation passes successfully when using the mock simulator.
     /// </summary>
     [Fact]
-    public void IntegrationTest_ValidateFlag_PerformsValidationAndReturnsSuccess()
+    public void SelfTest_Validate_MockSimulator_ReturnsSuccess()
     {
-        // Run the application
+        // Arrange: use the mock simulator for self-validation
+        // Act: run validation with the mock simulator
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
@@ -41,20 +42,19 @@ public class ValidationTests
             "--simulator", "mock",
             "--validate");
 
-        // Verify success
+        // Assert: exit code is 0 and validation passed
         Assert.Equal(0, exitCode);
-
-        // Verify validation passed
         Assert.Contains("Validation Passed", output);
     }
 
     /// <summary>
-    /// Test usage information is reported when no arguments are specified
+    /// Test that configuring validation depth produces Markdown headings at the specified level.
     /// </summary>
     [Fact]
-    public void IntegrationTest_ValidateFlagWithDepth_PerformsValidationWithDepth()
+    public void SelfTest_ValidateWithDepth_MockSimulator_RendersDepthHeadings()
     {
-        // Run the application
+        // Arrange: use the mock simulator with depth 3
+        // Act: run validation with the mock simulator and depth 3
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
@@ -63,10 +63,8 @@ public class ValidationTests
             "--validate",
             "--depth", "3");
 
-        // Verify success
+        // Assert: exit code is 0 and heading depth is applied
         Assert.Equal(0, exitCode);
-
-        // Verify validation depth
         Assert.Contains("### DEMAConsulting.VHDLTest", output);
     }
 
@@ -74,11 +72,12 @@ public class ValidationTests
     /// Test validation results can be saved to file
     /// </summary>
     [Fact]
-    public void IntegrationTest_ValidateFlagWithResultsFile_SavesValidationResults()
+    public void SelfTest_ValidateWithResultsFile_MockSimulator_SavesResults()
     {
         try
         {
-            // Run the application
+            // Arrange: use the mock simulator and specify a results file path
+            // Act: run validation with results file
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
@@ -87,13 +86,9 @@ public class ValidationTests
                 "--validate",
                 "--results", "validation_results.trx");
 
-            // Verify success
+            // Assert: exit code is 0 and results file was written with expected content
             Assert.Equal(0, exitCode);
-
-            // Verify results file written
             Assert.True(File.Exists("validation_results.trx"));
-
-            // Read the results file.
             var text = File.ReadAllText("validation_results.trx");
             Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestPasses" />""", text);
             Assert.Contains("""<TestMethod codeBase="VHDLTest" className="VHDLTest.Validation" name="VHDLTest_TestFails" />""", text);
@@ -110,9 +105,10 @@ public class ValidationTests
     /// Test validation output contains OS Version field in the information table
     /// </summary>
     [Fact]
-    public void IntegrationTest_ValidateFlag_IncludesOSVersionInReport()
+    public void SelfTest_Validate_MockSimulator_IncludesOSVersionInReport()
     {
-        // Run the application
+        // Arrange: use the mock simulator for self-validation
+        // Act: run validation with the mock simulator
         var exitCode = Runner.Run(
             out var output,
             "dotnet",
@@ -120,10 +116,29 @@ public class ValidationTests
             "--simulator", "mock",
             "--validate");
 
-        // Verify success
+        // Assert: exit code is 0 and OS Version field is present in output
         Assert.Equal(0, exitCode);
-
-        // Verify OS Version field is present in output
         Assert.Contains("| OS Version", output);
+    }
+
+    /// <summary>
+    /// Test that VHDLTest self-validation fails gracefully when given an unrecognized simulator name.
+    /// </summary>
+    [Fact]
+    public void SelfTest_Validate_InvalidSimulator_ReturnsFailure()
+    {
+        // Arrange: choose a simulator name that is not registered
+        const string invalidSimulator = "totally_unknown_simulator_xyz";
+
+        // Act: run validation with the invalid simulator name
+        var exitCode = Runner.Run(
+            out _,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--simulator", invalidSimulator,
+            "--validate");
+
+        // Assert: VHDLTest exits with a non-zero code when the simulator is invalid
+        Assert.NotEqual(0, exitCode);
     }
 }

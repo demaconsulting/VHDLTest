@@ -1,0 +1,16 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: FileAssert Requirements
+        requirements:
+          - id: VHDLTest-OTS-FileAssert
+            title: FileAssert shall compare generated output files against expected baselines and fail the build on mismatch.
+            justification: |
+              DemaConsulting.FileAssert (v0.3.0) performs byte-level or normalized comparison
+              of generated artifacts against reference baselines in CI pipelines. This prevents
+              unintentional changes to generated documentation and traceability reports from
+              silently passing the build.
+            tags: [ots]
+            tests:
+              - FileAssert_ComparesFiles

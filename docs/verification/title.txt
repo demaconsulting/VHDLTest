@@ -1,0 +1,20 @@
+---
+title: "VHDLTest Verification Design Document"
+subtitle: "VHDL unit test runner for .NET"
+author: "DEMA Consulting"
+description: "Verification Design Document for VHDLTest"
+lang: en-US
+keywords:
+  - Verification
+  - Testing
+  - VHDL
+  - .NET
+  - C#
+  - simulation
+  - GHDL
+  - NVC
+  - ModelSim
+  - QuestaSim
+  - Vivado
+  - Active-HDL
+---

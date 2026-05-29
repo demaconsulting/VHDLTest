@@ -24,7 +24,9 @@ using DEMAConsulting.VHDLTest.Cli;
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-///     Run Results Class
+///     Immutable record holding the complete outcome of a single simulator execution. It is
+///     the primary return value from <see cref="RunProcessor"/> and the data source for
+///     simulator pass/fail decisions, result serialization, and console output display.
 /// </summary>
 /// <param name="Summary">Result summary</param>
 /// <param name="Start">Start time</param>
@@ -41,8 +43,14 @@ public sealed record RunResults(
     ReadOnlyCollection<RunLine> Lines)
 {
     /// <summary>
-    ///     Print the results to the console colorized
+    ///     Iterates over <see cref="Lines"/> and writes each line to the console using a color
+    ///     determined by its <see cref="RunLineType"/>. Text-classified lines are suppressed
+    ///     unless verbose output is enabled.
     /// </summary>
+    /// <param name="context">
+    ///     Context used for colored console output. Must not be null. The <c>Verbose</c>
+    ///     property controls whether <see cref="RunLineType.Text"/> lines are written.
+    /// </param>
     public void Print(Context context)
     {
         // Filter and write all lines

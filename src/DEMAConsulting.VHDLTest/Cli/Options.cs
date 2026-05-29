@@ -21,10 +21,16 @@
 namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
-///     Program Options Class
+///     Immutable value type carrying the fully resolved configuration for a VHDLTest run, derived from the parsed command-line context and the loaded YAML configuration document.
 /// </summary>
-/// <param name="WorkingDirectory">Working directory</param>
-/// <param name="Config">Configuration options</param>
+/// <remarks>
+///     Options is constructed exclusively via <see cref="Parse"/>, which validates that a
+///     configuration file was specified, loads the YAML document, and resolves the working
+///     directory to an absolute path. Callers treat Options as a read-only record after
+///     construction.
+/// </remarks>
+/// <param name="WorkingDirectory">Absolute path to the directory containing the configuration file. Equals <c>Path.GetDirectoryName(Path.GetFullPath(configFile))</c> and is guaranteed to be non-null.</param>
+/// <param name="Config">Deserialized YAML configuration document. Guaranteed non-null; populated by <see cref="ConfigDocument.ReadFile"/>.</param>
 public record Options(string WorkingDirectory,
     ConfigDocument Config)
 {
@@ -32,7 +38,9 @@ public record Options(string WorkingDirectory,
     ///     Parse options from command line arguments
     /// </summary>
     /// <param name="args">Command line arguments</param>
-    /// <returns>Options</returns>
+    /// <returns>A non-null <see cref="Options"/> record with <see cref="WorkingDirectory"/> set to the absolute directory of the configuration file and <see cref="Config"/> populated from the YAML content.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when no configuration file is specified in <paramref name="args"/>, or when the configuration file path cannot be resolved to a containing directory.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the specified configuration file does not exist on disk.</exception>
     public static Options Parse(Context args)
     {
         // Verify a configuration file was specified

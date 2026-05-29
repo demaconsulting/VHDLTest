@@ -26,13 +26,23 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     Vivado Simulator Class
+///     Vivado simulator integration that drives xvhdl for VHDL-2008 source analysis and xelab
+///     for elaboration and simulation, classifying output lines by severity using
+///     <see cref="RunProcessor"/> rules.
 /// </summary>
 public sealed class VivadoSimulator : Simulator
 {
     /// <summary>
-    /// Compile processor
+    ///     Output classifier for xvhdl compilation output.
     /// </summary>
+    /// <remarks>
+    ///     Classification rules:
+    ///     <list type="bullet">
+    ///         <item><description><c>Error: </c> — classified as Error.</description></item>
+    ///     </list>
+    ///     Unmatched lines are left as Text. The trailing space in each pattern prevents false
+    ///     matches on identifiers that share a keyword prefix (for example, <c>ErrorDetails:</c>).
+    /// </remarks>
     public static RunProcessor CompileProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Error, "Error: ")
@@ -40,8 +50,19 @@ public sealed class VivadoSimulator : Simulator
     );
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for xelab simulation output.
     /// </summary>
+    /// <remarks>
+    ///     Classification rules:
+    ///     <list type="bullet">
+    ///         <item><description><c>Note: </c> — classified as Info.</description></item>
+    ///         <item><description><c>Warning: </c> — classified as Warning.</description></item>
+    ///         <item><description><c>Error: </c> — classified as Error.</description></item>
+    ///         <item><description><c>Failure: </c> — classified as Error.</description></item>
+    ///     </list>
+    ///     Unmatched lines are left as Text. The trailing space in each pattern prevents false
+    ///     matches on identifiers that share a keyword prefix (for example, <c>ErrorDetails:</c>).
+    /// </remarks>
     public static RunProcessor TestProcessor { get; } = new(
         [
             RunLineRule.Create(RunLineType.Info, "Note: "),
@@ -52,8 +73,13 @@ public sealed class VivadoSimulator : Simulator
     );
 
     /// <summary>
-    ///     Vivado simulator instance
+    ///     Singleton <see cref="VivadoSimulator"/> instance shared across the application.
     /// </summary>
+    /// <remarks>
+    ///     The singleton is initialized once at class load time. <see cref="FindPath"/> is
+    ///     called during construction; if Vivado is not found, <see cref="Simulator.SimulatorPath"/>
+    ///     is null and <see cref="Simulator.Available"/> returns false.
+    /// </remarks>
     public static VivadoSimulator Instance { get; } = new();
 
     /// <summary>
@@ -97,7 +123,7 @@ public sealed class VivadoSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the Vivado compiler (on Windows xvhdl is a batch file requiring cmd /c)
+        // Run the Vivado compiler; RunProcessor handles platform-specific execution transparently
         var application = Path.Combine(simPath, "xvhdl");
         return CompileProcessor.Execute(context, application, libDir, "-file", "compile.do");
     }
@@ -105,8 +131,7 @@ public sealed class VivadoSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
-        context.WriteVerboseLine($"Starting Vivado test {test}...");
+        // Log the start of the test command
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
@@ -129,7 +154,7 @@ public sealed class VivadoSimulator : Simulator
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
-        // Run the test (on Windows xelab is a batch file requiring cmd /c)
+        // Run the Vivado test; RunProcessor handles platform-specific execution transparently
         var application = Path.Combine(simPath, "xelab");
         var testRunResults = TestProcessor.Execute(context, application, libDir, "-file", "test.do");
 
@@ -141,9 +166,16 @@ public sealed class VivadoSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the Vivado installation directory.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>Directory path containing the Vivado executables, or null if Vivado is not found.</returns>
+    /// <remarks>
+    ///     Resolution order:
+    ///     <list type="number">
+    ///         <item><description>Returns the <c>VHDLTEST_VIVADO_PATH</c> environment variable value when set.</description></item>
+    ///         <item><description>Searches the system PATH for the <c>vivado</c> executable and returns its parent directory.</description></item>
+    ///     </list>
+    /// </remarks>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -160,7 +192,7 @@ public sealed class VivadoSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the Vivado installation directory (parent of the vivado executable)
         return Path.GetDirectoryName(simPath);
     }
 }

@@ -1,0 +1,67 @@
+---
+# Pandoc document definition for VHDLTest Verification Design Document
+
+# Resource paths for finding files and templates
+resource-path:
+  - docs/verification
+  - docs/template
+
+# Input files in order (relative to resource-path)
+input-files:
+  - docs/verification/title.txt
+  - docs/verification/introduction.md
+  - docs/verification/vhdltest.md
+  - docs/verification/vhdltest/program.md
+  - docs/verification/vhdltest/cli.md
+  - docs/verification/vhdltest/cli/context.md
+  - docs/verification/vhdltest/cli/config-document.md
+  - docs/verification/vhdltest/cli/options.md
+  - docs/verification/vhdltest/simulators.md
+  - docs/verification/vhdltest/simulators/simulator.md
+  - docs/verification/vhdltest/simulators/simulator-factory.md
+  - docs/verification/vhdltest/simulators/ghdl-simulator.md
+  - docs/verification/vhdltest/simulators/nvc-simulator.md
+  - docs/verification/vhdltest/simulators/modelsim-simulator.md
+  - docs/verification/vhdltest/simulators/questasim-simulator.md
+  - docs/verification/vhdltest/simulators/vivado-simulator.md
+  - docs/verification/vhdltest/simulators/active-hdl-simulator.md
+  - docs/verification/vhdltest/simulators/mock-simulator.md
+  - docs/verification/vhdltest/run.md
+  - docs/verification/vhdltest/run/run-processor.md
+  - docs/verification/vhdltest/run/run-program.md
+  - docs/verification/vhdltest/run/run-results.md
+  - docs/verification/vhdltest/run/run-line.md
+  - docs/verification/vhdltest/run/run-line-rule.md
+  - docs/verification/vhdltest/run/run-line-type.md
+  - docs/verification/vhdltest/results.md
+  - docs/verification/vhdltest/results/test-result.md
+  - docs/verification/vhdltest/results/test-results.md
+  - docs/verification/vhdltest/self-test.md
+  - docs/verification/vhdltest/self-test/validation.md
+  - docs/verification/ots.md
+  - docs/verification/ots/yamldotnet.md
+  - docs/verification/ots/demaconsulting-testresults.md
+  - docs/verification/ots/xunit.md
+  - docs/verification/ots/buildmark.md
+  - docs/verification/ots/versionmark.md
+  - docs/verification/ots/reqstream.md
+  - docs/verification/ots/sarifmark.md
+  - docs/verification/ots/sonarmark.md
+  - docs/verification/ots/reviewmark.md
+  - docs/verification/ots/pandoctool.md
+  - docs/verification/ots/weasyprinttool.md
+  - docs/verification/ots/fileassert.md
+  - docs/verification/ots/dictionarymark.md
+  - docs/verification/ots/sonarscanner.md
+
+# Template configuration
+template: template.html
+
+# Table of contents settings
+table-of-contents: true
+
+# Enable numbered sections
+number-sections: true
+
+# Standalone document
+standalone: true

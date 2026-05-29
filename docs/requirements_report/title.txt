@@ -1,7 +1,12 @@
 ---
-title: 'VHDLTest Trace Matrix'
-subtitle: 'Requirements Traceability Matrix'
-author: 'DEMA Consulting'
-description: 'Requirements traceability matrix showing test coverage for VHDLTest VHDL test bench automation tool'
-keywords: [VHDL, testing, traceability, requirements, verification]
+title: "VHDLTest Trace Matrix"
+subtitle: "VHDL unit test runner for .NET"
+author: "DEMA Consulting"
+description: "Trace Matrix for VHDLTest"
+lang: en-US
+keywords:
+  - Requirements
+  - Trace Matrix
+  - VHDL
+  - Verification
 ---

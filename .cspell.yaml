@@ -8,10 +8,8 @@
 # - Misspelled words should be fixed in the source
 # - NEVER add a misspelled word to the 'words' list
 # - PROPOSE only genuine technical terms/names as needed
-
-version: "0.2"
+version: '0.2'
 language: en
-
 # Project-specific technical terms and tool names
 words:
   - activehdl
@@ -115,18 +113,17 @@ words:
   - yaml
   - yamlfix
   - yamllint
-
 # Exclude common build artifacts, dependencies, and vendored third-party code
 ignorePaths:
-  - "**/.git/**"
-  - "**/node_modules/**"
-  - "**/.venv/**"
-  - "**/thirdparty/**"
-  - "**/third-party/**"
-  - "**/3rd-party/**"
-  - "**/AGENT_REPORT_*.md"
-  - "**/.agent-logs/**"
-  - "**/bin/**"
-  - "**/obj/**"
-  - "**/artifacts/**"
+  - '**/.git/**'
+  - '**/node_modules/**'
+  - '**/.venv/**'
+  - '**/thirdparty/**'
+  - '**/third-party/**'
+  - '**/3rd-party/**'
+  - '**/AGENT_REPORT_*.md'
+  - '**/.agent-logs/**'
+  - '**/bin/**'
+  - '**/obj/**'
+  - '**/artifacts/**'
   - package-lock.json

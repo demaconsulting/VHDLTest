@@ -34,6 +34,7 @@ public class GhdlSimulatorTests
     [Fact]
     public void GhdlSimulator_SimulatorName_ReturnsGHDL()
     {
+        // Act / Assert: simulator name is the fixed string "GHDL"
         Assert.Equal("GHDL", GhdlSimulator.Instance.SimulatorName);
     }
 
@@ -43,12 +44,15 @@ public class GhdlSimulatorTests
     [Fact]
     public void GhdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
+        // Arrange: output with no diagnostic patterns
+        // Act: parse two plain-text lines
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nNo Issues",
             0);
 
+        // Assert: summary is Text and all lines are classified as Text
         Assert.Equal(RunLineType.Text, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -62,17 +66,20 @@ public class GhdlSimulatorTests
     }
 
     /// <summary>
-    /// Test GHDL simulator compile with an info message
+    /// Test GHDL simulator compile with a warning message
     /// </summary>
     [Fact]
     public void GhdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
+        // Arrange: output containing the GHDL warning pattern (file:line:col:warning:)
+        // Act: parse a warning line
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nCompile:1:1:warning: Compile Warning",
             0);
 
+        // Assert: summary is Warning and the diagnostic line is classified as Warning
         Assert.Equal(RunLineType.Warning, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -86,17 +93,20 @@ public class GhdlSimulatorTests
     }
 
     /// <summary>
-    /// Test GHDL simulator compile with an error message
+    /// Test GHDL simulator compile with an error message using the :error: pattern
     /// </summary>
     [Fact]
     public void GhdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
+        // Arrange: output containing the GHDL :error: pattern
+        // Act: parse an error line
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nCompile:error: Compile Error",
             1);
 
+        // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -110,17 +120,66 @@ public class GhdlSimulatorTests
     }
 
     /// <summary>
+    /// Test GHDL simulator compile with a line/column error message (file:line:col: pattern)
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_CompileProcessor_LineColError_ReturnsErrorResult()
+    {
+        // Arrange: output containing the GHDL line/column error pattern (file:line:col: message)
+        // Act: parse a line/column error line
+        var results = GhdlSimulator.CompileProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Compile\ntest.vhd:10:5: error: undefined identifier",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("test.vhd:10:5: error: undefined identifier", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator compile with a cannot-open error message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_CompileProcessor_CannotOpenError_ReturnsErrorResult()
+    {
+        // Arrange: output containing the GHDL "cannot open" pattern
+        // Act: parse a cannot-open error line
+        var results = GhdlSimulator.CompileProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Compile\nmissing.vhd: cannot open",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("missing.vhd: cannot open", results.Lines[1].Text);
+    }
+
+    /// <summary>
     /// Test GHDL simulator test with clean output
     /// </summary>
     [Fact]
     public void GhdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
+        // Arrange: output with no diagnostic patterns
+        // Act: parse two plain-text lines
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNo Issues",
             0);
 
+        // Assert: summary is Text and all lines are classified as Text
         Assert.Equal(RunLineType.Text, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -134,17 +193,20 @@ public class GhdlSimulatorTests
     }
 
     /// <summary>
-    /// Test GHDL simulator test with an info message
+    /// Test GHDL simulator test with an info message (report note pattern)
     /// </summary>
     [Fact]
     public void GhdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
+        // Arrange: output containing the GHDL report note pattern
+        // Act: parse an info line
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nTest:(report note): Test Note",
             0);
 
+        // Assert: summary is Info and the diagnostic line is classified as Info
         Assert.Equal(RunLineType.Info, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -158,17 +220,43 @@ public class GhdlSimulatorTests
     }
 
     /// <summary>
-    /// Test GHDL simulator test with a warning message
+    /// Test GHDL simulator test with an assertion note info message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_TestProcessor_AssertionNoteOutput_ReturnsInfoResult()
+    {
+        // Arrange: output containing the GHDL assertion note pattern
+        // Act: parse an assertion note line
+        var results = GhdlSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest:(assertion note): Assertion Note",
+            0);
+
+        // Assert: summary is Info and the diagnostic line is classified as Info
+        Assert.Equal(RunLineType.Info, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Info, results.Lines[1].Type);
+        Assert.Equal("Test:(assertion note): Assertion Note", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator test with a warning message (report warning pattern)
     /// </summary>
     [Fact]
     public void GhdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
+        // Arrange: output containing the GHDL report warning pattern
+        // Act: parse a warning line
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nTest:(report warning): Test Warning",
             0);
 
+        // Assert: summary is Warning and the diagnostic line is classified as Warning
         Assert.Equal(RunLineType.Warning, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -182,17 +270,43 @@ public class GhdlSimulatorTests
     }
 
     /// <summary>
-    /// Test GHDL simulator test with an error message
+    /// Test GHDL simulator test with an assertion warning message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_TestProcessor_AssertionWarningOutput_ReturnsWarningResult()
+    {
+        // Arrange: output containing the GHDL assertion warning pattern
+        // Act: parse an assertion warning line
+        var results = GhdlSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest:(assertion warning): Assertion Warning",
+            0);
+
+        // Assert: summary is Warning and the diagnostic line is classified as Warning
+        Assert.Equal(RunLineType.Warning, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Warning, results.Lines[1].Type);
+        Assert.Equal("Test:(assertion warning): Assertion Warning", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator test with an error message (report error pattern)
     /// </summary>
     [Fact]
     public void GhdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
+        // Arrange: output containing the GHDL report error pattern
+        // Act: parse an error line
         var results = GhdlSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nTest:(report error): Test Error",
             1);
 
+        // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -203,5 +317,97 @@ public class GhdlSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Test:(report error): Test Error", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator test with an assertion error message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_TestProcessor_AssertionErrorOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the GHDL assertion error pattern
+        // Act: parse an assertion error line
+        var results = GhdlSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest:(assertion error): Assertion Error",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test:(assertion error): Assertion Error", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator test with an assertion failure message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_TestProcessor_AssertionFailureOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the GHDL assertion failure pattern
+        // Act: parse an assertion failure line
+        var results = GhdlSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest:(assertion failure): Assertion Failure",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test:(assertion failure): Assertion Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator test with a report failure message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_TestProcessor_ReportFailureOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the GHDL report failure pattern
+        // Act: parse a report failure line
+        var results = GhdlSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest:(report failure): Report Failure",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test:(report failure): Report Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test GHDL simulator test with a :error: pattern message
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_TestProcessor_ColonErrorOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the GHDL :error: pattern
+        // Act: parse a colon-error line
+        var results = GhdlSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest:error: Test Error",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test:error: Test Error", results.Lines[1].Text);
     }
 }

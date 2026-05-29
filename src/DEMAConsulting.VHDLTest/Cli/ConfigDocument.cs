@@ -24,8 +24,15 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
-///     Configuration document class
+///     Represents the deserialized content of a VHDLTest YAML configuration file, providing lists of VHDL source files and test names.
 /// </summary>
+/// <remarks>
+///     ConfigDocument is a stateless deserialization target for YamlDotNet. Instances are
+///     effectively immutable value objects after <see cref="ReadFile"/> returns; callers
+///     should treat the <see cref="Files"/> and <see cref="Tests"/> arrays as read-only.
+///     The YAML property names use hyphenated-naming-convention (e.g., <c>files</c>,
+///     <c>tests</c>) mapped by <c>HyphenatedNamingConvention</c>.
+/// </remarks>
 public class ConfigDocument
 {
     /// <summary>
@@ -41,8 +48,8 @@ public class ConfigDocument
     /// <summary>
     ///     Read the configuration document from file
     /// </summary>
-    /// <param name="filename">Configuration file</param>
-    /// <returns>Configuration document</returns>
+    /// <param name="filename">Path to a readable YAML file containing valid VHDLTest configuration. Must point to an existing file whose content can be deserialized into a <see cref="ConfigDocument"/>.</param>
+    /// <returns>A non-null <see cref="ConfigDocument"/> instance populated from the file content. The returned instance always has non-null <see cref="Files"/> and <see cref="Tests"/> arrays (defaulting to empty arrays when the properties are absent from the YAML).</returns>
     /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist</exception>
     /// <exception cref="InvalidOperationException">Thrown when the configuration content is invalid or cannot be deserialized into a configuration document</exception>
     public static ConfigDocument ReadFile(string filename)

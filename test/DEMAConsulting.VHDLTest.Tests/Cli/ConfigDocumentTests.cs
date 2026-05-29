@@ -52,6 +52,7 @@ public class ConfigDocumentTests
     [Fact]
     public void ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException()
     {
+        // Act + Assert: reading a non-existent file should throw FileNotFoundException
         Assert.Throws<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
     }
 
@@ -63,13 +64,13 @@ public class ConfigDocumentTests
     {
         try
         {
-            // Write the config file
+            // Arrange: write the config file
             File.WriteAllText(ConfigFile, ConfigContent);
 
-            // Read the configuration
+            // Act: read the configuration
             var config = ConfigDocument.ReadFile(ConfigFile);
 
-            // Check the content
+            // Assert: check the content
             Assert.NotNull(config);
             Assert.Equal(2, config.Files.Length);
             Assert.Equal("file1.vhd", config.Files[0]);
@@ -82,6 +83,27 @@ public class ConfigDocumentTests
         {
             // Delete the config file
             File.Delete(ConfigFile);
+        }
+    }
+
+    /// <summary>
+    /// Test reading a configuration file with null content (should throw InvalidOperationException)
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_InvalidContent_ThrowsInvalidOperationException()
+    {
+        // Arrange: write a file that deserializes to null
+        var invalidFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(invalidFile, "null\n");
+
+            // Act + Assert: reading the file should throw InvalidOperationException
+            Assert.Throws<InvalidOperationException>(() => ConfigDocument.ReadFile(invalidFile));
+        }
+        finally
+        {
+            File.Delete(invalidFile);
         }
     }
 }

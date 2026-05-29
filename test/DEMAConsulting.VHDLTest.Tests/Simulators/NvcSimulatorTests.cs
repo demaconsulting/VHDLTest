@@ -34,6 +34,7 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_SimulatorName_ReturnsNVC()
     {
+        // Act / Assert: simulator name is the fixed string "NVC"
         Assert.Equal("NVC", NvcSimulator.Instance.SimulatorName);
     }
 
@@ -43,12 +44,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
+        // Arrange: output with no diagnostic patterns
+        // Act: parse two plain-text lines
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nNo Issues",
             0);
 
+        // Assert: summary is Text and all lines are classified as Text
         Assert.Equal(RunLineType.Text, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -67,12 +71,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult()
     {
+        // Arrange: output containing the NVC note pattern
+        // Act: parse an info line
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nCompile Note: Compile Note",
             0);
 
+        // Assert: summary is Info and the diagnostic line is classified as Info
         Assert.Equal(RunLineType.Info, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -91,12 +98,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
     {
+        // Arrange: output containing the NVC warning pattern
+        // Act: parse a warning line
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nCompile Warning: Compile Warning",
             0);
 
+        // Assert: summary is Warning and the diagnostic line is classified as Warning
         Assert.Equal(RunLineType.Warning, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -115,12 +125,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
+        // Arrange: output containing the NVC error pattern
+        // Act: parse an error line
         var results = NvcSimulator.CompileProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Compile\nCompile Error: Compile Error",
             1);
 
+        // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -134,17 +147,66 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
+    /// Test NVC simulator compile with a failure message
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the NVC failure pattern
+        // Act: parse a failure line
+        var results = NvcSimulator.CompileProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Compile\nCompile Failure: Compile Failure",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Compile Failure: Compile Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test NVC simulator compile with a fatal message
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the NVC fatal pattern
+        // Act: parse a fatal line
+        var results = NvcSimulator.CompileProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Compile\nCompile Fatal: Compile Fatal",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Compile", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Compile Fatal: Compile Fatal", results.Lines[1].Text);
+    }
+
+    /// <summary>
     /// Test NVC simulator test with clean output
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
+        // Arrange: output with no diagnostic patterns
+        // Act: parse two plain-text lines
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nNo Issues",
             0);
 
+        // Assert: summary is Text and all lines are classified as Text
         Assert.Equal(RunLineType.Text, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -163,12 +225,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
+        // Arrange: output containing the NVC note pattern
+        // Act: parse an info line
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nTest Note: Test Note",
             0);
 
+        // Assert: summary is Info and the diagnostic line is classified as Info
         Assert.Equal(RunLineType.Info, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -187,12 +252,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
+        // Arrange: output containing the NVC warning pattern
+        // Act: parse a warning line
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nTest Warning: Test Warning",
             0);
 
+        // Assert: summary is Warning and the diagnostic line is classified as Warning
         Assert.Equal(RunLineType.Warning, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -211,12 +279,15 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
+        // Arrange: output containing the NVC error pattern
+        // Act: parse an error line
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
             "Test\nTest Error: Test Error",
             1);
 
+        // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
         Assert.Equal(5.0, results.Duration, 1);
@@ -227,5 +298,51 @@ public class NvcSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Test Error: Test Error", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test NVC simulator test with a failure message
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the NVC failure pattern
+        // Act: parse a failure line
+        var results = NvcSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest Failure: Test Failure",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test Failure: Test Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test NVC simulator test with a fatal message
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult()
+    {
+        // Arrange: output containing the NVC fatal pattern
+        // Act: parse a fatal line
+        var results = NvcSimulator.TestProcessor.Parse(
+            new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc),
+            new DateTime(2024, 08, 10, 0, 0, 5, DateTimeKind.Utc),
+            "Test\nTest Fatal: Test Fatal",
+            1);
+
+        // Assert: summary is Error and the diagnostic line is classified as Error
+        Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(2, results.Lines.Count);
+        Assert.Equal(RunLineType.Text, results.Lines[0].Type);
+        Assert.Equal("Test", results.Lines[0].Text);
+        Assert.Equal(RunLineType.Error, results.Lines[1].Type);
+        Assert.Equal("Test Fatal: Test Fatal", results.Lines[1].Text);
     }
 }

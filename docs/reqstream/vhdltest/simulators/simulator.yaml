@@ -2,17 +2,34 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Simulator Unit
-        requirements:
-          - id: VHDLTest-Simulator-Interface
-            title: >-
-              The abstract Simulator class shall define the common interface for all
-              simulator implementations.
-            justification: |
-              A shared abstract base class ensures all simulator implementations provide a
-              consistent interface (SimulatorName, SimulatorPath, Available, Compile, Test)
-              to the rest of the application, enabling simulator-agnostic test execution and
-              straightforward addition of new simulator integrations.
-            tests:
-              - MockSimulator_SimulatorName_ReturnsMock
-              - MockSimulator_Available_WithNullPath_ReturnsFalse
+      - title: Simulators Requirements
+        sections:
+          - title: Simulator Requirements
+            requirements:
+              - id: VHDLTest-Simulators-Simulator-Interface
+                title: >-
+                  All simulator integrations shall expose a uniform compilation and
+                  test-execution interface so that the rest of VHDLTest can invoke any
+                  supported simulator without knowledge of the specific simulator being used.
+                justification: |
+                  A uniform interface decouples the core run logic from simulator-specific
+                  details, enabling VHDLTest to support multiple simulators — GHDL, NVC,
+                  ModelSim, QuestaSim, Vivado, Active-HDL — without modifying the execution
+                  pipeline. This also makes it straightforward to add new simulator
+                  integrations in the future.
+                tests:
+                  - MockSimulator_SimulatorName_ReturnsMock
+                  - MockSimulator_Available_WithNullPath_ReturnsFalse
+
+              - id: VHDLTest-Simulators-Simulator-Where
+                title: >-
+                  VHDLTest shall locate a simulator executable by searching the system PATH at
+                  runtime and return null when the executable is not found.
+                justification: |
+                  Runtime PATH-based discovery lets VHDLTest use simulator installations without
+                  requiring users to hard-code absolute paths for every environment. Returning
+                  null when an executable is unavailable lets callers report a clear installation
+                  problem instead of proceeding with an invalid path.
+                tests:
+                  - Simulator_Where_UnknownExecutable_ReturnsNull
+

@@ -2,22 +2,38 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: TestResult Unit
-        requirements:
-          - id: VHDLTest-TestResult-Pass
-            title: TestResult shall record a passed test when the run result indicates success.
-            justification: |
-              Accurately recording pass results ensures that the test report correctly
-              reflects the outcome of each test bench execution and provides traceability
-              from simulator output to the final test report.
-            tests:
-              - TestResult_Constructor_WithInfoResult_CreatesPassedTest
+      - title: Results Requirements
+        sections:
+          - title: TestResult Requirements
+            requirements:
+              - id: VHDLTest-Results-TestResult-Pass
+                title: TestResult shall record a passed test when the run result indicates success.
+                justification: |
+                  Accurately recording pass results ensures that the test report correctly
+                  reflects the outcome of each test bench execution and provides traceability
+                  from simulator output to the final test report.
+                tests:
+                  - TestResult_Constructor_WithInfoResult_CreatesPassedTest
 
-          - id: VHDLTest-TestResult-Fail
-            title: TestResult shall record a failed test when the run result indicates an error.
-            justification: |
-              Accurately recording failure results is essential for CI/CD systems to detect
-              and report test failures, enabling rapid identification and resolution of
-              VHDL design defects.
-            tests:
-              - TestResult_Constructor_WithErrorResult_CreatesFailedTest
+              - id: VHDLTest-Results-TestResult-Fail
+                title: TestResult shall record a failed test when the run result indicates an error.
+                justification: |
+                  Accurately recording failure results is essential for CI/CD systems to detect
+                  and report test failures, enabling rapid identification and resolution of
+                  VHDL design defects.
+                tests:
+                  - TestResult_Constructor_WithErrorResult_CreatesFailedTest
+
+              - id: VHDLTest-Results-TestResult-PrintSummary
+                title: >-
+                  TestResult shall display a colored pass/fail summary line containing the test
+                  name and execution duration.
+                justification: |
+                  Color-coded output with test name and duration gives developers instant
+                  at-a-glance feedback on each test bench outcome directly in the terminal.
+                  In CI/CD environments this aids rapid triage: green Passed lines confirm
+                  correct behavior; red Failed lines with duration signal which test bench
+                  regressed and approximately how long it ran.
+                tests:
+                  - TestResult_PrintSummary_PassedResult_WritesPassLine
+                  - TestResult_PrintSummary_FailedResult_WritesFailLine

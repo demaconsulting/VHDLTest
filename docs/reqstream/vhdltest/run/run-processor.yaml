@@ -2,28 +2,42 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: RunProcessor Unit
-        requirements:
-          - id: VHDLTest-RunProcessor-Pass
-            title: RunProcessor shall classify simulator output as a pass when pass patterns match.
-            justification: |
-              Correct classification of pass output is essential for accurate test reporting and
-              for distinguishing successful test bench executions from failures.
-            tests:
-              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+      - title: Run Requirements
+        sections:
+          - title: RunProcessor Requirements
+            requirements:
+              - id: VHDLTest-Run-RunProcessor-Pass
+                title: RunProcessor shall classify simulator output as a pass when pass patterns match.
+                justification: |
+                  Correct classification of pass output is essential for accurate test reporting and
+                  for distinguishing successful test bench executions from failures.
+                tests:
+                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
 
-          - id: VHDLTest-RunProcessor-Fail
-            title: RunProcessor shall classify simulator output as a fail when fail patterns match.
-            justification: |
-              Correct classification of fail output enables VHDLTest to accurately identify
-              test failures and report them to the user and CI/CD system.
-            tests:
-              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+              - id: VHDLTest-Run-RunProcessor-Fail
+                title: RunProcessor shall classify simulator output as a fail when fail patterns match.
+                justification: |
+                  Correct classification of fail output enables VHDLTest to accurately identify
+                  test failures and report them to the user and CI/CD system.
+                tests:
+                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
 
-          - id: VHDLTest-RunProcessor-MissingProgram
-            title: RunProcessor shall raise an exception when the simulator program cannot be found.
-            justification: |
-              Raising a clear exception for missing programs helps users quickly diagnose
-              configuration errors, such as an incorrectly specified simulator path.
-            tests:
-              - RunProcessor_Execute_MissingProgram_ThrowsException
+              - id: VHDLTest-Run-RunProcessor-MissingProgram
+                title: RunProcessor shall raise an exception when the simulator program cannot be found.
+                justification: |
+                  Raising a clear exception for missing programs helps users quickly diagnose
+                  configuration errors, such as an incorrectly specified simulator path.
+                tests:
+                  - RunProcessor_Execute_MissingProgram_ThrowsException
+
+              - id: VHDLTest-Run-RunProcessor-ExitCodeFail
+                title: >-
+                  RunProcessor shall classify simulator output as a failure when the simulator process
+                  exits with a non-zero exit code, regardless of matched output patterns.
+                justification: |
+                  A non-zero exit code is the simulator's primary signal that something went wrong,
+                  such as a compilation error or runtime fault, even when no individual output line
+                  matches an error pattern. Treating any non-zero exit code as a failure prevents
+                  silent pass results when the simulator aborts without producing recognizable output.
+                tests:
+                  - RunProcessor_Execute_ProgramWithNonZeroExitCode_ReturnsErrorResult

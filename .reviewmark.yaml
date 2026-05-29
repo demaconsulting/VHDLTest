@@ -2,17 +2,16 @@
 # ReviewMark Configuration File
 # This file defines which files require review, where the evidence store is located,
 # and how files are grouped into named review-sets following software unit boundaries.
-
 # Patterns identifying all files that require review.
 # Processed in order; prefix a pattern with '!' to exclude.
 needs-review:
-  - "**/*.cs"                    # All C# files
-  - "requirements.yaml"          # Root requirements file
-  - "docs/reqstream/**/*.yaml"   # All requirements files
-  - "docs/design/**/*.md"        # All design documents
-  - "!**/obj/**"                 # Exclude build output
-  - "!**/bin/**"                 # Exclude build output
-
+  - '**/*.cs'  # All C# files
+  - requirements.yaml  # Root requirements file
+  - docs/reqstream/**/*.yaml  # All requirements files
+  - docs/design/**/*.md  # All design documents
+  - docs/verification/**/*.md  # All verification documents
+  - '!**/obj/**'  # Exclude build output
+  - '!**/bin/**'  # Exclude build output
 # Evidence source: review data and index.json are located in the 'reviews' branch
 # of this repository, accessed through the GitHub public HTTPS raw content access.
 # Note: The 'reviews' branch must be created and populated with review evidence PDFs
@@ -20,7 +19,6 @@ needs-review:
 evidence-source:
   type: url
   location: https://raw.githubusercontent.com/demaconsulting/VHDLTest/reviews/index.json
-
 # Review sets grouping files by logical unit of review.
 # Each review-set groups requirements, source, and tests for a coherent software unit
 # so that an AI-assisted review can verify consistency across the full evidence chain.
@@ -29,269 +27,320 @@ reviews:
   - id: Purpose
     title: Review that Advertised Features Match System Design
     paths:
-      - "README.md"
-      - "docs/user_guide/**/*.md"
-      - "docs/reqstream/vhdltest/vhdltest.yaml"
-      - "docs/design/introduction.md"
-      - "docs/design/vhdltest/vhdltest.md"
+      - README.md
+      - docs/user_guide/**/*.md
+      - docs/reqstream/vhdltest/vhdltest.yaml
+      - docs/design/introduction.md
+      - docs/design/vhdltest.md
 
   # System-level architecture review
   - id: VHDLTest-Architecture
     title: Review that VHDLTest Architecture Satisfies Requirements
     paths:
-      - "docs/reqstream/vhdltest/vhdltest.yaml"
-      - "docs/design/introduction.md"
-      - "docs/design/vhdltest/vhdltest.md"
-      - "test/**/IntegrationTests.cs"
+      - docs/reqstream/vhdltest/vhdltest.yaml
+      - docs/design/introduction.md
+      - docs/design/vhdltest.md
+      - test/**/IntegrationTests.cs
 
   # Design review
   - id: VHDLTest-Design
     title: Review that VHDLTest Design is Consistent and Complete
     paths:
-      - "docs/reqstream/vhdltest/vhdltest.yaml"
-      - "docs/reqstream/vhdltest/platform-requirements.yaml"
-      - "docs/design/introduction.md"
-      - "docs/design/vhdltest/**/*.md"
+      - docs/reqstream/vhdltest/vhdltest.yaml
+      - docs/reqstream/vhdltest/platform-requirements.yaml
+      - docs/design/introduction.md
+      - docs/design/vhdltest.md
+      - docs/design/vhdltest/**/*.md
 
   # All requirements review
   - id: VHDLTest-AllRequirements
     title: Review that All VHDLTest Requirements are Complete
     paths:
-      - "requirements.yaml"
-      - "docs/reqstream/vhdltest/**/*.yaml"
-      - "docs/reqstream/ots/**/*.yaml"
+      - requirements.yaml
+      - docs/reqstream/vhdltest/**/*.yaml
+      - docs/reqstream/ots/**/*.yaml
 
   # OTS review
   - id: VHDLTest-OTS
-    title: Review of VHDLTest OTS Dependencies
+    title: Review of VHDLTest OTS Build Tools
     paths:
-      - "docs/reqstream/ots/xunit.yaml"
-      - "docs/reqstream/ots/reqstream.yaml"
-      - "docs/reqstream/ots/buildmark.yaml"
-      - "docs/reqstream/ots/versionmark.yaml"
-      - "docs/reqstream/ots/sarifmark.yaml"
-      - "docs/reqstream/ots/sonarmark.yaml"
+      - docs/reqstream/ots/xunit.yaml
+      - docs/reqstream/ots/reqstream.yaml
+      - docs/reqstream/ots/buildmark.yaml
+      - docs/reqstream/ots/versionmark.yaml
+      - docs/reqstream/ots/sarifmark.yaml
+      - docs/reqstream/ots/sonarmark.yaml
+      - docs/design/ots/xunit.md
+      - docs/design/ots/reqstream.md
+      - docs/design/ots/buildmark.md
+      - docs/design/ots/versionmark.md
+      - docs/design/ots/sarifmark.md
+      - docs/design/ots/sonarmark.md
+      - docs/verification/ots/xunit.md
+      - docs/verification/ots/reqstream.md
+      - docs/verification/ots/buildmark.md
+      - docs/verification/ots/versionmark.md
+      - docs/verification/ots/sarifmark.md
+      - docs/verification/ots/sonarmark.md
+
+  # Runtime OTS dependencies review
+  - id: VHDLTest-OTS-Runtime
+    title: Review of VHDLTest Runtime OTS Dependencies
+    paths:
+      - docs/reqstream/ots/yamldotnet.yaml
+      - docs/reqstream/ots/demaconsulting-testresults.yaml
+      - docs/design/ots.md
+      - docs/design/ots/yamldotnet.md
+      - docs/design/ots/demaconsulting-testresults.md
+      - docs/verification/ots.md
+      - docs/verification/ots/yamldotnet.md
+      - docs/verification/ots/demaconsulting-testresults.md
+
+  # CI tools OTS review
+  - id: VHDLTest-OTS-CiTools
+    title: Review of VHDLTest CI Pipeline OTS Tools
+    paths:
+      - docs/reqstream/ots/reviewmark.yaml
+      - docs/reqstream/ots/pandoctool.yaml
+      - docs/reqstream/ots/weasyprinttool.yaml
+      - docs/reqstream/ots/fileassert.yaml
+      - docs/reqstream/ots/dictionarymark.yaml
+      - docs/reqstream/ots/sonarscanner.yaml
+      - docs/design/ots/reviewmark.md
+      - docs/design/ots/pandoctool.md
+      - docs/design/ots/weasyprinttool.md
+      - docs/design/ots/fileassert.md
+      - docs/design/ots/dictionarymark.md
+      - docs/design/ots/sonarscanner.md
+      - docs/verification/ots/reviewmark.md
+      - docs/verification/ots/pandoctool.md
+      - docs/verification/ots/weasyprinttool.md
+      - docs/verification/ots/fileassert.md
+      - docs/verification/ots/dictionarymark.md
+      - docs/verification/ots/sonarscanner.md
 
   # Cli subsystem review
   - id: VHDLTest-Cli
     title: Review that VHDLTest Cli Subsystem Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/vhdltest/cli/cli.yaml"                # subsystem requirements
-      - "docs/design/vhdltest/cli/cli.md"                     # subsystem design
-      - "test/**/Cli/CliSubsystemTests.cs"                     # subsystem integration tests
+      - docs/reqstream/vhdltest/cli/cli.yaml  # subsystem requirements
+      - docs/design/vhdltest/cli.md  # subsystem design
+      - test/**/Cli/CliSubsystemTests.cs  # subsystem integration tests
 
   # Context unit review
   - id: VHDLTest-Cli-Context
     title: Review that VHDLTest Cli Context Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/cli/context.yaml"
-      - "docs/design/vhdltest/cli/context.md"
-      - "src/DEMAConsulting.VHDLTest/Cli/Context.cs"
-      - "test/**/Cli/ContextTests.cs"
+      - docs/reqstream/vhdltest/cli/context.yaml
+      - docs/design/vhdltest/cli/context.md
+      - src/DEMAConsulting.VHDLTest/Cli/Context.cs
+      - test/**/Cli/ContextTests.cs
 
   # ConfigDocument unit review
   - id: VHDLTest-Cli-ConfigDocument
     title: Review that VHDLTest Cli ConfigDocument Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/cli/config-document.yaml"
-      - "docs/design/vhdltest/cli/config-document.md"
-      - "src/DEMAConsulting.VHDLTest/Cli/ConfigDocument.cs"
-      - "test/**/Cli/ConfigDocumentTests.cs"
+      - docs/reqstream/vhdltest/cli/config-document.yaml
+      - docs/design/vhdltest/cli/config-document.md
+      - src/DEMAConsulting.VHDLTest/Cli/ConfigDocument.cs
+      - test/**/Cli/ConfigDocumentTests.cs
 
   # Options unit review
   - id: VHDLTest-Cli-Options
     title: Review that VHDLTest Cli Options Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/cli/options.yaml"
-      - "docs/design/vhdltest/cli/options.md"
-      - "src/DEMAConsulting.VHDLTest/Cli/Options.cs"
-      - "test/**/Cli/OptionsTests.cs"
+      - docs/reqstream/vhdltest/cli/options.yaml
+      - docs/design/vhdltest/cli/options.md
+      - src/DEMAConsulting.VHDLTest/Cli/Options.cs
+      - test/**/Cli/OptionsTests.cs
 
   # Program unit review
   - id: VHDLTest-Program
     title: Review that VHDLTest Program Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/program.yaml"           # requirements
-      - "docs/design/vhdltest/program.md"                # design
-      - "src/DEMAConsulting.VHDLTest/Program.cs"         # source
-      - "test/**/ProgramTests.cs"                        # unit tests
+      - docs/reqstream/vhdltest/program.yaml  # requirements
+      - docs/design/vhdltest/program.md  # design
+      - src/DEMAConsulting.VHDLTest/Program.cs  # source
+      - test/**/ProgramTests.cs  # unit tests
 
   # Run subsystem review
   - id: VHDLTest-Run
     title: Review that VHDLTest Run Subsystem Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/vhdltest/run/run.yaml"                 # subsystem requirements
-      - "docs/design/vhdltest/run/run.md"                      # subsystem design
-      - "test/**/Run/RunSubsystemTests.cs"                      # subsystem integration tests
+      - docs/reqstream/vhdltest/run/run.yaml  # subsystem requirements
+      - docs/design/vhdltest/run.md  # subsystem design
+      - test/**/Run/RunSubsystemTests.cs  # subsystem integration tests
 
   # RunProcessor unit review
   - id: VHDLTest-Run-RunProcessor
     title: Review that VHDLTest Run RunProcessor Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/run/run-processor.yaml"       # requirements
-      - "docs/design/vhdltest/run/run-processor.md"            # design
-      - "src/DEMAConsulting.VHDLTest/Run/RunProcessor.cs"      # source
-      - "test/**/Run/RunProcessorTests.cs"                     # unit tests
+      - docs/reqstream/vhdltest/run/run-processor.yaml  # requirements
+      - docs/design/vhdltest/run/run-processor.md  # design
+      - src/DEMAConsulting.VHDLTest/Run/RunProcessor.cs  # source
+      - test/**/Run/RunProcessorTests.cs  # unit tests
 
   # RunProgram unit review
   - id: VHDLTest-Run-RunProgram
     title: Review that VHDLTest Run RunProgram Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/run/run-program.yaml"         # requirements
-      - "docs/design/vhdltest/run/run-program.md"              # design
-      - "src/DEMAConsulting.VHDLTest/Run/RunProgram.cs"        # source
-      - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
+      - docs/reqstream/vhdltest/run/run-program.yaml  # requirements
+      - docs/design/vhdltest/run/run-program.md  # design
+      - src/DEMAConsulting.VHDLTest/Run/RunProgram.cs  # source
+      - test/**/Run/RunProcessorTests.cs  # unit tests (via RunProcessor)
 
   # RunResults unit review
   - id: VHDLTest-Run-RunResults
     title: Review that VHDLTest Run RunResults Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/run/run-results.yaml"         # requirements
-      - "docs/design/vhdltest/run/run-results.md"              # design
-      - "src/DEMAConsulting.VHDLTest/Run/RunResults.cs"        # source
-      - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
+      - docs/reqstream/vhdltest/run/run-results.yaml  # requirements
+      - docs/design/vhdltest/run/run-results.md  # design
+      - src/DEMAConsulting.VHDLTest/Run/RunResults.cs  # source
+      - test/**/Run/RunProcessorTests.cs  # unit tests (via RunProcessor)
 
   # Run types unit review (RunLine, RunLineRule, RunLineType)
   - id: VHDLTest-Run-RunTypes
     title: Review that VHDLTest Run Types Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/run/run-types.yaml"           # requirements
-      - "docs/design/vhdltest/run/run-line.md"                 # design
-      - "docs/design/vhdltest/run/run-line-rule.md"            # design
-      - "docs/design/vhdltest/run/run-line-type.md"            # design
-      - "src/DEMAConsulting.VHDLTest/Run/RunLine.cs"           # source
-      - "src/DEMAConsulting.VHDLTest/Run/RunLineRule.cs"       # source
-      - "src/DEMAConsulting.VHDLTest/Run/RunLineType.cs"       # source
-      - "test/**/Run/RunProcessorTests.cs"                     # unit tests (via RunProcessor)
+      - docs/reqstream/vhdltest/run/run-line.yaml  # RunLine requirements
+      - docs/reqstream/vhdltest/run/run-line-rule.yaml  # RunLineRule requirements
+      - docs/reqstream/vhdltest/run/run-line-type.yaml  # RunLineType requirements
+      - docs/design/vhdltest/run/run-line.md  # design
+      - docs/design/vhdltest/run/run-line-rule.md  # design
+      - docs/design/vhdltest/run/run-line-type.md  # design
+      - src/DEMAConsulting.VHDLTest/Run/RunLine.cs  # source
+      - src/DEMAConsulting.VHDLTest/Run/RunLineRule.cs  # source
+      - src/DEMAConsulting.VHDLTest/Run/RunLineType.cs  # source
+      - test/**/Run/RunProcessorTests.cs  # unit tests (via RunProcessor)
 
   # Results subsystem review
   - id: VHDLTest-Results
     title: Review that VHDLTest Results Subsystem Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/vhdltest/results/results.yaml"         # subsystem requirements
-      - "docs/design/vhdltest/results/results.md"              # subsystem design
-      - "test/**/Results/ResultsSubsystemTests.cs"             # subsystem integration tests
+      - docs/reqstream/vhdltest/results/results.yaml  # subsystem requirements
+      - docs/design/vhdltest/results.md  # subsystem design
+      - test/**/Results/ResultsSubsystemTests.cs  # subsystem integration tests
 
   # TestResult unit review
   - id: VHDLTest-Results-TestResult
     title: Review that VHDLTest Results TestResult Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/results/test-result.yaml"     # requirements
-      - "docs/design/vhdltest/results/test-result.md"          # design
-      - "src/DEMAConsulting.VHDLTest/Results/TestResult.cs"    # source
-      - "test/**/Results/TestResultTests.cs"                   # unit tests
+      - docs/reqstream/vhdltest/results/test-result.yaml  # requirements
+      - docs/design/vhdltest/results/test-result.md  # design
+      - src/DEMAConsulting.VHDLTest/Results/TestResult.cs  # source
+      - test/**/Results/TestResultTests.cs  # unit tests
 
   # TestResults unit review
   - id: VHDLTest-Results-TestResults
     title: Review that VHDLTest Results TestResults Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/results/test-results.yaml"    # requirements
-      - "docs/design/vhdltest/results/test-results.md"         # design
-      - "src/DEMAConsulting.VHDLTest/Results/TestResults.cs"   # source
-      - "test/**/Results/TestResultsTests.cs"                  # unit tests
+      - docs/reqstream/vhdltest/results/test-results.yaml  # requirements
+      - docs/design/vhdltest/results/test-results.md  # design
+      - src/DEMAConsulting.VHDLTest/Results/TestResults.cs  # source
+      - test/**/Results/TestResultsTests.cs  # unit tests
 
   # Simulators subsystem review
   - id: VHDLTest-Simulators
     title: Review that VHDLTest Simulators Subsystem Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/vhdltest/simulators/simulators.yaml"           # subsystem requirements
-      - "docs/design/vhdltest/simulators/simulators.md"                # subsystem design
-      - "test/**/Simulators/SimulatorsSubsystemTests.cs"               # subsystem integration tests
+      - docs/reqstream/vhdltest/simulators/simulators.yaml  # subsystem requirements
+      - docs/design/vhdltest/simulators.md  # subsystem design
+      - test/**/Simulators/SimulatorsSubsystemTests.cs  # subsystem integration tests
 
   # Simulator base class unit review
   - id: VHDLTest-Simulators-Simulator
     title: Review that VHDLTest Simulators Simulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/simulator.yaml"                # requirements
-      - "docs/design/vhdltest/simulators/simulator.md"                     # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/Simulator.cs"              # source
-      - "test/**/Simulators/MockSimulatorTests.cs"                         # unit tests (via MockSimulator)
+      - docs/reqstream/vhdltest/simulators/simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/Simulator.cs  # source
+      - test/**/Simulators/MockSimulatorTests.cs  # unit tests (via MockSimulator)
 
   # SimulatorFactory unit review
   - id: VHDLTest-Simulators-SimulatorFactory
     title: Review that VHDLTest Simulators SimulatorFactory Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/simulator-factory.yaml"    # requirements
-      - "docs/design/vhdltest/simulators/simulator-factory.md"         # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/SimulatorFactory.cs"   # source
-      - "test/**/Simulators/SimulatorFactoryTests.cs"                  # unit tests
+      - docs/reqstream/vhdltest/simulators/simulator-factory.yaml  # requirements
+      - docs/design/vhdltest/simulators/simulator-factory.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/SimulatorFactory.cs  # source
+      - test/**/Simulators/SimulatorFactoryTests.cs  # unit tests
 
   # GhdlSimulator unit review
   - id: VHDLTest-Simulators-GhdlSimulator
     title: Review that VHDLTest Simulators GhdlSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml"       # requirements
-      - "docs/design/vhdltest/simulators/ghdl-simulator.md"            # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/GhdlSimulator.cs"      # source
-      - "test/**/Simulators/GhdlSimulatorTests.cs"                     # unit tests
+      - docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/ghdl-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/GhdlSimulator.cs  # source
+      - test/**/Simulators/GhdlSimulatorTests.cs  # unit tests
 
   # NvcSimulator unit review
   - id: VHDLTest-Simulators-NvcSimulator
     title: Review that VHDLTest Simulators NvcSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/nvc-simulator.yaml"        # requirements
-      - "docs/design/vhdltest/simulators/nvc-simulator.md"             # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/NvcSimulator.cs"       # source
-      - "test/**/Simulators/NvcSimulatorTests.cs"                      # unit tests
+      - docs/reqstream/vhdltest/simulators/nvc-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/nvc-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/NvcSimulator.cs  # source
+      - test/**/Simulators/NvcSimulatorTests.cs  # unit tests
 
   # ModelSimSimulator unit review
   - id: VHDLTest-Simulators-ModelSimSimulator
     title: Review that VHDLTest Simulators ModelSimSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/modelsim-simulator.yaml"   # requirements
-      - "docs/design/vhdltest/simulators/modelsim-simulator.md"        # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/ModelSimSimulator.cs"  # source
-      - "test/**/Simulators/ModelSimSimulatorTests.cs"                 # unit tests
+      - docs/reqstream/vhdltest/simulators/modelsim-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/modelsim-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/ModelSimSimulator.cs  # source
+      - test/**/Simulators/ModelSimSimulatorTests.cs  # unit tests
 
   # QuestaSimSimulator unit review
   - id: VHDLTest-Simulators-QuestaSimSimulator
     title: Review that VHDLTest Simulators QuestaSimSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/questasim-simulator.yaml"  # requirements
-      - "docs/design/vhdltest/simulators/questasim-simulator.md"       # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/QuestaSimSimulator.cs"  # source
-      - "test/**/Simulators/QuestaSimSimulatorTests.cs"                # unit tests
+      - docs/reqstream/vhdltest/simulators/questasim-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/questasim-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/QuestaSimSimulator.cs  # source
+      - test/**/Simulators/QuestaSimSimulatorTests.cs  # unit tests
 
   # VivadoSimulator unit review
   - id: VHDLTest-Simulators-VivadoSimulator
     title: Review that VHDLTest Simulators VivadoSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/vivado-simulator.yaml"     # requirements
-      - "docs/design/vhdltest/simulators/vivado-simulator.md"          # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/VivadoSimulator.cs"    # source
-      - "test/**/Simulators/VivadoSimulatorTests.cs"                   # unit tests
+      - docs/reqstream/vhdltest/simulators/vivado-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/vivado-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/VivadoSimulator.cs  # source
+      - test/**/Simulators/VivadoSimulatorTests.cs  # unit tests
 
   # ActiveHdlSimulator unit review
   - id: VHDLTest-Simulators-ActiveHdlSimulator
     title: Review that VHDLTest Simulators ActiveHdlSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/active-hdl-simulator.yaml"  # requirements
-      - "docs/design/vhdltest/simulators/active-hdl-simulator.md"      # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/ActiveHdlSimulator.cs"  # source
-      - "test/**/Simulators/ActiveHdlSimulatorTests.cs"                # unit tests
+      - docs/reqstream/vhdltest/simulators/active-hdl-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/active-hdl-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/ActiveHdlSimulator.cs  # source
+      - test/**/Simulators/ActiveHdlSimulatorTests.cs  # unit tests
 
   # MockSimulator unit review
   - id: VHDLTest-Simulators-MockSimulator
     title: Review that VHDLTest Simulators MockSimulator Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/simulators/mock-simulator.yaml"       # requirements
-      - "docs/design/vhdltest/simulators/mock-simulator.md"            # design
-      - "src/DEMAConsulting.VHDLTest/Simulators/MockSimulator.cs"      # source
-      - "test/**/Simulators/MockSimulatorTests.cs"                     # unit tests
+      - docs/reqstream/vhdltest/simulators/mock-simulator.yaml  # requirements
+      - docs/design/vhdltest/simulators/mock-simulator.md  # design
+      - src/DEMAConsulting.VHDLTest/Simulators/MockSimulator.cs  # source
+      - test/**/Simulators/MockSimulatorTests.cs  # unit tests
 
   # SelfTest subsystem review
   - id: VHDLTest-SelfTest
     title: Review that VHDLTest SelfTest Subsystem Satisfies Subsystem Requirements
     paths:
-      - "docs/reqstream/vhdltest/self-test/self-test.yaml"             # subsystem requirements
-      - "docs/design/vhdltest/self-test/self-test.md"                  # subsystem design
-      - "test/**/SelfTest/ValidationTests.cs"                          # subsystem integration tests
+      - docs/reqstream/vhdltest/self-test/self-test.yaml  # subsystem requirements
+      - docs/design/vhdltest/self-test.md  # subsystem design
+      - test/**/SelfTest/ValidationTests.cs  # subsystem integration tests
 
   # Validation unit review
   - id: VHDLTest-SelfTest-Validation
     title: Review that VHDLTest SelfTest Validation Implementation is Correct
     paths:
-      - "docs/reqstream/vhdltest/self-test/validation.yaml"            # requirements
-      - "docs/design/vhdltest/self-test/validation.md"                 # design
-      - "src/DEMAConsulting.VHDLTest/SelfTest/Validation.cs"           # source
-      - "test/**/SelfTest/ValidationTests.cs"                          # unit/integration tests
+      - docs/reqstream/vhdltest/self-test/validation.yaml  # requirements
+      - docs/design/vhdltest/self-test/validation.md  # design
+      - src/DEMAConsulting.VHDLTest/SelfTest/Validation.cs  # source
+      - test/**/SelfTest/ValidationTests.cs  # unit/integration tests

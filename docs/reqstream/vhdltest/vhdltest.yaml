@@ -14,7 +14,7 @@ sections:
               - IntegrationTest_NoArguments_DisplaysUsageAndReturnsError
             children:
               - VHDLTest-Program-NoArgs
-              - VHDLTest-Program-Usage
+              - VHDLTest-Program-NoConfig
 
           - id: VHDLTest-Cmd-Version
             title: VHDLTest shall display version information when requested.
@@ -40,6 +40,41 @@ sections:
               - IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess
             children:
               - VHDLTest-Program-Help
+
+          - id: VHDLTest-Cmd-Verbose
+            title: VHDLTest shall support a --verbose option that enables detailed output.
+            justification: |
+              Detailed output is essential for debugging failed test runs and understanding
+              simulator behavior. Verbose mode gives developers the full simulator output
+              and diagnostic information needed to diagnose issues without requiring manual
+              simulator invocation.
+            tests:
+              - IntegrationTest_VerboseFlag_DisplaysDetailedOutput
+            children:
+              - VHDLTest-Cli-Context-WriteVerboseLine
+
+          - id: VHDLTest-Cmd-Silent
+            title: VHDLTest shall support a --silent option that suppresses non-essential output.
+            justification: |
+              Silent mode keeps CI/CD pipeline logs clean by suppressing informational messages
+              while retaining error output. This is important for large pipelines where noise
+              in log output increases review time and obscures actionable failures.
+            tests:
+              - IntegrationTest_SilentFlag_SuppressesOutput
+            children:
+              - VHDLTest-Cli-Context-Write
+              - VHDLTest-Cli-Context-WriteLine
+
+          - id: VHDLTest-Cmd-Log
+            title: VHDLTest shall support a --log option that writes output to the specified log file.
+            justification: |
+              Persisting output to a log file allows post-run analysis, archiving, and audit
+              trails for compliance workflows. It decouples diagnostic information from the
+              interactive terminal session.
+            tests:
+              - IntegrationTest_LogFlag_WritesLogFile
+            children:
+              - VHDLTest-Cli-Context-LogFile
 
       - title: Test Execution
         requirements:
@@ -92,3 +127,74 @@ sections:
               - IntegrationTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode
             children:
               - VHDLTest-Cli-Pipeline
+
+          - id: VHDLTest-Config-Load
+            title: VHDLTest shall load test configuration from the YAML file specified by the --config (-c) option.
+            justification: |
+              A YAML configuration file is the primary mechanism for specifying which tests to run
+              and how the simulator should be configured. Requiring the path via a named option
+              makes the invocation explicit and consistent with the published command-line interface.
+            tests:
+              - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+            children:
+              - VHDLTest-Cli-Pipeline
+              - VHDLTest-Cli-ConfigDoc-Read
+              - VHDLTest-Cli-Options-Parse
+
+          - id: VHDLTest-Results-TRX
+            title: VHDLTest shall write test results in TRX format to the file specified by --results when the option is provided.
+            justification: |
+              TRX files are the standard test result format consumed by CI/CD platforms, coverage
+              tools, and requirements traceability tools. Writing results to a file decouples
+              result consumption from the tool's standard output stream and enables asynchronous
+              processing.
+            tests:
+              - IntegrationTest_ResultsFlag_WritesTrxFile
+            children:
+              - VHDLTest-Results-TestResults-Trx
+
+          - id: VHDLTest-Results-JUnit
+            title: VHDLTest shall write test results in JUnit XML format to the file specified by --results when the option is provided with a .xml extension.
+            justification: |
+              JUnit XML is widely consumed by CI/CD platforms and test-reporting dashboards outside
+              the .NET ecosystem. Supporting JUnit XML output allows VHDLTest to integrate with
+              heterogeneous build pipelines and reporting infrastructure.
+            tests:
+              - IntegrationTest_ResultsFlag_WritesJUnitFile
+            children:
+              - VHDLTest-Results-TestResults-JUnit
+
+          - id: VHDLTest-Simulator-Select
+            title: VHDLTest shall support selection of the VHDL simulator via the --simulator (-s) option, accepting values ghdl, nvc, modelsim, questasim, vivado, and activehdl.
+            justification: |
+              Supporting multiple simulators allows VHDLTest to be used across diverse development
+              environments and organizations that have standardized on different VHDL simulators.
+              The explicit selection option ensures deterministic simulator choice in CI pipelines.
+            tests:
+              - IntegrationTest_TestsPassed_ReturnsZeroExitCode
+            children:
+              - VHDLTest-Simulators-Factory
+
+          - id: VHDLTest-Simulator-EnvPath
+            title: VHDLTest shall support overriding the simulator executable path via environment variables (e.g., VHDLTEST_GHDL_PATH).
+            justification: |
+              Environment variable path overrides allow system administrators and CI environments
+              to point VHDLTest at non-standard simulator installation locations without modifying
+              configuration files or the system PATH, which may be locked down in managed environments.
+            tests:
+              - IntegrationTest_SimulatorEnvPath_OverridesPath
+            children:
+              - VHDLTest-Simulators-Factory
+
+      - title: Self-Validation
+        requirements:
+          - id: VHDLTest-Validate
+            title: VHDLTest shall support a --validate option that verifies correct installation and reports results.
+            justification: |
+              A built-in self-validation mode allows users to confirm that VHDLTest is correctly
+              installed and functioning after deployment, reducing support burden and enabling
+              automated installation verification in provisioning scripts.
+            tests:
+              - SelfTest_Validate_MockSimulator_ReturnsSuccess
+            children:
+              - VHDLTest-SelfTest-Run

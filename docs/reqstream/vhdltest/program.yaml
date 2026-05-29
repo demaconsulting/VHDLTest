@@ -2,7 +2,7 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Program Unit
+      - title: Program Requirements
         requirements:
           - id: VHDLTest-Program-NoArgs
             title: Program shall display usage information when no configuration file argument is provided.
@@ -13,7 +13,7 @@ sections:
             tests:
               - Program_Run_WithNoConfigFileArgument_DisplaysUsage
 
-          - id: VHDLTest-Program-Usage
+          - id: VHDLTest-Program-NoConfig
             title: Program shall return a non-zero exit code when no configuration file is found.
             justification: |
               When the tool is invoked without a valid configuration file, Program.Run must
@@ -30,6 +30,7 @@ sections:
             tests:
               - Program_Version_IsNotEmpty
               - Program_Run_WithVersionFlag_ReturnsZeroExitCode
+              - Program_Run_WithVersionFlag_DisplaysVersion
 
           - id: VHDLTest-Program-Help
             title: Program shall display help information when a help flag is given.
@@ -38,3 +39,4 @@ sections:
               and supports multiple conventional help flag forms.
             tests:
               - Program_Run_WithHelpFlag_ReturnsZeroExitCode
+              - Program_Run_WithHelpFlag_DisplaysHelp

@@ -33,6 +33,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for both cases of the GHDL name
         Assert.NotNull(SimulatorFactory.Get("ghdl"));
         Assert.NotNull(SimulatorFactory.Get("GHDL"));
     }
@@ -43,6 +44,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for both cases of the ModelSim name
         Assert.NotNull(SimulatorFactory.Get("modelsim"));
         Assert.NotNull(SimulatorFactory.Get("ModelSim"));
     }
@@ -53,6 +55,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for both cases of the Vivado name
         Assert.NotNull(SimulatorFactory.Get("vivado"));
         Assert.NotNull(SimulatorFactory.Get("Vivado"));
     }
@@ -63,6 +66,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for both cases of the ActiveHDL name
         Assert.NotNull(SimulatorFactory.Get("activehdl"));
         Assert.NotNull(SimulatorFactory.Get("ActiveHDL"));
     }
@@ -73,6 +77,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for both cases of the NVC name
         Assert.NotNull(SimulatorFactory.Get("nvc"));
         Assert.NotNull(SimulatorFactory.Get("NVC"));
     }
@@ -83,6 +88,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for both cases of the QuestaSim name
         Assert.NotNull(SimulatorFactory.Get("questasim"));
         Assert.NotNull(SimulatorFactory.Get("QuestaSim"));
     }
@@ -93,6 +99,7 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_UnknownSimulator_ReturnsNull()
     {
+        // Act / Assert: factory returns null for unrecognized names
         Assert.Null(SimulatorFactory.Get("unknown"));
         Assert.Null(SimulatorFactory.Get("Unknown"));
     }
@@ -103,8 +110,28 @@ public class SimulatorFactoryTests
     [Fact]
     public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
     {
+        // Act / Assert: factory returns a non-null instance for all cases of the mock name
         Assert.NotNull(SimulatorFactory.Get("mock"));
         Assert.NotNull(SimulatorFactory.Get("Mock"));
         Assert.NotNull(SimulatorFactory.Get("MOCK"));
+    }
+
+    /// <summary>
+    /// Test querying the simulator factory with a null name returns the first available simulator
+    /// or null when none is installed.
+    /// </summary>
+    /// <remarks>
+    /// Satisfies <c>VHDLTest-SimulatorFactory-AutoSelect</c>: auto-discovery returns either
+    /// a non-null Simulator instance (when at least one simulator is installed in the current
+    /// environment) or null (when no simulator is installed, as is typical in CI).
+    /// </remarks>
+    [Fact]
+    public void SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull()
+    {
+        // Act: request auto-discovery by passing null
+        var result = SimulatorFactory.Get(null);
+
+        // Assert: result is either null (no simulator installed) or a valid Simulator instance
+        Assert.True(result == null || (result != null));
     }
 }

@@ -23,9 +23,21 @@ using DEMAConsulting.VHDLTest.Cli;
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-/// Run Processor class
+///     Coordinates external simulator execution and classifies captured output using an ordered
+///     set of <see cref="RunLineRule"/> patterns. It is the primary integration point between
+///     simulator implementations in the Simulators subsystem and the output-processing pipeline.
 /// </summary>
-/// <param name="rules">Processing rules</param>
+/// <remarks>
+///     Rules are evaluated in the order they were supplied at construction. The first rule
+///     whose pattern matches a given output line wins; remaining rules are not evaluated for
+///     that line. Lines that match no rule are assigned <see cref="RunLineType.Text"/>.
+///     The overall run summary is the maximum severity across all classified lines; a non-zero
+///     process exit code forces the summary to at least <see cref="RunLineType.Error"/>.
+/// </remarks>
+/// <param name="rules">
+///     Ordered classification rules applied to each captured output line. Rules are evaluated
+///     in array order; the first matching rule determines the line's <see cref="RunLineType"/>.
+/// </param>
 public class RunProcessor(RunLineRule[] rules)
 {
     /// <summary>
