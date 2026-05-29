@@ -28,11 +28,6 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 public class ConfigDocumentTests
 {
     /// <summary>
-    /// Configuration file name
-    /// </summary>
-    private const string ConfigFile = "options-test.yaml";
-
-    /// <summary>
     /// Configuration file contents
     /// </summary>
     private const string ConfigContent =
@@ -62,13 +57,14 @@ public class ConfigDocumentTests
     [Fact]
     public void ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully()
     {
+        // Arrange: write a temporary config file
+        var tempFile = Path.GetTempFileName();
         try
         {
-            // Arrange: write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            File.WriteAllText(tempFile, ConfigContent);
 
             // Act: read the configuration
-            var config = ConfigDocument.ReadFile(ConfigFile);
+            var config = ConfigDocument.ReadFile(tempFile);
 
             // Assert: check the content
             Assert.NotNull(config);
@@ -81,8 +77,7 @@ public class ConfigDocumentTests
         }
         finally
         {
-            // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(tempFile);
         }
     }
 
@@ -126,6 +121,32 @@ public class ConfigDocumentTests
         finally
         {
             File.Delete(malformedFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that ConfigDocument returns empty arrays when YAML keys are absent
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_MissingKeys_ReturnsEmptyArrays()
+    {
+        // Arrange: write a YAML file with no 'files' or 'tests' keys
+        var emptyFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(emptyFile, "{}\n");
+
+            // Act: read the configuration
+            var config = ConfigDocument.ReadFile(emptyFile);
+
+            // Assert: verify empty arrays are returned for missing keys
+            Assert.NotNull(config);
+            Assert.Empty(config.Files);
+            Assert.Empty(config.Tests);
+        }
+        finally
+        {
+            File.Delete(emptyFile);
         }
     }
 }

@@ -14,6 +14,12 @@ documents. DictionaryMark is not deployed with VHDLTest.
   dictionary configuration, flagging words not present in the approved word list.
 - **Build gate**: exits non-zero on any spelling violation, making unrecognized words
   a build-breaking condition.
+- **Bullet-list generation**: generates bullet-list format dictionary entries for
+  embedding recognized terms in documentation.
+- **Table generation**: generates table format dictionary entries for structured
+  presentation of the approved word list.
+- **Conflict detection**: detects conflicting word definitions within the dictionary
+  configuration, flagging ambiguous or duplicate entries.
 
 ### Integration Pattern
 

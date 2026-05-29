@@ -40,9 +40,14 @@ public sealed class Context : IDisposable
     private readonly StreamWriter? _log;
 
     /// <summary>
-    ///     Initializes a new instance of the Context class
+    ///     Initializes a new instance of the Context class.
     /// </summary>
-    /// <param name="log">Optional log-file writer</param>
+    /// <remarks>
+    ///     Private to enforce construction via the <see cref="Create"/> factory method.
+    ///     Ownership of <paramref name="log"/> is transferred to this instance; the writer
+    ///     will be disposed when this instance is disposed via <see cref="Dispose"/>.
+    /// </remarks>
+    /// <param name="log">Optional log-file writer; may be null when logging is not configured.</param>
     private Context(StreamWriter? log)
     {
         _log = log;
@@ -79,8 +84,14 @@ public sealed class Context : IDisposable
     public bool Validate { get; private init; }
 
     /// <summary>
-    ///     Gets the depth of the validation report
+    ///     Gets the depth of the validation report.
     /// </summary>
+    /// <value>
+    ///     Number of heading levels to include in the validation report output. Defaults to
+    ///     <c>1</c> when <c>--depth</c> is not specified. Must be greater than or equal to
+    ///     <c>1</c>; passing a value less than <c>1</c> causes <see cref="Create"/> to throw
+    ///     <see cref="InvalidOperationException"/>.
+    /// </value>
     public int Depth { get; private init; }
 
     /// <summary>

@@ -16,3 +16,16 @@ sections:
             tests:
               - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
               - IntegrationTest_ResultsFlag_WritesTrxFile
+
+          - id: VHDLTest-OTS-TestResults-JUnit
+            title: DemaConsulting.TestResults shall generate JUnit XML test results files from VHDLTest run outcomes.
+            justification: |
+              DemaConsulting.TestResults (v1.7.0) also supports JUnit XML output via
+              JUnitSerializer.Serialize when the output file has a .xml extension.
+              VHDLTest.Results.TestResults.SaveResults dispatches to JUnitSerializer
+              when the extension is .xml, enabling CI/CD platforms that consume JUnit
+              format to receive structured test result files.
+            tags: [ots]
+            tests:
+              - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
+              - TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure

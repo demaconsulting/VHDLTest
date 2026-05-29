@@ -41,6 +41,19 @@ sections:
                   - Context_Create_MissingResultsValue_ThrowsInvalidOperationException
                   - Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException
 
+              - id: VHDLTest-Cli-Context-Depth
+                title: The Context class shall parse the --depth option and reject non-integer values and values less than 1 with InvalidOperationException.
+                justification: |
+                  The --depth option controls the heading-level depth of validation report output.
+                  Validating the depth value at parse time ensures that downstream report generation
+                  always receives a positive integer, preventing cryptic failures during report
+                  rendering.
+                tests:
+                  - Context_Create_WithDepth_SetsDepth
+                  - Context_Create_WithInvalidDepth_ThrowsInvalidOperationException
+                  - Context_Create_WithZeroDepth_ThrowsInvalidOperationException
+                  - Context_Create_WithNegativeDepth_ThrowsInvalidOperationException
+
               - id: VHDLTest-Cli-Context-Write
                 title: Context shall write a message without a line terminator to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
                 justification: |
@@ -69,7 +82,7 @@ sections:
                   - Context_WriteVerboseLine_VerboseMode_WritesToLog
 
               - id: VHDLTest-Cli-Context-WriteError-Message
-                title: Context shall write the provided error message to all configured outputs.
+                title: Context shall write the provided error message to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
                 justification: |
                   Writing the error text through the shared output paths ensures users and log
                   consumers receive the same failure information without callers duplicating

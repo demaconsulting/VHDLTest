@@ -36,9 +36,12 @@ into a ConfigDocument.
 - *Role*: Provider
 - *Contract*: `static Options Parse(Context args)` — reads `Context.ConfigFile`, calls
   `ConfigDocument.ReadFile`, resolves the working directory from the absolute path of the
-  configuration file, and returns an `Options` record.
+  configuration file, and returns an `Options` record exposing `Config` (the deserialised
+  `ConfigDocument`) and `WorkingDirectory` (the directory containing the config file). See
+  *Options Design* for the full Options record structure.
 - *Constraints*: Throws `InvalidOperationException` if no config file is specified or if the
-  config file path cannot be resolved to a containing directory.
+  config file path cannot be resolved to a containing directory. Throws `FileNotFoundException`
+  (propagated from `ConfigDocument.ReadFile`) if the specified configuration file does not exist.
 
 ### Design
 

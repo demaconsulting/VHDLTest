@@ -2,10 +2,11 @@
 
 ### Verification Approach
 
-DemaConsulting.FileAssert is verified through CI pipeline execution. FileAssert is
-invoked in CI pipeline steps to compare generated output files against committed baseline
-files. A passing CI step constitutes evidence that FileAssert correctly compared the
-files and confirmed they match.
+DemaConsulting.FileAssert is verified through CI pipeline execution and self-validation.
+FileAssert is invoked in CI pipeline steps to compare generated output files against committed
+baseline files. A passing CI step constitutes evidence that FileAssert correctly compared the
+files and confirmed they match. FileAssert also provides a `--validate` self-validation mode
+that exercises its built-in test suite.
 
 ### Test Environment
 
@@ -20,9 +21,16 @@ the files differ and the build fails.
 
 ### Test Scenarios
 
-- **File comparison passes for matching files**: `dotnet fileassert expected-file.md generated-file.md`
-  exits with code 0 when the generated file matches the committed baseline, confirming
-  that no unintentional changes have occurred to the generated output.
+- **File comparison passes for matching files**: `FileAssert_Results` exercises the primary
+  comparison capability — `dotnet fileassert expected-file.md generated-file.md` exits with
+  code 0 when the generated file matches the committed baseline, confirming that no
+  unintentional changes have occurred to the generated output.
 - **Build failure on mismatch**: FileAssert exits non-zero when the generated file differs
   from the baseline, causing the CI step to fail and preventing divergent outputs from
   reaching release artifacts.
+- **File existence verification**: `FileAssert_Exists` verifies that FileAssert correctly
+  checks whether an expected output file was created by a preceding pipeline step and exits
+  non-zero if the file is absent, providing evidence that existence checking is operational.
+- **File content searching**: `FileAssert_Contains` verifies that FileAssert correctly searches
+  for expected text content within a generated file and exits non-zero if the expected content
+  is not found, providing evidence that content verification is operational.

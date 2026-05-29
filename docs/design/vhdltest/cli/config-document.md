@@ -11,7 +11,7 @@ patterns required to execute a test run.
 **Files**: `string[]` — Array of VHDL source file paths to compile, as read from the YAML
 `files` key. Defaults to an empty array when the key is absent.
 
-**Tests**: `string[]` — Array of test bench file patterns to execute, as read from the YAML
+**Tests**: `string[]` — Array of VHDL test bench entity names to execute, as read from the YAML
 `tests` key. Defaults to an empty array when the key is absent.
 
 #### Key Methods

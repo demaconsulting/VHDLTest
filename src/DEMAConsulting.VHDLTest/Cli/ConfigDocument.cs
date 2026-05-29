@@ -58,12 +58,32 @@ public class ConfigDocument
     public string[] Tests { get; set; } = [];
 
     /// <summary>
-    ///     Read the configuration document from file
+    ///     Reads and deserializes a VHDLTest YAML configuration file into a <see cref="ConfigDocument"/> instance.
     /// </summary>
-    /// <param name="filename">Path to a readable YAML file containing valid VHDLTest configuration. Must point to an existing file whose content can be deserialized into a <see cref="ConfigDocument"/>.</param>
-    /// <returns>A non-null <see cref="ConfigDocument"/> instance populated from the file content. The returned instance always has non-null <see cref="Files"/> and <see cref="Tests"/> arrays (defaulting to empty arrays when the properties are absent from the YAML).</returns>
-    /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the configuration content is invalid or cannot be deserialized into a configuration document</exception>
+    /// <remarks>
+    ///     Encapsulates YamlDotNet deserialization so callers receive a stable exception contract
+    ///     (<see cref="FileNotFoundException"/> or <see cref="InvalidOperationException"/>) regardless
+    ///     of the underlying YAML library behavior. <see cref="HyphenatedNamingConvention"/> is used
+    ///     so YAML keys match natural hyphenated style (e.g., <c>test-file</c>) while C# properties
+    ///     use PascalCase. All YamlDotNet exceptions are wrapped as
+    ///     <see cref="InvalidOperationException"/> to prevent library-internal types from leaking into
+    ///     callers. The method is stateless and thread-safe; multiple threads may call it concurrently
+    ///     with independent file paths without synchronization.
+    /// </remarks>
+    /// <param name="filename">
+    ///     Path to a readable YAML file containing valid VHDLTest configuration. Must point to
+    ///     an existing file whose content can be deserialized into a <see cref="ConfigDocument"/>.
+    /// </param>
+    /// <returns>
+    ///     A non-null <see cref="ConfigDocument"/> instance populated from the file content. The
+    ///     returned instance always has non-null <see cref="Files"/> and <see cref="Tests"/> arrays
+    ///     (defaulting to empty arrays when the properties are absent from the YAML).
+    /// </returns>
+    /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the configuration content is null, invalid, or cannot be deserialized into
+    ///     a configuration document.
+    /// </exception>
     public static ConfigDocument ReadFile(string filename)
     {
         // Read the file contents

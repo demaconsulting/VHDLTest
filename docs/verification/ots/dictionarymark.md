@@ -2,10 +2,10 @@
 
 ### Verification Approach
 
-DemaConsulting.DictionaryMark is verified through CI pipeline execution. The quality-checks
-job in `.github/workflows/build.yaml` invokes DictionaryMark to check all documentation
-files against the project custom dictionary. A passing CI step constitutes evidence that
-DictionaryMark executed correctly and all documentation files passed the spelling check.
+DemaConsulting.DictionaryMark is verified through its self-validation mode. The `build-docs`
+job in `.github/workflows/build.yaml` invokes DictionaryMark with `--validate` to execute
+its built-in test suite. A passing self-validation TRX result constitutes evidence that
+DictionaryMark's dictionary management and enforcement capabilities are functioning correctly.
 
 ### Test Environment
 
@@ -14,15 +14,18 @@ project custom dictionary configuration must be present in the repository.
 
 ### Acceptance Criteria
 
-The DictionaryMark step in the quality-checks CI job completes with exit code 0. A
-passing step constitutes evidence that all checked documentation files contain only
-recognized words from the project dictionary.
+The DictionaryMark self-validation step in the CI pipeline completes with exit code 0 and
+all self-validation tests pass. A passing result constitutes evidence that DictionaryMark's
+dictionary generation, conflict detection, and enforcement capabilities are functioning correctly.
 
 ### Test Scenarios
 
-- **Spell check passes on all documentation**: `dotnet dictionarymark` scans design,
-  requirements, and verification documentation files. A zero exit code confirms that
-  no unrecognized words were found in any checked file.
-- **Build failure on spelling violation**: DictionaryMark exits non-zero when an
-  unrecognized word is encountered, causing the CI step to fail and preventing
-  documentation with spelling errors from passing the quality gate.
+- **Bullet-list generation**: `DictionaryMark_BulletGeneration` verifies that DictionaryMark
+  generates correctly formatted bullet-list entries from the configured dictionary, confirming
+  the generation capability is operational.
+- **Table generation**: `DictionaryMark_TableGeneration` verifies that DictionaryMark generates
+  correctly formatted table entries from the configured dictionary, confirming the tabular
+  generation output is correct.
+- **Conflict detection**: `DictionaryMark_ConflictDetection` verifies that DictionaryMark
+  correctly identifies conflicting word definitions within a dictionary configuration, confirming
+  the validation logic detects ambiguous entries.

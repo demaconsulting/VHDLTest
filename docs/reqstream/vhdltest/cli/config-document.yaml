@@ -24,12 +24,30 @@ sections:
                 tests:
                   - ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException
 
-              - id: VHDLTest-Cli-ConfigDoc-Invalid
-                title: The ConfigDocument class shall throw InvalidOperationException when the configuration file content is invalid or cannot be deserialised.
+              - id: VHDLTest-Cli-ConfigDoc-Null
+                title: The ConfigDocument class shall throw InvalidOperationException when the configuration file deserializes to null.
                 justification: |
-                  Throwing a descriptive exception for invalid YAML content ensures the application can surface
-                  a clear error to the user rather than silently returning a null or default configuration instance,
-                  which is critical for CI pipeline reliability.
+                  Throwing a descriptive exception when deserialization yields null ensures the application
+                  surfaces a clear error rather than silently returning a null configuration instance,
+                  which would cause a cryptic null reference error downstream in CI pipelines.
                 tests:
                   - ConfigDocument_ReadFile_InvalidContent_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Cli-ConfigDoc-Malformed
+                title: The ConfigDocument class shall throw InvalidOperationException when the configuration file contains malformed YAML that cannot be deserialized.
+                justification: |
+                  Wrapping YamlDotNet deserialization exceptions as InvalidOperationException ensures
+                  callers receive a stable, predictable exception type regardless of the underlying
+                  YAML parsing library, supporting consistent error handling in CI pipeline integrations.
+                tests:
                   - ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Cli-ConfigDoc-Defaults
+                title: The ConfigDocument class shall return empty arrays for Files and Tests when those keys are absent from the YAML configuration file.
+                justification: |
+                  Defaulting Files and Tests to empty arrays when keys are absent prevents null
+                  reference errors in downstream code that iterates over these collections, and
+                  matches the defensive programming pattern used throughout the codebase for
+                  optional configuration properties.
+                tests:
+                  - ConfigDocument_ReadFile_MissingKeys_ReturnsEmptyArrays
