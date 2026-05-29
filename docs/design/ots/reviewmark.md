@@ -14,11 +14,14 @@ current review evidence. ReviewMark is not deployed with VHDLTest.
   all files that require review, grouped by review-set.
 - **Review report generation**: `reviewmark --report ...` produces a markdown document
   showing the review status of each file against the evidence store.
+- **Lint**: `reviewmark --lint` validates `.reviewmark.yaml` syntax.
+- **Self-validation**: `reviewmark --validate --results ...` writes internal test TRX results.
+
+### Planned Features
+
 - **Enforcement mode**: `reviewmark --enforce` exits non-zero if any file in a review-set
   lacks evidence, making unreviewed artifacts a build-breaking condition. This feature is
   planned for future activation once the reviews branch is populated with review evidence.
-- **Lint**: `reviewmark --lint` validates `.reviewmark.yaml` syntax.
-- **Self-validation**: `reviewmark --validate --results ...` writes internal test TRX results.
 
 ### Integration Pattern
 

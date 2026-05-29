@@ -5,14 +5,26 @@ sections:
       - title: DictionaryMark Requirements
         requirements:
           - id: VHDLTest-OTS-DictionaryMark
-            title: DictionaryMark shall enforce correct spelling in project documentation using a custom dictionary.
+            title: DictionaryMark shall generate and validate spell-check dictionaries for project documentation.
             justification: |
-              DemaConsulting.DictionaryMark (v0.1.0-beta.1) checks documentation files against
-              a configured dictionary, failing the build when unrecognized words are encountered.
-              This maintains consistent terminology and catches typographical errors in design
-              documents before they are formally reviewed.
+              DemaConsulting.DictionaryMark (v0.1.0-beta.1) provides dictionary generation and
+              conflict-detection utilities that underpin the spelling enforcement workflow. The
+              bullet-list and table generation modes produce the word-list artifacts consumed by
+              documentation and the conflict-detection mode ensures the configured dictionary
+              is internally consistent.
             tags: [ots]
             tests:
               - DictionaryMark_BulletGeneration
               - DictionaryMark_TableGeneration
               - DictionaryMark_ConflictDetection
+
+          - id: VHDLTest-OTS-DictionaryMark-Enforce
+            title: DictionaryMark shall enforce correct spelling in project documentation using the generated dictionary.
+            justification: |
+              DemaConsulting.DictionaryMark checks documentation files against the project-defined
+              word list in the quality-checks CI job, failing the build when unrecognized words are
+              encountered. This maintains consistent terminology and catches typographical errors
+              in design documents before they are formally reviewed.
+            tags: [ots]
+            tests:
+              - DictionaryMark_SpellingEnforcement

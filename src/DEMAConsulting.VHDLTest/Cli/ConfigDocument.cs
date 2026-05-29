@@ -61,11 +61,12 @@ public class ConfigDocument
     ///     Reads and deserializes a VHDLTest YAML configuration file into a <see cref="ConfigDocument"/> instance.
     /// </summary>
     /// <remarks>
-    ///     Encapsulates YamlDotNet deserialization so callers receive a stable exception contract
+    ///     Encapsulates deserialization so callers receive a stable exception contract
     ///     (<see cref="FileNotFoundException"/> or <see cref="InvalidOperationException"/>) regardless
     ///     of the underlying YAML library behavior. <see cref="HyphenatedNamingConvention"/> is used
-    ///     so YAML keys match natural hyphenated style (e.g., <c>test-file</c>) while C# properties
-    ///     use PascalCase. All YamlDotNet exceptions are wrapped as
+    ///     so YAML keys match natural hyphenated style (e.g., a multi-word property such as
+    ///     <c>SomeKey</c> would map from <c>some-key</c> in the YAML) while C# properties use
+    ///     PascalCase. All exceptions raised during deserialization are caught and wrapped as
     ///     <see cref="InvalidOperationException"/> to prevent library-internal types from leaking into
     ///     callers. The method is stateless and thread-safe; multiple threads may call it concurrently
     ///     with independent file paths without synchronization.

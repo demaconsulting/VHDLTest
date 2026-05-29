@@ -14,5 +14,23 @@ sections:
             tags: [ots]
             tests:
               - FileAssert_Results
+
+          - id: VHDLTest-OTS-FileAssert-Exists
+            title: FileAssert shall verify the existence of generated output files during CI pipeline execution.
+            justification: |
+              Verifying that expected output files are created by the pipeline ensures that
+              generation steps have completed successfully before downstream comparison steps
+              are run, catching missing outputs as a build-breaking condition.
+            tags: [ots]
+            tests:
               - FileAssert_Exists
+
+          - id: VHDLTest-OTS-FileAssert-Contains
+            title: FileAssert shall verify that generated output files contain expected content during CI pipeline execution.
+            justification: |
+              Checking that output files contain specific expected content provides a lighter-weight
+              smoke-test than a full byte-level comparison, confirming that key sections of
+              generated documentation are present without requiring exact baseline matching.
+            tags: [ots]
+            tests:
               - FileAssert_Contains

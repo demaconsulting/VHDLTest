@@ -64,7 +64,6 @@ public class CliSubsystemTests
             var options = Options.Parse(context);
 
             // Assert - verify the subsystem produced the correct options
-            Assert.NotNull(context);
             Assert.True(context.Verbose);
             Assert.Equal(ConfigFile, context.ConfigFile);
             Assert.NotNull(options);
@@ -92,5 +91,30 @@ public class CliSubsystemTests
 
         // Act & Assert - verify the subsystem surfaces the missing file error from Options.Parse
         Assert.Throws<FileNotFoundException>(() => Options.Parse(context));
+    }
+
+    /// <summary>
+    /// Test that the Cli subsystem throws InvalidOperationException when an unrecognized
+    /// flag is passed to Context.Create.
+    /// </summary>
+    [Fact]
+    public void CliSubsystem_InvalidFlag_ThrowsInvalidOperationException()
+    {
+        // Act & Assert - verify the subsystem throws for an unrecognized flag
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--unrecognized-flag"]));
+    }
+
+    /// <summary>
+    /// Test that the Cli subsystem throws InvalidOperationException when no config
+    /// file path is specified and Options.Parse is called.
+    /// </summary>
+    [Fact]
+    public void CliSubsystem_NullConfig_ThrowsInvalidOperationException()
+    {
+        // Arrange - create context without specifying any config file
+        using var context = Context.Create([]);
+
+        // Act & Assert - verify Options.Parse throws when no config file is specified
+        Assert.Throws<InvalidOperationException>(() => Options.Parse(context));
     }
 }

@@ -6,7 +6,7 @@ sections:
         requirements:
           - id: VHDLTest-Cli-Pipeline
             title: >-
-              VHDLTest shall execute the complete command-line configuration pipeline, producing a resolved Options object from raw arguments and a configuration file.
+              VHDLTest shall execute the complete command-line configuration pipeline, producing a fully resolved run configuration from raw arguments and a configuration file.
             justification: |
               The end-to-end CLI pipeline — argument parsing, configuration loading, and option
               combination — must function correctly as an integrated whole. Verifying this
@@ -14,6 +14,8 @@ sections:
             tests:
               - CliSubsystem_ParseArgsAndLoadConfig_WithValidConfig_ProducesCorrectOptions
               - CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException
+              - CliSubsystem_InvalidFlag_ThrowsInvalidOperationException
+              - CliSubsystem_NullConfig_ThrowsInvalidOperationException
             children:
               - VHDLTest-Cli-Context-Parse
               - VHDLTest-Cli-Context-Error

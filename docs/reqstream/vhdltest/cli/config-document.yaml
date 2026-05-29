@@ -36,9 +36,8 @@ sections:
               - id: VHDLTest-Cli-ConfigDoc-Malformed
                 title: The ConfigDocument class shall throw InvalidOperationException when the configuration file contains malformed YAML that cannot be deserialized.
                 justification: |
-                  Wrapping YamlDotNet deserialization exceptions as InvalidOperationException ensures
-                  callers receive a stable, predictable exception type regardless of the underlying
-                  YAML parsing library, supporting consistent error handling in CI pipeline integrations.
+                  A predictable exception type allows CLI pipeline error handling to be consistent
+                  regardless of the YAML library used.
                 tests:
                   - ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException
 

@@ -26,15 +26,17 @@ patterns required to execute a test run.
   YAML content; throws if the file is absent or the content cannot be deserialised.
 
 Reads the file content via `File.ReadAllText`, constructs a YamlDotNet `DeserializerBuilder`
-with `HyphenatedNamingConvention` (so YAML keys use hyphens), then deserialises the content
-into a `ConfigDocument` instance. Throws `InvalidOperationException` if the deserialised result
-is null.
+with `HyphenatedNamingConvention` (so YAML keys use hyphens, while C# properties use
+PascalCase — for example, a hypothetical multi-word property `SomeKey` would map from the
+YAML key `some-key`), then deserialises the content into a `ConfigDocument` instance.
+Throws `InvalidOperationException` if the deserialised result is null.
 
 #### Error Handling
 
 `ReadFile` propagates `FileNotFoundException` from `File.ReadAllText` if the specified file
-does not exist. It throws `InvalidOperationException` if the YAML content is invalid, cannot be
-deserialised into a `ConfigDocument`, or the deserialised result is null. Both exception types
+does not exist. It throws `InvalidOperationException` if the deserialization yields null or
+if any exception is raised during deserialization (not only YamlDotNet exceptions — all
+exceptions from the deserialization call are caught and wrapped). Both exception types
 propagate through `Options.Parse` to `Program.Run`, which catches and reports them via
 `Context.WriteError`.
 

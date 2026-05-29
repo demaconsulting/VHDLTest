@@ -203,14 +203,15 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Increments the error counter and writes an error message to all configured outputs
-    ///     regardless of silent mode.
+    ///     Increments the error counter and writes an error message to the console (unless
+    ///     silent mode is active) and unconditionally to all configured log outputs.
     /// </summary>
     /// <remarks>
     ///     <see cref="Errors"/> is always incremented, even when <paramref name="message"/> is
-    ///     null. The message, when non-null, is written to both the console (in
-    ///     <see cref="ConsoleColor.Red"/>) and the log file regardless of the
-    ///     <see cref="Silent"/> flag.
+    ///     null. Console output is suppressed when <see cref="Silent"/> is true; log-file output
+    ///     is unconditional and is always written when a log file is configured. The message,
+    ///     when non-null, is written to the console in <see cref="ConsoleColor.Red"/> (unless
+    ///     silent mode is active) and to the log file.
     /// </remarks>
     /// <param name="message">Error message to write</param>
     public void WriteError(string? message)

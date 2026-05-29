@@ -9,6 +9,10 @@ correctly processed the review definition and rendered the output documents. Rev
 also provides an explicit `--validate` self-validation mode that writes TRX test results
 consumed by ReqStream.
 
+Enforcement mode (`--enforce`) is not yet active in the CI pipeline; it will be enabled
+once the reviews branch of the repository is populated with review evidence. Verification
+of enforcement behavior is therefore deferred until that branch is established.
+
 ### Test Environment
 
 CI/CD pipeline environment — GitHub Actions runner on Windows (build-docs job). The

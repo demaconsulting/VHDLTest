@@ -72,6 +72,7 @@ sections:
                   prevents callers from having to manage multiple output targets.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
+                  - Context_WriteLine_SilentMode_WritesToLogFile
 
               - id: VHDLTest-Cli-Context-WriteVerboseLine
                 title: Context shall write a verbose message with a line terminator only when verbose mode is active.

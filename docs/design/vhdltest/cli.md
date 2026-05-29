@@ -15,10 +15,14 @@ returns a fully initialised Context instance.
 - *Role*: Provider
 - *Contract*: `static Context Create(string[] args)` — returns a `Context` exposing all parsed
   flags (`Version`, `Help`, `Silent`, `Verbose`, `ExitZero`, `Validate`, `Depth`), paths
-  (`ConfigFile`, `ResultsFile`, `Simulator`), and I/O methods (`Write`, `WriteVerboseLine`,
-  `WriteLine`, `WriteError`). `Context` implements `IDisposable`.
+  (`ConfigFile`, `ResultsFile`, `Simulator`), I/O methods (`Write`, `WriteVerboseLine`,
+  `WriteLine`, `WriteError`), and the computed property `ExitCode`. `Context` implements
+  `IDisposable`.
 - *Constraints*: Throws `InvalidOperationException` on unrecognised flags or missing required
   argument values. Callers must dispose the returned Context to close any open log-file writer.
+- *Notes*: Calling `WriteError` increments the internal error counter, which causes `ExitCode`
+  to return `1`. `Program` reads `ExitCode` after the run and assigns it to
+  `Environment.ExitCode` before exiting.
 
 **ConfigDocument.ReadFile**: Static factory method that deserialises a YAML configuration file
 into a ConfigDocument.
@@ -42,6 +46,11 @@ into a ConfigDocument.
 - *Constraints*: Throws `InvalidOperationException` if no config file is specified or if the
   config file path cannot be resolved to a containing directory. Throws `FileNotFoundException`
   (propagated from `ConfigDocument.ReadFile`) if the specified configuration file does not exist.
+
+### Dependencies
+
+`ConfigDocument.ReadFile` uses **YamlDotNet** for YAML parsing. See
+`docs/design/ots/yamldotnet.md` for the YamlDotNet integration design.
 
 ### Design
 

@@ -43,9 +43,13 @@ public class ContextTests
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
         Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Version);
+        Assert.False(arguments.Help);
+        Assert.False(arguments.Silent);
         Assert.False(arguments.Verbose);
         Assert.False(arguments.ExitZero);
         Assert.False(arguments.Validate);
+        Assert.Equal(1, arguments.Depth);
         Assert.Null(arguments.CustomTests);
     }
 
@@ -626,6 +630,32 @@ public class ContextTests
             // Assert: verify the text was written to the log file
             var content = File.ReadAllText(logFile);
             Assert.Contains("colored output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that WriteLine sends output to the log file even when silent mode is enabled
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_SilentMode_WritesToLogFile()
+    {
+        // Arrange: create a silent context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--silent", "-l", logFile]))
+            {
+                // Act: write a line through the context
+                arguments.WriteLine("silent line output");
+            }
+
+            // Assert: verify the line was written to the log file despite silent mode
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("silent line output", content);
         }
         finally
         {

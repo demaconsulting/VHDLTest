@@ -10,10 +10,9 @@ documents. DictionaryMark is not deployed with VHDLTest.
 
 ### Features Used
 
-- **Custom dictionary enforcement**: validates documentation files against a project
-  dictionary configuration, flagging words not present in the approved word list.
-- **Build gate**: exits non-zero on any spelling violation, making unrecognized words
-  a build-breaking condition.
+- **Spelling enforcement**: validates documentation files against a project dictionary
+  configuration, flagging words not present in the approved word list and failing the build
+  on any spelling violation.
 - **Bullet-list generation**: generates bullet-list format dictionary entries for
   embedding recognized terms in documentation.
 - **Table generation**: generates table format dictionary entries for structured
