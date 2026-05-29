@@ -38,7 +38,7 @@ Classifies `Info:` as Info, `Warning:` as Warning, and `Failure:` or `Error:` as
 - *Preconditions*: None.
 - *Postconditions*: Appends `Warning: {test}` when test contains `_warning_`; appends `Info: {test}` when
   it contains `_info_`. Then: appends `Error: {test}` (exitCode 1) when it contains `_error_`; appends
-  `Failure: {test}` when it contains `_fail_`; otherwise appends `Passed: {test}`. Passes the accumulated
+  `Failure: {test}` (exitCode remains 0) when it contains `_fail_`; otherwise appends `Passed: {test}`. Passes the accumulated
   output to `TestProcessor.Parse`.
 
 #### Error Handling

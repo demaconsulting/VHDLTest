@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Reflection;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 
@@ -276,10 +278,10 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test that the first Lattice Edition warning is suppressed to Info
+    /// Test ActiveHDL simulator test that the first Lattice Edition warning is suppressed to Text
     /// </summary>
     [Fact]
-    public void ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsInfoResult()
+    public void ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsTextResult()
     {
         // Arrange: define test output with the first Lattice Edition suppression marker
         var start = new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc);
@@ -303,10 +305,10 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test that the second Lattice Edition warning is suppressed to Info
+    /// Test ActiveHDL simulator test that the second Lattice Edition warning is suppressed to Text
     /// </summary>
     [Fact]
-    public void ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsInfoResult()
+    public void ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsTextResult()
     {
         // Arrange: define test output with the second Lattice Edition suppression marker
         var start = new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc);
@@ -489,5 +491,85 @@ public class ActiveHdlSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("VSIM: Error: Test Error", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    ///     Verifies that the TCL test script written by ActiveHdlSimulator.Test contains
+    ///     <c>exit -code 0</c> to signal successful simulation completion to vsimsa.
+    /// </summary>
+    [Fact]
+    public void ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode()
+    {
+        // Arrange: create an isolated temporary working directory and a fake vsimsa executable
+        // so that SimulatorPath is non-null and the script-write step is reached without
+        // requiring a real Active-HDL installation.
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            // Create a fake vsimsa stub so the simulator path resolves to a real directory
+            if (OperatingSystem.IsWindows())
+            {
+                File.WriteAllText(Path.Combine(tempDir, "vsimsa.bat"), "@echo off\r\nexit /b 0\r\n");
+            }
+            else
+            {
+                File.WriteAllText(Path.Combine(tempDir, "vsimsa"), "#!/bin/sh\nexit 0\n");
+            }
+
+            // Pre-create the library output directory that Test() expects to exist
+            var workDir = Path.Combine(tempDir, "work");
+            Directory.CreateDirectory(Path.Combine(workDir, "VHDLTest.out", "ActiveHDL"));
+
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(workDir, new ConfigDocument());
+
+            // Create a test-only instance with tempDir as the simulator path.
+            // Set VHDLTEST_ACTIVEHDL_PATH temporarily and invoke the private constructor
+            // via reflection to bypass the singleton while keeping production code intact.
+            var savedEnv = Environment.GetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH");
+            Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", tempDir);
+            ActiveHdlSimulator simulator;
+            try
+            {
+                var ctor = typeof(ActiveHdlSimulator).GetConstructor(
+                    BindingFlags.NonPublic | BindingFlags.Instance,
+                    null,
+                    Type.EmptyTypes,
+                    null)!;
+                simulator = (ActiveHdlSimulator)ctor.Invoke(null);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", savedEnv);
+            }
+
+            // Act: invoke Test so the script file is written.
+            // Execution may fail because the stub vsimsa produces no expected output;
+            // only the script file content matters so execution failures are suppressed.
+            try
+            {
+                simulator.Test(context, options, "clean_tb");
+            }
+            catch (Exception)
+            {
+                // execution failure is expected with a stub executable
+            }
+
+            // Assert: the generated TCL test script contains "exit -code 0" to signal
+            // successful simulation completion back to vsimsa
+            var scriptPath = Path.Combine(workDir, "VHDLTest.out", "ActiveHDL", "test.do");
+            Assert.True(File.Exists(scriptPath), "TCL test script file was not created");
+            var scriptContent = File.ReadAllText(scriptPath);
+            Assert.Contains("exit -code 0", scriptContent);
+        }
+        finally
+        {
+            // Cleanup: remove the temporary directory and all its contents
+            if (Directory.Exists(tempDir))
+            {
+                Directory.Delete(tempDir, recursive: true);
+            }
+        }
     }
 }

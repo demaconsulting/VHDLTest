@@ -116,13 +116,34 @@ public sealed class ActiveHdlSimulator : Simulator
     public static ActiveHdlSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the ActiveHdl simulator
+    ///     Initializes a new instance of the Active-HDL simulator.
     /// </summary>
+    /// <remarks>
+    ///     Private to enforce the singleton pattern — callers must use <see cref="Instance"/>.
+    ///     Passes null for the path when Active-HDL is not installed, causing
+    ///     <see cref="Simulator.Available"/> to return false and preventing accidental use
+    ///     in environments without the simulator.
+    /// </remarks>
     private ActiveHdlSimulator() : base("ActiveHdl", FindPath())
     {
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Compiles all VHDL source files using Active-HDL's <c>acom</c> utility via a TCL do-script.
+    /// </summary>
+    /// <remarks>
+    ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, an <c>alib</c> library
+    ///     initialisation command, <c>set worklib work</c>, and one <c>acom -2008 -dbg {file}</c>
+    ///     line per source file. The script is written to
+    ///     <c>VHDLTest.out/ActiveHDL/compile.do</c> and executed via
+    ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/compile.do</c> from the working directory.
+    /// </remarks>
+    /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
+    /// <param name="options">Parsed options providing the VHDL file list and working directory. Must not be null.</param>
+    /// <returns>Classified compile output as <see cref="RunResults"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when <see cref="Simulator.SimulatorPath"/> is null (Active-HDL not installed).
+    /// </exception>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -166,7 +187,24 @@ public sealed class ActiveHdlSimulator : Simulator
             $"{LibDirPath}/compile.do");
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Simulates a single test bench using Active-HDL's <c>asim</c> utility via a TCL do-script.
+    /// </summary>
+    /// <remarks>
+    ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, <c>set worklib work</c>,
+    ///     <c>asim {test}</c>, <c>run -all</c>, <c>endsim</c>, and <c>exit -code 0</c>. The script
+    ///     is written to <c>VHDLTest.out/ActiveHDL/test.do</c> and executed via
+    ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/test.do</c> from the working directory. The
+    ///     trailing <c>exit -code 0</c> is required because <c>vsimsa</c> does not emit a success
+    ///     exit code automatically when simulation completes normally.
+    /// </remarks>
+    /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
+    /// <param name="options">Parsed options providing the working directory. Must not be null.</param>
+    /// <param name="test">Test bench entity name to simulate. Must not be null or empty.</param>
+    /// <returns>Simulation outcome as a <see cref="TestResult"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when <see cref="Simulator.SimulatorPath"/> is null (Active-HDL not installed).
+    /// </exception>
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command

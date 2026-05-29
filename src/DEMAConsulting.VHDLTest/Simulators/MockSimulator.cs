@@ -95,8 +95,14 @@ public sealed class MockSimulator : Simulator
     public static MockSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the Mock simulator
+    ///     Initializes a new instance of the Mock simulator.
     /// </summary>
+    /// <remarks>
+    ///     Private to enforce the singleton pattern — callers must use <see cref="Instance"/>.
+    ///     Passes null for the simulator path so that <see cref="Simulator.Available"/> always
+    ///     returns false, preventing the mock from being auto-selected by the simulator factory
+    ///     during normal runs. The mock must be requested explicitly by name.
+    /// </remarks>
     private MockSimulator() : base("Mock", null)
     {
     }

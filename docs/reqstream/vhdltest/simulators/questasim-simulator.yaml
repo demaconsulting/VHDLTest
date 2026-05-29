@@ -13,7 +13,6 @@ sections:
                   enhanced debugging and coverage features. Supporting QuestaSim enables VHDLTest
                   to integrate with high-end verification environments.
                 tests:
-                  - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
                   - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
 
               - id: VHDLTest-Simulators-QuestaSimSimulator-Compile

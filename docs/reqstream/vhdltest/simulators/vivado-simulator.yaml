@@ -13,7 +13,6 @@ sections:
                   Supporting Vivado simulator is essential for teams developing designs targeting
                   Xilinx/AMD FPGAs and enables seamless integration with the Vivado toolchain.
                 tests:
-                  - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
                   - VivadoSimulator_SimulatorName_ReturnsVivado
 
               - id: VHDLTest-Simulators-VivadoSimulator-Compile

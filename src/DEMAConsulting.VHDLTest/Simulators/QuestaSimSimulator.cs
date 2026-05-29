@@ -76,8 +76,14 @@ public sealed class QuestaSimSimulator : Simulator
     );
 
     /// <summary>
-    ///     QuestaSim simulator instance
+    ///     The singleton <see cref="QuestaSimSimulator"/> instance, initialized at class load time.
     /// </summary>
+    /// <remarks>
+    ///     Singleton pattern: only one instance is created per process, held in this static
+    ///     property. The instance is stateless after construction (path is resolved once in the
+    ///     constructor via <see cref="FindPath"/>); concurrent reads from multiple threads are safe.
+    ///     Always access the simulator through this property rather than constructing a new instance.
+    /// </remarks>
     public static QuestaSimSimulator Instance { get; } = new();
 
     /// <summary>
@@ -181,9 +187,20 @@ public sealed class QuestaSimSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the QuestaSim installation directory.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>Directory path containing the QuestaSim executables, or null if QuestaSim is not found.</returns>
+    /// <remarks>
+    ///     Resolution order:
+    ///     <list type="number">
+    ///         <item><description>Returns the <c>VHDLTEST_QUESTASIM_PATH</c> environment variable value when set,
+    ///         allowing CI environments and users to override the default installation path.</description></item>
+    ///         <item><description>Searches the system PATH for the <c>vsim</c> executable and returns its
+    ///         parent directory (the simulator installation directory).</description></item>
+    ///     </list>
+    ///     Returns null when QuestaSim is not found by either mechanism, causing
+    ///     <see cref="Simulator.Available"/> to return false.
+    /// </remarks>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -200,7 +217,7 @@ public sealed class QuestaSimSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing vsim (the simulator installation directory)
         return Path.GetDirectoryName(simPath);
     }
 }

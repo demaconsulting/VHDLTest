@@ -13,7 +13,6 @@ sections:
                   and defense industries. Supporting Active-HDL ensures VHDLTest can be used in
                   regulated environments and specialized application domains.
                 tests:
-                  - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
                   - ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL
 
               - id: VHDLTest-Simulators-ActiveHdlSimulator-Compile
@@ -46,7 +45,7 @@ sections:
                   simulation completes. Appending exit -code 0 ensures that a successful simulation
                   run is distinguished from a run that terminated abnormally without an exit code.
                 tests:
-                  - ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+                  - ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode
 
               - id: VHDLTest-Simulators-ActiveHdlSimulator-LatticeSuppression
                 title: ActiveHdlSimulator shall suppress Active-HDL Lattice Edition license advisory messages from test output.
@@ -55,6 +54,6 @@ sections:
                   are not indicative of VHDL design issues. Suppressing these prevents false
                   positive diagnostic results that would confuse users and obscure genuine warnings.
                 tests:
-                  - ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsInfoResult
-                  - ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsInfoResult
+                  - ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsTextResult
+                  - ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsTextResult
 

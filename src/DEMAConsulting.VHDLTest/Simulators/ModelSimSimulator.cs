@@ -185,9 +185,20 @@ public sealed class ModelSimSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the ModelSim installation directory.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>Directory path containing the ModelSim executables, or null if ModelSim is not found.</returns>
+    /// <remarks>
+    ///     Resolution order:
+    ///     <list type="number">
+    ///         <item><description>Returns the <c>VHDLTEST_MODELSIM_PATH</c> environment variable value when set,
+    ///         allowing CI environments and users to override the default installation path.</description></item>
+    ///         <item><description>Searches the system PATH for the <c>vsim</c> executable and returns its
+    ///         parent directory (the simulator installation directory).</description></item>
+    ///     </list>
+    ///     Returns null when ModelSim is not found by either mechanism, causing
+    ///     <see cref="Simulator.Available"/> to return false.
+    /// </remarks>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -204,7 +215,7 @@ public sealed class ModelSimSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing vsim (the simulator installation directory)
         return Path.GetDirectoryName(simPath);
     }
 }

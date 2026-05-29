@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 
@@ -242,5 +243,55 @@ public class VivadoSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Failure: Test Failure", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    ///     Verifies that calling Compile when Vivado is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where Vivado is installed.
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Compile_WhenSimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when Vivado is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (VivadoSimulator.Instance.Available())
+        {
+            return;
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Compile throws when Vivado is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => VivadoSimulator.Instance.Compile(context, options));
+        Assert.Equal("Vivado Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that calling Test when Vivado is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where Vivado is installed.
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Test_WhenSimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when Vivado is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (VivadoSimulator.Instance.Available())
+        {
+            return;
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Test throws when Vivado is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => VivadoSimulator.Instance.Test(context, options, "test_tb"));
+        Assert.Equal("Vivado Simulator not available", ex.Message);
     }
 }

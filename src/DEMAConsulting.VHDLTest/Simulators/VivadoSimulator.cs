@@ -30,6 +30,13 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 ///     for elaboration and simulation, classifying output lines by severity using
 ///     <see cref="RunProcessor"/> rules.
 /// </summary>
+/// <remarks>
+///     Uses argument-file (`.do`) scripts to pass options and file lists to the Vivado tools,
+///     avoiding command-line length limits. Implemented as a singleton (<see cref="Instance"/>)
+///     initialized at class load time; stateless after construction and therefore thread-safe.
+///     When Vivado is not installed, <see cref="Simulator.SimulatorPath"/> is null and
+///     <see cref="Simulator.Available"/> returns false.
+/// </remarks>
 public sealed class VivadoSimulator : Simulator
 {
     /// <summary>
@@ -132,8 +139,7 @@ public sealed class VivadoSimulator : Simulator
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command
-
-        // Fail if we cannot find the simulator
+        context.WriteVerboseLine($"Starting Vivado test {test}...");        // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
                       throw new InvalidOperationException("Vivado Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");

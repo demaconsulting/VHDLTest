@@ -21,6 +21,8 @@ N/A - standard test environment. `MockSimulator` requires no external executable
 - `MockSimulator.Instance.Available()` returns false (no path is set).
 - The compile processor correctly classifies text, info, warning, and error output.
 - The test processor correctly classifies text, info, warning, failure, and error output.
+- `Compile()` produces error, warning, info, or clean results based on filename patterns.
+- `Test()` produces error, fail, warning, info, or clean results based on test name patterns.
 
 #### Test Scenarios
 
@@ -69,3 +71,39 @@ This scenario is tested by `MockSimulator_TestProcessor_FailureOutput_ReturnsErr
 **TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a line prefixed `"Error:"`
 is classified as `RunLineType.Error`.
 This scenario is tested by `MockSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult`.
+
+**Compile_WithErrorFile_ReturnsErrorResult**: Verifies that `Compile()` returns an error
+result when a source file name contains `_error_`.
+This scenario is tested by `MockSimulator_Compile_WithErrorFile_ReturnsErrorResult`.
+
+**Compile_WithWarningFile_ReturnsWarningResult**: Verifies that `Compile()` returns a
+warning result when a source file name contains `_warning_`.
+This scenario is tested by `MockSimulator_Compile_WithWarningFile_ReturnsWarningResult`.
+
+**Compile_WithInfoFile_ReturnsInfoResult**: Verifies that `Compile()` returns an info result
+when a source file name contains `_info_`.
+This scenario is tested by `MockSimulator_Compile_WithInfoFile_ReturnsInfoResult`.
+
+**Compile_WithCleanFile_ReturnsSuccessResult**: Verifies that `Compile()` returns a clean
+text result when a source file name contains no special pattern.
+This scenario is tested by `MockSimulator_Compile_WithCleanFile_ReturnsSuccessResult`.
+
+**Test_WithErrorPattern_ReturnsErrorResult**: Verifies that `Test()` returns an error result
+when the test bench name contains `_error_`.
+This scenario is tested by `MockSimulator_Test_WithErrorPattern_ReturnsErrorResult`.
+
+**Test_WithFailPattern_ReturnsFailResult**: Verifies that `Test()` returns an error result
+(Failure maps to Error) when the test bench name contains `_fail_`.
+This scenario is tested by `MockSimulator_Test_WithFailPattern_ReturnsFailResult`.
+
+**Test_WithWarningPattern_ReturnsWarningResult**: Verifies that `Test()` returns a warning
+result when the test bench name contains `_warning_`.
+This scenario is tested by `MockSimulator_Test_WithWarningPattern_ReturnsWarningResult`.
+
+**Test_WithInfoPattern_ReturnsInfoResult**: Verifies that `Test()` returns an info result
+when the test bench name contains `_info_`.
+This scenario is tested by `MockSimulator_Test_WithInfoPattern_ReturnsInfoResult`.
+
+**Test_WithCleanName_ReturnsSuccessResult**: Verifies that `Test()` returns a clean text
+result when the test bench name contains no special pattern.
+This scenario is tested by `MockSimulator_Test_WithCleanName_ReturnsSuccessResult`.
