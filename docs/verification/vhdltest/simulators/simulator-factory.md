@@ -19,6 +19,8 @@ N/A - standard test environment.
   any case combination.
 - `SimulatorFactory.Get` returns null for unknown simulator names.
 - `SimulatorFactory.Get` returns `MockSimulator.Instance` for the name `"mock"`.
+- `SimulatorFactory.Get` returns either a non-null `Simulator` instance (when at least one
+  simulator is installed) or null (when no simulator is installed) when called with `null`.
 
 #### Test Scenarios
 
@@ -54,3 +56,8 @@ This scenario is tested by `SimulatorFactory_Get_UnknownSimulator_ReturnsNull`.
 all return the `MockSimulator` instance, confirming the mock is accessible by any case form
 for test and validation purposes.
 This scenario is tested by `SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator`.
+
+**Get_WithNullName_ReturnsFirstAvailableOrNull**: Verifies that passing null to
+`SimulatorFactory.Get` performs auto-discovery: returns either the first installed simulator
+instance (a real `Simulator`, not `MockSimulator`) or null when no simulator is installed.
+This scenario is tested by `SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull`.

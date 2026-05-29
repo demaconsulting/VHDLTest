@@ -85,8 +85,13 @@ public sealed class NvcSimulator : Simulator
     );
 
     /// <summary>
-    ///     NVC simulator instance
+    ///     Gets the singleton <see cref="NvcSimulator"/> instance shared across the application.
     /// </summary>
+    /// <remarks>
+    ///     Initialized once at class-load time by calling <see cref="FindPath()"/> to resolve the
+    ///     NVC installation directory. Stateless after construction and therefore thread-safe.
+    ///     Always access the simulator through this property rather than constructing a new instance.
+    /// </remarks>
     public static NvcSimulator Instance { get; } = new();
 
     /// <summary>
@@ -175,9 +180,14 @@ public sealed class NvcSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the NVC installation directory by locating the <c>nvc</c> executable
+    ///     on the system PATH, returning null when NVC is not installed.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>
+    ///     The directory containing the <c>nvc</c> executable, or null if NVC is not found.
+    ///     The <c>VHDLTEST_NVC_PATH</c> environment variable, when set, overrides PATH search
+    ///     and returns its value directly as the installation directory path.
+    /// </returns>
     public static string? FindPath()
     {
         // Look for an environment variable

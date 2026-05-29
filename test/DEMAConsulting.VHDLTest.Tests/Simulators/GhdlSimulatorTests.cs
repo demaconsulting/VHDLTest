@@ -34,6 +34,8 @@ public class GhdlSimulatorTests
     [Fact]
     public void GhdlSimulator_SimulatorName_ReturnsGHDL()
     {
+        // Arrange: no setup required — GhdlSimulator.Instance is the pre-initialized singleton
+
         // Act / Assert: simulator name is the fixed string "GHDL"
         Assert.Equal("GHDL", GhdlSimulator.Instance.SimulatorName);
     }
@@ -409,5 +411,57 @@ public class GhdlSimulatorTests
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Test:error: Test Error", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test that FindPath returns the env var value when VHDLTEST_GHDL_PATH is set.
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
+    {
+        // Arrange: set the VHDLTEST_GHDL_PATH environment variable to a known value
+        var expectedPath = "/custom/ghdl/path";
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_GHDL_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", expectedPath);
+
+        try
+        {
+            // Act: call FindPath()
+            var result = GhdlSimulator.FindPath();
+
+            // Assert: result is the env var value
+            Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    /// Test that FindPath does not throw when the GHDL env var is not set.
+    /// Result is either a valid path (GHDL installed) or null (GHDL not installed).
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
+    {
+        // Arrange: ensure VHDLTEST_GHDL_PATH is not set for this test
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_GHDL_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", null);
+
+        try
+        {
+            // Act: call FindPath() without the env var override
+            var result = GhdlSimulator.FindPath();
+
+            // Assert: result is either null (GHDL not installed) or a non-empty path string
+            Assert.True(result == null || result.Length > 0);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", previousValue);
+        }
     }
 }

@@ -103,8 +103,13 @@ public sealed class GhdlSimulator : Simulator
     );
 
     /// <summary>
-    ///     GHDL simulator instance
+    ///     Gets the singleton <see cref="GhdlSimulator"/> instance shared across the application.
     /// </summary>
+    /// <remarks>
+    ///     Initialized once at class-load time by calling <see cref="FindPath()"/> to resolve the
+    ///     GHDL installation directory. Stateless after construction and therefore thread-safe.
+    ///     Always access the simulator through this property rather than constructing a new instance.
+    /// </remarks>
     public static GhdlSimulator Instance { get; } = new();
 
     /// <summary>
@@ -126,7 +131,7 @@ public sealed class GhdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
+        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
         {
@@ -169,7 +174,7 @@ public sealed class GhdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
+        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Elaborate the test before running it; some GHDL backends require an explicit

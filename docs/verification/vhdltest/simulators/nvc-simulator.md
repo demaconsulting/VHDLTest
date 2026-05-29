@@ -18,8 +18,9 @@ Live simulator integration: CI environment with NVC installed on PATH.
 
 - All unit tests in `NvcSimulatorTests.cs` pass with zero failures.
 - `NvcSimulator.Instance.SimulatorName` returns `"NVC"`.
-- The compile processor correctly classifies clean, warning, and error output patterns.
-- The test processor correctly classifies clean, info, warning, and error output patterns.
+- The compile processor correctly classifies clean, info, warning, error, failure, and fatal output patterns.
+- The test processor correctly classifies clean, info, warning, error, failure, and fatal output patterns.
+- `NvcSimulator.FindPath()` returns the `VHDLTEST_NVC_PATH` environment variable value when set.
 
 #### Test Scenarios
 
@@ -54,3 +55,32 @@ This scenario is tested by the test warning output test in `NvcSimulatorTests.cs
 **TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an NVC error line in
 simulation output is classified as `RunLineType.Error`.
 This scenario is tested by the test error output test in `NvcSimulatorTests.cs`.
+
+**CompileProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an NVC info (note) line in
+compile output is classified as `RunLineType.Info`, confirming the `.* Note:` pattern works.
+This scenario is tested by `NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult`.
+
+**CompileProcessor_FailureOutput_ReturnsErrorResult**: Verifies that an NVC failure line
+matching `.* Failure:` in compile output is classified as `RunLineType.Error`.
+This scenario is tested by `NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult`.
+
+**CompileProcessor_FatalOutput_ReturnsErrorResult**: Verifies that an NVC fatal line
+matching `.* Fatal:` in compile output is classified as `RunLineType.Error`.
+This scenario is tested by `NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult`.
+
+**TestProcessor_FailureOutput_ReturnsErrorResult**: Verifies that an NVC failure line
+matching `.* Failure:` in simulation output is classified as `RunLineType.Error`.
+This scenario is tested by `NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult`.
+
+**TestProcessor_FatalOutput_ReturnsErrorResult**: Verifies that an NVC fatal line
+matching `.* Fatal:` in simulation output is classified as `RunLineType.Error`.
+This scenario is tested by `NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult`.
+
+**FindPath_WithEnvVar_ReturnsEnvVarValue**: Verifies that `NvcSimulator.FindPath()` returns the
+value of `VHDLTEST_NVC_PATH` when it is set, confirming the environment variable override.
+This scenario is tested by `NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`.
+
+**FindPath_WithoutEnvVar_ReturnsNullOrPath**: Verifies that `NvcSimulator.FindPath()` does not
+throw when `VHDLTEST_NVC_PATH` is not set, returning either a valid path string (when NVC is
+installed) or null (when not installed).
+This scenario is tested by `NvcSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`.

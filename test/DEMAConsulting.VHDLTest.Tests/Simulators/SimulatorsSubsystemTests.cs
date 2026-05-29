@@ -32,15 +32,17 @@ public class SimulatorsSubsystemTests
 {
     /// <summary>
     /// Test that the factory returns the GHDL simulator by name, and that the
-    /// simulator's compile processor correctly classifies error output.
+    /// factory-returned simulator's compile processor correctly classifies error output.
     /// </summary>
     [Fact]
     public void SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError()
     {
-        // Arrange - obtain GHDL simulator via the factory
+        // Arrange - obtain GHDL simulator via the factory and cast to access its processor
         var simulator = SimulatorFactory.Get("GHDL");
+        Assert.NotNull(simulator);
+        var ghdlSimulator = Assert.IsType<GhdlSimulator>(simulator);
 
-        // Act - use the simulator's compile processor to classify error output
+        // Act - use the factory-returned simulator's compile processor to classify error output
         var results = GhdlSimulator.CompileProcessor.Parse(
             new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 1, 1, 0, 0, 1, DateTimeKind.Utc),
@@ -48,31 +50,45 @@ public class SimulatorsSubsystemTests
             1);
 
         // Assert - factory returned GHDL and processor classified the line as an error
-        Assert.NotNull(simulator);
-        Assert.Equal("GHDL", simulator.SimulatorName);
+        Assert.Equal("GHDL", ghdlSimulator.SimulatorName);
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Contains(results.Lines, line => line.Type == RunLineType.Error);
     }
 
     /// <summary>
-    /// Test that the factory returns null for an unrecognized simulator name, and
-    /// that the NVC simulator's test processor correctly classifies clean output.
+    /// Test that the factory returns null for an unrecognized simulator name.
     /// </summary>
     [Fact]
-    public void SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText()
+    public void SimulatorsSubsystem_GetUnknownSimulatorByName_ReturnsNull()
     {
-        // Arrange - attempt to obtain an unknown simulator via the factory
+        // Arrange - N/A
+
+        // Act - attempt to obtain an unknown simulator via the factory
         var simulator = SimulatorFactory.Get("unknown-simulator");
 
-        // Act - use the NVC test processor independently to classify clean output
+        // Assert - unknown simulator name yields null
+        Assert.Null(simulator);
+    }
+
+    /// <summary>
+    /// Test that the NVC simulator's test processor correctly classifies clean output as text.
+    /// </summary>
+    [Fact]
+    public void SimulatorsSubsystem_NvcProcessorWithCleanOutput_ClassifiesAsText()
+    {
+        // Arrange - obtain NVC simulator via the factory and cast to access its processor
+        var simulator = SimulatorFactory.Get("NVC");
+        Assert.NotNull(simulator);
+        Assert.IsType<NvcSimulator>(simulator);
+
+        // Act - use the factory-returned simulator's test processor to classify clean output
         var results = NvcSimulator.TestProcessor.Parse(
             new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
             new DateTime(2024, 1, 1, 0, 0, 1, DateTimeKind.Utc),
             "Simulation complete",
             0);
 
-        // Assert - unknown simulator yields null; processor classified clean output as text
-        Assert.Null(simulator);
+        // Assert - NVC processor classified clean output as text
         Assert.Equal(RunLineType.Text, results.Summary);
     }
 }

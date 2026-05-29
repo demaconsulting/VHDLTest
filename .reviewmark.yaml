@@ -253,6 +253,7 @@ reviews:
       - docs/reqstream/vhdltest/simulators/simulators.yaml  # subsystem requirements
       - docs/design/vhdltest/simulators.md  # subsystem design
       - test/**/Simulators/SimulatorsSubsystemTests.cs  # subsystem integration tests
+      - docs/verification/vhdltest/simulators.md
 
   # Simulator base class unit review
   - id: VHDLTest-Simulators-Simulator
@@ -262,6 +263,8 @@ reviews:
       - docs/design/vhdltest/simulators/simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/Simulator.cs  # source
       - test/**/Simulators/MockSimulatorTests.cs  # unit tests (via MockSimulator)
+      - test/**/Simulators/SimulatorTests.cs  # unit tests for Where() and Available()
+      - docs/verification/vhdltest/simulators/simulator.md
 
   # SimulatorFactory unit review
   - id: VHDLTest-Simulators-SimulatorFactory
@@ -271,6 +274,7 @@ reviews:
       - docs/design/vhdltest/simulators/simulator-factory.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/SimulatorFactory.cs  # source
       - test/**/Simulators/SimulatorFactoryTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/simulator-factory.md
 
   # GhdlSimulator unit review
   - id: VHDLTest-Simulators-GhdlSimulator
@@ -280,6 +284,7 @@ reviews:
       - docs/design/vhdltest/simulators/ghdl-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/GhdlSimulator.cs  # source
       - test/**/Simulators/GhdlSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/ghdl-simulator.md
 
   # NvcSimulator unit review
   - id: VHDLTest-Simulators-NvcSimulator
@@ -289,6 +294,7 @@ reviews:
       - docs/design/vhdltest/simulators/nvc-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/NvcSimulator.cs  # source
       - test/**/Simulators/NvcSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/nvc-simulator.md
 
   # ModelSimSimulator unit review
   - id: VHDLTest-Simulators-ModelSimSimulator
@@ -298,6 +304,7 @@ reviews:
       - docs/design/vhdltest/simulators/modelsim-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/ModelSimSimulator.cs  # source
       - test/**/Simulators/ModelSimSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/modelsim-simulator.md
 
   # QuestaSimSimulator unit review
   - id: VHDLTest-Simulators-QuestaSimSimulator
@@ -307,6 +314,7 @@ reviews:
       - docs/design/vhdltest/simulators/questasim-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/QuestaSimSimulator.cs  # source
       - test/**/Simulators/QuestaSimSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/questasim-simulator.md
 
   # VivadoSimulator unit review
   - id: VHDLTest-Simulators-VivadoSimulator
@@ -316,6 +324,7 @@ reviews:
       - docs/design/vhdltest/simulators/vivado-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/VivadoSimulator.cs  # source
       - test/**/Simulators/VivadoSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/vivado-simulator.md
 
   # ActiveHdlSimulator unit review
   - id: VHDLTest-Simulators-ActiveHdlSimulator
@@ -325,6 +334,7 @@ reviews:
       - docs/design/vhdltest/simulators/active-hdl-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/ActiveHdlSimulator.cs  # source
       - test/**/Simulators/ActiveHdlSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/active-hdl-simulator.md
 
   # MockSimulator unit review
   - id: VHDLTest-Simulators-MockSimulator
@@ -334,6 +344,7 @@ reviews:
       - docs/design/vhdltest/simulators/mock-simulator.md  # design
       - src/DEMAConsulting.VHDLTest/Simulators/MockSimulator.cs  # source
       - test/**/Simulators/MockSimulatorTests.cs  # unit tests
+      - docs/verification/vhdltest/simulators/mock-simulator.md
 
   # SelfTest subsystem review
   - id: VHDLTest-SelfTest

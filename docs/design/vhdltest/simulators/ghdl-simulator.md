@@ -17,8 +17,12 @@ space, which prevents false matches on warning-prefixed lines that include the c
 prefix), `.*:error:`, or `.*: cannot open` as Error.
 
 **TestProcessor**: `RunProcessor` (public static readonly) — output classifier for GHDL run output.
-Classifies assertion/report note patterns as Info, warning patterns as Warning, and error/failure patterns
-as Error, matching GHDL's VHDL assertion and report message format.
+Applies nine classification rules in order:
+
+- Lines matching `.*:\(assertion note\):` or `.*:\(report note\):` are classified as Info.
+- Lines matching `.*:\(assertion warning\):` or `.*:\(report warning\):` are classified as Warning.
+- Lines matching `.*:\(assertion error\):`, `.*:\(report error\):`, `.*:\(assertion failure\):`,
+  `.*:\(report failure\):`, or `.*:error:` are classified as Error.
 
 #### Key Methods
 

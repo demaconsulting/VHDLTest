@@ -16,6 +16,7 @@ N/A - standard test environment.
 #### Acceptance Criteria
 
 - All tests in `SimulatorTests.cs` pass with zero failures.
+- All relevant tests in `MockSimulatorTests.cs` pass with zero failures.
 - `Available()` returns false when `SimulatorPath` is null.
 - `SimulatorName` returns the value supplied at construction.
 
@@ -31,3 +32,13 @@ This scenario is tested by the `SimulatorName` tests in each concrete simulator 
 no simulator executable is found on PATH, which is the expected state in the standard
 test environment where real simulators are not installed.
 This scenario is tested by `MockSimulator_Available_WithNullPath_ReturnsFalse`.
+
+**Where_UnknownExecutable_ReturnsNull**: Verifies that `Where()` returns null when searching
+for an executable name that does not exist on the system PATH, confirming the PATH search
+returns null rather than throwing when no match is found.
+This scenario is tested by `Simulator_Where_UnknownExecutable_ReturnsNull` in `SimulatorTests.cs`.
+
+**Available_WithNonNullPath_ReturnsTrue**: Verifies that `Available()` returns true when
+`SimulatorPath` is non-null, confirming the availability check correctly reflects the
+constructed path.
+This scenario is tested by `Simulator_Available_WithNonNullPath_ReturnsTrue` in `SimulatorTests.cs`.

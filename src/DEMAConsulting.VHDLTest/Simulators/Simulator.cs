@@ -51,14 +51,20 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     public string SimulatorName => simulatorName;
 
     /// <summary>
-    ///     Gets the path to the simulator
+    ///     Gets the path to the simulator installation directory.
     /// </summary>
+    /// <returns>
+    ///     The path to the simulator executable or directory, or <c>null</c> if the simulator
+    ///     is not installed.
+    /// </returns>
     public string? SimulatorPath => simulatorPath;
 
     /// <summary>
-    ///     Test if the simulator is available
+    ///     Tests whether the simulator is available for use.
     /// </summary>
-    /// <returns>True if available</returns>
+    /// <returns>
+    ///     <c>true</c> if <see cref="SimulatorPath"/> is non-null; <c>false</c> otherwise.
+    /// </returns>
     public bool Available()
     {
         return SimulatorPath != null;
@@ -67,8 +73,13 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <summary>
     ///     Compile the simulator library
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="options">Options</param>
+    /// <param name="context">
+    ///     Execution context used for logging output and error reporting. Must not be null.
+    /// </param>
+    /// <param name="options">
+    ///     Parsed command-line options providing working directory, configuration, and verbosity
+    ///     settings. Must not be null.
+    /// </param>
     /// <returns>Compile Results</returns>
     /// <exception cref="InvalidOperationException">Thrown by implementations when SimulatorPath is null.</exception>
     public abstract RunResults Compile(Context context, Options options);
@@ -76,8 +87,13 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <summary>
     ///     Execute a test
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="options">Options</param>
+    /// <param name="context">
+    ///     Execution context used for logging output and error reporting. Must not be null.
+    /// </param>
+    /// <param name="options">
+    ///     Parsed command-line options providing working directory, configuration, and verbosity
+    ///     settings. Must not be null.
+    /// </param>
     /// <param name="test">Test name</param>
     /// <returns>Test Results</returns>
     /// <exception cref="InvalidOperationException">Thrown by implementations when SimulatorPath is null.</exception>
@@ -114,6 +130,8 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
 
             // Update the files list considering the executable extensions
             var pathExt = Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD";
+            // Path.PathSeparator (';') is valid here: both PATH and PATHEXT use ';' as the
+            // list separator on Windows, so reusing Path.PathSeparator is semantically correct.
             var extensions = pathExt.Split(Path.PathSeparator);
             searchFiles = [.. extensions.Select(e => $"{application}{e}")];
         }
@@ -140,7 +158,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
             return false;
         }
 
-        // Current implementation accepts any non-null path; subclasses may override for additional validation
+        // This static helper accepts any non-empty, non-whitespace path string
         return true;
     }
 }

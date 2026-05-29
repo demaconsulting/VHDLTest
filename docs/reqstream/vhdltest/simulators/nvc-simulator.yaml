@@ -29,6 +29,8 @@ sections:
                   - NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult
                   - NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
                   - NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+                  - NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult
+                  - NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult
 
               - id: VHDLTest-Simulators-NvcSimulator-Test
                 title: NvcSimulator shall classify NVC simulation output lines by severity.
@@ -41,4 +43,16 @@ sections:
                   - NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
                   - NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
                   - NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+                  - NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
+                  - NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult
 
+              - id: VHDLTest-Simulators-NvcSimulator-FindPath
+                title: NvcSimulator.FindPath() shall locate the NVC installation directory.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate NVC across different
+                  installation layouts and environments. The VHDLTEST_NVC_PATH environment
+                  variable override enables CI pipelines and non-standard installations to
+                  specify the NVC path explicitly without modifying PATH.
+                tests:
+                  - NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+                  - NvcSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath

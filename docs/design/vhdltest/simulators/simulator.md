@@ -62,9 +62,10 @@ read-only via `SimulatorPath`.
 - *Postconditions*: On Windows, prepends the current directory and appends PATHEXT extensions to the search.
   Returns null if the PATH environment variable is absent or the executable is not found in any directory.
 
-The algorithm splits the PATH environment variable into directories, deduplicates them, combines them with
-candidate file names (adding PATHEXT extensions on Windows), and returns the first path that resolves to an
-existing file.
+The algorithm splits the PATH environment variable into directories, filters out null, empty, or
+whitespace-only entries using the private `IsPathLegal` helper, deduplicates valid entries,
+combines them with candidate file names (adding PATHEXT extensions on Windows), and returns
+the first path that resolves to an existing file.
 
 #### Error Handling
 

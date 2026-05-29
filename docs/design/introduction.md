@@ -117,9 +117,16 @@ test/DEMAConsulting.VHDLTest.Tests/
 │   ├── ConfigDocumentTests.cs  — ConfigDocument unit tests
 │   └── OptionsTests.cs         — Options unit tests
 ├── Simulators/
-│   ├── SimulatorTests.cs       — Simulator unit tests
-│   ├── SimulatorFactoryTests.cs — SimulatorFactory unit tests
-│   └── SimulatorsSubsystemTests.cs  — Simulators subsystem integration tests
+│   ├── SimulatorTests.cs           — Simulator unit tests
+│   ├── SimulatorFactoryTests.cs    — SimulatorFactory unit tests
+│   ├── GhdlSimulatorTests.cs       — GhdlSimulator unit tests
+│   ├── NvcSimulatorTests.cs        — NvcSimulator unit tests
+│   ├── ModelSimSimulatorTests.cs   — ModelSimSimulator unit tests
+│   ├── QuestaSimSimulatorTests.cs  — QuestaSimSimulator unit tests
+│   ├── VivadoSimulatorTests.cs     — VivadoSimulator unit tests
+│   ├── ActiveHdlSimulatorTests.cs  — ActiveHdlSimulator unit tests
+│   ├── MockSimulatorTests.cs       — MockSimulator unit tests
+│   └── SimulatorsSubsystemTests.cs — Simulators subsystem integration tests
 ├── Run/
 │   ├── RunProcessorTests.cs    — RunProcessor unit tests
 │   ├── RunProgramTests.cs      — RunProgram unit tests

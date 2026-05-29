@@ -44,6 +44,13 @@ public class SimulatorTests
         }
 
         /// <summary>
+        /// Initializes a new instance with the specified simulator path.
+        /// </summary>
+        public TestableSimulator(string? path) : base("Test", path)
+        {
+        }
+
+        /// <summary>
         /// Delegates to the protected <see cref="Simulator.Where"/> method.
         /// </summary>
         /// <param name="application">Application name to locate.</param>
@@ -74,5 +81,21 @@ public class SimulatorTests
 
         // Assert: the executable is not found and null is returned
         Assert.Null(result);
+    }
+
+    /// <summary>
+    /// Test that Available() returns true when SimulatorPath is non-null.
+    /// </summary>
+    [Fact]
+    public void Simulator_Available_WithNonNullPath_ReturnsTrue()
+    {
+        // Arrange: construct a simulator with a non-null path
+        var simulator = new TestableSimulator("/some/path");
+
+        // Act: check availability
+        var result = simulator.Available();
+
+        // Assert: non-null path means available
+        Assert.True(result);
     }
 }

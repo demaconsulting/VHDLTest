@@ -88,7 +88,7 @@ sections:
               - IntegrationTest_TestsPassed_ReturnsZeroExitCode
             children:
               - VHDLTest-Cli-Pipeline
-              - VHDLTest-Simulators-Factory
+              - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
               - VHDLTest-Results-Collect
               - VHDLTest-Results-Save
@@ -102,7 +102,7 @@ sections:
             tests:
               - IntegrationTest_CompileError_ReturnsNonZeroExitCode
             children:
-              - VHDLTest-Simulators-Factory
+              - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
 
           - id: VHDLTest-Test-TestError
@@ -114,7 +114,7 @@ sections:
             tests:
               - IntegrationTest_TestExecutionError_ReturnsNonZeroExitCode
             children:
-              - VHDLTest-Simulators-Factory
+              - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
 
           - id: VHDLTest-Test-Exit0
@@ -173,7 +173,7 @@ sections:
             tests:
               - IntegrationTest_TestsPassed_ReturnsZeroExitCode
             children:
-              - VHDLTest-Simulators-Factory
+              - VHDLTest-Simulators-Factory-Select
 
           - id: VHDLTest-Simulator-EnvPath
             title: VHDLTest shall support overriding the simulator executable path via environment variables (e.g., VHDLTEST_GHDL_PATH).
@@ -184,7 +184,7 @@ sections:
             tests:
               - IntegrationTest_SimulatorEnvPath_OverridesPath
             children:
-              - VHDLTest-Simulators-Factory
+              - VHDLTest-Simulators-Factory-Select
 
       - title: Self-Validation
         requirements:

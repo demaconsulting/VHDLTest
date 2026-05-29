@@ -4,38 +4,49 @@ sections:
     sections:
       - title: Simulators Requirements
         requirements:
-          - id: VHDLTest-Simulators-Factory
-            title: VHDLTest shall select the simulator implementation by name and use it to classify output.
+          - id: VHDLTest-Simulators-Factory-Select
+            title: The Simulators subsystem shall select a simulator by name using SimulatorFactory.
             justification: |
               A factory pattern for simulator selection decouples test execution from the
-              concrete simulator implementation. Verifying that the factory and simulator
-              processors work together end-to-end ensures the subsystem interfaces are correct.
+              concrete simulator implementation. Verifying that the factory correctly selects
+              a simulator by name ensures the subsystem interface contract is correct.
             tests:
               - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
-              - SimulatorsSubsystem_GetUnknownSimulatorAndProcessCleanOutput_ReturnsNullAndClassifiesText
+              - SimulatorsSubsystem_GetUnknownSimulatorByName_ReturnsNull
             children:
               - VHDLTest-Simulators-Simulator-Interface
               - VHDLTest-Simulators-SimulatorFactory-Get
               - VHDLTest-Simulators-SimulatorFactory-Unknown
+              - VHDLTest-Simulators-SimulatorFactory-AutoSelect
               - VHDLTest-Simulators-GhdlSimulator-Support
+              - VHDLTest-Simulators-NvcSimulator-Support
+              - VHDLTest-Simulators-ModelSimSimulator-Support
+              - VHDLTest-Simulators-QuestaSimSimulator-Support
+              - VHDLTest-Simulators-VivadoSimulator-Support
+              - VHDLTest-Simulators-ActiveHdlSimulator-Support
+              - VHDLTest-Simulators-MockSimulator-Support
+
+          - id: VHDLTest-Simulators-Factory-Classify
+            title: The Simulators subsystem shall classify simulator output using the selected simulator's processors.
+            justification: |
+              Verifying that the factory and simulator processors work together end-to-end
+              ensures the subsystem interfaces are correct and output classification functions
+              as designed for each supported simulator.
+            tests:
+              - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
+              - SimulatorsSubsystem_NvcProcessorWithCleanOutput_ClassifiesAsText
+            children:
               - VHDLTest-Simulators-GhdlSimulator-Compile
               - VHDLTest-Simulators-GhdlSimulator-Test
-              - VHDLTest-Simulators-NvcSimulator-Support
               - VHDLTest-Simulators-NvcSimulator-Compile
               - VHDLTest-Simulators-NvcSimulator-Test
-              - VHDLTest-Simulators-ModelSimSimulator-Support
               - VHDLTest-Simulators-ModelSimSimulator-Compile
               - VHDLTest-Simulators-ModelSimSimulator-Test
-              - VHDLTest-Simulators-QuestaSimSimulator-Support
               - VHDLTest-Simulators-QuestaSimSimulator-Compile
               - VHDLTest-Simulators-QuestaSimSimulator-Test
-              - VHDLTest-Simulators-VivadoSimulator-Support
               - VHDLTest-Simulators-VivadoSimulator-Compile
               - VHDLTest-Simulators-VivadoSimulator-Test
-              - VHDLTest-Simulators-ActiveHdlSimulator-Support
               - VHDLTest-Simulators-ActiveHdlSimulator-Compile
               - VHDLTest-Simulators-ActiveHdlSimulator-Test
-              - VHDLTest-Simulators-MockSimulator-Support
               - VHDLTest-Simulators-MockSimulator-Compile
               - VHDLTest-Simulators-MockSimulator-Test
-

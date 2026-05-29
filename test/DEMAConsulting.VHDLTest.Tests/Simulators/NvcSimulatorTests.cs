@@ -162,6 +162,10 @@ public class NvcSimulatorTests
 
         // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nCompile Failure: Compile Failure", results.Output);
         Assert.Equal(2, results.Lines.Count);
         Assert.Equal(RunLineType.Text, results.Lines[0].Type);
         Assert.Equal("Compile", results.Lines[0].Text);
@@ -185,6 +189,10 @@ public class NvcSimulatorTests
 
         // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Compile\nCompile Fatal: Compile Fatal", results.Output);
         Assert.Equal(2, results.Lines.Count);
         Assert.Equal(RunLineType.Text, results.Lines[0].Type);
         Assert.Equal("Compile", results.Lines[0].Text);
@@ -316,6 +324,10 @@ public class NvcSimulatorTests
 
         // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nTest Failure: Test Failure", results.Output);
         Assert.Equal(2, results.Lines.Count);
         Assert.Equal(RunLineType.Text, results.Lines[0].Type);
         Assert.Equal("Test", results.Lines[0].Text);
@@ -339,10 +351,66 @@ public class NvcSimulatorTests
 
         // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nTest Fatal: Test Fatal", results.Output);
         Assert.Equal(2, results.Lines.Count);
         Assert.Equal(RunLineType.Text, results.Lines[0].Type);
         Assert.Equal("Test", results.Lines[0].Text);
         Assert.Equal(RunLineType.Error, results.Lines[1].Type);
         Assert.Equal("Test Fatal: Test Fatal", results.Lines[1].Text);
+    }
+
+    /// <summary>
+    /// Test that FindPath returns the env var value when VHDLTEST_NVC_PATH is set.
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
+    {
+        // Arrange: set the VHDLTEST_NVC_PATH environment variable to a known value
+        var expectedPath = "/custom/nvc/path";
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_NVC_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", expectedPath);
+
+        try
+        {
+            // Act: call FindPath()
+            var result = NvcSimulator.FindPath();
+
+            // Assert: result is the env var value
+            Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    /// Test that FindPath does not throw when the NVC env var is not set.
+    /// Result is either a valid path (NVC installed) or null (NVC not installed).
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
+    {
+        // Arrange: ensure VHDLTEST_NVC_PATH is not set for this test
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_NVC_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", null);
+
+        try
+        {
+            // Act: call FindPath() without the env var override
+            var result = NvcSimulator.FindPath();
+
+            // Assert: result is either null (NVC not installed) or a non-empty path string
+            Assert.True(result == null || result.Length > 0);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", previousValue);
+        }
     }
 }
