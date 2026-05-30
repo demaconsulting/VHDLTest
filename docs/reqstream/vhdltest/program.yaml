@@ -60,6 +60,7 @@ sections:
               Program.Run must delegate to TestResults.Execute and complete without error.
             tests:
               - Program_Run_RunTests_WithMockSimulator_RunsSuccessfully
+              - Program_Run_WithInvalidSimulator_WritesErrorAndExits
 
           - id: VHDLTest-Program-FailureExitCode
             title: Program shall return a non-zero exit code when tests fail and the exit-zero flag is not set.

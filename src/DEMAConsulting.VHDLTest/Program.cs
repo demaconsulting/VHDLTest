@@ -27,13 +27,29 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest;
 
 /// <summary>
-///     VHDLTest program class
+///     CLI entry point and dispatch coordinator for the VHDLTest application.
 /// </summary>
+/// <remarks>
+///     <see cref="Main"/> creates the <see cref="Cli.Context"/> from raw command-line
+///     arguments and delegates to <see cref="Run"/> for all dispatch logic.
+///     <see cref="Run"/> handles version display, help, self-validation, and the primary
+///     test-execution path, communicating results through the context's error channel and
+///     exit code. All operational errors are caught and reported without re-throwing;
+///     unexpected exceptions are reported and re-thrown so the runtime records them as
+///     unhandled.
+/// </remarks>
 public static class Program
 {
     /// <summary>
-    ///     Gets the version of this program's assembly.
+    ///     Gets the informational version string of this program's assembly, read from
+    ///     <see cref="System.Reflection.AssemblyInformationalVersionAttribute"/>.
     /// </summary>
+    /// <remarks>
+    ///     The value is resolved once at static initialization from the assembly's
+    ///     <see cref="System.Reflection.AssemblyInformationalVersionAttribute"/>; if the
+    ///     attribute is absent, the value is <c>"Unknown"</c>. The property is read-only
+    ///     after static initialization and is therefore safe to read from any thread.
+    /// </remarks>
     public static string Version { get; } =
         typeof(Program).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()

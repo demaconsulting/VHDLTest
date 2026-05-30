@@ -48,25 +48,33 @@ sections:
 
               - id: VHDLTest-Run-RunProcessor-VerboseLogging
                 title: >-
-                  RunProcessor shall log the working directory and command to the context when
-                  executing a simulator on behalf of a caller that provides a Context.
+                  RunProcessor shall log the working directory to the context before executing the
+                  simulator program.
                 justification: |
-                  Verbose logging of the run directory and command enables users and CI operators to
-                  diagnose simulator invocation issues without resorting to external process tracing.
+                  Logging the working directory enables users and CI operators to confirm which
+                  directory the simulator was invoked from, aiding diagnosis of path-related issues.
                   Logging is gated on the context verbose flag so it does not clutter normal output.
                 tests:
-                  - RunSubsystem_ExecuteWithContext_LogsCommandToContext
+                  - RunProcessor_Execute_WithContext_LogsRunInfo
+
+              - id: VHDLTest-Run-RunProcessor-VerboseLogging-Command
+                title: >-
+                  RunProcessor shall log the run command to the context before executing the
+                  simulator program.
+                justification: |
+                  Logging the run command enables users and CI operators to reproduce and verify
+                  the exact simulator invocation, aiding diagnosis of argument-related issues.
+                  Logging is gated on the context verbose flag so it does not clutter normal output.
+                tests:
                   - RunProcessor_Execute_WithContext_LogsRunInfo
 
               - id: VHDLTest-Run-RunProcessor-WindowsWrapping
                 title: >-
-                  RunProcessor shall support invocation of Windows batch files by wrapping the
-                  command with cmd /c on Windows.
+                  RunProcessor shall support invocation of Windows batch files on Windows platforms.
                 justification: |
                   Windows batch files (.bat/.cmd) cannot be launched directly as a process — they
-                  require a command interpreter. Wrapping with cmd /c ensures that batch-file-based
-                  simulator launchers work correctly on Windows without requiring callers to know
-                  about this platform difference.
+                  require a command interpreter. Supporting batch-file-based simulator launchers on
+                  Windows ensures that VHDLTest integrates with simulators that provide .bat/.cmd
+                  entry points without requiring callers to know about this platform difference.
                 tests:
-                  - windows@RunSubsystem_ExecuteWithContext_LogsCommandToContext
                   - windows@RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC

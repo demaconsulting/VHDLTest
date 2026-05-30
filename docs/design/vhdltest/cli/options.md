@@ -26,7 +26,8 @@ and `Tests` arrays.
 - *Postconditions*: `WorkingDirectory` holds the absolute directory containing the
   configuration file; `Config` holds the deserialised `ConfigDocument`.
 
-Verifies that `args.ConfigFile` is non-null, calls `ConfigDocument.ReadFile` to deserialise
+Validates that `args` is not null (throws `ArgumentNullException` if null). Verifies that
+`args.ConfigFile` is non-null, calls `ConfigDocument.ReadFile` to deserialise
 the YAML content, resolves the full path of the config file via `Path.GetFullPath`, and
 extracts the parent directory via `Path.GetDirectoryName`. Throws `InvalidOperationException`
 if the directory cannot be resolved.

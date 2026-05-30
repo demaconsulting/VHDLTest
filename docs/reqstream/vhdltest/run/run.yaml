@@ -11,7 +11,6 @@ sections:
               command-line VHDL simulator without requiring programmatic integration.
             tests:
               - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
-              - RunSubsystem_ExecuteWithContext_LogsCommandToContext
             children:
               - VHDLTest-Run-RunProcessor-MissingProgram
               - VHDLTest-Run-RunProcessor-ExitCodeFail
@@ -27,6 +26,15 @@ sections:
               even when no individual output line matches an error pattern.
             tests:
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
+
+          - id: VHDLTest-Run-Log
+            title: VHDLTest shall log the working directory and run command to the context before executing the simulator program.
+            justification: |
+              Logging the working directory and command before execution gives users and CI
+              operators the information needed to reproduce and diagnose simulator invocation
+              issues without external process tracing tools.
+            tests:
+              - RunSubsystem_Execute_WithContext_LogsCommandToContext
 
           - id: VHDLTest-Run-Classify
             title: >-

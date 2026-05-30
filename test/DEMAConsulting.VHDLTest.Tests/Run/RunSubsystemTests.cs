@@ -83,7 +83,7 @@ public class RunSubsystemTests
     ///     process execution path.
     /// </summary>
     [Fact]
-    public void RunSubsystem_ExecuteWithContext_LogsCommandToContext()
+    public void RunSubsystem_Execute_WithContext_LogsCommandToContext()
     {
         // Arrange: create a verbose context backed by a log file so that verbose output can
         // be read back after execution; use a unique filename to avoid cross-test conflicts

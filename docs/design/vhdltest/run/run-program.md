@@ -32,7 +32,9 @@ concatenates the stdout and stderr results into `output`, and returns the exit c
 
 No exceptions are caught within `RunProgram`. If the executable is not found or cannot
 be started, `Process.Start` throws an exception that propagates to the caller
-(`RunProcessor`).
+(`RunProcessor`). On Windows, `Win32Exception` is thrown when the executable is not found
+or cannot be started. On non-Windows platforms, `FileNotFoundException` is thrown when the
+executable path does not exist.
 
 #### Dependencies
 

@@ -290,7 +290,7 @@ public class ProgramTests
     ///     branch inside Run that handles operational errors such as a missing simulator.
     /// </summary>
     [Fact]
-    public void Program_Main_WithInvalidSimulator_WritesErrorAndExits()
+    public void Program_Run_WithInvalidSimulator_WritesErrorAndExits()
     {
         // Arrange: write a valid configuration file and specify an unrecognized simulator
         // name so that SimulatorFactory.Get returns null and Run throws
@@ -311,6 +311,37 @@ public class ProgramTests
         finally
         {
             File.Delete(configFile);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run creates the results file when the --results flag is given.
+    /// </summary>
+    [Fact]
+    public void Program_Run_SaveResults_WithResultsFile_CreatesResultsFile()
+    {
+        // Arrange: write a passing configuration file and specify a results output file
+        var configFile = Path.GetTempFileName();
+        var resultsFile = Path.Combine(Path.GetTempPath(), $"results_{Guid.NewGuid():N}.trx");
+        try
+        {
+            File.WriteAllText(configFile, PassingConfigContent);
+            using var context = Context.Create(
+                ["-c", configFile, "--simulator", "mock", "--results", resultsFile, "--silent"]);
+
+            // Act: run the program with the --results flag
+            Program.Run(context);
+
+            // Assert: the results file was created
+            Assert.True(File.Exists(resultsFile), $"Expected results file to be created at: {resultsFile}");
+        }
+        finally
+        {
+            File.Delete(configFile);
+            if (File.Exists(resultsFile))
+            {
+                File.Delete(resultsFile);
+            }
         }
     }
 }

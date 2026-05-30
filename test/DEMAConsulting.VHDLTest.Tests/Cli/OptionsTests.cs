@@ -173,4 +173,14 @@ public class OptionsTests
         // Act + Assert: a root path has no parent directory and should throw
         Assert.Throws<InvalidOperationException>(() => Options.ResolveWorkingDirectory(rootPath));
     }
+
+    /// <summary>
+    /// Test that passing null to Options.Parse throws ArgumentNullException
+    /// </summary>
+    [Fact]
+    public void Options_Parse_NullArgs_ThrowsArgumentNullException()
+    {
+        // Act + Assert: passing null must throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => Options.Parse(null!));
+    }
 }

@@ -39,3 +39,8 @@ exit code from the external process results in `RunResults.Summary` of `RunLineT
 confirming the error threshold logic in `RunProcessor.Parse`.
 This scenario is tested by
 `RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults`.
+
+**Execute_WithContext_LogsCommandToContext**: Verifies that the `Execute(Context, string, string, string[])`
+overload logs the working directory and run command to the context before delegating to the
+process execution path. This scenario is tested by
+`RunSubsystem_Execute_WithContext_LogsCommandToContext`.

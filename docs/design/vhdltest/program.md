@@ -68,7 +68,10 @@ full exception text in red, and re-throws so the .NET runtime records the unhand
 
 `Run` catches `InvalidOperationException` from the test execution path and reports the message via
 `context.WriteError`. It also catches generic `Exception` and writes the full exception text as an
-error.
+error. Within the test execution path, `results.SaveResults(context.ResultsFile)` is wrapped in its
+own inner `try/catch`: if saving results throws an `Exception`, the error message is written to the
+context via `context.WriteError` and execution continues — the results-save failure does not
+propagate to the outer exception handlers.
 
 ### Dependencies
 

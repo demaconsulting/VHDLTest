@@ -170,6 +170,7 @@ reviews:
     paths:
       - docs/reqstream/vhdltest/run/run.yaml  # subsystem requirements
       - docs/design/vhdltest/run.md  # subsystem design
+      - docs/verification/vhdltest/run.md  # subsystem verification
       - test/**/Run/RunSubsystemTests.cs  # subsystem integration tests
 
   # RunProcessor unit review
@@ -187,6 +188,7 @@ reviews:
     paths:
       - docs/reqstream/vhdltest/run/run-program.yaml  # requirements
       - docs/design/vhdltest/run/run-program.md  # design
+      - docs/verification/vhdltest/run/run-program.md  # verification document
       - src/DEMAConsulting.VHDLTest/Run/RunProgram.cs  # source
       - test/**/Run/RunProgramTests.cs  # unit tests
       - test/**/Run/RunProcessorTests.cs  # indirect coverage via RunProcessor

@@ -8,12 +8,21 @@ sections:
             requirements:
               - id: VHDLTest-Run-RunProgram-Execute
                 title: >-
-                  RunProgram shall launch the specified external program with the given arguments and
-                  return its exit code to the caller.
+                  RunProgram shall launch the specified external program with the given arguments.
                 justification: |
                   Executing simulator tools as external processes decouples VHDLTest from any
                   specific simulator API, allowing it to integrate with any command-line VHDL
                   simulator without a custom programmatic binding.
+                tests:
+                  - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+
+              - id: VHDLTest-Run-RunProgram-ExitCode
+                title: >-
+                  RunProgram shall return the exit code of the executed program to the caller.
+                justification: |
+                  Returning the exit code allows the caller to determine whether the simulator
+                  reported success or failure, enabling accurate test result classification even
+                  when no individual output line matches an error pattern.
                 tests:
                   - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
                   - RunProgram_Run_ProgramWithNonZeroExit_ReturnsNonZeroExitCode
@@ -29,3 +38,14 @@ sections:
                 tests:
                   - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
                   - RunProgram_Run_ProgramWithStderr_CapturesBothStreamsInOutput
+
+              - id: VHDLTest-Run-RunProgram-WorkingDirectory
+                title: >-
+                  RunProgram shall use the caller's current working directory when an empty string
+                  is provided as the working directory.
+                justification: |
+                  Inheriting the caller's working directory when no explicit directory is given
+                  provides a sensible default that allows simulators to resolve relative paths
+                  correctly without requiring callers to always specify an absolute working directory.
+                tests:
+                  - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput

@@ -2,36 +2,42 @@
 
 #### Verification Approach
 
-`RunProgram` is a static utility class with no standalone unit tests. It is verified
-indirectly through the `RunProcessor` tests, which call `RunProcessor.Execute` and thereby
-invoke `RunProgram.Run` to launch external processes. The tests in `RunProcessorTests.cs`
-and `RunSubsystemTests.cs` confirm that `RunProgram.Run` correctly launches the `dotnet`
-executable, captures combined stdout and stderr output, and returns the exit code to
-`RunProcessor`. Missing-executable behavior is also exercised through these tests.
+`RunProgram` is verified through three direct unit tests in `RunProgramTests.cs`. These tests
+call `RunProgram.Run` directly using the `dotnet` executable as the controlled external program,
+verifying that the method correctly launches the process, captures combined stdout and stderr,
+returns the correct exit code, and propagates exceptions when the executable is not found.
+
+No mocking is used; `dotnet` is used as the controlled external program because it is always
+available in any .NET SDK environment.
 
 #### Test Environment
 
-N/A - standard test environment. `dotnet` must be available on PATH.
+N/A - standard test environment. `dotnet` must be available on PATH (it is in any .NET
+SDK environment).
 
 #### Acceptance Criteria
 
-- `RunProgram.Run` is exercised by all `RunProcessor` and Run subsystem tests with zero
-  failures.
+- `RunProgram.Run` launches the specified program and returns its exit code with zero failures.
 - Combined stdout and stderr output is captured and returned without data loss.
 - The exit code returned by `RunProgram.Run` matches the process exit code.
 - A missing executable causes an exception to propagate to the caller.
 
 #### Test Scenarios
 
-**Execute_ProgramWithSuccess_ReturnsInfoResult** (via RunProcessor): Verifies that
-`RunProgram.Run` launches the `dotnet help` command and returns non-empty combined output
-with a zero exit code, confirming successful process execution and output capture.
-This scenario is tested by `RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult`.
+**Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput**: Verifies that `RunProgram.Run`
+launches the `dotnet help` command, returns exit code 0, and produces non-empty combined
+output, confirming successful process execution and output capture.
+This scenario is tested by
+`RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput`.
 
-**Execute_ProgramWithError_ReturnsErrorResult** (via RunProcessor): Verifies that
-`RunProgram.Run` returns a non-zero exit code when the process exits with an error.
-This scenario is tested by `RunProcessor_Execute_ProgramWithError_ReturnsErrorResult`.
+**Run_ProgramWithNonZeroExit_ReturnsNonZeroExitCode**: Verifies that `RunProgram.Run`
+returns the non-zero exit code when the launched program exits with an error, confirming
+that the exit code is faithfully propagated to the caller.
+This scenario is tested by
+`RunProgram_Run_ProgramWithNonZeroExit_ReturnsNonZeroExitCode`.
 
-**Execute_MissingProgram_ThrowsException** (via RunProcessor): Verifies that `RunProgram.Run`
-propagates the process-start exception when the executable cannot be found.
-This scenario is tested by `RunProcessor_Execute_MissingProgram_ThrowsException`.
+**Run_ProgramWithStderr_CapturesBothStreamsInOutput**: Verifies that `RunProgram.Run`
+captures output written to stderr and includes it in the combined output string returned
+to the caller, confirming that neither output stream is discarded.
+This scenario is tested by
+`RunProgram_Run_ProgramWithStderr_CapturesBothStreamsInOutput`.
