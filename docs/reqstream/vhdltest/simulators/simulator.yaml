@@ -20,6 +20,8 @@ sections:
                 tests:
                   - MockSimulator_SimulatorName_ReturnsMock
                   - MockSimulator_Available_WithNullPath_ReturnsFalse
+                  - MockSimulator_Compile_WithCleanFile_ReturnsSuccessResult
+                  - MockSimulator_Test_WithCleanName_ReturnsSuccessResult
 
               - id: VHDLTest-Simulators-Simulator-Where
                 title: >-

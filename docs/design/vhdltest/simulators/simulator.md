@@ -50,7 +50,10 @@ read-only via `SimulatorPath`.
 - *Parameters*: `Context context` — provides verbose logging. `Options options` — carries configuration.
   `string test` — name of the test bench entity.
 - *Returns*: `TestResult` — pass/fail status and diagnostic output for the test.
-- *Preconditions*: SimulatorPath must be non-null.
+- *Preconditions*: SimulatorPath must be non-null. The `test` parameter is interpolated directly into
+  a TCL script by some simulator implementations without sanitization; callers must ensure the value
+  contains no TCL metacharacters (e.g., `[`, `]`, `$`, `;`, `\`). The base class does not sanitize the
+  input; preventing injection is the responsibility of the caller.
 - *Postconditions*: Returns structured results; concrete implementations must throw
   `InvalidOperationException` if `SimulatorPath` is null.
 

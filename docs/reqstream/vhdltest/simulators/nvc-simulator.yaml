@@ -15,8 +15,23 @@ sections:
                 tests:
                   - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
                   - NvcSimulator_SimulatorName_ReturnsNVC
-                  - nvc@VHDLTest_TestPasses
-                  - nvc@VHDLTest_TestFails
+                justification: |
+                  NVC support is verified by unit tests confirming factory registration and
+                  simulator name. End-to-end integration is verified by CI integration tests
+                  requiring a live NVC installation (nvc@VHDLTest_TestPasses,
+                  nvc@VHDLTest_TestFails); these are not listed here as they are system-level
+                  tests, not unit tests.
+
+              - id: VHDLTest-Simulators-NvcSimulator-Availability
+                title: The NvcSimulator shall throw InvalidOperationException when Compile or Test is invoked and the NVC simulator is not available.
+                justification: |
+                  Failing fast with a descriptive exception when the simulator is unavailable
+                  prevents silent incorrect behavior and gives callers a clear signal that the
+                  NVC installation is missing. Callers are expected to check Available() before
+                  invoking Compile or Test.
+                tests:
+                  - NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException
+                  - NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException
 
               - id: VHDLTest-Simulators-NvcSimulator-Compile
                 title: NvcSimulator shall classify NVC compilation output lines by severity.
@@ -31,7 +46,6 @@ sections:
                   - NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
                   - NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult
                   - NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult
-                  - NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException
 
               - id: VHDLTest-Simulators-NvcSimulator-Test
                 title: NvcSimulator shall classify NVC simulation output lines by severity.
@@ -46,7 +60,6 @@ sections:
                   - NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
                   - NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
                   - NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult
-                  - NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException
 
               - id: VHDLTest-Simulators-NvcSimulator-FindPath
                 title: NvcSimulator shall locate the NVC installation directory.

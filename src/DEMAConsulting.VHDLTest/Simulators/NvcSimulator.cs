@@ -114,12 +114,12 @@ public sealed class NvcSimulator : Simulator
                       throw new InvalidOperationException("NVC Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
-        // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
-        context.WriteVerboseLine($"  Library Directory: {libDir}");
-        if (!Directory.Exists(libDir))
+        // Create the NVC output directory
+        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
+        context.WriteVerboseLine($"  NVC Output Directory: {outputDir}");
+        if (!Directory.Exists(outputDir))
         {
-            Directory.CreateDirectory(libDir);
+            Directory.CreateDirectory(outputDir);
         }
 
         // Build the batch file
@@ -130,7 +130,7 @@ public sealed class NvcSimulator : Simulator
         }
 
         // Write the batch file
-        var script = Path.Combine(libDir, "compile.rsp");
+        var script = Path.Combine(outputDir, "compile.rsp");
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
@@ -157,9 +157,9 @@ public sealed class NvcSimulator : Simulator
                       throw new InvalidOperationException("NVC Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
-        // Get the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
-        context.WriteVerboseLine($"  Library Directory: {libDir}");
+        // Get the NVC output directory
+        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
+        context.WriteVerboseLine($"  NVC Output Directory: {outputDir}");
 
         // Run the test
         var application = Path.Combine(simPath, "nvc");

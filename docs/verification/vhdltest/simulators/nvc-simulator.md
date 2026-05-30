@@ -21,8 +21,20 @@ Live simulator integration: CI environment with NVC installed on PATH.
 - The compile processor correctly classifies clean, info, warning, error, failure, and fatal output patterns.
 - The test processor correctly classifies clean, info, warning, error, failure, and fatal output patterns.
 - `NvcSimulator.FindPath()` returns the `VHDLTEST_NVC_PATH` environment variable value when set.
+- `NvcSimulator.Compile()` throws `InvalidOperationException` when the NVC simulator is not available.
+- `NvcSimulator.Test()` throws `InvalidOperationException` when the NVC simulator is not available.
 
 #### Test Scenarios
+
+**Compile_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `NvcSimulator.Compile()`
+throws `InvalidOperationException` when the NVC simulator is not available (i.e., `SimulatorPath` is null),
+preventing silent incorrect behavior when the simulator is not installed.
+This scenario is tested by `NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException`.
+
+**Test_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `NvcSimulator.Test()`
+throws `InvalidOperationException` when the NVC simulator is not available (i.e., `SimulatorPath` is null),
+preventing silent incorrect behavior when the simulator is not installed.
+This scenario is tested by `NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`.
 
 **SimulatorName_ReturnsNVC**: Verifies that `NvcSimulator.Instance.SimulatorName` is `"NVC"`,
 confirming the instance is registered with the correct name for factory lookup.

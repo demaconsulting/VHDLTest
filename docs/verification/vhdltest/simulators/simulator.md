@@ -9,6 +9,13 @@ subclasses that inherit them. Each concrete simulator's unit tests exercise
 `SimulatorName` and `Available()` properties, confirming that the base class contract
 is correctly implemented.
 
+`MockSimulator` is a test fixture (not a production software unit) whose sole purpose is to
+exercise the `Simulator` abstract base class in isolation. `MockSimulatorTests` collectively
+verify the base-class interface contract — name, availability, compile, and test-execution
+behavior — covering 18 test cases. No separate verification document is required for
+`MockSimulator` itself; its tests form part of the verification evidence for the
+`Simulator` abstract base class.
+
 #### Test Environment
 
 N/A - standard test environment.
@@ -32,6 +39,11 @@ This scenario is tested by the `SimulatorName` tests in each concrete simulator 
 no simulator executable is found on PATH, which is the expected state in the standard
 test environment where real simulators are not installed.
 This scenario is tested by `MockSimulator_Available_WithNullPath_ReturnsFalse`.
+
+**Where_ExistingExecutable_ReturnsNonNull**: Verifies that `Where()` returns a non-null path
+when searching for an executable that is present on the system PATH, confirming the PATH
+search correctly locates installed tools.
+This scenario is tested by `Simulator_Where_ExistingExecutable_ReturnsNonNull` in `SimulatorTests.cs`.
 
 **Where_UnknownExecutable_ReturnsNull**: Verifies that `Where()` returns null when searching
 for an executable name that does not exist on the system PATH, confirming the PATH search

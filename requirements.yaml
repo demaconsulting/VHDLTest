@@ -7,7 +7,7 @@ includes:
   - docs/reqstream/vhdltest/cli/context.yaml
   - docs/reqstream/vhdltest/cli/config-document.yaml
   - docs/reqstream/vhdltest/cli/options.yaml
-  - docs/reqstream/vhdltest/simulators/simulators.yaml
+  - docs/reqstream/vhdltest/simulators.yaml
   - docs/reqstream/vhdltest/simulators/simulator.yaml
   - docs/reqstream/vhdltest/simulators/simulator-factory.yaml
   - docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml
