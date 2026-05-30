@@ -285,33 +285,33 @@ public class ProgramTests
     }
 
     /// <summary>
-    ///     Verifies that Run creates a results file at the specified path when --results is given.
+    ///     Verifies that Run writes an error and returns a non-zero exit code when an
+    ///     invalid simulator name is given, exercising the InvalidOperationException catch
+    ///     branch inside Run that handles operational errors such as a missing simulator.
     /// </summary>
     [Fact]
-    public void Program_Run_SaveResults_WithResultsFile_CreatesResultsFile()
+    public void Program_Main_WithInvalidSimulator_WritesErrorAndExits()
     {
-        // Arrange: write a passing configuration file and prepare a unique results file path
+        // Arrange: write a valid configuration file and specify an unrecognized simulator
+        // name so that SimulatorFactory.Get returns null and Run throws
+        // InvalidOperationException("Simulator not found") in its inner try/catch
         var configFile = Path.GetTempFileName();
-        var resultsFile = Path.Combine(Path.GetTempPath(), $"results_{Guid.NewGuid():N}.trx");
         try
         {
             File.WriteAllText(configFile, PassingConfigContent);
             using var context = Context.Create(
-                ["-c", configFile, "--simulator", "mock", "-r", resultsFile, "--silent"]);
+                ["-c", configFile, "--simulator", "invalid-simulator-name", "--silent"]);
 
-            // Act: run the program with the results flag
+            // Act: run the program — must not throw; the exception is handled inside Run
             Program.Run(context);
 
-            // Assert: the results file was created at the specified path
-            Assert.True(File.Exists(resultsFile), $"Results file '{resultsFile}' should have been created");
+            // Assert: an error was recorded and the exit code is non-zero
+            Assert.NotEqual(0, context.ExitCode);
         }
         finally
         {
             File.Delete(configFile);
-            if (File.Exists(resultsFile))
-            {
-                File.Delete(resultsFile);
-            }
         }
     }
 }
+

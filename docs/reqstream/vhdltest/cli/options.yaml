@@ -7,7 +7,7 @@ sections:
           - title: Options Requirements
             requirements:
               - id: VHDLTest-Cli-Options-Parse
-                title: The Options class shall combine Context and ConfigDocument into test run options.
+                title: The Options class shall produce fully resolved test run options from parsed command-line arguments and the loaded configuration file.
                 justification: |
                   Combining the command-line context and configuration document into a single Options
                   record provides a single, validated source of truth for test execution, simplifying

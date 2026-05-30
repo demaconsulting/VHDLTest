@@ -46,6 +46,13 @@ Dispatches in this order:
    failure and cause `context.ExitCode` to return non-zero. Catches
    `InvalidOperationException` and generic exceptions, writing them as errors.
 
+The `[tests]` positional argument — any bare command-line tokens not preceded by a flag, or
+any tokens after `--` — is accumulated by `Context.Create` into `Context.CustomTests`. When
+`CustomTests` is non-null, `TestResults.Execute` uses it to filter the test benches that are
+executed to only those whose names appear in the list; tests present in the configuration file
+but absent from `CustomTests` are skipped. When `CustomTests` is null all configured test
+benches are executed.
+
 **PrintUsage** (private): Writes the usage/help text to the context output channel.
 
 - *Parameters*: `Context context` — output target.

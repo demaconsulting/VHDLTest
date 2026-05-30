@@ -180,4 +180,47 @@ public class RunProcessorTests
             }
         }
     }
+
+    /// <summary>
+    ///     Verifies that <c>Execute(Context, ...)</c> wraps the command with <c>cmd /c</c> on
+    ///     Windows so that batch files and other shell-dispatched programs can be launched
+    ///     without requiring the caller to know about the Windows shell requirement.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC()
+    {
+        // Skip this test on non-Windows platforms — the cmd /c wrapping only occurs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: use a unique per-test temp log file to capture the verbose command log
+        var logFile = Path.Combine(Path.GetTempPath(), $"rp_win_test_{Guid.NewGuid():N}.log");
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using (var context = Context.Create(["--verbose", "--log", logFile, "--silent"]))
+            {
+                // Act: invoke Execute(Context, ...) with a known-good application; on Windows
+                // the implementation wraps the command with cmd /c before launching
+                processor.Execute(context, "dotnet", "", "help");
+            }
+
+            // Assert: the verbose log contains the cmd /c wrapper added on Windows
+            var logContent = File.ReadAllText(logFile);
+            Assert.Contains("cmd /c", logContent);
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
+    }
 }

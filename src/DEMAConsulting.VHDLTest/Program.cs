@@ -198,6 +198,9 @@ public static class Program
               -s, --simulator <name>       Specify simulator
               -0, --exit-0                 Exit with code 0 if test fail
               --                           End of options
+
+            Arguments:
+              [tests]                      Optional test bench names to filter which tests to run
             """);
     }
 }

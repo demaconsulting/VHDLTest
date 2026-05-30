@@ -21,8 +21,8 @@ and `Tests` arrays.
 
 - *Parameters*: `Context args` — a fully initialised Context from which `ConfigFile` is read.
 - *Returns*: `Options` — a record with `WorkingDirectory` and `Config` populated.
-- *Preconditions*: `args.ConfigFile` must be non-null and must point to a valid, readable YAML
-  configuration file.
+- *Preconditions*: `args` must not be null; `args.ConfigFile` must be non-null and point to a
+  valid, readable YAML configuration file.
 - *Postconditions*: `WorkingDirectory` holds the absolute directory containing the
   configuration file; `Config` holds the deserialised `ConfigDocument`.
 
@@ -48,7 +48,8 @@ argument processing.
 
 #### Error Handling
 
-`Parse` throws `InvalidOperationException` if `args.ConfigFile` is null ("Configuration file
+`Parse` throws `ArgumentNullException` if `args` is null. `Parse` throws
+`InvalidOperationException` if `args.ConfigFile` is null ("Configuration file
 not specified"). It propagates `FileNotFoundException` and `InvalidOperationException` from
 `ConfigDocument.ReadFile` for missing or invalid configuration files. `Path.GetDirectoryName`
 returning null (indicating a root path such as `/` or `C:\` with no parent directory) also throws

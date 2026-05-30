@@ -69,3 +69,4 @@ sections:
                   about this platform difference.
                 tests:
                   - windows@RunSubsystem_ExecuteWithContext_LogsCommandToContext
+                  - windows@RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC

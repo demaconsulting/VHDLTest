@@ -31,8 +31,8 @@ namespace DEMAConsulting.VHDLTest.Tests.Run;
 public class RunSubsystemTests
 {
     /// <summary>
-    /// Test that RunProcessor executes a real program via RunProgram, and produces a
-    /// RunResults object with correctly classified output lines.
+    ///     Test that RunProcessor executes a real program via RunProgram, and produces a
+    ///     RunResults object with correctly classified output lines.
     /// </summary>
     [Fact]
     public void RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults()
@@ -56,8 +56,8 @@ public class RunSubsystemTests
     }
 
     /// <summary>
-    /// Test that RunProcessor correctly surfaces a non-zero exit code from RunProgram
-    /// as an Error summary in the RunResults.
+    ///     Test that RunProcessor correctly surfaces a non-zero exit code from RunProgram
+    ///     as an Error summary in the RunResults.
     /// </summary>
     [Fact]
     public void RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults()

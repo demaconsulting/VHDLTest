@@ -28,3 +28,4 @@ sections:
                   of which output stream the simulator uses.
                 tests:
                   - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+                  - RunProgram_Run_ProgramWithStderr_CapturesBothStreamsInOutput
