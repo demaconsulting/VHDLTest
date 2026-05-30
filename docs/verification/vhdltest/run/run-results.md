@@ -39,7 +39,9 @@ This scenario is tested by `RunResults_Print_WithVerboseDisabled_SuppressesTextL
 
 **Summary_WhenExitCodeNonZero_IsAtLeastError**: Verifies that a RunResults with a non-zero
 exit code has Summary >= RunLineType.Error, confirming the SummaryElevation contract.
-This scenario is tested by `RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError`.
+This invariant is enforced by RunProcessor.Parse at construction time; the scenario is
+therefore tested by `RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError`
+in `RunProcessorTests.cs`.
 
 **CompileProcessor_CleanOutput_ReturnsTextResult** (via simulator tests): Verifies that a
 `RunResults` constructed from clean output has `Summary == RunLineType.Text`, `ExitCode == 0`,
