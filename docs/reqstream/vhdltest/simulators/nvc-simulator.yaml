@@ -31,6 +31,7 @@ sections:
                   - NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
                   - NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult
                   - NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult
+                  - NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException
 
               - id: VHDLTest-Simulators-NvcSimulator-Test
                 title: NvcSimulator shall classify NVC simulation output lines by severity.
@@ -45,6 +46,7 @@ sections:
                   - NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
                   - NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
                   - NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult
+                  - NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException
 
               - id: VHDLTest-Simulators-NvcSimulator-FindPath
                 title: NvcSimulator shall locate the NVC installation directory.

@@ -185,6 +185,14 @@ public sealed class NvcSimulator : Simulator
     ///     Searches for the NVC installation directory by locating the <c>nvc</c> executable
     ///     on the system PATH, returning null when NVC is not installed.
     /// </summary>
+    /// <remarks>
+    ///     The <c>VHDLTEST_NVC_PATH</c> environment variable takes precedence over PATH search:
+    ///     when set, its value is returned immediately without invoking <see cref="Simulator.Where"/>.
+    ///     When the environment variable is not set, <see cref="Simulator.Where"/> performs the PATH
+    ///     search and returns the full path to the <c>nvc</c> executable, from which the containing
+    ///     directory is derived. Stateless and thread-safe: the method reads environment variables
+    ///     and file-system paths but does not modify any shared state.
+    /// </remarks>
     /// <returns>
     ///     The directory containing the <c>nvc</c> executable, or null if NVC is not found.
     ///     The <c>VHDLTEST_NVC_PATH</c> environment variable, when set, overrides PATH search
@@ -206,7 +214,7 @@ public sealed class NvcSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing the NVC executable
         return Path.GetDirectoryName(simPath);
     }
 }

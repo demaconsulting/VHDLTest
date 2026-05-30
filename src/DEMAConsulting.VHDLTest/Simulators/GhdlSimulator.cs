@@ -218,6 +218,15 @@ public sealed class GhdlSimulator : Simulator
     ///     Searches for the GHDL installation directory by locating the <c>ghdl</c> executable
     ///     on the system PATH, returning null when GHDL is not installed.
     /// </summary>
+    /// <remarks>
+    ///     Called at class-load time to initialize the <see cref="Instance"/> singleton; the
+    ///     result is stored as <see cref="Simulator.SimulatorPath"/> and never re-evaluated.
+    ///     The <c>VHDLTEST_GHDL_PATH</c> environment variable takes priority over PATH search:
+    ///     when set, its value is returned immediately without invoking <see cref="Simulator.Where"/>.
+    ///     When the environment variable is not set, <see cref="Simulator.Where"/> performs the
+    ///     PATH search and returns the full path to the <c>ghdl</c> executable, from which the
+    ///     containing directory is derived.
+    /// </remarks>
     /// <returns>
     ///     The directory containing the <c>ghdl</c> executable, or null if GHDL is not found.
     ///     The <c>VHDLTEST_GHDL_PATH</c> environment variable, when set, overrides PATH search.
@@ -238,7 +247,7 @@ public sealed class GhdlSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing the GHDL executable
         return Path.GetDirectoryName(simPath);
     }
 }

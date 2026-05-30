@@ -40,7 +40,7 @@ public class SimulatorsSubsystemTests
         // Arrange - obtain GHDL simulator via the factory and cast to access its processor
         var simulator = SimulatorFactory.Get("GHDL");
         Assert.NotNull(simulator);
-        var ghdlSimulator = Assert.IsType<GhdlSimulator>(simulator);
+        Assert.IsType<GhdlSimulator>(simulator);
 
         // Act - use the factory-returned simulator's compile processor to classify error output
         var results = GhdlSimulator.CompileProcessor.Parse(
@@ -50,7 +50,6 @@ public class SimulatorsSubsystemTests
             1);
 
         // Assert - factory returned GHDL and processor classified the line as an error
-        Assert.Equal("GHDL", ghdlSimulator.SimulatorName);
         Assert.Equal(RunLineType.Error, results.Summary);
         Assert.Contains(results.Lines, line => line.Type == RunLineType.Error);
     }

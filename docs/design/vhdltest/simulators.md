@@ -54,6 +54,8 @@ processors as public static properties.
   offline output classification is required without launching the simulator process.
 - *Constraints*: Processors are stateless after construction and are safe to access from any thread.
 
+**RunProcessor (Internal Consumer)**:
+
 - *Type*: In-process .NET internal API.
 - *Role*: Consumer.
 - *Contract*: `RunProcessor.Execute` launches external processes and classifies output lines into severity
