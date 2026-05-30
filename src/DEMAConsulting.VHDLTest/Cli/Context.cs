@@ -31,6 +31,10 @@ namespace DEMAConsulting.VHDLTest.Cli;
 ///     targets. Implements <see cref="IDisposable"/> to ensure the log-file writer is closed
 ///     deterministically; always construct via <see cref="Create"/> and wrap in a
 ///     <c>using</c> statement.
+///     <para>
+///         This class is not thread-safe. <see cref="Errors"/> is a mutable field with no
+///         synchronization; external locking is required when accessing from multiple threads.
+///     </para>
 /// </remarks>
 public sealed class Context : IDisposable
 {
@@ -95,37 +99,37 @@ public sealed class Context : IDisposable
     public int Depth { get; private init; }
 
     /// <summary>
-    ///     Gets the config file name
+    ///     Gets the path to the YAML configuration file for the test run.
     /// </summary>
     public string? ConfigFile { get; private init; }
 
     /// <summary>
-    ///     Gets the results file name
+    ///     Gets the path where test results will be saved.
     /// </summary>
     public string? ResultsFile { get; private init; }
 
     /// <summary>
-    ///     Gets the simulator name
+    ///     Gets the name of the simulator to use for the test run.
     /// </summary>
     public string? Simulator { get; private init; }
 
     /// <summary>
-    ///     Gets the custom tests
+    ///     Gets the optional list of test names to run; when set, only matching tests are executed.
     /// </summary>
     public IReadOnlyList<string>? CustomTests { get; private init; }
 
     /// <summary>
-    ///     Gets the errors count
+    ///     Gets the number of errors encountered during the test run.
     /// </summary>
     public int Errors { get; private set; }
 
     /// <summary>
-    ///     Gets the proposed exit code
+    ///     Gets the process exit code to return on completion.
     /// </summary>
     public int ExitCode => Errors > 0 ? 1 : 0;
 
     /// <summary>
-    ///     Dispose of this context
+    ///     Flushes and closes the log-file writer, releasing all resources held by this instance.
     /// </summary>
     public void Dispose()
     {

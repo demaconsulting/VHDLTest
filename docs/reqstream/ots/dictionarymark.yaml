@@ -7,7 +7,7 @@ sections:
           - id: VHDLTest-OTS-DictionaryMark
             title: DictionaryMark shall generate and validate spell-check dictionaries for project documentation.
             justification: |
-              DemaConsulting.DictionaryMark (v0.1.0-beta.1) provides dictionary generation and
+              DemaConsulting.DictionaryMark provides dictionary generation and
               conflict-detection utilities that underpin the spelling enforcement workflow. The
               bullet-list and table generation modes produce the word-list artifacts consumed by
               documentation and the conflict-detection mode ensures the configured dictionary

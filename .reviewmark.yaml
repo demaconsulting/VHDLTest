@@ -125,6 +125,7 @@ reviews:
     paths:
       - docs/reqstream/vhdltest/cli/cli.yaml  # subsystem requirements
       - docs/design/vhdltest/cli.md  # subsystem design
+      - docs/verification/vhdltest/cli.md  # subsystem verification
       - test/**/Cli/CliSubsystemTests.cs  # subsystem integration tests
 
   # Context unit review

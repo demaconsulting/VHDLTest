@@ -33,12 +33,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_NoArguments_ReturnsDefaultContext()
     {
-        // Arrange - Prepare empty arguments array
+        // Arrange: Prepare empty arguments array
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create([]);
 
-        // Assert - Verify default context is returned with all properties set to defaults
+        // Assert: Verify default context is returned with all properties set to defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -69,12 +69,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithConfigFile_SetsConfigFile()
     {
-        // Arrange - Prepare arguments with config file option
+        // Arrange: Prepare arguments with config file option
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["-c", "config.json"]);
 
-        // Assert - Verify config file is set and other properties are defaults
+        // Assert: Verify config file is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Equal("config.json", arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -101,12 +101,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithResultsFile_SetsResultsFile()
     {
-        // Arrange - Prepare arguments with results file option
+        // Arrange: Prepare arguments with results file option
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["-r", "results.trx"]);
 
-        // Assert - Verify results file is set and other properties are defaults
+        // Assert: Verify results file is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Equal("results.trx", arguments.ResultsFile);
@@ -133,12 +133,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithSimulator_SetsSimulator()
     {
-        // Arrange - Prepare arguments with simulator option
+        // Arrange: Prepare arguments with simulator option
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["-s", "GHDL"]);
 
-        // Assert - Verify simulator is set and other properties are defaults
+        // Assert: Verify simulator is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -165,12 +165,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithVerbose_SetsVerboseFlag()
     {
-        // Arrange - Prepare arguments with verbose flag
+        // Arrange: Prepare arguments with verbose flag
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["--verbose"]);
 
-        // Assert - Verify verbose flag is set and other properties are defaults
+        // Assert: Verify verbose flag is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -187,12 +187,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithExitZero_SetsExitZeroFlag()
     {
-        // Arrange - Prepare arguments with exit-zero flag
+        // Arrange: Prepare arguments with exit-zero flag
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["--exit-0"]);
 
-        // Assert - Verify exit-zero flag is set and other properties are defaults
+        // Assert: Verify exit-zero flag is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -209,12 +209,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithValidate_SetsValidateFlag()
     {
-        // Arrange - Prepare arguments with validate flag
+        // Arrange: Prepare arguments with validate flag
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["--validate"]);
 
-        // Assert - Verify validate flag is set and other properties are defaults
+        // Assert: Verify validate flag is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -233,10 +233,10 @@ public class ContextTests
     {
         // Arrange: no setup required
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["--depth", "2"]);
 
-        // Assert - Verify depth is set
+        // Assert: Verify depth is set
         Assert.NotNull(arguments);
         Assert.Equal(2, arguments.Depth);
     }
@@ -283,12 +283,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithCustomTest_SetsCustomTest()
     {
-        // Arrange - Prepare arguments with single custom test name
+        // Arrange: Prepare arguments with single custom test name
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["custom_test"]);
 
-        // Assert - Verify custom test is set and other properties are defaults
+        // Assert: Verify custom test is set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -307,12 +307,12 @@ public class ContextTests
     [Fact]
     public void Context_Create_WithCustomTests_SetsCustomTests()
     {
-        // Arrange - Prepare arguments with multiple custom test names
+        // Arrange: Prepare arguments with multiple custom test names
 
-        // Act - Parse the arguments
+        // Act: Parse the arguments
         using var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);
 
-        // Assert - Verify all custom tests are set and other properties are defaults
+        // Assert: Verify all custom tests are set and other properties are defaults
         Assert.NotNull(arguments);
         Assert.Null(arguments.ConfigFile);
         Assert.Null(arguments.ResultsFile);
@@ -638,28 +638,54 @@ public class ContextTests
     }
 
     /// <summary>
-    /// Test that WriteLine sends output to the log file even when silent mode is enabled
+    /// Test that Write outputs to the console when not in silent mode
     /// </summary>
     [Fact]
-    public void Context_WriteLine_SilentMode_WritesToLogFile()
+    public void Context_Write_NonSilentMode_WritesToConsole()
     {
-        // Arrange: create a silent context with a log file
-        var logFile = Path.GetTempFileName();
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
         try
         {
-            using (var arguments = Context.Create(["--silent", "-l", logFile]))
-            {
-                // Act: write a line through the context
-                arguments.WriteLine("silent line output");
-            }
+            using var context = Context.Create([]);
 
-            // Assert: verify the line was written to the log file despite silent mode
-            var content = File.ReadAllText(logFile);
-            Assert.Contains("silent line output", content);
+            // Act: write colored text without silent mode active
+            context.Write(ConsoleColor.White, "console output");
         }
         finally
         {
-            File.Delete(logFile);
+            Console.SetOut(original);
         }
+
+        // Assert: verify the output reached the console
+        Assert.Contains("console output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteLine outputs to the console when not in silent mode
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_NonSilentMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create([]);
+
+            // Act: write a line without silent mode active
+            context.WriteLine("console line output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the line reached the console
+        Assert.Contains("console line output", writer.ToString());
     }
 }

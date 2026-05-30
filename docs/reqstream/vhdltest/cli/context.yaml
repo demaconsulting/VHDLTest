@@ -61,6 +61,7 @@ sections:
                   clean when silent mode is active, while interactive users still see output.
                 tests:
                   - Context_Write_SilentMode_WritesToLogFile
+                  - Context_Write_NonSilentMode_WritesToConsole
 
               - id: VHDLTest-Cli-Context-Write-Log
                 title: Context shall write a message without a line terminator unconditionally to the log file when configured.
@@ -80,6 +81,7 @@ sections:
                   active, while interactive users still see output.
                 tests:
                   - Context_WriteLine_SilentMode_WritesToLogFile
+                  - Context_WriteLine_NonSilentMode_WritesToConsole
 
               - id: VHDLTest-Cli-Context-WriteLine-Log
                 title: Context shall write a message with a line terminator unconditionally to the log file when configured.

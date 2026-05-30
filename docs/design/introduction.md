@@ -117,7 +117,8 @@ test/DEMAConsulting.VHDLTest.Tests/
 ├── Cli/
 │   ├── ContextTests.cs         — Context unit tests
 │   ├── ConfigDocumentTests.cs  — ConfigDocument unit tests
-│   └── OptionsTests.cs         — Options unit tests
+│   ├── OptionsTests.cs         — Options unit tests
+│   └── CliSubsystemTests.cs    — Cli subsystem integration tests
 ├── Simulators/
 │   ├── SimulatorTests.cs           — Simulator unit tests
 │   ├── SimulatorFactoryTests.cs    — SimulatorFactory unit tests

@@ -17,12 +17,6 @@ current review evidence. ReviewMark is not deployed with VHDLTest.
 - **Lint**: `reviewmark --lint` validates `.reviewmark.yaml` syntax.
 - **Self-validation**: `reviewmark --validate --results ...` writes internal test TRX results.
 
-### Planned Features
-
-- **Enforcement mode**: `reviewmark --enforce` exits non-zero if any file in a review-set
-  lacks evidence, making unreviewed artifacts a build-breaking condition. This feature is
-  planned for future activation once the reviews branch is populated with review evidence.
-
 ### Integration Pattern
 
 In the `build-docs` job of `.github/workflows/build.yaml`, ReviewMark is invoked with the
@@ -40,3 +34,5 @@ dotnet reviewmark \
 In `lint.ps1` and `lint.sh`, `dotnet reviewmark --lint` validates the review definition
 file at development time. The evidence store is hosted on the `reviews` branch of the
 repository and accessed via GitHub raw content URLs.
+
+Enforcement mode is planned for a future release when a reviews branch with PDF evidence is established.

@@ -7,7 +7,7 @@ sections:
           - id: VHDLTest-OTS-WeasyprintTool
             title: WeasyprintTool shall render HTML documentation into PDF release artifacts.
             justification: |
-              DemaConsulting.WeasyprintTool (v68.1.0) wraps the WeasyPrint CSS-based PDF renderer
+              DemaConsulting.WeasyprintTool wraps the WeasyPrint CSS-based PDF renderer
               and is used in the build pipeline to produce PDF versions of documentation
               for formal review and release archiving. Correct PDF output confirms the
               tool is functioning as required. The tool is exercised on every CI run

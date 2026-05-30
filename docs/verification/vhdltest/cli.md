@@ -35,3 +35,13 @@ specifying a non-existent configuration file through the Cli pipeline surfaces a
 `FileNotFoundException` from `Options.Parse`, confirming the error propagates through the
 subsystem boundary correctly.
 This scenario is tested by `CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException`.
+
+**InvalidFlag_ThrowsInvalidOperationException**: Verifies that passing an unrecognized flag
+to `Context.Create` throws `InvalidOperationException`, confirming that the Cli subsystem
+rejects invalid arguments at the entry point and prevents silent misconfiguration.
+This scenario is tested by `CliSubsystem_InvalidFlag_ThrowsInvalidOperationException`.
+
+**NullConfig_ThrowsInvalidOperationException**: Verifies that calling `Options.Parse` when
+no configuration file has been specified in the context throws `InvalidOperationException`,
+confirming that the Cli subsystem requires a configuration file before proceeding.
+This scenario is tested by `CliSubsystem_NullConfig_ThrowsInvalidOperationException`.

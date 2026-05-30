@@ -5,14 +5,12 @@ sections:
       - title: ReviewMark Requirements
         requirements:
           - id: VHDLTest-OTS-ReviewMark
-            title: ReviewMark shall enforce that every file in a review-set has current review evidence.
+            title: ReviewMark shall be integrated in the CI pipeline to report review coverage of all required source files.
             justification: |
-              DemaConsulting.ReviewMark (v1.2.0) processes .reviewmark.yaml to verify that each
+              DemaConsulting.ReviewMark processes .reviewmark.yaml to verify that each
               file listed in a review-set has an associated review record in the evidence store.
-              When run with --enforce, it exits non-zero if any reviewed file lacks evidence,
-              making unreviewed artifacts a build-breaking condition. This ensures the formal
-              review process is completed before release. Enforcement mode will be activated
-              in the CI pipeline once the reviews branch is populated with review evidence.
+              Enforcement mode (--enforce flag) requires a populated reviews branch with PDF evidence.
+              This is planned but not yet active. Current CI usage reports coverage without enforcing it.
             tags: [ots]
             tests:
-              - ReviewMark_EnforcementMode
+              - ReviewMark_CoverageReport
