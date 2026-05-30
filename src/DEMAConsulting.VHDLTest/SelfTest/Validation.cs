@@ -233,7 +233,7 @@ internal static class Validation
             }
             catch
             {
-                // Best-effort cleanup: do not let delete failures mask an earlier exception
+                // Swallow delete exception — cleanup failure must not mask an earlier exception
             }
         }
     }
