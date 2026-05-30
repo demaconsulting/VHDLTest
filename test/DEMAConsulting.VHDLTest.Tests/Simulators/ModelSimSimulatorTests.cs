@@ -237,7 +237,7 @@ public class ModelSimSimulatorTests
         // when SimulatorPath is null
         if (ModelSimSimulator.Instance.Available())
         {
-            return;
+            Assert.Skip("ModelSim is installed; unavailable-path test not applicable in this environment");
         }
 
         // Arrange: simulator is not available (SimulatorPath is null)
@@ -262,7 +262,7 @@ public class ModelSimSimulatorTests
         // when SimulatorPath is null
         if (ModelSimSimulator.Instance.Available())
         {
-            return;
+            Assert.Skip("ModelSim is installed; unavailable-path test not applicable in this environment");
         }
 
         // Arrange: simulator is not available (SimulatorPath is null)

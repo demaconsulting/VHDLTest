@@ -257,7 +257,7 @@ public class VivadoSimulatorTests
         // when SimulatorPath is null
         if (VivadoSimulator.Instance.Available())
         {
-            return;
+            Assert.Skip("Vivado is installed; unavailable-path test not applicable in this environment");
         }
 
         // Arrange: simulator is not available (SimulatorPath is null)
@@ -282,7 +282,7 @@ public class VivadoSimulatorTests
         // when SimulatorPath is null
         if (VivadoSimulator.Instance.Available())
         {
-            return;
+            Assert.Skip("Vivado is installed; unavailable-path test not applicable in this environment");
         }
 
         // Arrange: simulator is not available (SimulatorPath is null)

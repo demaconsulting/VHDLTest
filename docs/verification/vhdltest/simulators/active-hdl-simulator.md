@@ -111,3 +111,9 @@ in `ActiveHdlSimulatorTests.cs`.
 completion to vsimsa.
 This scenario is tested by `ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode`
 in `ActiveHdlSimulatorTests.cs`.
+
+**FindPath_WithEnvVar_ReturnsEnvVarValue**: Verifies that `ActiveHdlSimulator.FindPath()`
+returns the value of the `VHDLTEST_ACTIVEHDL_PATH` environment variable when set,
+confirming the environment variable override path works correctly.
+This scenario is tested by `ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
+in `ActiveHdlSimulatorTests.cs`.

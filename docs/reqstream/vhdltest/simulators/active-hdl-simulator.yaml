@@ -57,3 +57,14 @@ sections:
                   - ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsTextResult
                   - ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsTextResult
 
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-FindPath-EnvVar
+                title: >-
+                  ActiveHdl Simulator shall use the path specified by the
+                  VHDLTEST_ACTIVEHDL_PATH environment variable when set.
+                justification: |
+                  The VHDLTEST_ACTIVEHDL_PATH environment variable override enables CI
+                  pipelines and non-standard installations to specify the Active-HDL path
+                  explicitly without modifying PATH.
+                tests:
+                  - ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+

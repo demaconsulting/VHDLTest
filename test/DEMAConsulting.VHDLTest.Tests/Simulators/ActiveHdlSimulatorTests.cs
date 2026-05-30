@@ -29,7 +29,8 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// Tests for the ActiveHDL simulator
 /// </summary>
 // All tests in this class are serialized via the SimulatorEnvVarTests collection because
-// FindPath_WithEnvVar modifies the VHDLTEST_ACTIVEHDL_PATH process-level environment variable.
+// ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
+// VHDLTEST_ACTIVEHDL_PATH process-level environment variable.
 // The DisableParallelization = true collection definition in SimulatorTestCollections.cs
 // ensures these tests run sequentially with other env-var tests, preventing race conditions.
 [Collection("SimulatorEnvVarTests")]
@@ -504,8 +505,7 @@ public class ActiveHdlSimulatorTests
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode()
-    {
-        // Arrange: create an isolated temporary working directory and a fake vsimsa executable
+    {        // Arrange: create an isolated temporary working directory and a fake vsimsa executable
         // so that SimulatorPath is non-null and the script-write step is reached without
         // requiring a real Active-HDL installation.
         var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
@@ -575,6 +575,33 @@ public class ActiveHdlSimulatorTests
             {
                 Directory.Delete(tempDir, recursive: true);
             }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that <see cref="ActiveHdlSimulator.FindPath"/> returns the value of the
+    ///     <c>VHDLTEST_ACTIVEHDL_PATH</c> environment variable when it is set.
+    /// </summary>
+    [Fact]
+    public void ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
+    {
+        // Arrange: set the VHDLTEST_ACTIVEHDL_PATH environment variable to a known value
+        var expectedPath = "/custom/activehdl/path";
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", expectedPath);
+
+        try
+        {
+            // Act: call FindPath()
+            var result = ActiveHdlSimulator.FindPath();
+
+            // Assert: result is the env var value
+            Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", previousValue);
         }
     }
 }

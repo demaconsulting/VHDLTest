@@ -51,7 +51,8 @@ sections:
                   is possible in offline environments. Cross-reference:
                   `VHDLTest-Simulators-ModelSimSimulator-FindPath-EnvVar` covers the env-var
                   override path with a unit test.
-                tests: []
+                tests:
+                  - ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
 
               - id: VHDLTest-Simulators-ModelSimSimulator-FindPath-EnvVar
                 title: >-

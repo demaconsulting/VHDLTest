@@ -92,7 +92,7 @@ This scenario is tested by `MockSimulator_Compile_WithCleanFile_ReturnsSuccessRe
 when the test bench name contains `_error_`.
 This scenario is tested by `MockSimulator_Test_WithErrorPattern_ReturnsErrorResult`.
 
-**Test_WithFailPattern_ReturnsFailResult**: Verifies that `Test()` returns an error result
+**Test_WithFailPattern_ReturnsErrorResult**: Verifies that `Test()` returns an error result
 (Failure maps to Error) when the test bench name contains `_fail_`.
 This scenario is tested by `MockSimulator_Test_WithFailPattern_ReturnsErrorResult`.
 
