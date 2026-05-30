@@ -50,7 +50,7 @@ sections:
                   - MockSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
                   - MockSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
                   - MockSimulator_Test_WithErrorPattern_ReturnsErrorResult
-                  - MockSimulator_Test_WithFailPattern_ReturnsFailResult
+                  - MockSimulator_Test_WithFailPattern_ReturnsErrorResult
                   - MockSimulator_Test_WithWarningPattern_ReturnsWarningResult
                   - MockSimulator_Test_WithInfoPattern_ReturnsInfoResult
                   - MockSimulator_Test_WithCleanName_ReturnsSuccessResult

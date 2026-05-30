@@ -35,6 +35,8 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 ///     scripts include <c>onerror {exit -code 1}</c> so tool-level errors produce a non-zero exit
 ///     code that the processors detect. Implemented as a singleton (<see cref="Instance"/>)
 ///     initialized at class load time; stateless after construction and therefore thread-safe.
+///     Concurrent calls targeting the same working directory are not safe; each test run should
+///     use a distinct working directory.
 /// </remarks>
 public sealed class ModelSimSimulator : Simulator
 {
@@ -115,6 +117,9 @@ public sealed class ModelSimSimulator : Simulator
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("vlib work");
         writer.AppendLine("set worklib work");
+
+        // Precondition: each file path must not contain TCL metacharacters — this is a documented
+        // precondition, not a runtime guard (see design documentation and Key Methods / Compile)
         foreach (var file in options.Config.Files)
         {
             writer.AppendLine($"vcom -2008 ../../{file}");
@@ -157,6 +162,9 @@ public sealed class ModelSimSimulator : Simulator
         var writer = new StringBuilder();
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("set worklib work");
+
+        // Precondition: test must not contain whitespace or TCL metacharacters — this is a
+        // documented precondition, not a runtime guard (see design documentation and Key Methods / Test)
         writer.AppendLine($"vsim -quiet {test}");
         writer.AppendLine("run -all");
         writer.AppendLine("endsim");

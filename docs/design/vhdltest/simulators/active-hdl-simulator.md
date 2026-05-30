@@ -14,6 +14,9 @@ Edition to prevent false positive diagnostics.
 
 **CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for `vsimsa` compile
 output. Classifies `KERNEL:\s*Warning:` as Warning; `Error:` and `RUNTIME:\s*Fatal Error` as Error.
+Active-HDL compile output uses `RUNTIME: Fatal Error` without a trailing colon, while simulation output
+uses `RUNTIME: Fatal Error:` with a trailing colon, because the compile tool (`acom`) and the simulation
+tool (`asim`) produce slightly different format strings for this message.
 
 **TestProcessor**: `RunProcessor` (public static readonly) — output classifier for `vsimsa` simulation
 output. Explicitly suppresses the Aldec Lattice Edition license advisory messages by classifying them as

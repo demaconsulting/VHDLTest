@@ -252,4 +252,29 @@ public class QuestaSimSimulatorTests
             () => QuestaSimSimulator.Instance.Compile(context, options));
         Assert.Contains("QuestaSim Simulator not available", ex.Message);
     }
+
+    /// <summary>
+    ///     Verifies that calling Test when QuestaSim is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where QuestaSim is installed.
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when QuestaSim is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (QuestaSimSimulator.Instance.Available())
+        {
+            return;
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Test throws when QuestaSim is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => QuestaSimSimulator.Instance.Test(context, options, "test_tb"));
+        Assert.Contains("QuestaSim Simulator not available", ex.Message);
+    }
 }

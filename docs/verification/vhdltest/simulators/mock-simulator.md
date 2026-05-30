@@ -94,7 +94,7 @@ This scenario is tested by `MockSimulator_Test_WithErrorPattern_ReturnsErrorResu
 
 **Test_WithFailPattern_ReturnsFailResult**: Verifies that `Test()` returns an error result
 (Failure maps to Error) when the test bench name contains `_fail_`.
-This scenario is tested by `MockSimulator_Test_WithFailPattern_ReturnsFailResult`.
+This scenario is tested by `MockSimulator_Test_WithFailPattern_ReturnsErrorResult`.
 
 **Test_WithWarningPattern_ReturnsWarningResult**: Verifies that `Test()` returns a warning
 result when the test bench name contains `_warning_`.

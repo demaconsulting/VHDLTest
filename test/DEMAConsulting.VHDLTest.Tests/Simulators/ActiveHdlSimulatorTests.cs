@@ -28,6 +28,10 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for the ActiveHDL simulator
 /// </summary>
+// All tests in this class are serialized via the SimulatorEnvVarTests collection because
+// FindPath_WithEnvVar modifies the VHDLTEST_ACTIVEHDL_PATH process-level environment variable.
+// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
+// ensures these tests run sequentially with other env-var tests, preventing race conditions.
 [Collection("SimulatorEnvVarTests")]
 public class ActiveHdlSimulatorTests
 {

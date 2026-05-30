@@ -391,10 +391,10 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test with a fail test name pattern returns fail (error) result
+    /// Test mock simulator test with a fail test name pattern returns error result
     /// </summary>
     [Fact]
-    public void MockSimulator_Test_WithFailPattern_ReturnsFailResult()
+    public void MockSimulator_Test_WithFailPattern_ReturnsErrorResult()
     {
         // Arrange: create a context and options; test name contains '_fail_'
         using var context = Context.Create(["--silent"]);

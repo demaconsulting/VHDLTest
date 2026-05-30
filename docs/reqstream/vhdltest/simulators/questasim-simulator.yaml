@@ -47,3 +47,4 @@ sections:
                   cannot be located.
                 tests:
                   - QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
+                  - QuestaSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException

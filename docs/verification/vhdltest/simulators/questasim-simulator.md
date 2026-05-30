@@ -22,6 +22,7 @@ Live simulator integration: CI environment with QuestaSim installed on PATH.
 - The compile processor correctly classifies clean and error output patterns.
 - The test processor correctly classifies clean, info, warning, error, and failure output patterns.
 - Calling `Compile()` when the simulator is not installed throws `InvalidOperationException`.
+- Calling `Test()` when the simulator is not installed throws `InvalidOperationException`.
 
 #### Test Scenarios
 
@@ -63,4 +64,10 @@ in `QuestaSimSimulatorTests.cs`.
 throws `InvalidOperationException` when `SimulatorPath` is null (QuestaSim not installed).
 This test is skipped in environments where QuestaSim is installed.
 This scenario is tested by `QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException`
+in `QuestaSimSimulatorTests.cs`.
+
+**Test_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Test()`
+throws `InvalidOperationException` when `SimulatorPath` is null (QuestaSim not installed).
+This test is skipped in environments where QuestaSim is installed.
+This scenario is tested by `QuestaSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException`
 in `QuestaSimSimulatorTests.cs`.

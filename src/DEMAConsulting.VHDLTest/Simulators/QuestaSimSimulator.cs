@@ -87,7 +87,7 @@ public sealed class QuestaSimSimulator : Simulator
     public static QuestaSimSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the QuestaSim simulator
+    ///     Initializes a new instance of the QuestaSim simulator.
     /// </summary>
     private QuestaSimSimulator() : base("QuestaSim", FindPath())
     {

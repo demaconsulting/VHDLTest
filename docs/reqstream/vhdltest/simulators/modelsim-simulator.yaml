@@ -41,12 +41,21 @@ sections:
 
               - id: VHDLTest-Simulators-ModelSimSimulator-FindPath
                 title: >-
-                  ModelSimSimulator shall locate the ModelSim installation directory, respecting
-                  the VHDLTEST_MODELSIM_PATH environment variable override when set.
+                  ModelSim Simulator shall locate the ModelSim executable using the system PATH.
                 justification: |
-                  Reliable path discovery ensures VHDLTest can locate ModelSim across different
-                  installation layouts and environments. The VHDLTEST_MODELSIM_PATH environment
-                  variable override enables CI pipelines and non-standard installations to
-                  specify the ModelSim path explicitly without modifying PATH.
+                  Reliable path discovery via the system PATH ensures VHDLTest can locate
+                  ModelSim in standard installations without requiring explicit configuration.
+                  This behavior is verified by CI integration tests in environments where
+                  ModelSim is installed on the system PATH.
+                tests: []
+
+              - id: VHDLTest-Simulators-ModelSimSimulator-FindPath-EnvVar
+                title: >-
+                  ModelSim Simulator shall use the path specified by the
+                  VHDLTEST_MODELSIM_PATH environment variable when set.
+                justification: |
+                  The VHDLTEST_MODELSIM_PATH environment variable override enables CI
+                  pipelines and non-standard installations to specify the ModelSim path
+                  explicitly without modifying PATH.
                 tests:
                   - ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
