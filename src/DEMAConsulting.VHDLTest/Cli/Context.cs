@@ -58,32 +58,32 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Gets a value indicating the version has been requested
+    ///     Gets a value indicating whether the version has been requested via <c>-v</c> or <c>--version</c>.
     /// </summary>
     public bool Version { get; private init; }
 
     /// <summary>
-    ///     Gets a value indicating help has been requested
+    ///     Gets a value indicating whether help has been requested via <c>-h</c>, <c>-?</c>, or <c>--help</c>.
     /// </summary>
     public bool Help { get; private init; }
 
     /// <summary>
-    ///     Gets a value indicating silent-output has been requested
+    ///     Gets a value indicating whether silent-output has been requested via <c>--silent</c>.
     /// </summary>
     public bool Silent { get; private init; }
 
     /// <summary>
-    ///     Gets a value indicating whether verbose output should be written
+    ///     Gets a value indicating whether verbose output should be written, set via <c>--verbose</c>.
     /// </summary>
     public bool Verbose { get; private init; }
 
     /// <summary>
-    ///     Gets a flag indicating whether to force a zero exit-code on test failures
+    ///     Gets a flag indicating whether to force a zero exit-code on test failures, set via <c>-0</c> or <c>--exit-0</c>.
     /// </summary>
     public bool ExitZero { get; private init; }
 
     /// <summary>
-    ///     Gets a flag indicating whether to perform validation
+    ///     Gets a flag indicating whether to perform validation, set via <c>--validate</c>.
     /// </summary>
     public bool Validate { get; private init; }
 
@@ -99,23 +99,28 @@ public sealed class Context : IDisposable
     public int Depth { get; private init; }
 
     /// <summary>
-    ///     Gets the path to the YAML configuration file for the test run.
+    ///     Gets the path to the YAML configuration file for the test run, set via <c>-c</c> or <c>--config</c>.
     /// </summary>
+    /// <value>The configuration file path, or <see langword="null"/> when the flag was absent from the command line.</value>
     public string? ConfigFile { get; private init; }
 
     /// <summary>
-    ///     Gets the path where test results will be saved.
+    ///     Gets the path where test results will be saved, set via <c>-r</c>, <c>--result</c>, or <c>--results</c>.
     /// </summary>
+    /// <value>The results file path, or <see langword="null"/> when the flag was absent from the command line.</value>
     public string? ResultsFile { get; private init; }
 
     /// <summary>
-    ///     Gets the name of the simulator to use for the test run.
+    ///     Gets the name of the simulator to use for the test run, set via <c>-s</c> or <c>--simulator</c>.
     /// </summary>
+    /// <value>The simulator name, or <see langword="null"/> when the flag was absent from the command line.</value>
     public string? Simulator { get; private init; }
 
     /// <summary>
     ///     Gets the optional list of test names to run; when set, only matching tests are executed.
+    ///     Populated from positional arguments or tokens after <c>--</c> on the command line.
     /// </summary>
+    /// <value>A read-only list of test names, or <see langword="null"/> when no positional arguments were provided.</value>
     public IReadOnlyList<string>? CustomTests { get; private init; }
 
     /// <summary>
@@ -126,6 +131,7 @@ public sealed class Context : IDisposable
     /// <summary>
     ///     Gets the process exit code to return on completion.
     /// </summary>
+    /// <value>Returns <c>0</c> when <see cref="Errors"/> is zero; returns <c>1</c> when <see cref="Errors"/> is greater than zero.</value>
     public int ExitCode => Errors > 0 ? 1 : 0;
 
     /// <summary>
@@ -395,7 +401,11 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Get the next argument
+    ///     Advances the enumerator to the next argument and returns it, centralizing the
+    ///     enumerator-exhaustion check across all value-argument call sites in
+    ///     <see cref="Create"/> so each call site stays readable. Throws
+    ///     <see cref="InvalidOperationException"/> with the caller-provided diagnostic message
+    ///     when the argument array has been exhausted before the required value was found.
     /// </summary>
     /// <param name="enumerator">Argument enumerator</param>
     /// <param name="message">Error message if missing</param>

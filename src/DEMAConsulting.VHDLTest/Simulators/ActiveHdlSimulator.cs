@@ -137,6 +137,7 @@ public sealed class ActiveHdlSimulator : Simulator
     ///     line per source file. The script is written to
     ///     <c>VHDLTest.out/ActiveHDL/compile.do</c> and executed via
     ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/compile.do</c> from the working directory.
+    ///     Creates the <c>VHDLTest.out/ActiveHDL/</c> output directory when it does not already exist.
     /// </remarks>
     /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
     /// <param name="options">Parsed options providing the VHDL file list and working directory. Must not be null.</param>
@@ -200,10 +201,16 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </remarks>
     /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
     /// <param name="options">Parsed options providing the working directory. Must not be null.</param>
-    /// <param name="test">Test bench entity name to simulate. Must not be null or empty.</param>
+    /// <param name="test">Test bench entity name to simulate. Must not be null or empty, and must not
+    ///     contain whitespace or TCL metacharacters because it is interpolated directly into the TCL
+    ///     script without escaping.</param>
     /// <returns>Simulation outcome as a <see cref="TestResult"/>.</returns>
     /// <exception cref="InvalidOperationException">
     ///     Thrown when <see cref="Simulator.SimulatorPath"/> is null (Active-HDL not installed).
+    /// </exception>
+    /// <exception cref="DirectoryNotFoundException">
+    ///     Thrown when <c>VHDLTest.out/ActiveHDL/</c> does not exist — i.e., when
+    ///     <see cref="Compile"/> has not been called first.
     /// </exception>
     public override TestResult Test(Context context, Options options, string test)
     {
@@ -252,7 +259,6 @@ public sealed class ActiveHdlSimulator : Simulator
     /// <summary>
     ///     Searches for the Active-HDL installation directory.
     /// </summary>
-    /// <returns>Directory path containing <c>vsimsa</c>, or null if Active-HDL is not found.</returns>
     /// <remarks>
     ///     Resolution order:
     ///     <list type="number">
@@ -260,6 +266,7 @@ public sealed class ActiveHdlSimulator : Simulator
     ///         <item><description>Searches the system PATH for <c>vsimsa</c> and returns its parent directory.</description></item>
     ///     </list>
     /// </remarks>
+    /// <returns>Directory path containing <c>vsimsa</c>, or null if Active-HDL is not found.</returns>
     public static string? FindPath()
     {
         // Look for an environment variable

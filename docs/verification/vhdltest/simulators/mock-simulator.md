@@ -107,3 +107,9 @@ This scenario is tested by `MockSimulator_Test_WithInfoPattern_ReturnsInfoResult
 **Test_WithCleanName_ReturnsSuccessResult**: Verifies that `Test()` returns a clean text
 result when the test bench name contains no special pattern.
 This scenario is tested by `MockSimulator_Test_WithCleanName_ReturnsSuccessResult`.
+
+**SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator**: Verifies the end-to-end factory
+registration path for MockSimulator — confirms that requesting the simulator by name "mock"
+(case-insensitive) returns the `MockSimulator.Instance` singleton from the factory.
+This scenario is tested by `SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator` in
+`SimulatorFactoryTests.cs`.

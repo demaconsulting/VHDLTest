@@ -72,6 +72,7 @@ public class CliSubsystemTests
             Assert.Equal("src/testbench.vhd", options.Config.Files[1]);
             Assert.Single(options.Config.Tests);
             Assert.Equal("test_entity", options.Config.Tests[0]);
+            Assert.Equal(Path.GetDirectoryName(Path.GetFullPath(ConfigFile)), options.WorkingDirectory);
         }
         finally
         {
@@ -100,6 +101,8 @@ public class CliSubsystemTests
     [Fact]
     public void CliSubsystem_InvalidFlag_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the unrecognized flag is passed directly to the act step
+
         // Act & Assert - verify the subsystem throws for an unrecognized flag
         Assert.Throws<InvalidOperationException>(() => Context.Create(["--unrecognized-flag"]));
     }

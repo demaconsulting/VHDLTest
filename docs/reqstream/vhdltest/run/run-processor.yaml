@@ -24,6 +24,7 @@ sections:
                   Correct classification of error output enables VHDLTest to accurately identify
                   test failures and report them to the user and CI/CD system.
                 tests:
+                  - RunProcessor_Parse_OutputWithErrorPattern_ReturnsErrorClassification
                   - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
 
               - id: VHDLTest-Run-RunProcessor-MissingProgram

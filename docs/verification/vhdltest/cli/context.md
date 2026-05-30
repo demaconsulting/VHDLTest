@@ -84,3 +84,60 @@ This scenario is tested by `Context_Create_WithCustomTest_SetsCustomTest`.
 **Create_WithCustomTests_SetsCustomTests**: Verifies that multiple positional arguments after
 `--` are collected into `CustomTests` as a multi-element list.
 This scenario is tested by `Context_Create_WithCustomTests_SetsCustomTests`.
+
+**ExitCode_NoErrors_ReturnsZero**: Verifies that `Context.ExitCode` returns `0` when no
+errors have been reported via `WriteError`, confirming the default exit-code contract.
+This scenario is tested by `Context_ExitCode_NoErrors_ReturnsZero`.
+
+**WriteError_WithMessage_IncrementsErrors**: Verifies that calling `WriteError` increments
+`Errors` by one and causes `ExitCode` to return a non-zero value, confirming the error
+counter drives the process exit code.
+This scenario is tested by `Context_WriteError_WithMessage_IncrementsErrors`.
+
+**WriteError_NonSilentMode_WritesToConsole**: Verifies that `WriteError` writes the
+error message to the console when silent mode is not active, confirming that the
+console-write path is functional for non-silent invocations.
+This scenario is tested by `Context_WriteError_NonSilentMode_WritesToConsole`.
+
+**WriteError_SilentMode_WritesToLogFile**: Verifies that calling `WriteError` in silent mode
+still writes the error message to the configured log file, confirming that error output
+reaches log consumers even when console output is suppressed.
+This scenario is tested by `Context_WriteError_SilentMode_WritesToLogFile`.
+
+**WriteVerboseLine_VerboseMode_WritesToLog**: Verifies that `WriteVerboseLine` writes the
+message to the log file when verbose mode is active, confirming verbose output is captured.
+This scenario is tested by `Context_WriteVerboseLine_VerboseMode_WritesToLog`.
+
+**WriteVerboseLine_NonVerboseMode_ProducesNoOutput**: Verifies that `WriteVerboseLine`
+produces no output when verbose mode is not active, confirming the verbose gate works.
+This scenario is tested by `Context_WriteVerboseLine_NonVerboseMode_ProducesNoOutput`.
+
+**Write_NonSilentMode_WritesToConsole**: Verifies that `Write` outputs colored text to the
+console when silent mode is not active, confirming normal console output path.
+This scenario is tested by `Context_Write_NonSilentMode_WritesToConsole`.
+
+**Write_WithLogFile_WritesToLog**: Verifies that `Write` writes text to the log file when
+a log file is configured, confirming log output path for colored writes.
+This scenario is tested by `Context_Write_WithLogFile_WritesToLog`.
+
+**Write_SilentMode_WritesToLogFile**: Verifies that `Write` still writes text to the log
+file even when silent mode suppresses console output, confirming unconditional log capture.
+This scenario is tested by `Context_Write_SilentMode_WritesToLogFile`.
+
+**WriteLine_NonSilentMode_WritesToConsole**: Verifies that `WriteLine` outputs a line to
+the console when silent mode is not active, confirming normal console line-output path.
+This scenario is tested by `Context_WriteLine_NonSilentMode_WritesToConsole`.
+
+**WriteLine_SilentMode_WritesToLogFile**: Verifies that `WriteLine` still writes a line to
+the log file even when silent mode suppresses console output, confirming unconditional log
+capture for line-terminated output.
+This scenario is tested by `Context_WriteLine_SilentMode_WritesToLogFile`.
+
+**Create_WithLogOption_WritesToLogFile**: Verifies that specifying `-l <file>` opens a log
+file and that all output written through the context is persisted to that file and the file
+is correctly closed on disposal.
+This scenario is tested by `Context_Create_WithLogOption_WritesToLogFile`.
+
+**Create_WithLongLogOption_WritesToLogFile**: Verifies that specifying `--log <file>` (long
+form) behaves identically to `-l`, opening the log file and writing all output to it.
+This scenario is tested by `Context_Create_WithLongLogOption_WritesToLogFile`.

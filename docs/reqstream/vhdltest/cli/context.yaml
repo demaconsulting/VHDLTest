@@ -40,6 +40,8 @@ sections:
                   - Context_Create_MissingConfigValue_ThrowsInvalidOperationException
                   - Context_Create_MissingResultsValue_ThrowsInvalidOperationException
                   - Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException
+                  - Context_Create_MissingLogValue_ThrowsInvalidOperationException
+                  - Context_Create_MissingDepthValue_ThrowsInvalidOperationException
 
               - id: VHDLTest-Cli-Context-Depth
                 title: The Context class shall parse the --depth option and reject non-integer values and values less than 1 with InvalidOperationException.
@@ -60,7 +62,6 @@ sections:
                   Gating console write on the silent flag ensures that CI pipeline logs remain
                   clean when silent mode is active, while interactive users still see output.
                 tests:
-                  - Context_Write_SilentMode_WritesToLogFile
                   - Context_Write_NonSilentMode_WritesToConsole
 
               - id: VHDLTest-Cli-Context-Write-Log
@@ -80,7 +81,6 @@ sections:
                   the silent flag ensures that CI pipeline logs remain clean when silent mode is
                   active, while interactive users still see output.
                 tests:
-                  - Context_WriteLine_SilentMode_WritesToLogFile
                   - Context_WriteLine_NonSilentMode_WritesToConsole
 
               - id: VHDLTest-Cli-Context-WriteLine-Log
@@ -104,13 +104,13 @@ sections:
                   - Context_WriteVerboseLine_NonVerboseMode_ProducesNoOutput
 
               - id: VHDLTest-Cli-Context-WriteError-Message
-                title: Context shall write the provided error message to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
+                title: Context shall write the provided error message to the console when WriteError is called, suppressed when silent mode is active.
                 justification: |
-                  Writing the error text through the shared output paths ensures users and log
-                  consumers receive the same failure information without callers duplicating
-                  output logic.
+                  Writing the error text to the console ensures users see the failure information.
+                  Console output is suppressed by the silent flag so CI pipelines can mute
+                  non-critical output without losing error visibility in the log file.
                 tests:
-                  - Context_WriteError_SilentMode_WritesToLogFile
+                  - Context_WriteError_NonSilentMode_WritesToConsole
 
               - id: VHDLTest-Cli-Context-WriteError-Counter
                 title: Context shall increment the error counter each time an error is reported.
@@ -141,9 +141,9 @@ sections:
               - id: VHDLTest-Cli-Context-Dispose
                 title: Context shall flush and close any open log-file writer when the context is disposed.
                 justification: |
-                  Implementing IDisposable ensures the log-file StreamWriter is flushed and
-                  closed deterministically when the caller disposes the Context, preventing data
-                  loss or file-locking issues in test and CI environments.
+                  Deterministic resource release for the log-file writer ensures complete and
+                  unfragmented log output even when the caller exits early or in error, preventing
+                  data loss or file-locking issues in test and CI environments.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
 

@@ -51,11 +51,11 @@ VHDLTest (System)
 │   ├── Simulator (Unit)
 │   ├── SimulatorFactory (Unit)
 │   ├── GhdlSimulator (Unit)
-│   ├── NvcSimulator (Unit)
 │   ├── ModelSimSimulator (Unit)
 │   ├── QuestaSimSimulator (Unit)
 │   ├── VivadoSimulator (Unit)
 │   ├── ActiveHdlSimulator (Unit)
+│   ├── NvcSimulator (Unit)
 │   └── MockSimulator (Unit)
 ├── Run (Subsystem)
 │   ├── RunProcessor (Unit)
@@ -75,7 +75,10 @@ OTS Dependencies:
 └── DemaConsulting.TestResults (OTS)
 ```
 
-Each unit is described in detail in its own chapter within this document.
+Each unit is described in detail in its own chapter within this document. Within the Simulators
+subsystem, the simulator units are listed in auto-discovery priority order (the order in which
+`SimulatorFactory` tests for an available simulator when no `--simulator` option is supplied);
+`MockSimulator` is excluded from auto-discovery and is only accessible via the explicit name `mock`.
 
 ## Folder Layout
 

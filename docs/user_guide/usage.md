@@ -26,8 +26,8 @@ VHDLTest supports the following command line options:
 - `--depth <n>` - Validation report depth (default: 1)
 - `-l, --log <log.txt>` - Log output to file
 - `-c, --config <config.yaml>` - Specify configuration file
-- `-r, --results <out.trx|out.xml>` - Specify test results output file
-- `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, modelsim, nvc, questasim, vivado)
+- `-r, --result, --results <out.trx|out.xml>` - Specify test results output file
+- `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, mock, modelsim, nvc, questasim, vivado)
 - `-0, --exit-0` - Exit with code 0 even if tests fail
 - `--` - End of options marker
 
@@ -91,13 +91,15 @@ industries where tool validation evidence is required.
 
 ### Running Validation
 
-To perform self-validation:
+To perform self-validation using the built-in mock simulator:
 
 ```bash
-dotnet vhdltest --validate --simulator ghdl
+dotnet vhdltest --validate --simulator mock
 ```
 
-Note: Self-validation uses an internal mock simulator and does not require a real simulator to be installed.
+Self-validation uses the `mock` simulator to execute embedded VHDL test scenarios without
+requiring a real simulator installation. Specifying `--simulator mock` is required to use
+the built-in mock; without it, VHDLTest attempts to auto-discover an installed simulator.
 
 ### Validation Report
 

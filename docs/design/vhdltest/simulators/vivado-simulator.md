@@ -8,15 +8,15 @@ options and file lists.
 
 #### Data Model
 
-**Instance**: `VivadoSimulator` (public static readonly) — singleton instance. `SimulatorName` is "Vivado";
+**Instance**: `VivadoSimulator` (public static read-only property) — singleton instance. `SimulatorName` is "Vivado";
 `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for xvhdl output.
+**CompileProcessor**: `RunProcessor` (public static read-only property) — output classifier for xvhdl output.
 Classifies lines matching `` `Error: ` `` as Error. The trailing space after the colon ensures the
 pattern only matches when a space follows the colon, preventing false matches on lines like
 `ErrorDetails: ...`. Lines not matching any rule are left unclassified.
 
-**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for xelab simulation output.
+**TestProcessor**: `RunProcessor` (public static read-only property) — output classifier for xelab simulation output.
 Classifies `` `Note: ` `` as Info, `` `Warning: ` `` as Warning, and `` `Error: ` `` or `` `Failure: ` `` as
 Error. The trailing space after the colon ensures the pattern only matches when a space follows the colon,
 preventing false matches on lines like `ErrorDetails: ...`.

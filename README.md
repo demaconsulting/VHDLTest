@@ -25,8 +25,9 @@ The tool is designed for use in regulated industries that require evidence of to
 - Supports [GHDL](https://github.com/ghdl/ghdl), [ModelSim](https://eda.sw.siemens.com/en-US/ic/modelsim/),
   [QuestaSim](https://eda.sw.siemens.com/en-US/ic/questa-one/simulation/),
   [Active-HDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl),
-  [NVC](https://www.nickg.me.uk/nvc), and
-  [Vivado Simulator](https://www.xilinx.com/products/design-tools/vivado.html)
+  [NVC](https://www.nickg.me.uk/nvc),
+  [Vivado Simulator](https://www.xilinx.com/products/design-tools/vivado.html), and a built-in `mock`
+  simulator for self-validation
 - Configurable simulator paths via environment variables
 - Built-in self-validation mode for tool qualification evidence in regulated industries
 
@@ -96,9 +97,9 @@ Options:
   --depth <n>                  Validation report depth (default: 1)
   -l, --log <log.txt>          Log output to file
   -c, --config <config.yaml>   Specify configuration
-  -r, --results <out.trx|out.xml>  Specify test results file (.trx or JUnit XML)
+  -r, --result, --results <out.trx|out.xml>  Specify test results file (.trx or JUnit XML)
   -s, --simulator <name>       Specify simulator
-  -0, --exit-0                 Exit with code 0 if test fail
+  -0, --exit-0                 Exit with code 0 if tests fail
   --                           End of options
 ```
 

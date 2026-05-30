@@ -8,15 +8,14 @@ bench simulation.
 
 #### Data Model
 
-**Instance**: `ModelSimSimulator` (public static readonly) — singleton instance. `SimulatorName` is
+**Instance**: `ModelSimSimulator` (public static property (get-only)) — singleton instance. `SimulatorName` is
 "ModelSim"; `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for ModelSim compile
-output. Classifies lines matching `.*Error:` (trailing space after the colon requires a space
-character to follow the colon in the matched line, preventing false matches on identifiers that end
-with "Error") as Error. Lines not matching any rule are left unclassified as Text.
+**CompileProcessor**: `RunProcessor` (public static property (get-only)) — output classifier for ModelSim compile
+output. Classifies lines matching `.*Error:` (trailing space after the colon prevents false matches
+on identifiers ending with "Error") as Error. Lines not matching any rule are left unclassified as Text.
 
-**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for ModelSim simulation
+**TestProcessor**: `RunProcessor` (public static property (get-only)) — output classifier for ModelSim simulation
 output. Classifies `.*Note:` as Info, `.*Warning:` as Warning, and `.*Error:` or `.*Failure:` as
 Error (each pattern includes a trailing space after the colon, which requires a space character to
 follow the colon in the matched line, preventing false matches on identifiers ending with the keyword).

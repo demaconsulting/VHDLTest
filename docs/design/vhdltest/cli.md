@@ -49,8 +49,8 @@ into a ConfigDocument.
 
 ### Dependencies
 
-`ConfigDocument.ReadFile` uses **YamlDotNet** for YAML parsing. See
-`docs/design/ots/yamldotnet.md` for the YamlDotNet integration design.
+`ConfigDocument.ReadFile` uses **YamlDotNet** for YAML parsing. See *YamlDotNet
+Integration Design* for the YamlDotNet integration design.
 
 ### Design
 

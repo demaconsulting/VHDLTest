@@ -41,8 +41,8 @@ public class ConfigDocument
     /// <value>
     ///     An array of relative or absolute paths to VHDL source files, populated from the
     ///     <c>files</c> YAML key (using the <c>HyphenatedNamingConvention</c>). Defaults to
-    ///     an empty array when the key is absent from the YAML document. Callers may iterate
-    ///     this collection safely without a null check.
+    ///     an empty array when the key is absent from the YAML document or when the key is
+    ///     explicitly set to null. Callers may iterate this collection safely without a null check.
     /// </value>
     public string[] Files { get; set; } = [];
 
@@ -52,8 +52,8 @@ public class ConfigDocument
     /// <value>
     ///     An array of VHDL test bench entity names, populated from the <c>tests</c> YAML
     ///     key (using the <c>HyphenatedNamingConvention</c>). Defaults to an empty array when
-    ///     the key is absent from the YAML document. Callers may iterate this collection
-    ///     safely without a null check.
+    ///     the key is absent from the YAML document or when the key is explicitly set to null.
+    ///     Callers may iterate this collection safely without a null check.
     /// </value>
     public string[] Tests { get; set; } = [];
 
@@ -77,8 +77,9 @@ public class ConfigDocument
     /// </param>
     /// <returns>
     ///     A non-null <see cref="ConfigDocument"/> instance populated from the file content. The
-    ///     returned instance always has non-null <see cref="Files"/> and <see cref="Tests"/> arrays
-    ///     (defaulting to empty arrays when the properties are absent from the YAML).
+    ///     returned instance always has non-null <see cref="Files"/> and <see cref="Tests"/> arrays;
+    ///     keys that are absent from the YAML document or that are explicitly set to null both
+    ///     produce empty arrays.
     /// </returns>
     /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist.</exception>
     /// <exception cref="InvalidOperationException">
@@ -110,6 +111,10 @@ public class ConfigDocument
         {
             throw new InvalidOperationException($"Configuration document {filename} is null");
         }
+
+        // Ensure null list properties are treated as empty arrays
+        doc.Files ??= [];
+        doc.Tests ??= [];
 
         // Return the document
         return doc;

@@ -28,6 +28,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for the ActiveHDL simulator
 /// </summary>
+/// <remarks>
+///     Tests in this class are serialized via the <c>SimulatorEnvVarTests</c> collection because
+///     <c>ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue</c> modifies the
+///     <c>VHDLTEST_ACTIVEHDL_PATH</c> process-level environment variable, requiring sequentialization
+///     to prevent race conditions with other environment-variable tests running in parallel.
+/// </remarks>
 // All tests in this class are serialized via the SimulatorEnvVarTests collection because
 // ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
 // VHDLTEST_ACTIVEHDL_PATH process-level environment variable.
@@ -40,7 +46,7 @@ public class ActiveHdlSimulatorTests
     /// Check name of ActiveHDL simulator name
     /// </summary>
     [Fact]
-    public void ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL()
+    public void ActiveHdlSimulator_SimulatorName_ReturnsActiveHdl()
     {
         // Act / Assert: simulator name is "ActiveHdl"
         Assert.Equal("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
@@ -505,7 +511,8 @@ public class ActiveHdlSimulatorTests
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode()
-    {        // Arrange: create an isolated temporary working directory and a fake vsimsa executable
+    {
+        // Arrange: create an isolated temporary working directory and a fake vsimsa executable
         // so that SimulatorPath is non-null and the script-write step is reached without
         // requiring a real Active-HDL installation.
         var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
@@ -603,5 +610,55 @@ public class ActiveHdlSimulatorTests
             // Restore the environment variable
             Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", previousValue);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that calling Compile when Active-HDL is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where Active-HDL is installed.
+    /// </summary>
+    [Fact]
+    public void ActiveHdlSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when Active-HDL is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (ActiveHdlSimulator.Instance.Available())
+        {
+            Assert.Skip("Active-HDL is installed; unavailable-path test not applicable in this environment");
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Compile throws when Active-HDL is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => ActiveHdlSimulator.Instance.Compile(context, options));
+        Assert.Contains("ActiveHDL Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that calling Test when Active-HDL is not installed throws
+    ///     <see cref="InvalidOperationException"/> with the expected message.
+    ///     This test is skipped in environments where Active-HDL is installed.
+    /// </summary>
+    [Fact]
+    public void ActiveHdlSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Skip this test when Active-HDL is available — we can only test the unavailable path
+        // when SimulatorPath is null
+        if (ActiveHdlSimulator.Instance.Available())
+        {
+            Assert.Skip("Active-HDL is installed; unavailable-path test not applicable in this environment");
+        }
+
+        // Arrange: simulator is not available (SimulatorPath is null)
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Test throws when Active-HDL is not installed
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => ActiveHdlSimulator.Instance.Test(context, options, "test_tb"));
+        Assert.Contains("ActiveHDL Simulator not available", ex.Message);
     }
 }

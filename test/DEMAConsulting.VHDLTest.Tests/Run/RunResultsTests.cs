@@ -58,10 +58,13 @@ public class RunResultsTests
 
             // Assert: log contains each line type's text, confirming all branches were written
             output = File.ReadAllText(logPath);
-            Assert.Contains("text line", output);
-            Assert.Contains("info line", output);
-            Assert.Contains("warning line", output);
-            Assert.Contains("error line", output);
+            Assert.Multiple(() =>
+            {
+                Assert.Contains("text line", output);
+                Assert.Contains("info line", output);
+                Assert.Contains("warning line", output);
+                Assert.Contains("error line", output);
+            });
         }
         finally
         {
@@ -106,6 +109,31 @@ public class RunResultsTests
     }
 
     /// <summary>
+    ///     Verifies that <see cref="RunProcessor.Parse"/> elevates <see cref="RunResults.Summary"/>
+    ///     to at least <see cref="RunLineType.Error"/> when the exit code is non-zero, even when all
+    ///     classified output lines are at a lower severity than Error.
+    ///     This confirms the SummaryElevation invariant is actually enforced at construction time.
+    /// </summary>
+    [Fact]
+    public void RunResults_SummaryElevation_NonZeroExitCode_HasErrorSummary()
+    {
+        // Arrange: create a processor whose only rule classifies lines as Info — without exit-code
+        // elevation the summary would be Info, not Error
+        var processor = new RunProcessor([RunLineRule.Create(RunLineType.Info, "info:")]);
+        var start = DateTime.Now;
+        var end = start;
+
+        // Act: parse output that matches only the Info rule, with a non-zero exit code
+        var results = processor.Parse(start, end, "info: some informational message", exitCode: 1);
+
+        // Assert: Summary is elevated to Error despite Info-only line classification,
+        // and ExitCode is preserved as non-zero
+        Assert.True(results.Summary >= RunLineType.Error,
+            $"Expected Summary >= Error for non-zero ExitCode, but got {results.Summary}");
+        Assert.NotEqual(0, results.ExitCode);
+    }
+
+    /// <summary>
     ///     Verifies that passing null as the context to Print throws ArgumentNullException,
     ///     confirming that the null-guard on Print is enforced before any output is attempted.
     /// </summary>
@@ -119,7 +147,7 @@ public class RunResultsTests
             0.0,
             0,
             string.Empty,
-            new System.Collections.ObjectModel.ReadOnlyCollection<RunLine>([]));
+            new ReadOnlyCollection<RunLine>([]));
 
         // Act / Assert: passing null as context must throw ArgumentNullException
         Assert.Throws<ArgumentNullException>(() => results.Print(null!));

@@ -42,7 +42,7 @@ public sealed class GhdlSimulator : Simulator
     ///     Output classifier for GHDL analysis (<c>ghdl -a</c>) and elaboration (<c>ghdl -e</c>) output.
     /// </summary>
     /// <remarks>
-    ///     Applies three classification rules in order:
+    ///     Applies four classification rules in order:
     ///     <list type="bullet">
     ///         <item><description>
     ///             Lines matching <c>.*:\d+:\d+:warning:</c> are classified as Warning.
@@ -52,7 +52,10 @@ public sealed class GhdlSimulator : Simulator
     ///             warning-prefixed lines) are classified as Error.
     ///         </description></item>
     ///         <item><description>
-    ///             Lines matching <c>.*:error:</c> or <c>.*: cannot open</c> are classified as Error.
+    ///             Lines matching <c>.*:error:</c> are classified as Error.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*: cannot open</c> are classified as Error.
     ///         </description></item>
     ///     </list>
     ///     This processor is also reused for the elaboration step in <c>Test</c> because elaboration

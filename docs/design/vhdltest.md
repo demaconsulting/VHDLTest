@@ -68,7 +68,9 @@ flowchart TD
 - *Role*: Consumer (the operator invokes this tool)
 - *Contract*: Accepts options `-h/--help`, `-v/--version`, `--validate`, `--silent`, `--verbose`,
   `--depth`, `-l/--log`, `-c/--config`, `-r/--result/--results`, `-s/--simulator`, `-0/--exit-0`,
-  and a positional test-filter list. Writes results and diagnostics to stdout/stderr.
+  and a positional test-filter list. Accepted values for `--simulator`: `ghdl`, `nvc`, `modelsim`,
+  `questasim`, `vivado`, `activehdl`, `mock`. Test-filter names are supplied as positional arguments
+  after all options or after a `--` separator. Writes results and diagnostics to stdout/stderr.
 - *Constraints*: Unknown options cause an error; missing config file causes an error and prints usage.
 
 **Configuration File**: YAML file specifying simulator settings and test list.
@@ -124,16 +126,35 @@ Data moves through VHDLTest in the following sequence:
 1. `Program.Main` receives raw command-line arguments and creates a `Context` (Cli subsystem).
 2. `Program.Run` inspects `Context` flags; for a test run it calls `SimulatorFactory.Get` to
    select the active simulator (Simulators subsystem).
-3. `Options.Parse` reads and deserializes the YAML configuration file into an `Options` instance
-   (Cli subsystem, using YamlDotNet).
-4. `TestResults.Execute` iterates over the configured tests; for each test it delegates to the
-   active simulator which invokes `RunProgram` to spawn the simulator process and `RunProcessor`
-   to classify each output line (Run subsystem).
-5. Each classified line is accumulated into `RunResults`, from which pass/fail `TestResult` records
+3. `Options.Parse` calls `ConfigDocument.ReadFile` to deserialize the YAML configuration file into a
+   `ConfigDocument` instance (using YamlDotNet), then constructs an `Options` record (Cli subsystem).
+4a. `TestResults.Execute` calls `simulator.Compile` to build the VHDL sources; if compilation produces
+    an Error-severity result, execution halts with `InvalidOperationException("Build Failed")`.
+4b. On build success, `TestResults.Execute` iterates over the configured tests; for each test it
+    delegates to the active simulator which invokes `RunProgram` to spawn the simulator process and
+    `RunProcessor` to classify each output line (Run subsystem).
+4. Each classified line is accumulated into `RunResults`, from which pass/fail `TestResult` records
    are created and collected into `TestResults` (Results subsystem).
-6. `TestResults.PrintSummary` writes the summary to the `Context` output stream.
-7. If a results file path is present, `TestResults.SaveResults` writes the TRX or JUnit file.
-8. `Program.Main` sets `Environment.ExitCode` from `context.ExitCode`.
+5. `TestResults.PrintSummary` writes the summary to the `Context` output stream.
+6. If a results file path is present, `TestResults.SaveResults` writes the TRX or JUnit file.
+7. `Program.Main` sets `Environment.ExitCode` from `context.ExitCode`.
+
+### Self-Validation Data Flow (`--validate`)
+
+When `--validate` is specified, data flows through a re-entrant self-test path:
+
+1. `Program.Main` receives `--validate` and creates a `Context` (Cli subsystem).
+2. `Program.Run` detects `Context.Validate` and delegates to `Validation.Run` (SelfTest
+   subsystem) instead of the normal test path.
+3. `Validation.Run` iterates over its embedded test scenarios (VHDLTest_TestPasses,
+   VHDLTest_TestFails); for each scenario it calls back into `Program.Run` in-process
+   with a freshly created Context using the simulator name from the outer invocation
+   (pass `--simulator mock` to use the built-in mock simulator).
+4. Each re-entrant `Program.Run` call follows the normal 8-step data flow above using
+   `MockSimulator` in place of a real simulator.
+5. `Validation` collects the per-scenario `RunResults`, formats a Markdown validation
+   report at the configured heading depth, and writes it to the `Context` output stream.
+6. `Program.Main` sets `Environment.ExitCode` from the aggregate validation result.
 
 ## Design Constraints
 

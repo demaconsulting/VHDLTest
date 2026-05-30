@@ -3,11 +3,12 @@
 ### Verification Approach
 
 DemaConsulting.DictionaryMark is verified through its self-validation mode and through
-direct enforcement in the CI pipeline. The `quality-checks` job in
+direct enforcement in the CI pipeline. The `build-docs` job in
 `.github/workflows/build.yaml` invokes DictionaryMark with `--validate` to execute its
-built-in test suite. A passing self-validation TRX result constitutes evidence that
-DictionaryMark's dictionary management capabilities are functioning correctly. The same
-CI job also invokes DictionaryMark in enforcement mode (without `--validate`) to verify
+built-in test suite and writes a TRX result consumed by ReqStream. A passing
+self-validation TRX result constitutes evidence that DictionaryMark's dictionary
+management capabilities are functioning correctly. Spell-checking enforcement (without
+`--validate`) runs separately in the `quality-checks` job via `lint.ps1` and verifies
 that project documentation is free of spelling violations.
 
 ### Test Environment

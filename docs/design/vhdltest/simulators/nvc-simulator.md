@@ -54,6 +54,12 @@ Uses the same classification patterns as CompileProcessor.
 or `Test` when `SimulatorPath` is null throws `InvalidOperationException` with message "NVC Simulator not
 available".
 
+When `options.Config.Files` is empty, `Compile` writes an empty response file (`compile.rsp`) and passes it
+to NVC with `@VHDLTest.out/NVC/compile.rsp`. NVC is invoked with no source files to analyze; the outcome
+depends on the NVC version but typically results in a zero-exit-code run with no output (NVC treats an
+empty analysis list as a no-op). No guard or early-return is applied for the empty-files case; the
+behavior is delegated to NVC.
+
 #### Dependencies
 
 - **Simulator** — base class providing `SimulatorName`, `SimulatorPath`, `Available()`, and `Where()`.

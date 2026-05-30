@@ -11,12 +11,12 @@ VHDL-2008 standard. Requires an explicit elaboration step before execution.
 **Instance**: `GhdlSimulator` (public static readonly) — singleton instance. `SimulatorName` is "GHDL";
 `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for GHDL analysis output.
-Classifies lines matching `.*:\d+:\d+:warning:` as Warning; lines matching `.*:\d+:\d+:` (with trailing
-space, which prevents false matches on warning-prefixed lines that include the colon-digit-digit-colon
+**CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for GHDL analysis output.
+Classifies lines matching `.*:\d+:\d+:warning:` as Warning; lines matching `.*:\d+:\d+:` (trailing
+space prevents false matches on warning-prefixed lines that include the colon-digit-digit-colon
 prefix), `.*:error:`, or `.*: cannot open` as Error.
 
-**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for GHDL run output.
+**TestProcessor**: `RunProcessor` (public static get-only property) — output classifier for GHDL run output.
 Applies nine classification rules in order:
 
 - Lines matching `.*:\(assertion note\):` or `.*:\(report note\):` are classified as Info.

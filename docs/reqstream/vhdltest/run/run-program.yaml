@@ -49,3 +49,15 @@ sections:
                   correctly without requiring callers to always specify an absolute working directory.
                 tests:
                   - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+
+              - id: VHDLTest-Run-RunProgram-ExceptionPropagation
+               title: >-
+                 RunProgram shall propagate an exception to the caller when the specified
+                 executable cannot be found or cannot be started.
+               justification: |
+                 Propagating the launch exception instead of swallowing it ensures that callers
+                 (RunProcessor and, transitively, simulator implementations) can detect and report
+                 missing simulator executables as a clear error, rather than returning an empty
+                 result or a misleading exit code.
+               tests:
+                 - RunProgram_Run_MissingExecutable_ThrowsException

@@ -45,6 +45,28 @@ public class RunProcessorTests
     }
 
     /// <summary>
+    ///     Verifies that an output line matching an error rule is classified as Error
+    ///     when the exit code is zero, isolating pattern-classification from exit-code escalation.
+    /// </summary>
+    [Fact]
+    public void RunProcessor_Parse_OutputWithErrorPattern_ReturnsErrorClassification()
+    {
+        // Arrange: create a processor with an error rule and synthetic output with zero exit code
+        var processor = new RunProcessor(
+        [
+            RunLineRule.Create(RunLineType.Error, "Error:")
+        ]);
+
+        // Act: parse output containing the error pattern with exit code 0 to isolate pattern classification
+        var result = processor.Parse(DateTime.Now, DateTime.Now, "** Error: something went wrong", 0);
+
+        // Assert: the matched line drives the summary to Error even with a zero exit code
+        Assert.Multiple(
+            () => Assert.Equal(RunLineType.Error, result.Summary),
+            () => Assert.Contains(result.Lines, l => l.Type == RunLineType.Error));
+    }
+
+    /// <summary>
     ///     Verifies that output containing an error pattern produces an Error summary.
     /// </summary>
     [Fact]
@@ -59,7 +81,8 @@ public class RunProcessorTests
         // Act: run dotnet with an unknown command, which produces error output
         var result = processor.Execute("dotnet", "", "unknown-command");
 
-        // Assert: the error pattern in the output drives the summary to Error
+        // Assert: the summary is Error; both pattern matching and exit-code escalation
+        // can contribute — this test verifies the combined outcome
         Assert.Equal(RunLineType.Error, result.Summary);
     }
 
@@ -136,8 +159,10 @@ public class RunProcessorTests
         // Act: parse output that contains no matching keyword
         var result = processor.Parse(DateTime.Now, DateTime.Now, "this line does not match", 0);
 
-        // Assert: the unmatched line is classified as Text
-        Assert.Contains(result.Lines, l => l.Type == RunLineType.Text);
+        // Assert: the unmatched line is classified as Text and the summary is Text
+        Assert.Multiple(
+            () => Assert.Equal(RunLineType.Text, result.Summary),
+            () => Assert.Contains(result.Lines, l => l.Type == RunLineType.Text));
     }
 
     /// <summary>

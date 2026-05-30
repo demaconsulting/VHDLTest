@@ -30,4 +30,9 @@ rendered the versions report.
   PandocTool and WeasyprintTool processing confirms the output is well-formed markdown.
 - **Self-validation TRX output**: `dotnet versionmark --validate --results artifacts/versionmark-self-validation.trx`
   executes VersionMark's internal test suite and writes TRX results consumed by ReqStream
-  to verify the requirement `VHDLTest-OTS-VersionMark` is satisfied.
+  to verify the requirements `VHDLTest-OTS-VersionMark-Capture`, `VHDLTest-OTS-VersionMark-Publish`,
+  and `VHDLTest-OTS-VersionMark-Lint` are satisfied.
+- **Lint mode**: `dotnet versionmark --lint` is invoked in the `quality-checks` CI job via `lint.ps1`
+  to validate that tool version captures are consistent with the local tool manifest. A zero exit code
+  confirms that all captured tool versions match the manifest declarations, satisfying requirement
+  `VHDLTest-OTS-VersionMark-Lint`.

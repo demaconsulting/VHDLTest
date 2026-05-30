@@ -56,7 +56,8 @@ public static class Program
             ?.InformationalVersion ?? "Unknown";
 
     /// <summary>
-    ///     Application entry point
+    ///     Creates the program context from command-line arguments, delegates execution to
+    ///     <see cref="Run"/>, and propagates the resulting exit code to the process.
     /// </summary>
     /// <remarks>
     ///     The primary output channel is <see cref="System.Environment.ExitCode"/>, set from
@@ -66,7 +67,7 @@ public static class Program
     ///     and re-thrown so that the runtime reports an unhandled exception with a non-zero
     ///     exit code.
     /// </remarks>
-    /// <param name="args">Program arguments</param>
+    /// <param name="args">Program arguments. Must not be null.</param>
     /// <exception cref="Exception">Thrown when an unexpected error occurs that cannot be attributed to an operational condition; the exception propagates to the runtime unhandled.</exception>
     public static void Main(string[] args)
     {
@@ -104,7 +105,7 @@ public static class Program
     ///     <see cref="Context.WriteError"/>, which increments <see cref="Context.Errors"/> and
     ///     causes <see cref="Context.ExitCode"/> to return non-zero.
     /// </remarks>
-    /// <param name="context">Program context</param>
+    /// <param name="context">Program context. Must not be null.</param>
     public static void Run(Context context)
     {
         // Handle version query
@@ -168,6 +169,8 @@ public static class Program
             // If we got failures then exit with an error code
             if (!context.ExitZero && results.Fails.Any())
             {
+                // Pass null to increment the error counter without printing a duplicate message —
+                // the test failure details have already been written by PrintSummary
                 context.WriteError(null);
             }
         }

@@ -23,6 +23,8 @@ Live simulator integration: CI environment with GHDL installed on PATH.
 - The test processor correctly classifies clean, info (report note), warning (report warning),
   and error (report error/failure) output patterns.
 - `GhdlSimulator.FindPath()` returns the `VHDLTEST_GHDL_PATH` environment variable value when set.
+- `GhdlSimulator.Compile()` throws `InvalidOperationException` when the GHDL simulator is not available.
+- `GhdlSimulator.Test()` throws `InvalidOperationException` when the GHDL simulator is not available.
 
 #### Test Scenarios
 
@@ -101,3 +103,13 @@ This scenario is tested by `GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
 throw when `VHDLTEST_GHDL_PATH` is not set, returning either a valid path string (when GHDL is
 installed on PATH) or null (when not installed).
 This scenario is tested by `GhdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`.
+
+**Compile_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `GhdlSimulator.Compile()`
+throws `InvalidOperationException` when the GHDL simulator is not available (i.e., `SimulatorPath`
+is null), preventing silent incorrect behavior when the simulator is not installed.
+This scenario is tested by `GhdlSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException`.
+
+**Test_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `GhdlSimulator.Test()`
+throws `InvalidOperationException` when the GHDL simulator is not available (i.e., `SimulatorPath`
+is null), preventing silent incorrect behavior when the simulator is not installed.
+This scenario is tested by `GhdlSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`.

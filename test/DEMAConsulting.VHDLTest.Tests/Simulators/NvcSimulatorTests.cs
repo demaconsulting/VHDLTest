@@ -28,6 +28,29 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for NVC simulator
 /// </summary>
+/// <remarks>
+///     Unit under test: <see cref="NvcSimulator"/>.
+///     <para>
+///         The testing strategy is parse-based: <see cref="NvcSimulator.CompileProcessor"/> and
+///         <see cref="NvcSimulator.TestProcessor"/> are exercised by calling <c>Parse</c> with
+///         pre-captured output strings, covering clean, info, warning, error, failure, and fatal
+///         output categories without requiring a live NVC installation. This approach keeps the
+///         tests fast, hermetic, and runnable in any CI environment.
+///     </para>
+///     <para>
+///         <c>[Collection("SimulatorEnvVarTests")]</c> serialization is required because
+///         <see cref="NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue"/> mutates the
+///         <c>VHDLTEST_NVC_PATH</c> process-level environment variable. Concurrent mutation of
+///         the same environment variable by parallel test classes would create race conditions,
+///         producing non-deterministic test results. Serializing via the shared
+///         <c>SimulatorEnvVarTests</c> collection prevents this.
+///     </para>
+/// </remarks>
+// All tests in this class are serialized via the SimulatorEnvVarTests collection because
+// NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
+// VHDLTEST_NVC_PATH process-level environment variable.
+// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
+// ensures these tests run sequentially with other env-var tests, preventing race conditions.
 [Collection("SimulatorEnvVarTests")]
 public class NvcSimulatorTests
 {
@@ -455,7 +478,7 @@ public class NvcSimulatorTests
         if (simulator.SimulatorPath != null)
         {
             // Skip the assertion: NVC was found in the temp directory (unexpected but possible)
-            return;
+            Assert.Skip("NVC was unexpectedly found in the test environment; skipping availability guard test.");
         }
 
         using var context = Context.Create(["--silent"]);
@@ -502,7 +525,7 @@ public class NvcSimulatorTests
         if (simulator.SimulatorPath != null)
         {
             // Skip the assertion: NVC was found in the temp directory (unexpected but possible)
-            return;
+            Assert.Skip("NVC was unexpectedly found in the test environment; skipping availability guard test.");
         }
 
         using var context = Context.Create(["--silent"]);

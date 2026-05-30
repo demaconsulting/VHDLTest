@@ -48,7 +48,7 @@ sections:
                   is a defensive guard that ensures WorkingDirectory is always a valid, absolute path
                   before it is used by downstream units. Without this guard, a null WorkingDirectory
                   would cause a NullReferenceException deep in the test execution path, making
-                  diagnosis difficult. This path is unreachable with well-formed file system paths
-                  on supported operating systems and cannot be exercised by conventional unit tests.
+                  diagnosis difficult. This code path cannot be reached through Parse with well-formed file system paths,
+                  but is directly testable by calling the internal ResolveWorkingDirectory method.
                 tests:
                   - Options_ResolveWorkingDirectory_RootPath_ThrowsInvalidOperationException

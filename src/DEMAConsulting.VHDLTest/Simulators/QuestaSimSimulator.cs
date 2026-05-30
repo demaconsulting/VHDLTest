@@ -94,6 +94,12 @@ public sealed class QuestaSimSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Creates the <c>VHDLTest.out/QuestaSim/</c> output directory if it does not already exist,
+    ///     writes <c>compile.do</c> to that directory, and invokes <c>vsim -c -do compile.do</c> to
+    ///     compile all source files. Throws <see cref="InvalidOperationException"/> when
+    ///     <see cref="Simulator.SimulatorPath"/> is null (QuestaSim not installed).
+    /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -141,6 +147,11 @@ public sealed class QuestaSimSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Writes <c>test.do</c> to <c>VHDLTest.out/QuestaSim/</c> and invokes <c>vsim</c> to run
+    ///     the specified test bench. Throws <see cref="InvalidOperationException"/> when
+    ///     <see cref="Simulator.SimulatorPath"/> is null (QuestaSim not installed).
+    /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command

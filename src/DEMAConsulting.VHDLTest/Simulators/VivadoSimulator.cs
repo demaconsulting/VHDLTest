@@ -96,8 +96,13 @@ public sealed class VivadoSimulator : Simulator
     public static VivadoSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the Vivado simulator
+    ///     Initializes a new instance of the Vivado simulator.
     /// </summary>
+    /// <remarks>
+    ///     Private to enforce the singleton pattern — callers must use <see cref="Instance"/>.
+    ///     <see cref="FindPath"/> is invoked within the base-constructor call, initializing
+    ///     <see cref="Simulator.SimulatorPath"/> to null when Vivado is not found.
+    /// </remarks>
     private VivadoSimulator() : base("Vivado", FindPath())
     {
     }

@@ -11,7 +11,7 @@ mode that writes TRX test results consumed by ReqStream itself.
 
 ### Test Environment
 
-CI/CD pipeline environment — GitHub Actions runner on Ubuntu (build-docs job). All TRX
+CI/CD pipeline environment — GitHub Actions runner on Windows (`windows-latest`, build-docs job). All TRX
 test result files from the build, integration, and validation jobs must be available as
 artifacts before the ReqStream step runs.
 
@@ -33,3 +33,7 @@ in the collected TRX files.
 - **Self-validation TRX output**: `dotnet reqstream --validate --results artifacts/reqstream-self-validation.trx`
   executes ReqStream's internal test suite and writes TRX results to verify the
   requirement `VHDLTest-OTS-ReqStream` is satisfied.
+- **Lint mode**: `dotnet reqstream --lint` is invoked in the `quality-checks` CI job via `lint.ps1` to
+  verify that all requirements YAML files conform to the ReqStream schema and contain no structural
+  errors. A zero exit code confirms that all requirement files are well-formed and pass lint
+  validation, satisfying requirement `VHDLTest-OTS-ReqStream-Lint`.

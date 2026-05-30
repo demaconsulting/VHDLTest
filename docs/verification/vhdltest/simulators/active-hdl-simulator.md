@@ -22,25 +22,27 @@ Live simulator integration: CI environment with Active-HDL installed on PATH.
 - The compile processor correctly classifies clean, warning, and error output patterns.
 - The test processor correctly classifies clean, info, warning, error, and Lattice Edition
   suppression patterns.
+- Calling `Compile()` or `Test()` when the simulator is not installed throws `InvalidOperationException`.
+- `FindPath()` returns the value of `VHDLTEST_ACTIVEHDL_PATH` when that environment variable is set.
 
 #### Test Scenarios
 
-**SimulatorName_ReturnsActiveHDL**: Verifies that `ActiveHdlSimulator.Instance.SimulatorName`
+**SimulatorName_ReturnsActiveHdl**: Verifies that `ActiveHdlSimulator.Instance.SimulatorName`
 is `"ActiveHdl"`, confirming the instance is registered with the correct name for factory
 lookup.
-This scenario is tested by the simulator name test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_SimulatorName_ReturnsActiveHdl` in `ActiveHdlSimulatorTests.cs`.
 
 **CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Active-HDL
 compilation output produces a `RunLineType.Text` summary.
-This scenario is tested by the compile clean output test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `ActiveHdlSimulatorTests.cs`.
 
 **CompileProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an Active-HDL warning
 line (`KERNEL: Warning:`) is classified as `RunLineType.Warning`.
-This scenario is tested by the compile warning test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult` in `ActiveHdlSimulatorTests.cs`.
 
 **CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an Active-HDL error line
 is classified as `RunLineType.Error`.
-This scenario is tested by the compile error test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in `ActiveHdlSimulatorTests.cs`.
 
 **CompileProcessor_FatalRuntimeError_ReturnsErrorResult**: Verifies that a `RUNTIME: Fatal Error`
 line in compile output is classified as `RunLineType.Error`.
@@ -49,7 +51,7 @@ in `ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Active-HDL simulation
 output produces a `RunLineType.Text` summary.
-This scenario is tested by the test clean output test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult` in `ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an `EXECUTION:: NOTE` line
 is classified as `RunLineType.Info`.
@@ -58,11 +60,11 @@ in `ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an `EXECUTION:: WARNING`
 line is classified as `RunLineType.Warning`.
-This scenario is tested by the test warning output test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult` in `ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an `EXECUTION:: ERROR` line
 is classified as `RunLineType.Error`.
-This scenario is tested by the test error output test in `ActiveHdlSimulatorTests.cs`.
+This scenario is tested by `ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult` in `ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_LatticeSuppression1_ReturnsTextResult**: Verifies that the first Active-HDL
 Lattice Edition advisory (`KERNEL: Warning: You are using the Active-HDL Lattice Edition`)
@@ -116,4 +118,16 @@ in `ActiveHdlSimulatorTests.cs`.
 returns the value of the `VHDLTEST_ACTIVEHDL_PATH` environment variable when set,
 confirming the environment variable override path works correctly.
 This scenario is tested by `ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
+in `ActiveHdlSimulatorTests.cs`.
+
+**Compile_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Compile()`
+throws `InvalidOperationException` with message containing `"ActiveHDL Simulator not available"`
+when `SimulatorPath` is null. This test is skipped in environments where Active-HDL is installed.
+This scenario is tested by `ActiveHdlSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException`
+in `ActiveHdlSimulatorTests.cs`.
+
+**Test_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Test()`
+throws `InvalidOperationException` with message containing `"ActiveHDL Simulator not available"`
+when `SimulatorPath` is null. This test is skipped in environments where Active-HDL is installed.
+This scenario is tested by `ActiveHdlSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException`
 in `ActiveHdlSimulatorTests.cs`.

@@ -39,7 +39,9 @@ Text (not Warning). Classifies `KERNEL:\s*Warning:` and `KERNEL:\s*WARNING:` as 
 **Test**: Simulates a single test bench using Active-HDL's asim utility via a TCL do-script.
 
 - *Parameters*: `Context context` — verbose logging. `Options options` — working directory.
-  `string test` — test bench entity name.
+  `string test` — VHDL entity name or library-qualified entity name (e.g., `my_tb` or `lib.my_tb`);
+  must not contain whitespace or TCL metacharacters because the name is interpolated directly
+  into the TCL script without escaping.
 - *Returns*: `TestResult` — simulation outcome.
 - *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
 - *Postconditions*: Writes `test.do` containing `onerror {exit -code 1}`, `set worklib work`,

@@ -23,7 +23,7 @@ using DEMAConsulting.VHDLTest.Cli;
 namespace DEMAConsulting.VHDLTest.Tests.Cli;
 
 /// <summary>
-/// Tests for argument parsing
+/// Tests for the Context class
 /// </summary>
 public class ContextTests
 {
@@ -59,6 +59,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_UnknownArgument_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for unknown argument
         Assert.Throws<InvalidOperationException>(() => Context.Create(["--unknown"]));
     }
@@ -91,6 +93,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_MissingConfigValue_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for missing config value
         Assert.Throws<InvalidOperationException>(() => Context.Create(["-c"]));
     }
@@ -123,6 +127,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_MissingResultsValue_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for missing results value
         Assert.Throws<InvalidOperationException>(() => Context.Create(["-r"]));
     }
@@ -155,6 +161,8 @@ public class ContextTests
     [Fact]
     public void Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for missing simulator value
         Assert.Throws<InvalidOperationException>(() => Context.Create(["-s"]));
     }
@@ -687,5 +695,81 @@ public class ContextTests
 
         // Assert: verify the line reached the console
         Assert.Contains("console line output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteError outputs to the console when not in silent mode
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_NonSilentMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create([]);
+
+            // Act: write an error without silent mode active
+            context.WriteError("error output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the error reached the console
+        Assert.Contains("error output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteLine writes to the log file even when silent mode is enabled
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_SilentMode_WritesToLogFile()
+    {
+        // Arrange: create a silent context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--silent", "-l", logFile]))
+            {
+                // Act: write a line through the context while in silent mode
+                arguments.WriteLine("silent line output");
+            }
+
+            // Assert: verify the line was written to the log file despite silent mode
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("silent line output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Context.Create throws InvalidOperationException when -l/--log is provided without a value
+    /// </summary>
+    [Fact]
+    public void Context_Create_MissingLogValue_ThrowsInvalidOperationException()
+    {
+        // Arrange - no setup required; the missing value is the scenario under test
+
+        // Act & Assert - verify InvalidOperationException is thrown for missing log value
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-l"]));
+    }
+
+    /// <summary>
+    /// Test that Context.Create throws InvalidOperationException when --depth is provided without a value
+    /// </summary>
+    [Fact]
+    public void Context_Create_MissingDepthValue_ThrowsInvalidOperationException()
+    {
+        // Arrange - no setup required; the missing value is the scenario under test
+
+        // Act & Assert - verify InvalidOperationException is thrown for missing depth value
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth"]));
     }
 }

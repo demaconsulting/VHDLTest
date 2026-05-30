@@ -10,7 +10,7 @@ that writes TRX test results consumed by ReqStream.
 
 ### Test Environment
 
-CI/CD pipeline environment — GitHub Actions runner on Ubuntu (build-docs job).
+CI/CD pipeline environment — GitHub Actions runner on Windows (`windows-latest`, build-docs job).
 
 ### Acceptance Criteria
 

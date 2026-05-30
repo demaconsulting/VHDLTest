@@ -28,7 +28,7 @@ sections:
               Enables users to confirm the installed version for troubleshooting and
               compatibility verification.
             tests:
-              - Program_Version_IsNotEmpty
+              - Program_Version_WhenAssemblyBuilt_IsNotEmpty
               - Program_Run_WithVersionFlag_ReturnsZeroExitCode
               - Program_Run_WithVersionFlag_DisplaysVersion
 
@@ -42,7 +42,7 @@ sections:
               - Program_Run_WithHelpFlag_DisplaysHelp
 
           - id: VHDLTest-Program-Validate
-            title: Program shall delegate to the self-validation runner when the validate flag is given.
+            title: Program shall execute self-validation and report results when the `--validate` flag is given.
             justification: |
               When the user passes --validate, Program.Run must call Validation.Run to execute the
               built-in self-validation suite, verifying that the tool is correctly installed and the
@@ -88,3 +88,15 @@ sections:
               file so that downstream consumers can read the test outcome data.
             tests:
               - Program_Run_SaveResults_WithResultsFile_CreatesResultsFile
+
+          - id: VHDLTest-Program-TestFilter
+            title: >-
+              Program shall filter the executed test benches to only those whose names appear in the
+              [tests] argument list when one or more test names are provided.
+            justification: |
+              Allowing users to specify which tests to run enables faster feedback cycles during
+              development — developers can target a single failing test without waiting for the
+              full suite to complete. When no test names are provided, all tests configured in
+              the configuration file are executed.
+            tests:
+              - Program_Run_WithTestFilter_RunsOnlyMatchingTests

@@ -45,7 +45,7 @@ internal static class Validation
     private const string ValidationFolder = "validation.tmp";
 
     /// <summary>
-    ///     Run self-validation
+    ///     Executes the full self-validation sequence and reports results.
     /// </summary>
     /// <param name="context">Program context; must not be null.</param>
     /// <remarks>
@@ -239,7 +239,7 @@ internal static class Validation
     }
 
     /// <summary>
-    ///     Report validation test results
+    ///     Records and reports a single validation test outcome.
     /// </summary>
     /// <param name="context">Program context; must not be null.</param>
     /// <param name="results">Test results collection to append to; must not be null.</param>
@@ -310,10 +310,17 @@ internal static class Validation
     }
 
     /// <summary>
-    /// Extract the validation resources to the specified path
+    ///     Extracts embedded validation resource files to a destination directory.
     /// </summary>
     /// <param name="path">Destination directory path where files will be written; must not be null and must already exist.</param>
     /// <exception cref="InvalidOperationException">Thrown when a manifest resource stream cannot be opened (resource returned null from <see cref="System.Reflection.Assembly.GetManifestResourceStream(string)"/>).</exception>
+    /// <remarks>
+    ///     Embedded resources are named under the <c>DEMAConsulting.VHDLTest.ValidationFiles.</c>
+    ///     prefix; the portion of each resource name after the prefix becomes the output filename
+    ///     in <paramref name="path"/>. This design makes the validation suite self-contained:
+    ///     all required VHDL source files are bundled inside the assembly so that self-validation
+    ///     can run without any on-disk VHDL files in the user's environment.
+    /// </remarks>
     private static void ExtractValidationFiles(string path)
     {
         const string prefix = "DEMAConsulting.VHDLTest.ValidationFiles.";
@@ -343,10 +350,19 @@ internal static class Validation
     }
 
     /// <summary>
-    ///     Run VhdlTest with the specified arguments
+    ///     Runs VHDLTest in-process with the specified arguments.
     /// </summary>
     /// <param name="args">Command-line arguments to pass to VHDLTest; must not be null.</param>
     /// <returns>Exit code returned by the VHDLTest invocation.</returns>
+    /// <remarks>
+    ///     This overload runs VHDLTest in-process by creating a new <see cref="Context"/> and
+    ///     calling <see cref="Program.Run"/>, avoiding subprocess overhead and allowing the
+    ///     validation suite to exercise the full application pipeline without spawning a child
+    ///     process. This overload is thread-safe in itself; however,
+    ///     <see cref="RunVhdlTest(string, string[])"/> (the working-directory overload) is not
+    ///     thread-safe because it calls <see cref="Directory.SetCurrentDirectory"/>, which is a
+    ///     process-global operation.
+    /// </remarks>
     internal static int RunVhdlTest(string[] args)
     {
         // Create the context

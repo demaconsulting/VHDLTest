@@ -10,7 +10,7 @@ correctly queried SonarCloud and rendered the report. SonarMark also provides an
 
 ### Test Environment
 
-CI/CD pipeline environment — GitHub Actions runner on Ubuntu (build-docs job). A valid
+CI/CD pipeline environment — GitHub Actions runner on Windows (`windows-latest`, build-docs job). A valid
 `SONAR_TOKEN` must be available as a secret, and the SonarCloud project
 `demaconsulting_VHDLTest` must have completed analysis via dotnet-sonarscanner before
 the SonarMark step runs.

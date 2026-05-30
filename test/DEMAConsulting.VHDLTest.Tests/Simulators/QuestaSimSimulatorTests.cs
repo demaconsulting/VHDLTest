@@ -27,6 +27,12 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for QuestaSim simulator
 /// </summary>
+// All tests in this class are serialized via the SimulatorEnvVarTests collection because
+// QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
+// VHDLTEST_QUESTASIM_PATH process-level environment variable.
+// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
+// ensures these tests run sequentially with other env-var tests, preventing race conditions.
+[Collection("SimulatorEnvVarTests")]
 public class QuestaSimSimulatorTests
 {
     /// <summary>
@@ -276,5 +282,32 @@ public class QuestaSimSimulatorTests
         var ex = Assert.Throws<InvalidOperationException>(
             () => QuestaSimSimulator.Instance.Test(context, options, "test_tb"));
         Assert.Contains("QuestaSim Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that FindPath returns the value of the VHDLTEST_QUESTASIM_PATH
+    ///     environment variable when it is set.
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
+    {
+        // Arrange: set the VHDLTEST_QUESTASIM_PATH environment variable to a known value
+        var expectedPath = "/custom/questasim/path";
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH", expectedPath);
+
+        try
+        {
+            // Act: call FindPath()
+            var result = QuestaSimSimulator.FindPath();
+
+            // Assert: result is the env var value
+            Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH", previousValue);
+        }
     }
 }

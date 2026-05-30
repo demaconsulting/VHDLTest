@@ -219,26 +219,18 @@ public partial class IntegrationTests
     [Fact]
     public void VHDLTest_TestExecutionErrorWithExit0_ReturnsZeroExitCode()
     {
+        // Arrange: create a config file for a test that will fail during execution
+        var configFile = CreateConfigurationFile("test_execution_error_exit0", "file_test.vhd", "file_error_test_tb");
+
         try
         {
-            // Arrange: write a config file for a test that will fail
-            File.WriteAllText("test_execution_error_exit0.yaml",
-                """
-                files:
-                 - file_test.vhd
-
-                tests:
-                 - file_error_test_tb
-                """
-            );
-
             // Act: run the application using the mock simulator with --exit-0
             var exitCode = Runner.Run(
                 out _,
                 "dotnet",
                 "DEMAConsulting.VHDLTest.dll",
                 "--simulator", "mock",
-                "--config", "test_execution_error_exit0.yaml",
+                "--config", configFile,
                 "--exit-0");
 
             // Assert: verify error suppressed
@@ -246,8 +238,51 @@ public partial class IntegrationTests
         }
         finally
         {
-            File.Delete("test_execution_error_exit0.yaml");
+            DeleteFileIfExists(configFile);
         }
+    }
+
+    /// <summary>
+    /// Test self-validation passes and returns zero exit code
+    /// </summary>
+    [Fact]
+    public void VHDLTest_Validate_ReturnsZeroExitCode()
+    {
+        // Arrange: (none — validation uses embedded mock simulator resources)
+
+        // Act: run the application with --validate using the mock simulator
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--validate",
+            "--simulator", "mock");
+
+        // Assert: verify success and validation passed message
+        Assert.Equal(0, exitCode);
+        Assert.Contains("Validation Passed", output);
+    }
+
+    /// <summary>
+    /// Test self-validation with --depth renders headings at the specified depth
+    /// </summary>
+    [Fact]
+    public void VHDLTest_ValidateWithDepth_RendersDepthHeadings()
+    {
+        // Arrange: (none — validation uses embedded mock simulator resources)
+
+        // Act: run the application with --validate --depth 2 using the mock simulator
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--validate",
+            "--simulator", "mock",
+            "--depth", "2");
+
+        // Assert: verify success and that headings are at depth 2 (##)
+        Assert.Equal(0, exitCode);
+        Assert.Contains("##", output);
     }
 
     /// <summary>

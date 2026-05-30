@@ -10,7 +10,7 @@ read the SARIF input and rendered the markdown report. SarifMark also provides a
 
 ### Test Environment
 
-CI/CD pipeline environment — GitHub Actions runner on Ubuntu (build-docs job). The CodeQL
+CI/CD pipeline environment — GitHub Actions runner on Windows (`windows-latest`, build-docs job). The CodeQL
 SARIF artifact (`artifacts/csharp.sarif`) produced by the `codeql` job must be available
 before the SarifMark step runs.
 

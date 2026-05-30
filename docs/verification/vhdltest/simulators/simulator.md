@@ -12,7 +12,7 @@ is correctly implemented.
 `MockSimulator` is a test fixture (not a production software unit) whose sole purpose is to
 exercise the `Simulator` abstract base class in isolation. `MockSimulatorTests` collectively
 verify the base-class interface contract — name, availability, compile, and test-execution
-behavior — covering 18 test cases. No separate verification document is required for
+behavior — covering 20 test cases. No separate verification document is required for
 `MockSimulator` itself; its tests form part of the verification evidence for the
 `Simulator` abstract base class.
 

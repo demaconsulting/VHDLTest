@@ -213,7 +213,7 @@ public sealed class TestResults(string runName, string codeBase)
     ///     null, empty, or whitespace-only.
     /// </remarks>
     /// <param name="fileName">File name (extension determines format: .trx for TRX, .xml for JUnit, others default to TRX)</param>
-    /// <exception cref="ArgumentException">Thrown when fileName is null or empty</exception>
+    /// <exception cref="ArgumentException">Thrown when fileName is null, empty, or whitespace-only</exception>
     public void SaveResults(string fileName)
     {
         // Validate parameter
@@ -277,6 +277,7 @@ public sealed class TestResults(string runName, string codeBase)
     ///     <c>SaveToTrx</c> continue to work without modification.
     /// </remarks>
     /// <param name="fileName">TRX file name</param>
+    /// <exception cref="ArgumentException">Thrown when fileName is null, empty, or whitespace-only; propagated from <see cref="SaveResults"/>.</exception>
     public void SaveToTrx(string fileName)
     {
         SaveResults(fileName);
@@ -292,9 +293,13 @@ public sealed class TestResults(string runName, string codeBase)
     ///     totals. All output goes through the injected <paramref name="context"/>; the method
     ///     has no other side effects. <paramref name="context"/> must not be null.
     /// </remarks>
-    /// <param name="context">Program context</param>
+    /// <param name="context">Program context. Must not be null.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     public void PrintSummary(Context context)
     {
+        // Validate the context before dereferencing it
+        ArgumentNullException.ThrowIfNull(context);
+
         // Print the summary table
         context.WriteLine("==== summary ===========================");
         foreach (var r in Tests)

@@ -51,10 +51,13 @@ base.
 - *Postconditions*: `BuildResults` is set; build failure throws `InvalidOperationException`; on
   success, `Tests` contains one entry per test.
 
-Invokes `simulator.Compile` for the build step; throws `InvalidOperationException` with the message
-"Build Failed" if `BuildResults.Summary >= RunLineType.Error`. Then iterates over
-`context.CustomTests` (if set) or `options.Config.Tests`, calling `simulator.Test` for each and
-appending the resulting `TestResult` to `Tests`.
+Invokes `simulator.Compile` for the build step and calls `BuildResults.Print(context)` to display
+the build output. Throws `InvalidOperationException` with the message "Build Failed" if
+`BuildResults.Summary >= RunLineType.Error`. On build success, writes a "Build Passed"
+confirmation to the context. Then iterates over `context.CustomTests` (if set) or
+`options.Config.Tests`; for each test, calls `simulator.Test`, then appends the `TestResult` to
+`Tests`, calls `testResult.RunResults.Print(context)` to display the test output, and calls
+`testResult.PrintSummary(context)` to write the per-test pass/fail line.
 
 **SaveResults**: Serializes the test collection to a file in TRX or JUnit XML format.
 
@@ -79,7 +82,9 @@ appending the resulting `TestResult` to `Tests`.
 - *Postconditions*: a formatted summary block has been written to the context output.
 
 Iterates `Tests`, calling `TestResult.PrintSummary` for each. Then writes total, passed, and failed
-test counts.
+test counts. The passed count line is only printed when `passed > 0`; the failed count line is only
+printed when `failed > 0`. An empty `Tests` collection produces only the separator lines and no
+count lines.
 
 #### Error Handling
 

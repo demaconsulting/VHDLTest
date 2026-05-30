@@ -13,6 +13,7 @@ sections:
                   Supporting Vivado simulator is essential for teams developing designs targeting
                   Xilinx/AMD FPGAs and enables seamless integration with the Vivado toolchain.
                 tests:
+                  - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
                   - VivadoSimulator_SimulatorName_ReturnsVivado
 
               - id: VHDLTest-Simulators-VivadoSimulator-Compile
@@ -36,4 +37,30 @@ sections:
                   - VivadoSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
                   - VivadoSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
                   - VivadoSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
+
+              - id: VHDLTest-Simulators-VivadoSimulator-Unavailable
+                title: >-
+                  When Vivado is not available, VHDLTest shall report that the Vivado
+                  simulator is not available when compile or test is invoked.
+                justification: |
+                  Clear error reporting when the simulator is not installed prevents silent
+                  failures and gives users an actionable message when the simulator binary
+                  cannot be located.
+                tests:
+                  - VivadoSimulator_Compile_WhenSimulatorNotAvailable_ThrowsInvalidOperationException
+                  - VivadoSimulator_Test_WhenSimulatorNotAvailable_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Simulators-VivadoSimulator-FindPath
+                title: >-
+                  Vivado Simulator shall locate the Vivado installation directory, respecting
+                  the VHDLTEST_VIVADO_PATH environment variable override when set.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate Vivado across different
+                  installation layouts and environments. The VHDLTEST_VIVADO_PATH environment
+                  variable override enables CI pipelines and non-standard installations to specify
+                  the Vivado path explicitly without modifying PATH. PATH-based discovery is
+                  verified in CI with Vivado installed; the env-var override path is covered by
+                  a unit test.
+                tests:
+                  - VivadoSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
 

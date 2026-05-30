@@ -77,6 +77,13 @@ read the following token as a value argument. The following tokens are accepted:
 
 Unrecognised tokens starting with `-` throw `InvalidOperationException`.
 
+**Note on value-argument token consumption**: `GetArgument()` simply advances the enumerator
+to the next token and returns it verbatim. If a value-argument flag such as `--depth` is
+immediately followed by another flag token (for example, `--depth --verbose`), `GetArgument()`
+returns `"--verbose"` as the depth value, causing the subsequent integer-parse validation to
+throw `InvalidOperationException`. This behavior is intentional: no lookahead heuristic is
+applied because any such input is unambiguously malformed.
+
 **Dispose**: Releases the log-file writer.
 
 - *Parameters*: none.

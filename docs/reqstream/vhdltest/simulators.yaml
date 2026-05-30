@@ -12,7 +12,7 @@ sections:
               a simulator by name ensures the subsystem interface contract is correct.
             tests:
               - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
-              - SimulatorsSubsystem_GetUnknownSimulatorByName_ReturnsNull
+              - SimulatorsSubsystem_GetSimulatorByName_WithUnknownName_ReturnsNull
             children:
               - VHDLTest-Simulators-Simulator-Interface
               - VHDLTest-Simulators-SimulatorFactory-Get
@@ -34,7 +34,9 @@ sections:
               as designed for each supported simulator.
             tests:
               - SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError
-              - SimulatorsSubsystem_NvcProcessorWithCleanOutput_ClassifiesAsText
+              - SimulatorsSubsystem_ProcessOutput_NvcWithCleanOutput_ClassifiesAsText
+              - SimulatorsSubsystem_ProcessOutput_GhdlWithWarningOutput_ClassifiesAsWarning
+              - SimulatorsSubsystem_ProcessOutput_NvcWithInfoOutput_ClassifiesAsInfo
             children:
               - VHDLTest-Simulators-GhdlSimulator-Compile
               - VHDLTest-Simulators-GhdlSimulator-Test

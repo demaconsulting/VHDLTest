@@ -37,11 +37,12 @@ not appear in the log when verbose is disabled, and that Info-classified lines a
 written, confirming the verbose-suppression logic.
 This scenario is tested by `RunResults_Print_WithVerboseDisabled_SuppressesTextLines`.
 
-**Summary_WhenExitCodeNonZero_IsAtLeastError**: Verifies that a RunResults with a non-zero
-exit code has Summary >= RunLineType.Error, confirming the SummaryElevation contract.
-This invariant is enforced by RunProcessor.Parse at construction time; the scenario is
-therefore tested by `RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError`
-in `RunProcessorTests.cs`.
+**Summary_WhenExitCodeNonZero_IsAtLeastError**: Verifies that a RunResults produced by
+`RunProcessor.Parse` with a non-zero exit code and only Info-classified output has
+Summary >= RunLineType.Error, confirming the SummaryElevation invariant is enforced by
+`RunProcessor.Parse` at construction time.
+This scenario is tested by `RunResults_SummaryElevation_NonZeroExitCode_HasErrorSummary`
+in `RunResultsTests.cs`.
 
 **CompileProcessor_CleanOutput_ReturnsTextResult** (via simulator tests): Verifies that a
 `RunResults` constructed from clean output has `Summary == RunLineType.Text`, `ExitCode == 0`,

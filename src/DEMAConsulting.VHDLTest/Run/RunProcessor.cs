@@ -197,6 +197,7 @@ public class RunProcessor(RunLineRule[] rules)
     ///     regardless of matched output patterns.
     /// </param>
     /// <returns>A fully populated <see cref="RunResults"/> record.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="output"/> is null.</exception>
     /// <exception cref="System.Text.RegularExpressions.RegexMatchTimeoutException">
     ///     Thrown when a <see cref="RunLineRule"/> pattern match exceeds its configured timeout
     ///     during line classification. Propagates to the caller without being caught.
@@ -207,6 +208,9 @@ public class RunProcessor(RunLineRule[] rules)
         string output,
         int exitCode)
     {
+        // Validate output before dereferencing it
+        ArgumentNullException.ThrowIfNull(output);
+
         // Calculate the duration
         var duration = (end - start).TotalSeconds;
 
@@ -222,6 +226,9 @@ public class RunProcessor(RunLineRule[] rules)
 
         // Calculate the summary type
         var summary = exitCode != 0 ? RunLineType.Error : RunLineType.Text;
+        // String.Split always returns at least one element, making this guard defensive
+        // rather than strictly necessary; it explicitly documents the intent that the
+        // summary-elevation block runs only when there are classified lines to inspect
         if (lines.Length > 0)
         {
             var maxLineType = lines.Max(line => line.Type);

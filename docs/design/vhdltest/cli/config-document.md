@@ -9,10 +9,10 @@ patterns required to execute a test run.
 #### Data Model
 
 **Files**: `string[]` — Array of VHDL source file paths to compile, as read from the YAML
-`files` key. Defaults to an empty array when the key is absent.
+`files` key. Defaults to an empty array when the key is absent or explicitly set to null.
 
 **Tests**: `string[]` — Array of VHDL test bench entity names to execute, as read from the YAML
-`tests` key. Defaults to an empty array when the key is absent.
+`tests` key. Defaults to an empty array when the key is absent or explicitly set to null.
 
 #### Key Methods
 
@@ -30,6 +30,9 @@ with `HyphenatedNamingConvention` (so YAML keys use hyphens, while C# properties
 PascalCase — for example, a hypothetical multi-word property `SomeKey` would map from the
 YAML key `some-key`), then deserialises the content into a `ConfigDocument` instance.
 Throws `InvalidOperationException` if the deserialised result is null.
+After the null check, `ReadFile` applies null-coalescing guards (`??= []`) to `Files` and
+`Tests` so that explicit YAML nulls (`files: null`) are normalised to empty arrays, matching
+the behavior of absent keys.
 
 #### Error Handling
 

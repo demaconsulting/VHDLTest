@@ -47,6 +47,19 @@ namespace DEMAConsulting.VHDLTest.Run;
 /// </param>
 public record RunLineRule(RunLineType Type, Regex Pattern)
 {
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+    /// <summary>
+    ///     Gets the compiled regular expression used to test each simulator output line.
+    /// </summary>
+    /// <remarks>
+    ///     Overrides the auto-generated positional property to enforce a null guard at
+    ///     construction time. Any attempt to construct a <see cref="RunLineRule"/> directly
+    ///     with a null <see cref="System.Text.RegularExpressions.Regex"/> (e.g.,
+    ///     <c>new RunLineRule(type, null!)</c>) will throw <see cref="ArgumentNullException"/>
+    ///     before the instance is returned to the caller. Prefer the <see cref="Create"/> factory
+    ///     method, which compiles the pattern string and applies the construction-time guard.
+    /// </remarks>
+    public Regex Pattern { get; init; } = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
     /// <summary>
     ///     Creates a new <see cref="RunLineRule"/> by compiling <paramref name="pattern"/>
     ///     into a <see cref="Regex"/> and pairing it with <paramref name="type"/>.

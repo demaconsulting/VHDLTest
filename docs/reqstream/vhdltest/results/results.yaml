@@ -27,34 +27,31 @@ sections:
               subsystem ensures a consistent, ordered workflow: sources are always
               compiled before tests are run, outcomes are always captured, and the
               caller receives a fully populated results object regardless of which
-              simulator is in use.
+              simulator is in use. The compile step and the test-execution step are
+              intentionally grouped under this requirement because they form a single
+              indivisible workflow — neither step is independently useful to the caller
+              without the other. The child requirements decompose these steps at the
+              unit level.
             tests:
               - ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes
             children:
               - VHDLTest-Results-TestResults-Execute
               - VHDLTest-Results-TestResults-Execute-Run
+              - VHDLTest-Results-TestResults-BuildFailure
 
           - id: VHDLTest-Results-PrintSummary
             title: >-
-              TestResults shall print individual test outcome lines to the context output
-              when summarizing results.
+              TestResults shall print individual test outcome lines and aggregate pass and fail
+              counts to the context output when summarizing results.
             justification: |
               Printing a per-test outcome line for every collected result lets developers
-              and CI/CD pipelines identify which specific test benches passed or failed
-              without inspecting serialized report files.
-            tests:
-              - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
-            children:
-              - VHDLTest-Results-TestResults-PrintSummary
-
-          - id: VHDLTest-Results-PrintSummary-Counts
-            title: >-
-              TestResults shall print aggregate pass and fail counts to the context output
-              when summarizing results.
-            justification: |
-              Providing numeric totals for passed and failed tests gives developers and
-              CI/CD pipelines an at-a-glance view of overall test run health without
-              counting individual result lines.
+              and CI/CD pipelines identify which specific test benches passed or failed.
+              Providing numeric totals for passed and failed tests gives an at-a-glance view
+              of overall test run health without counting individual result lines. The per-test
+              output and aggregate count behaviors are intentionally kept under one requirement
+              because they are both produced by a single PrintSummary call and are inseparable
+              from the caller's perspective; the child requirement provides the unit-level
+              breakdown.
             tests:
               - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
             children:

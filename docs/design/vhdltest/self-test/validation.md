@@ -95,13 +95,15 @@ cannot be opened.
   `context.ExitCode`.
 - *Overload 2*: `string workingFolder`, `string[] args` — changes the working directory to
   `workingFolder`, delegates to overload 1, restores the working directory in a `finally` block.
+  Uses `Directory.SetCurrentDirectory`, which is a process-global operation; concurrent calls
+  from multiple threads are unsafe.
 
 **ReportTestResult** (private static): Records and reports a single validation test outcome.
 
 - *Parameters*: `Context context`, `TestResults results`, `string testName`, `DateTime start`,
   `double duration`, `int exitCode`, `string output`, `bool succeeded`.
 - *Returns*: void.
-- *Preconditions*: all parameters are not null.
+- *Preconditions*: all reference-type parameters (`context`, `results`, `testName`, `output`) are not null.
 - *Postconditions*: a check or cross symbol line has been written to the context; a `TestResult` has
   been appended to `results.Tests`.
 

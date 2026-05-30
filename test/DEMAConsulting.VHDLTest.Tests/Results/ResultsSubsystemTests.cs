@@ -65,17 +65,17 @@ public class ResultsSubsystemTests
     [Fact]
     public void ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts()
     {
-        // Arrange - create passing and failing RunResults objects
+        // Arrange: create passing and failing RunResults objects
         var passRunResults = CreatePassRunResults();
         var failRunResults = CreateFailRunResults();
 
-        // Act - wrap each RunResults in a TestResult and add to TestResults
+        // Act: wrap each RunResults in a TestResult and add to TestResults
         var testResults = new VHDLTestResults("SubsystemTestRun", "VHDLTest");
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test1", passRunResults));
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test2", passRunResults));
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test3", failRunResults));
 
-        // Assert - TestResults correctly aggregates pass and fail counts
+        // Assert: TestResults correctly aggregates pass and fail counts
         Assert.Equal(3, testResults.Tests.Count);
         Assert.Equal(2, testResults.Passes.Count());
         Assert.Single(testResults.Fails);
@@ -93,7 +93,7 @@ public class ResultsSubsystemTests
 
         try
         {
-            // Arrange - build a mixed result set
+            // Arrange: build a mixed result set
             var passRunResults = CreatePassRunResults();
             var failRunResults = CreateFailRunResults();
 
@@ -101,10 +101,10 @@ public class ResultsSubsystemTests
             testResults.Tests.Add(new VHDLTestResult("Suite", "Test1", passRunResults));
             testResults.Tests.Add(new VHDLTestResult("Suite", "Test2", failRunResults));
 
-            // Act - save the combined results to a TRX file
+            // Act: save the combined results to a TRX file
             testResults.SaveResults(resultsFile);
 
-            // Assert - file was created and encodes pass/fail outcomes correctly
+            // Assert: file was created and encodes pass/fail outcomes correctly
             Assert.True(File.Exists(resultsFile));
             var content = File.ReadAllText(resultsFile);
             Assert.Contains("Test1", content);
@@ -173,5 +173,25 @@ public class ResultsSubsystemTests
         {
             File.Delete(logPath);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that TestResults.Execute throws InvalidOperationException when the MockSimulator
+    ///     produces an Error-severity build result, confirming that the Results subsystem aborts
+    ///     execution with a clear error when compilation fails.
+    /// </summary>
+    [Fact]
+    public void ResultsSubsystem_Execute_WithBuildFailure_ThrowsInvalidOperationException()
+    {
+        // Arrange: configure options with a file name that triggers a build error in MockSimulator
+        // (MockSimulator produces Error output for any file containing "_error_" in its name)
+        var config = new ConfigDocument { Files = ["_error_file.vhd"], Tests = [] };
+        var options = new Options(Path.GetTempPath(), config);
+        using var context = Context.Create(["--silent"]);
+
+        // Act / Assert: Execute must throw InvalidOperationException with message "Build Failed"
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => VHDLTestResults.Execute(context, options, MockSimulator.Instance));
+        Assert.Equal("Build Failed", ex.Message);
     }
 }

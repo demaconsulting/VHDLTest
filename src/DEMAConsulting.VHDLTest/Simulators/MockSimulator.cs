@@ -208,7 +208,10 @@ public sealed class MockSimulator : Simulator
             output.AppendLine($"Passed: {test}");
         }
 
-        // Return the test results
+        // Return the test results.
+        // TestResult accepts a display name and a bench name as separate parameters; the mock
+        // intentionally sets both to the same test bench name to keep the mock simple and
+        // ensure the display name matches the bench name in all test output.
         return new TestResult(
             test,
             test,

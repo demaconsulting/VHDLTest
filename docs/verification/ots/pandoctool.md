@@ -9,6 +9,12 @@ PandocTool correctly processed all input files and produced HTML output. Downstr
 WeasyprintTool PDF generation provides a secondary confirmation that the HTML is
 well-formed.
 
+FileAssert runs `.fileassert.yaml` after all document generation steps and writes a TRX
+result file containing named test IDs (such as `Pandoc_BuildNotesHtml` and
+`Pandoc_DesignHtml`) that confirm each HTML output was produced with the expected content.
+These TRX test IDs are consumed by ReqStream to provide requirements traceability evidence
+for PandocTool.
+
 ### Test Environment
 
 CI/CD pipeline environment — GitHub Actions runner on Windows (build-docs job). Node.js

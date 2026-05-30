@@ -68,7 +68,15 @@ read-only via `SimulatorPath`.
 The algorithm splits the PATH environment variable into directories, filters out null, empty, or
 whitespace-only entries using the private `IsPathLegal` helper, deduplicates valid entries,
 combines them with candidate file names (adding PATHEXT extensions on Windows), and returns
-the first path that resolves to an existing file.
+the first path that resolves to an existing file. On Windows, the current directory is inserted
+at index 0 of the deduplicated path list after deduplication, so if the current directory also
+appears in `%PATH%` it will be searched twice.
+
+**Executable path construction**: Each concrete simulator subclass constructs the full path to the
+simulator executable using `Path.Combine(SimulatorPath, "<executable-name>")` — for example
+`Path.Combine(SimulatorPath, "ghdl")` for GhdlSimulator. This pattern is consistent across all
+simulator implementations; `SimulatorPath` is set at construction to the directory returned by the
+simulator's `FindPath()` method.
 
 #### Error Handling
 
@@ -87,6 +95,8 @@ null for `SimulatorPath`.
 
 #### Callers
 
+- **TestResults** — calls `Compile(context, options)` once per run and `Test(context, options, test)` once
+  per configured test bench during test execution.
 - **SimulatorFactory** — holds references to concrete Simulator instances and exposes them via `Get`.
 - **GhdlSimulator** — inherits from Simulator.
 - **NvcSimulator** — inherits from Simulator.

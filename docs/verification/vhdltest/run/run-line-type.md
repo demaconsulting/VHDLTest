@@ -51,5 +51,8 @@ This scenario is tested by (for example) `GhdlSimulator_CompileProcessor_ErrorOu
 
 **NonZeroExitCode_ForcesErrorSummary**: Verifies that a non-zero exit code elevates the
 `RunResults.Summary` to `RunLineType.Error` regardless of the line content, confirming
-the exit-code threshold in `RunProcessor.Parse`.
-This scenario is tested by `RunProcessor_Execute_ProgramWithError_ReturnsErrorResult`.
+the exit-code threshold in `RunProcessor.Parse`. The primary isolation evidence for this
+scenario is `RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError`, which
+calls `RunProcessor.Parse` directly with a non-zero exit code and Info-only rules and
+asserts Summary >= Error. Supplementary integration evidence is provided by
+`RunProcessor_Execute_ProgramWithError_ReturnsErrorResult`.

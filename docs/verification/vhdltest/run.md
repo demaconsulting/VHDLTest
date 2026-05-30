@@ -40,7 +40,12 @@ confirming the error threshold logic in `RunProcessor.Parse`.
 This scenario is tested by
 `RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults`.
 
-**Execute_WithContext_LogsCommandToContext**: Verifies that the `Execute(Context, string, string, string[])`
-overload logs the working directory and run command to the context before delegating to the
-process execution path. This scenario is tested by
-`RunSubsystem_Execute_WithContext_LogsCommandToContext`.
+**Execute_WithContext_LogsWorkingDirectoryAndCommandToContext**: Verifies that the
+`Execute(Context, string, string, string[])` overload logs the working directory and run
+command to the context before delegating to the process execution path. This scenario is
+tested by `RunSubsystem_Execute_WithContext_LogsWorkingDirectoryAndCommandToContext`.
+
+**ExecuteNoRules_FallsBackToTextClassification**: Verifies that when no classification rules
+are configured, every output line produced by the external program is classified as
+`RunLineType.Text`, confirming the Text-fallback path defined by `VHDLTest-Run-Classify`.
+This scenario is tested by `RunSubsystem_ExecuteNoRules_FallsBackToTextClassification`.

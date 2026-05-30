@@ -21,7 +21,9 @@ QuestaSimSimulator, VivadoSimulator, ActiveHdlSimulator, MockSimulator.
 - *Role*: Provider.
 - *Contract*: `Simulator? Get(string? name)` returns the `Simulator` whose `SimulatorName` matches the
   supplied name (case-insensitive), or the first `Available()` simulator when name is null. Returns
-  `MockSimulator` for name "mock". Returns null for an unknown or unavailable name.
+  `MockSimulator` for name "mock". Returns null for an unknown name, or when name is null and no
+  simulator is installed. Returns the simulator instance for a known-but-unavailable simulator
+  (callers must check `Available()`).
 - *Constraints*: The caller must handle a null return, typically by throwing a descriptive exception.
 
 **Simulator.Compile**: Abstract method contract for VHDL source file compilation.

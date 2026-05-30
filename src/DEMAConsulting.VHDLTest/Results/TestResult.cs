@@ -31,6 +31,9 @@ namespace DEMAConsulting.VHDLTest.Results;
 ///     wrapped <see cref="RunResults"/>. I/O in <see cref="PrintSummary"/> is fully delegated to
 ///     the injected <see cref="Cli.Context"/>. Constructed by concrete <c>Simulator</c>
 ///     implementations and held by <see cref="TestResults"/>.
+///     As an immutable sealed record, instances are safe for concurrent reads without
+///     synchronization; the thread-safety contract of <see cref="PrintSummary"/> is governed
+///     by the injected <see cref="Cli.Context"/>.
 /// </remarks>
 /// <param name="ClassName">
 ///     Fully qualified test class name used as the TRX class identifier. Non-nullable;

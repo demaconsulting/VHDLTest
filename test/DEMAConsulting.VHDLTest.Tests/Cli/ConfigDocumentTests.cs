@@ -109,7 +109,7 @@ public class ConfigDocumentTests
     [Fact]
     public void ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException()
     {
-        // Arrange: write a file with syntactically invalid YAML
+        // Arrange: write a YAML file that cannot be deserialized into ConfigDocument
         var malformedFile = Path.GetTempFileName();
         try
         {
@@ -147,6 +147,32 @@ public class ConfigDocumentTests
         finally
         {
             File.Delete(emptyFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that ConfigDocument returns empty arrays when YAML list keys are explicitly set to null
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_ExplicitNullLists_ReturnsEmptyArrays()
+    {
+        // Arrange: write a YAML file with files and tests explicitly set to null
+        var nullFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(nullFile, "files: null\ntests: null\n");
+
+            // Act: read the configuration
+            var config = ConfigDocument.ReadFile(nullFile);
+
+            // Assert: verify empty arrays are returned for explicit null values
+            Assert.NotNull(config);
+            Assert.Empty(config.Files);
+            Assert.Empty(config.Tests);
+        }
+        finally
+        {
+            File.Delete(nullFile);
         }
     }
 }

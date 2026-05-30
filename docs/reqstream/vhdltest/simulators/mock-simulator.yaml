@@ -14,6 +14,7 @@ sections:
                   --validate flag to verify that the test execution pipeline and result reporting
                   are functioning correctly in the user's environment.
                 tests:
+                  - SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator
                   - MockSimulator_SimulatorName_ReturnsMock
 
               - id: VHDLTest-Simulators-MockSimulator-Compile

@@ -27,11 +27,23 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for Vivado simulator
 /// </summary>
+/// <remarks>
+///     Exercises the compile and test processor instances by calling <c>Parse</c> with
+///     pre-captured output strings — no live Vivado installation is required. Env-var mutation
+///     in <c>VivadoSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue</c> is serialized through
+///     the <c>SimulatorEnvVarTests</c> collection to prevent race conditions with other
+///     env-var tests running in parallel.
+/// </remarks>
+[Collection("SimulatorEnvVarTests")]
 public class VivadoSimulatorTests
 {
     /// <summary>
     /// Check name of Vivado simulator
     /// </summary>
+    /// <remarks>
+    ///     Confirms that the registered simulator name matches the expected factory key "Vivado",
+    ///     ensuring the simulator is discoverable by the factory and reported correctly in output.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_SimulatorName_ReturnsVivado()
     {
@@ -42,6 +54,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator compile with clean output
     /// </summary>
+    /// <remarks>
+    ///     Validates the base-case path through the compile processor classification rules — when
+    ///     xvhdl produces no error markers, all lines remain Text and the summary is Text.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
     {
@@ -72,6 +88,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator compile with an error message
     /// </summary>
+    /// <remarks>
+    ///     Validates that lines prefixed with "Error:" are correctly escalated to Error severity,
+    ///     confirming the compile processor correctly signals xvhdl compilation failures.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
     {
@@ -102,6 +122,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator test with clean output
     /// </summary>
+    /// <remarks>
+    ///     Validates the base-case path through the test processor classification rules — when
+    ///     xelab produces no severity markers, all lines remain Text and the summary is Text.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
     {
@@ -132,6 +156,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator test with an info message
     /// </summary>
+    /// <remarks>
+    ///     Validates that lines prefixed with "Note:" are classified as Info severity, confirming
+    ///     the test processor surfaces informational messages from xelab simulation output.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
     {
@@ -162,6 +190,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator test with a warning message
     /// </summary>
+    /// <remarks>
+    ///     Validates that lines prefixed with "Warning:" are classified as Warning severity,
+    ///     confirming the test processor surfaces warnings from xelab simulation output.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
     {
@@ -192,6 +224,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator test with an error message
     /// </summary>
+    /// <remarks>
+    ///     Validates that lines prefixed with "Error:" are classified as Error severity in test
+    ///     output, confirming the test processor correctly signals simulation errors from xelab.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
     {
@@ -222,6 +258,10 @@ public class VivadoSimulatorTests
     /// <summary>
     /// Test Vivado simulator test with a failure message
     /// </summary>
+    /// <remarks>
+    ///     Validates that lines prefixed with "Failure:" are classified as Error severity,
+    ///     confirming that VHDL assertion failures in xelab simulation output are escalated to Error.
+    /// </remarks>
     [Fact]
     public void VivadoSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
     {
@@ -293,5 +333,32 @@ public class VivadoSimulatorTests
         var ex = Assert.Throws<InvalidOperationException>(
             () => VivadoSimulator.Instance.Test(context, options, "test_tb"));
         Assert.Equal("Vivado Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that FindPath returns the value of the VHDLTEST_VIVADO_PATH
+    ///     environment variable when it is set.
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
+    {
+        // Arrange: set the VHDLTEST_VIVADO_PATH environment variable to a known value
+        var expectedPath = "/custom/vivado/path";
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_VIVADO_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_VIVADO_PATH", expectedPath);
+
+        try
+        {
+            // Act: call FindPath()
+            var result = VivadoSimulator.FindPath();
+
+            // Assert: result is the env var value
+            Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_VIVADO_PATH", previousValue);
+        }
     }
 }

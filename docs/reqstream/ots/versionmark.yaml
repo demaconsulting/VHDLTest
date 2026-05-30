@@ -4,12 +4,33 @@ sections:
     sections:
       - title: VersionMark Requirements
         requirements:
-          - id: VHDLTest-OTS-VersionMark
-            title: VersionMark shall publish captured tool-version information.
+          - id: VHDLTest-OTS-VersionMark-Capture
+            title: VersionMark shall capture tool-version information for each CI job.
             justification: |
-              DemaConsulting.VersionMark reads version metadata for each dotnet tool used in the
-              pipeline and writes a versions markdown document included in the release artifacts.
+              DemaConsulting.VersionMark queries each named dotnet tool for its version
+              and writes the results to a JSON file per job. This provides per-job version
+              traceability for all tools used in the CI pipeline.
             tags: [ots]
             tests:
               - VersionMark_CapturesVersions
+
+          - id: VHDLTest-OTS-VersionMark-Publish
+            title: VersionMark shall publish aggregated tool-version information as a markdown report.
+            justification: |
+              DemaConsulting.VersionMark aggregates all captured JSON files from CI jobs
+              into a single versions markdown document included in the release artifacts,
+              providing a complete audit trail of tool versions used in each release build.
+            tags: [ots]
+            tests:
               - VersionMark_GeneratesMarkdownReport
+
+          - id: VHDLTest-OTS-VersionMark-Lint
+            title: VersionMark shall validate that tool version captures are consistent with the local tool manifest.
+            justification: |
+              dotnet versionmark --lint validates that the tool version captures recorded
+              in CI jobs are consistent with the tools declared in the local dotnet tool
+              manifest. This is used in lint.ps1 and lint.sh as a development-time quality
+              gate to detect manifest drift before it reaches CI.
+            tags: [ots]
+            tests:
+              - VersionMark_LintPasses

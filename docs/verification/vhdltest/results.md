@@ -21,9 +21,12 @@ N/A - standard test environment.
 
 - All unit tests in `TestResultTests.cs` and `TestResultsTests.cs` pass with zero failures.
 - All integration tests in `ResultsSubsystemTests.cs` pass with zero failures.
-- `TestResults.SaveResults` produces valid TRX XML for `.trx` extensions.
-- `TestResults.SaveResults` produces valid JUnit XML for `.xml` extensions.
-- `TestResults.SaveResults` throws `ArgumentException` for null or empty file names.
+- `TestResults.SaveResults` produces valid TRX XML for `.trx` extensions
+  (verified at unit level in `TestResultsTests.cs`).
+- `TestResults.SaveResults` produces valid JUnit XML for `.xml` extensions
+  (verified at unit level in `TestResultsTests.cs`).
+- `TestResults.SaveResults` throws `ArgumentException` for null or empty file names
+  (verified at unit level in `TestResultsTests.cs`).
 - `Execute` with a valid config and MockSimulator returns a `TestResults` instance with
   `BuildResults` populated and `Tests` containing at least one outcome.
 - `PrintSummary` writes per-test names and aggregate "Passed N of M" and/or "Failed N of M"

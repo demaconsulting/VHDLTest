@@ -20,7 +20,7 @@ The following OTS libraries are deployed with VHDLTest as runtime dependencies:
 | Item | Purpose |
 | ---- | ------- |
 | YamlDotNet | YAML deserialization of configuration files |
-| DemaConsulting.TestResults | TRX test results file generation |
+| DemaConsulting.TestResults | TRX and JUnit XML test results file generation |
 
 Detailed integration design for each runtime dependency is in its own document under
 `docs/design/ots/`.
@@ -43,3 +43,6 @@ The following OTS tools are used in the build pipeline and are not deployed with
 | DemaConsulting.DictionaryMark | Spell-checking enforcement |
 | DemaConsulting.SarifMark | SARIF report processing |
 | DemaConsulting.SonarMark | SonarCloud quality gate check |
+
+Detailed integration design for each build and analysis tool that requires formal OTS coverage
+is in its own document under `docs/design/ots/`.

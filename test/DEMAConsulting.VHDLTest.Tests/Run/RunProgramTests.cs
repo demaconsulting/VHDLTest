@@ -74,4 +74,49 @@ public class RunProgramTests
         // appears in dotnet's error message confirming stderr was captured
         Assert.Contains("unknown", output, StringComparison.OrdinalIgnoreCase);
     }
+
+    /// <summary>
+    ///     Verifies that passing an empty string as the working directory causes the launched
+    ///     process to inherit the caller's current working directory.
+    /// </summary>
+    [Fact]
+    public void RunProgram_Run_EmptyWorkingDirectory_UsesCallerCurrentDirectory()
+    {
+        // Arrange: record the caller's current working directory and choose a platform-appropriate
+        // program that prints its working directory to stdout
+        var expectedCwd = Directory.GetCurrentDirectory();
+        string application;
+        string[] arguments;
+        if (OperatingSystem.IsWindows())
+        {
+            application = "cmd.exe";
+            arguments = ["/c", "cd"];
+        }
+        else
+        {
+            application = "pwd";
+            arguments = [];
+        }
+
+        // Act: launch the program with an empty working directory so it inherits the caller's CWD
+        var exitCode = RunProgram.Run(out var output, application, "", arguments);
+
+        // Assert: the program ran successfully and its printed directory matches the caller's CWD
+        Assert.Equal(0, exitCode);
+        Assert.Contains(expectedCwd, output.Trim(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    ///     Verifies that attempting to run a non-existent executable propagates an exception
+    ///     to the caller rather than returning a silent error code.
+    /// </summary>
+    [Fact]
+    public void RunProgram_Run_MissingExecutable_ThrowsException()
+    {
+        // Arrange: use a path that cannot correspond to any real executable
+        const string missingApplication = "this-executable-does-not-exist-vhdltest-test";
+
+        // Act + Assert: launching a missing executable must throw an exception
+        Assert.ThrowsAny<Exception>(() => RunProgram.Run(out _, missingApplication, ""));
+    }
 }

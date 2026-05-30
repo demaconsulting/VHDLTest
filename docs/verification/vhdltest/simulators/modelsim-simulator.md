@@ -28,31 +28,31 @@ Live simulator integration: CI environment with ModelSim installed on PATH.
 
 **SimulatorName_ReturnsModelSim**: Verifies that `ModelSimSimulator.Instance.SimulatorName`
 is `"ModelSim"`, confirming the instance is registered with the correct name.
-This scenario is tested by the simulator name test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_SimulatorName_ReturnsModelSim` in `ModelSimSimulatorTests.cs`.
 
 **CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean ModelSim compilation
 output produces a `RunLineType.Text` summary.
-This scenario is tested by the compile clean output test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `ModelSimSimulatorTests.cs`.
 
 **CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a ModelSim error line
 is classified as `RunLineType.Error`.
-This scenario is tested by the compile error test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in `ModelSimSimulatorTests.cs`.
 
 **TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean ModelSim simulation
 output produces a `RunLineType.Text` summary.
-This scenario is tested by the test clean output test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult` in `ModelSimSimulatorTests.cs`.
 
 **TestProcessor_InfoOutput_ReturnsInfoResult**: Verifies that a ModelSim note in simulation
 output is classified as `RunLineType.Info`.
-This scenario is tested by the test info output test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult` in `ModelSimSimulatorTests.cs`.
 
 **TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that a ModelSim warning in
 simulation output is classified as `RunLineType.Warning`.
-This scenario is tested by the test warning output test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult` in `ModelSimSimulatorTests.cs`.
 
 **TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a ModelSim error in
 simulation output is classified as `RunLineType.Error`.
-This scenario is tested by the test error output test in `ModelSimSimulatorTests.cs`.
+This scenario is tested by `ModelSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult` in `ModelSimSimulatorTests.cs`.
 
 **TestProcessor_FailureOutput_ReturnsErrorResult**: Verifies that a ModelSim failure in
 simulation output is classified as `RunLineType.Error`, confirming that VHDL assertion

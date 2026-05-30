@@ -87,13 +87,24 @@ public sealed class ModelSimSimulator : Simulator
     public static ModelSimSimulator Instance { get; } = new();
 
     /// <summary>
-    ///     Initializes a new instance of the ModelSim simulator
+    ///     Initializes a new instance of the ModelSim simulator.
     /// </summary>
+    /// <remarks>
+    ///     Private to enforce the singleton pattern — callers must use <see cref="Instance"/>.
+    ///     <see cref="FindPath"/> is called at class-load time within the base-constructor call,
+    ///     resolving <see cref="Simulator.SimulatorPath"/> once for the lifetime of the process.
+    /// </remarks>
     private ModelSimSimulator() : base("ModelSim", FindPath())
     {
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Creates the <c>VHDLTest.out/ModelSim/</c> output directory if it does not already exist,
+    ///     writes <c>compile.do</c> to that directory, and invokes <c>vcom</c> via <c>vsim</c> to
+    ///     compile all source files. File paths must be free of TCL metacharacters because they are
+    ///     interpolated directly into the TCL script without escaping.
+    /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -144,6 +155,11 @@ public sealed class ModelSimSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Writes <c>test.do</c> to <c>VHDLTest.out/ModelSim/</c> and invokes <c>vsim</c> to run
+    ///     the specified test bench. The <paramref name="test"/> argument must be free of TCL
+    ///     metacharacters because it is interpolated directly into the TCL script without escaping.
+    /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command

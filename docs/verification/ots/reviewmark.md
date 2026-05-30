@@ -2,7 +2,7 @@
 
 ### Verification Approach
 
-The Cli subsystem is verified through CI pipeline execution. The `build-docs` job
+DemaConsulting.ReviewMark is verified through CI pipeline execution. The `build-docs` job
 in `.github/workflows/build.yaml` invokes ReviewMark to generate a review plan and review
 report from `.reviewmark.yaml`. A passing CI step constitutes evidence that ReviewMark
 correctly processed the review definition and rendered the output documents. ReviewMark
@@ -35,3 +35,7 @@ review plan and review report documents.
   conversion confirms the output is well-formed markdown.
 - **Self-validation TRX output**: `dotnet reviewmark --validate --results artifacts/reviewmark-self-validation.trx`
   executes ReviewMark's internal test suite and writes TRX results consumed by ReqStream.
+- **ReviewMark_LintPasses**: `dotnet reviewmark --validate --results artifacts/reviewmark-self-validation.trx`
+  in the `build-docs` job executes ReviewMark's internal test suite. The `ReviewMark_LintPasses`
+  test ID is written to the TRX result file and consumed by ReqStream to confirm that
+  ReviewMark's lint-pass validation logic is operational.

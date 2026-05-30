@@ -26,13 +26,26 @@ timeout guards against catastrophic backtracking on pathological input lines.
 - *Postconditions*: Returns a `RunLineRule` whose `Pattern` is compiled and ready for
   use.
 
+**Constructor: `RunLineRule(RunLineType Type, Regex Pattern)`**
+
+Positional record constructor. Prefer `Create` for building rules from pattern strings.
+The `Pattern` property initializer enforces a null guard at construction time — passing a
+null `Pattern` argument throws `ArgumentNullException` before the instance is returned,
+regardless of whether `Create` is used.
+
+- *Preconditions*: `Pattern` must not be null.
+- *Postconditions*: Returns a `RunLineRule` with the supplied `Type` and `Pattern`.
+
 #### Error Handling
 
 `Create` throws `ArgumentNullException` when `pattern` is null; this propagates to the
 caller. `Regex` construction throws `ArgumentException` if `pattern` is syntactically invalid;
-this propagates to the caller. During matching in `RunProcessor.Parse`, a
-`RegexMatchTimeoutException` is thrown if pattern evaluation exceeds 100 ms; this
-propagates to the caller and is not caught within the Run subsystem.
+this propagates to the caller. The `Pattern` property initializer also throws
+`ArgumentNullException` when a `RunLineRule` is constructed directly with a null
+`Pattern` argument (e.g., `new RunLineRule(type, null!)`), ensuring the null guard is
+enforced regardless of whether the `Create` factory is used. During matching in
+`RunProcessor.Parse`, a `RegexMatchTimeoutException` is thrown if pattern evaluation exceeds
+100 ms; this propagates to the caller and is not caught within the Run subsystem.
 
 #### Dependencies
 

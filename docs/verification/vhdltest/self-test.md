@@ -20,6 +20,8 @@ simulator installation is required.
 - `--depth` is honoured in the validation output heading.
 - The OS Version field appears in the system information table.
 - A results file is written when `--results` is specified and contains the expected test entries.
+- An unrecognized simulator name causes VHDLTest to exit with a non-zero code and a descriptive
+  error message.
 
 ### Test Scenarios
 

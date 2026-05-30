@@ -12,15 +12,14 @@ sections:
                   NVC is a modern, fast open-source VHDL simulator with good standards compliance.
                   Supporting NVC provides users with an alternative open-source option that offers
                   better performance than GHDL in certain scenarios and supports newer VHDL standards.
-                tests:
-                  - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
-                  - NvcSimulator_SimulatorName_ReturnsNVC
-                justification: |
                   NVC support is verified by unit tests confirming factory registration and
                   simulator name. End-to-end integration is verified by CI integration tests
                   requiring a live NVC installation (nvc@VHDLTest_TestPasses,
                   nvc@VHDLTest_TestFails); these are not listed here as they are system-level
                   tests, not unit tests.
+                tests:
+                  - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
+                  - NvcSimulator_SimulatorName_ReturnsNVC
 
               - id: VHDLTest-Simulators-NvcSimulator-Availability
                 title: The NvcSimulator shall throw InvalidOperationException when Compile or Test is invoked and the NVC simulator is not available.

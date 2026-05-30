@@ -18,6 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Reflection;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
 
@@ -26,6 +28,11 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for GHDL simulator
 /// </summary>
+// All tests in this class are serialized via the SimulatorEnvVarTests collection because
+// GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
+// VHDLTEST_GHDL_PATH process-level environment variable.
+// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
+// ensures these tests run sequentially with other env-var tests, preventing race conditions.
 [Collection("SimulatorEnvVarTests")]
 public class GhdlSimulatorTests
 {
@@ -464,5 +471,99 @@ public class GhdlSimulatorTests
             // Restore the environment variable
             Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", previousValue);
         }
+    }
+
+    /// <summary>
+    ///     Validates that <see cref="GhdlSimulator.Compile"/> throws
+    ///     <see cref="InvalidOperationException"/> when the simulator is not available
+    ///     (i.e., <see cref="Simulator.SimulatorPath"/> is <c>null</c>).
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Arrange: create a fresh GhdlSimulator instance with a null SimulatorPath by
+        // temporarily clearing the GHDL env var and using a PATH that contains no GHDL
+        // executable, so FindPath() returns null during construction.
+        var previousGhdlPath = Environment.GetEnvironmentVariable("VHDLTEST_GHDL_PATH");
+        var previousPath = Environment.GetEnvironmentVariable("PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", null);
+        Environment.SetEnvironmentVariable("PATH", Path.GetTempPath());
+
+        GhdlSimulator simulator;
+        try
+        {
+            // Use reflection to invoke the private constructor so FindPath() returns null
+            var ctor = typeof(GhdlSimulator)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Single(c => c.GetParameters().Length == 0);
+            simulator = (GhdlSimulator)ctor.Invoke([]);
+        }
+        finally
+        {
+            // Restore environment before running the actual assertion
+            Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", previousGhdlPath);
+            Environment.SetEnvironmentVariable("PATH", previousPath);
+        }
+
+        // Verify the constructed instance has a null SimulatorPath (GHDL not found)
+        if (simulator.SimulatorPath != null)
+        {
+            // Skip the assertion: GHDL was found in the temp directory (unexpected but possible)
+            Assert.Skip("GHDL executable found in temp directory; cannot construct unavailable simulator instance.");
+        }
+
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Compile throws when GHDL is not installed
+        var ex = Assert.Throws<InvalidOperationException>(() => simulator.Compile(context, options));
+        Assert.Equal("GHDL Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Validates that <see cref="GhdlSimulator.Test"/> throws
+    ///     <see cref="InvalidOperationException"/> when the simulator is not available
+    ///     (i.e., <see cref="Simulator.SimulatorPath"/> is <c>null</c>).
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException()
+    {
+        // Arrange: create a fresh GhdlSimulator instance with a null SimulatorPath by
+        // temporarily clearing the GHDL env var and using a PATH that contains no GHDL
+        // executable, so FindPath() returns null during construction.
+        var previousGhdlPath = Environment.GetEnvironmentVariable("VHDLTEST_GHDL_PATH");
+        var previousPath = Environment.GetEnvironmentVariable("PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", null);
+        Environment.SetEnvironmentVariable("PATH", Path.GetTempPath());
+
+        GhdlSimulator simulator;
+        try
+        {
+            // Use reflection to invoke the private constructor so FindPath() returns null
+            var ctor = typeof(GhdlSimulator)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Single(c => c.GetParameters().Length == 0);
+            simulator = (GhdlSimulator)ctor.Invoke([]);
+        }
+        finally
+        {
+            // Restore environment before running the actual assertion
+            Environment.SetEnvironmentVariable("VHDLTEST_GHDL_PATH", previousGhdlPath);
+            Environment.SetEnvironmentVariable("PATH", previousPath);
+        }
+
+        // Verify the constructed instance has a null SimulatorPath (GHDL not found)
+        if (simulator.SimulatorPath != null)
+        {
+            // Skip the assertion: GHDL was found in the temp directory (unexpected but possible)
+            Assert.Skip("GHDL executable found in temp directory; cannot construct unavailable simulator instance.");
+        }
+
+        using var context = Context.Create(["--silent"]);
+        var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
+
+        // Act / Assert: Test throws when GHDL is not installed
+        var ex = Assert.Throws<InvalidOperationException>(() => simulator.Test(context, options, "test_tb"));
+        Assert.Equal("GHDL Simulator not available", ex.Message);
     }
 }

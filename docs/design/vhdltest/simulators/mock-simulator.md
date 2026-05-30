@@ -39,7 +39,8 @@ Classifies `Info:` as Info, `Warning:` as Warning, and `Failure:` or `Error:` as
 - *Postconditions*: Appends `Warning: {test}` when test contains `_warning_`; appends `Info: {test}` when
   it contains `_info_`. Then: appends `Error: {test}` (exitCode 1) when it contains `_error_`; appends
   `Failure: {test}` (exitCode remains 0) when it contains `_fail_`; otherwise appends `Passed: {test}`.
-  Passes the accumulated output to `TestProcessor.Parse`.
+  Passes the accumulated output to `TestProcessor.Parse`. The returned `TestResult` has its display name
+  and bench name both set to the `test` parameter.
 
 #### Error Handling
 

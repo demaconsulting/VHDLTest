@@ -218,6 +218,10 @@ public class ModelSimSimulatorTests
 
         // Assert: summary is Error and the diagnostic line is classified as Error
         Assert.Equal(RunLineType.Error, results.Summary);
+        Assert.Equal(new DateTime(2024, 08, 10, 0, 0, 0, DateTimeKind.Utc), results.Start);
+        Assert.Equal(5.0, results.Duration, 1);
+        Assert.Equal(1, results.ExitCode);
+        Assert.Equal("Test\nFailure: Test Failure", results.Output);
         Assert.Equal(2, results.Lines.Count);
         Assert.Equal(RunLineType.Text, results.Lines[0].Type);
         Assert.Equal("Test", results.Lines[0].Text);

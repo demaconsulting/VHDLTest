@@ -13,7 +13,7 @@ sections:
                   the simulator integration is working correctly in the user's environment, rather than
                   just checking that the tool starts up.
                 tests:
-                  - SelfTest_Validate_MockSimulator_ReturnsSuccess
+                  - Validation_Run_MockSimulator_ReturnsSuccess
 
               - id: VHDLTest-SelfTest-Validation-Depth
                 title: The Validation class shall support configurable report depth for embedded document output.
@@ -22,7 +22,7 @@ sections:
                   output in other documents with correct heading hierarchy, supporting compliance
                   documentation workflows.
                 tests:
-                  - SelfTest_ValidateWithDepth_MockSimulator_RendersDepthHeadings
+                  - Validation_Run_DepthParameter_RendersDepthHeadings
 
               - id: VHDLTest-SelfTest-Validation-SystemInfo
                 title: The Validation class shall include OS and runtime information in the validation report.
@@ -30,7 +30,7 @@ sections:
                   Including system information in the validation report provides essential context for
                   diagnosing environment-specific issues and for compliance documentation.
                 tests:
-                  - SelfTest_Validate_MockSimulator_IncludesOSVersionInReport
+                  - Validation_Run_MockSimulator_IncludesOSVersionInReport
 
               - id: VHDLTest-SelfTest-Validation-Results
                 title: The Validation class shall save results to a file when a results path is specified.
@@ -38,13 +38,22 @@ sections:
                   Saving validation results to a file enables integration with CI/CD pipelines and
                   provides a persistent record of validation outcomes for compliance documentation.
                 tests:
-                  - SelfTest_ValidateWithResultsFile_MockSimulator_SavesResults
+                  - Validation_Run_ResultsFile_SavesResults
 
-              - id: VHDLTest-SelfTest-Validation-InvalidSimulator
-                title: The Validation class shall handle an invalid simulator name gracefully.
+              - id: VHDLTest-SelfTest-Validation-InvalidSimulator-ExitCode
+                title: The Validation class shall exit with a non-zero code when given an unrecognized simulator name.
                 justification: |
                   If an unrecognized simulator name is provided, VHDLTest should fail gracefully
-                  with a descriptive error rather than throwing an unhandled exception, ensuring
-                  a good user experience when the configuration is incorrect.
+                  rather than throwing an unhandled exception, ensuring a good user experience
+                  when the configuration is incorrect.
                 tests:
-                  - SelfTest_Validate_InvalidSimulator_ReturnsFailure
+                  - Validation_Run_InvalidSimulator_ReturnsFailure
+
+              - id: VHDLTest-SelfTest-Validation-InvalidSimulator-ErrorMessage
+                title: The Validation class shall emit a descriptive error message when given an unrecognized simulator name.
+                justification: |
+                  A descriptive error message when an unrecognized simulator name is provided
+                  helps the user understand what went wrong and how to correct the configuration,
+                  rather than leaving them with a bare non-zero exit code.
+                tests:
+                  - Validation_Run_InvalidSimulator_ReturnsFailure

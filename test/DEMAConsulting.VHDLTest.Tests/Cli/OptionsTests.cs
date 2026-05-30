@@ -180,6 +180,8 @@ public class OptionsTests
     [Fact]
     public void Options_Parse_NullArgs_ThrowsArgumentNullException()
     {
+        // Arrange: no setup required
+
         // Act + Assert: passing null must throw ArgumentNullException
         Assert.Throws<ArgumentNullException>(() => Options.Parse(null!));
     }

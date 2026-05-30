@@ -24,10 +24,16 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Tests.Run;
 
 /// <summary>
-/// Subsystem integration tests for the Run subsystem.
-/// These tests verify that <see cref="RunProcessor"/>, <see cref="RunProgram"/>, and
-/// <see cref="RunResults"/> work together to execute programs and classify their output.
+///     Subsystem integration tests for the Run subsystem.
+///     These tests verify that <see cref="RunProcessor"/>, <see cref="RunProgram"/>, and
+///     <see cref="RunResults"/> work together to execute programs and classify their output.
 /// </summary>
+/// <remarks>
+///     The <c>dotnet</c> CLI tool is used as the controlled external program throughout these
+///     tests because it is guaranteed to be available in any .NET SDK environment, provides
+///     predictable exit codes and output, and exercises the full process-launch and
+///     output-capture pipeline without requiring any additional test infrastructure.
+/// </remarks>
 public class RunSubsystemTests
 {
     /// <summary>
@@ -83,7 +89,7 @@ public class RunSubsystemTests
     ///     process execution path.
     /// </summary>
     [Fact]
-    public void RunSubsystem_Execute_WithContext_LogsCommandToContext()
+    public void RunSubsystem_Execute_WithContext_LogsWorkingDirectoryAndCommandToContext()
     {
         // Arrange: create a verbose context backed by a log file so that verbose output can
         // be read back after execution; use a unique filename to avoid cross-test conflicts
@@ -121,5 +127,24 @@ public class RunSubsystemTests
                 File.Delete(logFile);
             }
         }
+    }
+
+    /// <summary>
+    ///     Verifies that output lines fall back to <see cref="RunLineType.Text"/> classification
+    ///     when no rules are configured, confirming the Text-fallback path for
+    ///     <c>VHDLTest-Run-Classify</c>.
+    /// </summary>
+    [Fact]
+    public void RunSubsystem_ExecuteNoRules_FallsBackToTextClassification()
+    {
+        // Arrange: create a processor with no classification rules so all lines fall through to Text
+        var processor = new RunProcessor([]);
+
+        // Act: execute dotnet help which produces non-empty output
+        var results = processor.Execute("dotnet", "", "help");
+
+        // Assert: every output line is classified as Text when no rules match
+        Assert.NotNull(results);
+        Assert.All(results.Lines, line => Assert.Equal(RunLineType.Text, line.Type));
     }
 }

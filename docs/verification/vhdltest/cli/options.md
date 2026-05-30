@@ -44,3 +44,14 @@ This scenario is tested by `Options_Parse_WithVerboseFlag_ParsesSuccessfully`.
 **Parse_WithCustomTest_ParsesSuccessfully**: Verifies that adding a positional custom test
 argument to the context does not prevent `Options.Parse` from completing successfully.
 This scenario is tested by `Options_Parse_WithCustomTest_ParsesSuccessfully`.
+
+**Parse_NullArgs_ThrowsArgumentNullException**: Verifies that calling
+`Options.Parse` with a null context argument throws `ArgumentNullException`,
+confirming that the null guard is present before any context property is accessed.
+This scenario is tested by `Options_Parse_NullArgs_ThrowsArgumentNullException`.
+
+**ResolveWorkingDirectory_RootPath_ThrowsInvalidOperationException**: Verifies that calling
+`Options.ResolveWorkingDirectory` with a root path (such as `/` or `C:\`) throws
+`InvalidOperationException`, confirming that the defensive null guard for
+`Path.GetDirectoryName` is in place.
+This scenario is tested by `Options_ResolveWorkingDirectory_RootPath_ThrowsInvalidOperationException`.

@@ -21,13 +21,13 @@ and `Tests` arrays.
 
 - *Parameters*: `Context args` — a fully initialised Context from which `ConfigFile` is read.
 - *Returns*: `Options` — a record with `WorkingDirectory` and `Config` populated.
-- *Preconditions*: `args` must not be null; `args.ConfigFile` must be non-null and point to a
+- *Preconditions*: `args` must not be null; `args.ConfigFile` must be non-null, non-empty, and point to a
   valid, readable YAML configuration file.
 - *Postconditions*: `WorkingDirectory` holds the absolute directory containing the
   configuration file; `Config` holds the deserialised `ConfigDocument`.
 
 Validates that `args` is not null (throws `ArgumentNullException` if null). Verifies that
-`args.ConfigFile` is non-null, calls `ConfigDocument.ReadFile` to deserialise
+`args.ConfigFile` is non-null and non-empty, calls `ConfigDocument.ReadFile` to deserialise
 the YAML content, resolves the full path of the config file via `Path.GetFullPath`, and
 extracts the parent directory via `Path.GetDirectoryName`. Throws `InvalidOperationException`
 if the directory cannot be resolved.
@@ -50,7 +50,7 @@ argument processing.
 #### Error Handling
 
 `Parse` throws `ArgumentNullException` if `args` is null. `Parse` throws
-`InvalidOperationException` if `args.ConfigFile` is null ("Configuration file
+`InvalidOperationException` if `args.ConfigFile` is null or an empty string ("Configuration file
 not specified"). It propagates `FileNotFoundException` and `InvalidOperationException` from
 `ConfigDocument.ReadFile` for missing or invalid configuration files. `Path.GetDirectoryName`
 returning null (indicating a root path such as `/` or `C:\` with no parent directory) also throws

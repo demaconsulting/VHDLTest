@@ -14,6 +14,7 @@ sections:
                   to integrate with high-end verification environments.
                 tests:
                   - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
+                  - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
 
               - id: VHDLTest-Simulators-QuestaSimSimulator-Compile
                 title: QuestaSimSimulator shall classify QuestaSim compilation output lines by severity.
@@ -48,3 +49,17 @@ sections:
                 tests:
                   - QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
                   - QuestaSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Simulators-QuestaSimSimulator-FindPath
+                title: >-
+                  QuestaSim Simulator shall locate the QuestaSim installation directory, respecting
+                  the VHDLTEST_QUESTASIM_PATH environment variable override when set.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate QuestaSim across different
+                  installation layouts and environments. The VHDLTEST_QUESTASIM_PATH environment
+                  variable override enables CI pipelines and non-standard installations to specify
+                  the QuestaSim path explicitly without modifying PATH. PATH-based discovery is
+                  verified in CI with QuestaSim installed; the env-var override path is covered by
+                  a unit test.
+                tests:
+                  - QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue

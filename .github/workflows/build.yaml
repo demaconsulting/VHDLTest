@@ -851,6 +851,12 @@ jobs:
           docs/code_review_report/report.html
           "docs/VHDLTest Review Report.pdf"
 
+      - name: Run FileAssert document validation
+        run: >
+          dotnet fileassert
+          --definition .fileassert.yaml
+          --results artifacts/fileassert-document-validation.trx
+
       - name: Upload Document Artifacts
         uses: actions/upload-artifact@v7
         with:

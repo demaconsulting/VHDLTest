@@ -120,6 +120,45 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <summary>
     ///     Find the path of a potential application
     /// </summary>
+    /// <remarks>
+    ///     Several design decisions are embedded in this method:
+    ///     <list type="bullet">
+    ///         <item>
+    ///             <description>
+    ///                 <b>Windows current-directory prepend</b>: On Windows, the current directory is
+    ///                 inserted at index 0 of the search path list <em>after</em> deduplication, matching
+    ///                 the Windows shell's implicit current-directory search semantics. This insertion
+    ///                 occurs after <c>Distinct()</c>, so if the current directory also appears in
+    ///                 <c>%PATH%</c> it may be searched twice.
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 <b>PATHEXT handling</b>: On Windows, <c>%PATHEXT%</c> is split on
+    ///                 <c>Path.PathSeparator</c> (<c>;</c>) — which is correct because both <c>PATH</c>
+    ///                 and <c>PATHEXT</c> use <c>;</c> as the list separator on Windows — and each
+    ///                 extension is appended to the bare application name to build the candidate file
+    ///                 list. When <c>%PATHEXT%</c> is not set, the default
+    ///                 <c>.COM;.EXE;.BAT;.CMD</c> is used.
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 <b>Null-PATH early return</b>: When the <c>PATH</c> environment variable is
+    ///                 absent, the method returns null immediately rather than searching an empty list,
+    ///                 because no useful search can be performed without a PATH.
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 <b>Thread safety</b>: The method reads environment variables and the file system
+    ///                 but does not modify any shared state. It is safe to call concurrently from
+    ///                 multiple threads, subject to the usual caveats about environment-variable
+    ///                 mutation by other threads.
+    ///             </description>
+    ///         </item>
+    ///     </list>
+    /// </remarks>
     /// <param name="application">
     ///     Bare executable name without any path prefix or file extension (for example,
     ///     <c>"ghdl"</c> or <c>"nvc"</c>). On Windows, PATHEXT extensions (such as
@@ -171,11 +210,17 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// <summary>
     ///     Test if a path is legal
     /// </summary>
-    /// <param name="path">Path to test</param>
+    /// <param name="path">
+    ///     Path to test. Accepts <c>null</c> — a null or white-space path is treated as illegal.
+    ///     The parameter is typed as <c>string?</c> so that this method can be used directly as a
+    ///     LINQ <c>Where</c> predicate against nullable sequences without a compiler warning.
+    /// </param>
     /// <returns>True if legal</returns>
-    private static bool IsPathLegal(string path)
+    private static bool IsPathLegal(string? path)
     {
-        // First check for null or white-space
+        // Defensive null check: PATH entries from string.Split are non-null, but the nullable
+        // parameter type keeps this method usable against any nullable string sequence without
+        // requiring the caller to pre-filter nulls.
         if (string.IsNullOrWhiteSpace(path))
         {
             return false;

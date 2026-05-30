@@ -5,7 +5,7 @@ sections:
       - title: Run Requirements
         requirements:
           - id: VHDLTest-Run-Execute
-            title: VHDLTest shall execute the configured simulator program for each test bench.
+            title: VHDLTest shall execute the configured simulator program for each test bench invocation.
             justification: |
               Executing the simulator as an external process allows VHDLTest to work with any
               command-line VHDL simulator without requiring programmatic integration.
@@ -34,7 +34,10 @@ sections:
               operators the information needed to reproduce and diagnose simulator invocation
               issues without external process tracing tools.
             tests:
-              - RunSubsystem_Execute_WithContext_LogsCommandToContext
+              - RunSubsystem_Execute_WithContext_LogsWorkingDirectoryAndCommandToContext
+            children:
+              - VHDLTest-Run-RunProcessor-VerboseLogging
+              - VHDLTest-Run-RunProcessor-VerboseLogging-Command
 
           - id: VHDLTest-Run-Classify
             title: >-
@@ -48,6 +51,7 @@ sections:
             tests:
               - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
+              - RunSubsystem_ExecuteNoRules_FallsBackToTextClassification
             children:
               - VHDLTest-Run-RunProcessor-Pass
               - VHDLTest-Run-RunProcessor-Fail

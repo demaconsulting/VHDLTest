@@ -26,10 +26,12 @@ reported as failed.
 **Consumed Interfaces**:
 
 - **`Cli.Context`** — consumed by `Validation.Run` for all output writes and flag reading; provides the
-  I/O channels and `context.Validate`, `context.Simulator`, `context.ResultsFile`, and `context.Depth` flags.
+  I/O channels and `context.Simulator`, `context.ResultsFile`, and `context.Depth` flags.
   `context.Depth` is read once at the start of `Run` to produce the heading prefix
   (`new string('#', context.Depth)`) written before the system information table; the same depth
   value controls all Markdown heading levels throughout the validation output.
+  Note: `context.Validate` is consumed by `Program` as the gate that determines whether to call
+  `Validation.Run`; it is not read inside `Validation.Run` itself.
   - *Type*: in-process .NET API.
   - *Role*: Consumer.
   - *Contract*: `context.Depth` must be a positive integer, supplied via the `--depth` command-line

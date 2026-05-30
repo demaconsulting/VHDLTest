@@ -21,6 +21,13 @@ captured output lines, duration, and the highest-severity line type.
 **ExecutionId**: `Guid` — Unique identifier assigned to this test execution instance; initialized to
 `Guid.NewGuid()` at construction.
 
+*Invariant*: Because `TestId` and `ExecutionId` are both initialized to `Guid.NewGuid()` in
+their property declarations, every constructed `TestResult` instance carries globally unique
+identifiers. Under C# record value-equality semantics, two `TestResult` instances with identical
+`ClassName`, `TestName`, and `RunResults` values will still be considered unequal by identity
+because their `TestId` and `ExecutionId` GUIDs will differ. Callers that require value-equality
+must override the default record equality or compare specific fields explicitly.
+
 **Passed**: `bool` — Derived; true when `RunResults.Summary` is less than `RunLineType.Error`.
 
 **Failed**: `bool` — Derived; true when `RunResults.Summary` is greater than or equal to

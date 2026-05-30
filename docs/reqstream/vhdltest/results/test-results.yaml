@@ -31,12 +31,15 @@ sections:
               - id: VHDLTest-Results-TestResults-PrintSummary
                 title: >-
                   TestResults shall print a formatted summary of test results including the
-                  total count of passed and failed tests.
+                  total count of passed and failed tests, printing each count only when it is
+                  greater than zero.
                 justification: |
                   Printing an aggregate summary alongside individual per-test lines lets
                   developers see the overall outcome of a run at a glance without counting
                   individual lines. CI/CD pipelines benefit from the numeric totals when
-                  parsing output for pass/fail decisions.
+                  parsing output for pass/fail decisions. Suppressing zero-count lines keeps
+                  the output clean for runs that are all-pass or all-fail, avoiding a
+                  misleading "Passed 0 of N tests" line.
                 tests:
                   - TestResults_PrintSummary_WithMixedResults_WritesSummaryToOutput
 

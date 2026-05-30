@@ -38,3 +38,11 @@ Siemens, offering enhanced performance and capabilities compared to ModelSim.
 [Vivado](https://www.xilinx.com/products/design-tools/vivado.html) is Xilinx's design suite for FPGAs.
 
 **Configuration**: Set the `VHDLTEST_VIVADO_PATH` environment variable to the Vivado installation folder.
+
+## Mock
+
+The mock simulator is a built-in simulator used for self-validation. It does not require any external
+installation and is available on all platforms.
+
+**Configuration**: No installation or environment variable is required. Specify `--simulator mock` to
+use the mock simulator explicitly (for example, during `--validate` self-validation runs).

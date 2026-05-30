@@ -8,6 +8,12 @@ to convert HTML files into PDF/A-3u artifacts. A passing CI step constitutes evi
 that WeasyprintTool correctly rendered each HTML input and produced a valid PDF output.
 The resulting PDF files are uploaded as release artifacts.
 
+FileAssert runs `.fileassert.yaml` after all document generation steps and writes a TRX
+result file containing named test IDs (such as `WeasyPrint_BuildNotesPdf` and
+`WeasyPrint_DesignPdf`) that confirm each PDF output was produced with the expected
+metadata and content. These TRX test IDs are consumed by ReqStream to provide
+requirements traceability evidence for WeasyprintTool.
+
 ### Test Environment
 
 CI/CD pipeline environment — GitHub Actions runner on Windows (build-docs job). The HTML

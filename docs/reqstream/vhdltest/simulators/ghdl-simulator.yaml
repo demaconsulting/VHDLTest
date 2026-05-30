@@ -54,3 +54,14 @@ sections:
                 tests:
                   - GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
                   - GhdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath
+
+              - id: VHDLTest-Simulators-GhdlSimulator-Availability
+                title: The GhdlSimulator shall throw InvalidOperationException when Compile or Test is invoked and the GHDL simulator is not available.
+                justification: |
+                  Failing fast with a descriptive exception when the simulator is unavailable
+                  prevents silent incorrect behavior and gives callers a clear signal that the
+                  GHDL installation is missing. Callers are expected to check Available() before
+                  invoking Compile or Test.
+                tests:
+                  - GhdlSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException
+                  - GhdlSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException

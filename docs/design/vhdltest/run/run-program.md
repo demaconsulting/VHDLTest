@@ -13,7 +13,11 @@ N/A — `RunProgram` is a static class with no instance state and no static fiel
 
 #### Key Methods
 
-**`Run(out string output, string application, string workingDirectory, string[] arguments) → int`**
+**`Run(out string output, string application, string workingDirectory = "", params string[] arguments) → int`**
+
+The `params` modifier allows callers to pass arguments as a comma-separated list without
+constructing an explicit array. The `workingDirectory` default of `""` causes the launched
+process to inherit the caller's current working directory.
 
 Constructs a `ProcessStartInfo` with `UseShellExecute = false`,
 `RedirectStandardOutput = true`, and `RedirectStandardError = true`. Each element of

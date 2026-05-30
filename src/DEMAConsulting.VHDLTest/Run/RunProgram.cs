@@ -55,7 +55,10 @@ public static class RunProgram
     ///     spaces; the CLR passes the path directly to the OS, which handles spaces natively
     ///     without shell quoting.
     /// </param>
-    /// <param name="workingDirectory">Working directory for the launched process. Pass an empty string (the default) to inherit the caller's current working directory.</param>
+    /// <param name="workingDirectory">
+    ///     Working directory for the launched process. Pass an empty string (the default) to
+    ///     inherit the caller's current working directory.
+    /// </param>
     /// <param name="arguments">
     ///     Arguments to pass to the process. Each element is added individually to
     ///     <c>ArgumentList</c>; do not pre-quote values that contain spaces.

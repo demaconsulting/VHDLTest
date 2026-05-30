@@ -23,7 +23,7 @@ ending with the pattern keyword). Lines not matching any rule are left unclassif
 
 #### Key Methods
 
-**Compile**: Compiles all VHDL source files using QuestaSim's vcom utility via a TCL do-script.
+**Compile** (public override): Compiles all VHDL source files using QuestaSim's vcom utility via a TCL do-script.
 
 - *Parameters*: `Context context` — verbose logging. `Options options` — file list and working directory.
 - *Returns*: `RunResults` — classified compile output.
@@ -32,10 +32,12 @@ ending with the pattern keyword). Lines not matching any rule are left unclassif
   `onerror {exit -code 1}`, `vlib work`, `set worklib work`, and `vcom -2008 ../../{file}` for each
   source file, followed by `exit -code 0`. Runs `vsim -c -do compile.do` from the library directory.
 
-**Test**: Simulates a single test bench using QuestaSim's vsim utility via a TCL do-script.
+**Test** (public override): Simulates a single test bench using QuestaSim's vsim utility via a TCL do-script.
 
 - *Parameters*: `Context context` — verbose logging. `Options options` — working directory.
-  `string test` — test bench entity name.
+  `string test` — VHDL entity name or library-qualified entity name (e.g., `my_tb` or `lib.my_tb`);
+  must not contain whitespace or TCL metacharacters because the name is interpolated directly
+  into the TCL script without escaping.
 - *Returns*: `TestResult` — simulation outcome.
 - *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
 - *Postconditions*: Writes `test.do` containing `onerror {exit -code 1}`, `set worklib work`,

@@ -54,7 +54,7 @@ public enum RunLineType
 
     /// <summary>
     ///     Error message. Highest severity (ordinal 3); written by <see cref="RunResults.Print"/> in red. A
-    ///     result with <see cref="Error"/> summary or higher is considered failed.
+    ///     result with <see cref="Error"/> summary is considered failed.
     /// </summary>
     Error
 }

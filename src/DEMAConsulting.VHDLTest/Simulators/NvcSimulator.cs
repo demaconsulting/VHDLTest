@@ -115,7 +115,7 @@ public sealed class NvcSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the NVC output directory
-        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
+        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "NVC");
         context.WriteVerboseLine($"  NVC Output Directory: {outputDir}");
         if (!Directory.Exists(outputDir))
         {
@@ -158,7 +158,7 @@ public sealed class NvcSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the NVC output directory
-        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
+        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "NVC");
         context.WriteVerboseLine($"  NVC Output Directory: {outputDir}");
 
         // Run the test

@@ -52,17 +52,18 @@ public class ProgramTests
         """;
 
     /// <summary>
-    /// Test that the version string is not empty
+    /// Verifies that the version string is non-null and non-empty when the assembly carries an informational version attribute.
     /// </summary>
     [Fact]
-    public void Program_Version_IsNotEmpty()
+    public void Program_Version_WhenAssemblyBuilt_IsNotEmpty()
     {
         // Arrange: no setup required — Program.Version is a static property initialized at startup
 
         // Act: read the version string
+        var version = Program.Version;
 
         // Assert - verify version is populated
-        Assert.False(string.IsNullOrEmpty(Program.Version));
+        Assert.False(string.IsNullOrEmpty(version));
     }
 
     /// <summary>
@@ -342,6 +343,45 @@ public class ProgramTests
             {
                 File.Delete(resultsFile);
             }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that Run executes only the named test when test names are supplied as
+    ///     positional arguments, filtering out tests whose names were not specified.
+    /// </summary>
+    [Fact]
+    public void Program_Run_WithTestFilter_RunsOnlyMatchingTests()
+    {
+        // Arrange: write a configuration file containing both a passing and a failing test;
+        // the failing test name contains "_fail_" which triggers mock simulator failure
+        const string mixedConfigContent =
+            """
+            files:
+            - file1.vhd
+
+            tests:
+            - test1
+            - test_fail_1
+            """;
+        var configFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(configFile, mixedConfigContent);
+
+            // Arrange: pass only "test1" as the filter so "test_fail_1" is not executed
+            using var context = Context.Create(
+                ["-c", configFile, "--simulator", "mock", "--silent", "test1"]);
+
+            // Act: run the program with the test filter
+            Program.Run(context);
+
+            // Assert: exit code is zero because only the passing test ran
+            Assert.Equal(0, context.ExitCode);
+        }
+        finally
+        {
+            File.Delete(configFile);
         }
     }
 }

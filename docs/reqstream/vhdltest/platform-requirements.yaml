@@ -23,6 +23,8 @@ sections:
             tests:
               - windows@VHDLTest_TestPasses
               - windows@VHDLTest_TestFails
+            children:
+              - VHDLTest-Run-RunProcessor-WindowsWrapping
 
           - id: VHDLTest-Plt-MacOS
             title: VHDLTest shall run on macOS operating systems.

@@ -13,7 +13,8 @@ sections:
                   and defense industries. Supporting Active-HDL ensures VHDLTest can be used in
                   regulated environments and specialized application domains.
                 tests:
-                  - ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL
+                  - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
+                  - ActiveHdlSimulator_SimulatorName_ReturnsActiveHdl
 
               - id: VHDLTest-Simulators-ActiveHdlSimulator-Compile
                 title: ActiveHdlSimulator shall classify Active-HDL compilation output lines by severity.
@@ -42,8 +43,9 @@ sections:
                 title: ActiveHdlSimulator shall ensure a success exit code is returned to the caller when simulation completes without errors.
                 justification: |
                   The vsimsa batch-mode tool does not emit a success exit code automatically when
-                  simulation completes. Appending exit -code 0 ensures that a successful simulation
-                  run is distinguished from a run that terminated abnormally without an exit code.
+                  simulation completes without errors. An explicit workaround is required to
+                  distinguish a successful simulation run from one that terminated abnormally
+                  without an exit code, ensuring that CI pipelines correctly detect pass results.
                 tests:
                   - ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode
 
@@ -57,14 +59,29 @@ sections:
                   - ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsTextResult
                   - ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsTextResult
 
-              - id: VHDLTest-Simulators-ActiveHdlSimulator-FindPath-EnvVar
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-FindPath
                 title: >-
-                  ActiveHdl Simulator shall use the path specified by the
-                  VHDLTEST_ACTIVEHDL_PATH environment variable when set.
+                  ActiveHdl Simulator shall locate the Active-HDL installation directory,
+                  respecting the VHDLTEST_ACTIVEHDL_PATH environment variable override when set.
                 justification: |
-                  The VHDLTEST_ACTIVEHDL_PATH environment variable override enables CI
-                  pipelines and non-standard installations to specify the Active-HDL path
-                  explicitly without modifying PATH.
+                  Reliable path discovery ensures VHDLTest can locate Active-HDL across different
+                  installation layouts and environments. The VHDLTEST_ACTIVEHDL_PATH environment
+                  variable override enables CI pipelines and non-standard installations to specify
+                  the Active-HDL path explicitly without modifying PATH. PATH-based discovery is
+                  verified in CI with Active-HDL installed; the env-var override path is covered by
+                  a unit test.
                 tests:
                   - ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-Unavailable
+                title: >-
+                  When Active-HDL is not available, VHDLTest shall report that the
+                  ActiveHDL simulator is not available when compile or test is invoked.
+                justification: |
+                  Clear error reporting when the simulator is not installed prevents silent
+                  failures and gives users an actionable message when the simulator binary
+                  cannot be located.
+                tests:
+                  - ActiveHdlSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
+                  - ActiveHdlSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException
 

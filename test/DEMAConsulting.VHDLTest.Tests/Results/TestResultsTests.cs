@@ -362,4 +362,139 @@ public class TestResultsTests
             () => TestResults.Execute(context, "UnitTestRun", "TestCodeBase", options, MockSimulator.Instance));
         Assert.Equal("Build Failed", ex.Message);
     }
+
+    /// <summary>
+    ///     Verifies that PrintSummary with an empty Tests collection writes only the separator
+    ///     lines and no pass or fail count lines, confirming the zero-count suppression guards.
+    /// </summary>
+    [Fact]
+    public void TestResults_PrintSummary_EmptyTests_WritesOnlySeparators()
+    {
+        // Arrange: create a TestResults instance with no tests and a log path for capturing output
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var results = new TestResults("TestRun", "TestCodeBase");
+
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--log", logPath, "--silent"]))
+            {
+                // Act: call PrintSummary on an empty result set
+                results.PrintSummary(context);
+            }
+
+            // Assert: separator lines are written, but no "Passed" or "Failed" count lines appear
+            output = File.ReadAllText(logPath);
+            Assert.Multiple(() =>
+            {
+                Assert.Contains("====", output);
+                Assert.DoesNotContain("Passed", output);
+                Assert.DoesNotContain("Failed", output);
+            });
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that PrintSummary with all-passing tests writes the "Passed N of M" line
+    ///     but suppresses the "Failed" line, confirming the zero-count guard for failed count.
+    /// </summary>
+    [Fact]
+    public void TestResults_PrintSummary_AllPassTests_WritesPassedCountOnly()
+    {
+        // Arrange: create a TestResults instance with only passing tests
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var passRunResults = new RunResults(
+            RunLineType.Info,
+            new DateTime(2024, 8, 10, 0, 0, 0, DateTimeKind.Utc),
+            1.0,
+            0,
+            "Passed",
+            new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Info, "Passed")]));
+
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(new VHDLTestResult("Suite", "PassingTest", passRunResults));
+
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--log", logPath, "--silent"]))
+            {
+                // Act: call PrintSummary on an all-pass result set
+                results.PrintSummary(context);
+            }
+
+            // Assert: "Passed" count line appears but "Failed" count line is suppressed
+            output = File.ReadAllText(logPath);
+            Assert.Multiple(() =>
+            {
+                Assert.Contains("Passed 1 of 1 tests", output);
+                Assert.DoesNotContain("Failed", output);
+            });
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that PrintSummary with all-failing tests writes the "Failed N of M" line
+    ///     but suppresses the "Passed" line, confirming the zero-count guard for passed count.
+    /// </summary>
+    [Fact]
+    public void TestResults_PrintSummary_AllFailTests_WritesFailedCountOnly()
+    {
+        // Arrange: create a TestResults instance with only failing tests
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var failRunResults = new RunResults(
+            RunLineType.Error,
+            new DateTime(2024, 8, 10, 0, 0, 1, DateTimeKind.Utc),
+            1.0,
+            1,
+            "Error: assertion failed",
+            new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Error, "Error: assertion failed")]));
+
+        var results = new TestResults("TestRun", "TestCodeBase");
+        results.Tests.Add(new VHDLTestResult("Suite", "FailingTest", failRunResults));
+
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--log", logPath, "--silent"]))
+            {
+                // Act: call PrintSummary on an all-fail result set
+                results.PrintSummary(context);
+            }
+
+            // Assert: "Failed" count line appears but "Passed" count line is suppressed
+            output = File.ReadAllText(logPath);
+            Assert.Multiple(() =>
+            {
+                Assert.Contains("Failed 1 of 1 tests", output);
+                Assert.DoesNotContain("Passed", output);
+            });
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that passing null as the context to PrintSummary throws ArgumentNullException,
+    ///     confirming the null guard is enforced before any output is written.
+    /// </summary>
+    [Fact]
+    public void TestResults_PrintSummary_NullContext_ThrowsArgumentNullException()
+    {
+        // Arrange: create an empty TestResults instance
+        var results = new TestResults("TestRun", "TestCodeBase");
+
+        // Act / Assert: passing null must throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => results.PrintSummary(null!));
+    }
 }

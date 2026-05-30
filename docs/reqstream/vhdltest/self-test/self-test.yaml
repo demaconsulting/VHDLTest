@@ -47,3 +47,25 @@ sections:
               - SelfTest_Validate_MockSimulator_IncludesOSVersionInReport
             children:
               - VHDLTest-SelfTest-Validation-SystemInfo
+
+          - id: VHDLTest-SelfTest-InvalidSimulator-ExitCode
+            title: VHDLTest shall exit with a non-zero code when given an unrecognized simulator name.
+            justification: |
+              If an unrecognized simulator name is provided, VHDLTest should fail gracefully
+              rather than throwing an unhandled exception, ensuring a good user experience
+              when the configuration is incorrect.
+            tests:
+              - SelfTest_Validate_InvalidSimulator_ReturnsFailure
+            children:
+              - VHDLTest-SelfTest-Validation-InvalidSimulator-ExitCode
+
+          - id: VHDLTest-SelfTest-InvalidSimulator-ErrorMessage
+            title: VHDLTest shall report a descriptive error message when given an unrecognized simulator name.
+            justification: |
+              A descriptive error message when an unrecognized simulator name is provided
+              helps the user understand what went wrong and how to correct the configuration,
+              rather than leaving them with a bare non-zero exit code.
+            tests:
+              - SelfTest_Validate_InvalidSimulator_ReturnsFailure
+            children:
+              - VHDLTest-SelfTest-Validation-InvalidSimulator-ErrorMessage

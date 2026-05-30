@@ -50,3 +50,13 @@ sections:
                   optional configuration properties.
                 tests:
                   - ConfigDocument_ReadFile_MissingKeys_ReturnsEmptyArrays
+
+              - id: VHDLTest-Cli-ConfigDoc-ExplicitNull
+                title: The ConfigDocument class shall return empty arrays for Files and Tests when those keys are explicitly set to null in the YAML configuration file.
+                justification: |
+                  Treating explicit null values the same as absent keys prevents null reference
+                  errors in downstream code that iterates over these collections, ensuring
+                  consistent behavior regardless of whether a YAML author omits a key or sets
+                  it to null.
+                tests:
+                  - ConfigDocument_ReadFile_ExplicitNullLists_ReturnsEmptyArrays

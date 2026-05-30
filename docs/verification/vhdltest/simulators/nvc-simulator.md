@@ -38,35 +38,35 @@ This scenario is tested by `NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOper
 
 **SimulatorName_ReturnsNVC**: Verifies that `NvcSimulator.Instance.SimulatorName` is `"NVC"`,
 confirming the instance is registered with the correct name for factory lookup.
-This scenario is tested by the simulator name test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_SimulatorName_ReturnsNVC`.
 
 **CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean NVC analysis output
 produces a `RunLineType.Text` summary with correctly classified lines.
-This scenario is tested by the compile clean output test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult`.
 
 **CompileProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an NVC warning line
 is classified as `RunLineType.Warning`.
-This scenario is tested by the compile warning test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult`.
 
 **CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an NVC error line is
 classified as `RunLineType.Error`.
-This scenario is tested by the compile error test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult`.
 
 **TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean NVC simulation output
 produces a `RunLineType.Text` summary.
-This scenario is tested by the test clean output test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult`.
 
 **TestProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an NVC info line is classified
 as `RunLineType.Info`.
-This scenario is tested by the test info output test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult`.
 
 **TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an NVC warning line in
 simulation output is classified as `RunLineType.Warning`.
-This scenario is tested by the test warning output test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult`.
 
 **TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an NVC error line in
 simulation output is classified as `RunLineType.Error`.
-This scenario is tested by the test error output test in `NvcSimulatorTests.cs`.
+This scenario is tested by `NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult`.
 
 **CompileProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an NVC info (note) line in
 compile output is classified as `RunLineType.Info`, confirming the `.* Note:` pattern works.
