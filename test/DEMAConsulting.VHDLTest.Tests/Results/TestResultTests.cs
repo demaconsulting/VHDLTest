@@ -26,7 +26,7 @@ using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 namespace DEMAConsulting.VHDLTest.Tests.Results;
 
 /// <summary>
-/// Tests for <see cref="VHDLTestResult"/> class.
+/// Tests for <see cref="DEMAConsulting.VHDLTest.Results.TestResult"/> class.
 /// </summary>
 public class TestResultTests
 {

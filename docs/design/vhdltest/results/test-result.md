@@ -32,7 +32,7 @@ captured output lines, duration, and the highest-severity line type.
 
 - *Parameters*: `Context context` — the output channel to write to.
 - *Returns*: void.
-- *Preconditions*: `context` is not null.
+- *Preconditions*: `context` is not null; passing null throws `ArgumentNullException`.
 - *Postconditions*: a line containing the pass/fail word (green or red), the test name, and the
   duration in seconds has been written to the context.
 
@@ -41,9 +41,10 @@ formatted to one decimal place in parentheses.
 
 #### Error Handling
 
-`TestResult` throws no exceptions. I/O in `PrintSummary` is fully delegated to the injected `Context`
-and is not performed by `TestResult` directly. Error conditions are
-captured in `RunResults.Summary` and `RunResults.Lines` by the Run subsystem before construction.
+`PrintSummary` throws `ArgumentNullException` when `context` is null. All other I/O in
+`PrintSummary` is fully delegated to the injected `Context` and is not performed by `TestResult`
+directly. Error conditions are captured in `RunResults.Summary` and `RunResults.Lines` by the Run
+subsystem before construction.
 
 #### Dependencies
 

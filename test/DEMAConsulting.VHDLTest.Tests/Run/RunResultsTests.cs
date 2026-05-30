@@ -128,4 +128,24 @@ public class RunResultsTests
         Assert.True(results.Summary >= RunLineType.Error,
             $"Expected Summary >= RunLineType.Error for non-zero ExitCode, but got {results.Summary}");
     }
+
+    /// <summary>
+    ///     Verifies that passing null as the context to Print throws ArgumentNullException,
+    ///     confirming that the null-guard on Print is enforced before any output is attempted.
+    /// </summary>
+    [Fact]
+    public void RunResults_Print_WithNullContext_ThrowsArgumentNullException()
+    {
+        // Arrange: construct a minimal RunResults with no lines
+        var results = new RunResults(
+            RunLineType.Info,
+            DateTime.Now,
+            0.0,
+            0,
+            string.Empty,
+            new System.Collections.ObjectModel.ReadOnlyCollection<RunLine>([]));
+
+        // Act / Assert: passing null as context must throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => results.Print(null!));
+    }
 }

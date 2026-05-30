@@ -25,8 +25,10 @@ N/A - standard test environment.
 **Create_WithValidPattern_ClassifiesMatchingLine**: Verifies that a `RunLineRule` created
 with a valid pattern correctly classifies lines that match the pattern as the specified
 `RunLineType`, and leaves non-matching lines as `RunLineType.Text`.
-This scenario is tested indirectly by all simulator processor tests (e.g.,
-`GhdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult`).
+This scenario is directly tested by `RunLineRule_Create_ValidPattern_ReturnsRuleWithMatchingProperties`,
+which confirms the `Type` and compiled `Pattern` properties are set correctly and that the pattern
+matches expected text. Additional indirect coverage is provided by all simulator processor tests
+(e.g., `GhdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult`).
 
 **Create_WithErrorPattern_ClassifiesErrorLine**: Verifies that a rule with `RunLineType.Error`
 correctly elevates the `RunResults.Summary` when a matching error line is present in the output.

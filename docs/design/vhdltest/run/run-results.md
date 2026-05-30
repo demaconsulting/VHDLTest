@@ -12,7 +12,7 @@ and result serialization.
 
 | Property   | Type                          | Description                                                |
 | ---------- | ----------------------------- | ---------------------------------------------------------- |
-| `Summary`  | `RunLineType`                 | Highest-severity line type; at least `Error` if non-zero.  |
+| `Summary`  | `RunLineType`                 | Highest-severity line type; at least `Error` if non-zero. The SummaryElevation invariant (Summary ≥ Error when ExitCode ≠ 0) is enforced by `RunProcessor.Parse` at construction time, not by `RunResults` itself. |
 | `Start`    | `DateTime`                    | Timestamp recorded before `RunProgram.Run` is called.      |
 | `Duration` | `double`                      | Elapsed time in seconds between `Start` and process exit.  |
 | `ExitCode` | `int`                         | Raw process exit code returned by the simulator.           |

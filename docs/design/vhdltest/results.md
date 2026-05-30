@@ -18,6 +18,13 @@ includes all data capture and reporting logic; it does not perform any simulatio
 - *Role*: Provider.
 - *Contract*: Callers obtain a `TestResults` instance via `TestResults.Execute`, print a summary via
   `PrintSummary`, and optionally persist results via `SaveResults`.
+- *Properties*:
+  - `Passes` (`IEnumerable<TestResult>`): lazily-enumerated, LINQ-queryable view over `Tests`
+    containing only outcomes where the test bench ran without error (i.e., `TestResult.Passed` is
+    true). Filters `Tests` by pass outcome; consumers may call `.Count()` or iterate directly.
+  - `Fails` (`IEnumerable<TestResult>`): lazily-enumerated, LINQ-queryable view over `Tests`
+    containing only outcomes where the test bench encountered an error (i.e., `TestResult.Failed`
+    is true). Filters `Tests` by fail outcome; consumers may call `.Count()` or iterate directly.
 - *Constraints*: `SaveResults` requires a non-null, non-empty file path; an empty or unrecognised
   extension defaults to TRX format.
 
@@ -25,6 +32,9 @@ includes all data capture and reporting logic; it does not perform any simulatio
 
 - **`Run.RunResults`** — consumed by `TestResults.PrintSummary` for line-by-line test output;
   provides the raw simulation output and severity summary used to format each summary line.
+- **`Run.RunLine`** and **`Run.RunLineType`** — consumed transitively through `RunResults`; directly
+  referenced in `TestResults.SaveResults` when filtering error lines for failure messages, and
+  required when constructing `RunResults` fixtures for testing.
 - **`Cli.Context`** — consumed by `TestResults.Execute` and `TestResults.PrintSummary` for writing
   progress messages and formatted output to the configured output channels.
 - **`Cli.Options`** — consumed by `TestResults.Execute` for the working directory, simulator name,

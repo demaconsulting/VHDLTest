@@ -54,7 +54,7 @@ public record RunLineRule(RunLineType Type, Regex Pattern)
     ///     <paramref name="pattern"/>.
     /// </param>
     /// <param name="pattern">
-    ///     A syntactically valid regular expression string. Must not be null or empty.
+    ///     A syntactically valid regular expression string. Must not be null.
     /// </param>
     /// <returns>A new <see cref="RunLineRule"/> whose <see cref="Pattern"/> is ready for use.</returns>
     /// <exception cref="ArgumentException">

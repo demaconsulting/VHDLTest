@@ -32,16 +32,29 @@ sections:
               - ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes
             children:
               - VHDLTest-Results-TestResults-Execute
+              - VHDLTest-Results-TestResults-Execute-Run
 
           - id: VHDLTest-Results-PrintSummary
             title: >-
-              The Results subsystem shall print a formatted summary of all test results
-              including pass/fail counts and individual test outcome lines.
+              TestResults shall print individual test outcome lines to the context output
+              when summarizing results.
             justification: |
-              Providing a human-readable summary with per-test pass/fail lines and
-              aggregate counts gives developers and CI/CD pipelines an at-a-glance
-              view of the test run outcome without requiring them to parse serialized
-              report files.
+              Printing a per-test outcome line for every collected result lets developers
+              and CI/CD pipelines identify which specific test benches passed or failed
+              without inspecting serialized report files.
+            tests:
+              - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
+            children:
+              - VHDLTest-Results-TestResults-PrintSummary
+
+          - id: VHDLTest-Results-PrintSummary-Counts
+            title: >-
+              TestResults shall print aggregate pass and fail counts to the context output
+              when summarizing results.
+            justification: |
+              Providing numeric totals for passed and failed tests gives developers and
+              CI/CD pipelines an at-a-glance view of overall test run health without
+              counting individual result lines.
             tests:
               - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
             children:

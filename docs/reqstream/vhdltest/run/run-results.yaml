@@ -14,6 +14,7 @@ sections:
                   reducing the time needed to identify failures.
                 tests:
                   - RunResults_Print_WithMixedLines_WritesColorCodedOutput
+                  - RunResults_Print_WithNullContext_ThrowsArgumentNullException
 
               - id: VHDLTest-Run-RunResults-VerboseSuppression
                 title: RunResults.Print shall suppress Text-classified lines unless verbose output is enabled.
@@ -32,6 +33,8 @@ sections:
                   A non-zero exit code is the simulator's primary failure signal. Elevating the
                   summary to at least Error when the exit code is non-zero ensures that downstream
                   pass/fail decisions always reflect a simulator-reported error, even when no
-                  individual output line matched an error pattern.
+                  individual output line matched an error pattern. This invariant is enforced by
+                  RunProcessor.Parse at construction time; RunResults itself does not validate the
+                  property because it is an immutable positional record.
                 tests:
                   - RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError

@@ -36,6 +36,9 @@ namespace DEMAConsulting.VHDLTest.Results;
 ///     <see cref="TestResult"/> instances in <see cref="Tests"/>. After execution callers
 ///     can print a human-readable summary via <see cref="PrintSummary"/> and persist the
 ///     collection as TRX or JUnit XML via <see cref="SaveResults"/>.
+///     Instances are not thread-safe; concurrent access to a single instance requires
+///     external synchronization. The static <c>Execute</c> methods are safe to call
+///     concurrently provided each call uses independent arguments.
 /// </remarks>
 /// <param name="runName">
 ///     Human-readable label for this test run used in generated reports. Must not be null.

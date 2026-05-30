@@ -66,6 +66,15 @@ public sealed record RunResults(
     ///     determined by its <see cref="RunLineType"/>. Text-classified lines are suppressed
     ///     unless verbose output is enabled.
     /// </summary>
+    /// <remarks>
+    ///     <c>Print</c> writes to <paramref name="context"/> as a side effect; the number of
+    ///     lines written depends on <see cref="Lines"/> content and the value of
+    ///     <c>context.Verbose</c>. <see cref="RunResults"/> is immutable and thread-safe for
+    ///     concurrent reads; multiple callers may read its properties simultaneously without
+    ///     synchronization. Concurrent calls to <c>Print</c> that share the same
+    ///     <see cref="Context"/> instance are subject to <see cref="Context"/>'s own
+    ///     thread-safety contract.
+    /// </remarks>
     /// <param name="context">
     ///     Context used for colored console output. Must not be null. The <c>Verbose</c>
     ///     property controls whether <see cref="RunLineType.Text"/> lines are written.

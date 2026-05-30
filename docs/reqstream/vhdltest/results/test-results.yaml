@@ -8,14 +8,23 @@ sections:
             requirements:
               - id: VHDLTest-Results-TestResults-Execute
                 title: >-
-                  TestResults shall compile VHDL sources and execute all configured test benches
-                  using the provided simulator, collecting each test outcome.
+                  TestResults shall compile the VHDL sources using the configured simulator
+                  before running any test benches.
                 justification: |
-                  Encapsulating the build-then-test sequence in TestResults.Execute ensures
-                  that every run follows the same ordered workflow — compile first, then
-                  test — and that all outcomes are captured in one object. This keeps callers
-                  free from orchestration logic and enables consistent error handling when
-                  the build step fails.
+                  Compiling sources before running tests ensures that test benches are always
+                  executed against a known-good build, preventing misleading test outcomes
+                  caused by running tests against a broken or stale build artifact.
+                tests:
+                  - TestResults_Execute_WithMockSimulator_CollectsTestOutcomes
+
+              - id: VHDLTest-Results-TestResults-Execute-Run
+                title: >-
+                  TestResults shall execute all configured test benches and collect each test
+                  outcome after the VHDL sources have been compiled successfully.
+                justification: |
+                  Collecting every test bench outcome in a single structured object lets
+                  callers inspect individual results, compute aggregate pass/fail counts, and
+                  serialize results to report files without re-executing the tests.
                 tests:
                   - TestResults_Execute_WithMockSimulator_CollectsTestOutcomes
 
@@ -62,12 +71,12 @@ sections:
 
               - id: VHDLTest-Results-TestResults-BuildFailure
                 title: >-
-                  TestResults shall throw InvalidOperationException with message "Build Failed"
-                  when the build step fails.
+                  TestResults shall signal an unrecoverable build failure to the caller when
+                  the VHDL compilation step produces errors.
                 justification: |
                   Aborting execution with a clear error when the build step fails prevents
                   misleading results — running tests against a broken build would produce
-                  unreliable outcomes and hide the root cause. A descriptive exception message
+                  unreliable outcomes and hide the root cause. A descriptive error signal
                   lets callers and CI/CD systems report the failure accurately.
                 tests:
                   - TestResults_Execute_WithBuildFailure_ThrowsInvalidOperationException
