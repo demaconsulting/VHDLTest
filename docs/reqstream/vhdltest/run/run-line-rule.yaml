@@ -14,6 +14,7 @@ sections:
                   easy to add support for new simulators or update patterns when simulator
                   output formats change.
                 tests:
+                  - RunLineRule_Create_NullPattern_ThrowsArgumentNullException
                   - RunLineRule_Create_ValidPattern_ReturnsRuleWithMatchingProperties
                   - RunLineRule_Create_InvalidPattern_ThrowsArgumentException
                   - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult

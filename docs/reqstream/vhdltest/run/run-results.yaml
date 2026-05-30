@@ -37,4 +37,4 @@ sections:
                   RunProcessor.Parse at construction time; RunResults itself does not validate the
                   property because it is an immutable positional record.
                 tests:
-                  - RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError
+                   - RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError

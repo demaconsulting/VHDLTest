@@ -28,6 +28,15 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     It is the rule element that <see cref="RunProcessor"/> applies in order to classify
 ///     each captured line; the first matching rule in the ordered rule set wins.
 /// </summary>
+/// <remarks>
+///     Design intent: rules are evaluated in order by <see cref="RunProcessor.Parse"/> and
+///     the first matching rule wins, allowing callers to express priority-ordered pattern sets.
+///     A 100 ms evaluation timeout is applied to each <see cref="Regex"/> at construction
+///     time as a guard against catastrophic backtracking (ReDoS) on unexpectedly long or
+///     pathological simulator output lines. This type is immutable and thread-safe;
+///     <see cref="Regex"/> is safe for concurrent reads, so instances may be shared freely
+///     across threads without synchronization.
+/// </remarks>
 /// <param name="Type">
 ///     The severity category to assign to any output line whose text matches
 ///     <paramref name="Pattern"/>. Any valid <see cref="RunLineType"/> value is accepted.

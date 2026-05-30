@@ -23,6 +23,7 @@ N/A - standard test environment.
 - `ClassName` and `TestName` match the values supplied at construction.
 - `PrintSummary` writes "Passed" for passing tests and "Failed" for failing tests to the log.
 - `PrintSummary` includes the test name and the execution duration in the log output.
+- `PrintSummary` throws `ArgumentNullException` when `context` is null.
 - Each `TestResult` instance has a unique `TestId` and `ExecutionId`.
 
 #### Test Scenarios
@@ -49,6 +50,11 @@ This scenario is tested by `TestResult_PrintSummary_PassedResult_WritesPassLine`
 **PrintSummary_FailedResult_WritesFailLine**: Verifies that `PrintSummary` writes "Failed",
 the test name, and the duration to the log output for a failing test result.
 This scenario is tested by `TestResult_PrintSummary_FailedResult_WritesFailLine`.
+
+**PrintSummary_NullContext_ThrowsArgumentNullException**: Verifies that `PrintSummary` throws
+`ArgumentNullException` when `context` is null, confirming the null guard is enforced before
+any output is attempted.
+This scenario is tested by `TestResult_PrintSummary_NullContext_ThrowsArgumentNullException`.
 
 **Constructor_CreatesUniqueTestAndExecutionIds**: Verifies that each `TestResult` construction
 produces distinct `TestId` and `ExecutionId` values, confirming fresh GUID initialization.

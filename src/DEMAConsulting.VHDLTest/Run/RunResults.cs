@@ -96,7 +96,8 @@ public sealed record RunResults(
                 _ => ConsoleColor.Gray
             };
 
-            // Write the line
+            // Write the line with its severity color, then emit the newline separately without
+            // color to prevent console color from bleeding into the line separator
             context.Write(color, line.Text);
             context.WriteLine("");
         }

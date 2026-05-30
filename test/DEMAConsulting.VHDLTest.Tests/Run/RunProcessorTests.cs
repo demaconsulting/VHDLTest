@@ -24,7 +24,7 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Tests.Run;
 
 /// <summary>
-/// Tests for <see cref="RunProcessor"/> class.
+///     Tests for <see cref="RunProcessor"/> class.
 /// </summary>
 public class RunProcessorTests
 {
@@ -179,6 +179,29 @@ public class RunProcessorTests
                 File.Delete(logFile);
             }
         }
+    }
+
+    /// <summary>
+    ///     Verifies that RunProcessor.Parse elevates the RunResults Summary to at least
+    ///     RunLineType.Error when the exit code is non-zero and no rule matches the output,
+    ///     confirming the SummaryElevation invariant is enforced independently of pattern matching.
+    /// </summary>
+    [Fact]
+    public void RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError()
+    {
+        // Arrange: create a processor with no rules so no line elevates the summary via pattern
+        // matching; use fixed timestamps so the duration calculation is deterministic
+        var processor = new RunProcessor([]);
+        var start = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Local);
+        var end = new DateTime(2024, 1, 1, 0, 0, 1, DateTimeKind.Local);
+
+        // Act: parse output with exit code 1 — the non-zero exit code must escalate the summary
+        // even though no error pattern exists in the rule set
+        var results = processor.Parse(start, end, "no error pattern present", exitCode: 1);
+
+        // Assert: summary is at least Error solely due to the non-zero exit code
+        Assert.True(results.Summary >= RunLineType.Error,
+            $"Expected Summary >= RunLineType.Error for non-zero ExitCode, but got {results.Summary}");
     }
 
     /// <summary>

@@ -28,6 +28,19 @@ namespace DEMAConsulting.VHDLTest.Tests.Run;
 public class RunLineRuleTests
 {
     /// <summary>
+    ///     Verifies that RunLineRule.Create rejects a null pattern argument.
+    /// </summary>
+    [Fact]
+    public void RunLineRule_Create_NullPattern_ThrowsArgumentNullException()
+    {
+        // Arrange: prepare a null pattern reference
+        string? nullPattern = null;
+
+        // Act / Assert: creating a rule with a null pattern must throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => RunLineRule.Create(RunLineType.Error, nullPattern!));
+    }
+
+    /// <summary>
     ///     Verifies that RunLineRule.Create rejects an invalid regex pattern.
     /// </summary>
     [Fact]

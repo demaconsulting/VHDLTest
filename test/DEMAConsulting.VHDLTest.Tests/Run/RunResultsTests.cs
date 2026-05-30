@@ -106,30 +106,6 @@ public class RunResultsTests
     }
 
     /// <summary>
-    ///     Verifies that RunProcessor.Parse produces a RunResults with Summary at least
-    ///     RunLineType.Error when the exit code is non-zero and no rule matches the output,
-    ///     confirming the exit-code escalation logic in RunProcessor.Parse satisfies the
-    ///     SummaryElevation data invariant independently of pattern matching.
-    /// </summary>
-    [Fact]
-    public void RunResults_Summary_WhenExitCodeNonZero_IsAtLeastError()
-    {
-        // Arrange: create a processor with no rules so no line elevates the summary via pattern
-        // matching; use fixed timestamps so the duration calculation is deterministic
-        var processor = new RunProcessor([]);
-        var start = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Local);
-        var end = new DateTime(2024, 1, 1, 0, 0, 1, DateTimeKind.Local);
-
-        // Act: parse output with exit code 1 — the non-zero exit code must escalate the summary
-        // even though no error pattern exists in the rule set
-        var results = processor.Parse(start, end, "no error pattern present", exitCode: 1);
-
-        // Assert: summary is at least Error solely due to the non-zero exit code
-        Assert.True(results.Summary >= RunLineType.Error,
-            $"Expected Summary >= RunLineType.Error for non-zero ExitCode, but got {results.Summary}");
-    }
-
-    /// <summary>
     ///     Verifies that passing null as the context to Print throws ArgumentNullException,
     ///     confirming that the null-guard on Print is enforced before any output is attempted.
     /// </summary>

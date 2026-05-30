@@ -33,14 +33,17 @@ namespace DEMAConsulting.VHDLTest.Results;
 ///     implementations and held by <see cref="TestResults"/>.
 /// </remarks>
 /// <param name="ClassName">
-///     Fully qualified test class name used as the TRX class identifier. Must not be null.
+///     Fully qualified test class name used as the TRX class identifier. Non-nullable;
+///     null-safety enforced at compile time by the nullable reference type annotation.
 /// </param>
 /// <param name="TestName">
-///     Test bench name used as the logical test identifier in reports. Must not be null.
+///     Test bench name used as the logical test identifier in reports. Non-nullable;
+///     null-safety enforced at compile time by the nullable reference type annotation.
 /// </param>
 /// <param name="RunResults">
 ///     The raw execution results from the simulator, including exit code, captured output
-///     lines, duration, and the highest-severity line type. Must not be null.
+///     lines, duration, and the highest-severity line type. Non-nullable; null-safety
+///     enforced at compile time by the nullable reference type annotation.
 /// </param>
 public sealed record TestResult(string ClassName, string TestName, RunResults RunResults)
 {

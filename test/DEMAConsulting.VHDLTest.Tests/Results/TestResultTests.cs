@@ -167,6 +167,28 @@ public class TestResultTests
     }
 
     /// <summary>
+    ///     Verifies that passing null as the context to PrintSummary throws ArgumentNullException,
+    ///     confirming the null guard is enforced before any output is attempted.
+    /// </summary>
+    [Fact]
+    public void TestResult_PrintSummary_NullContext_ThrowsArgumentNullException()
+    {
+        // Arrange: create a minimal passing TestResult
+        var result = new VHDLTestResult(
+            "TestClass", "TestName",
+            new RunResults(
+                RunLineType.Info,
+                new DateTime(2024, 8, 10, 0, 0, 0, DateTimeKind.Utc),
+                1.0,
+                0,
+                "Passed",
+                new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Info, "Passed")])));
+
+        // Act / Assert: passing null as context must throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => result.PrintSummary(null!));
+    }
+
+    /// <summary>
     ///     Verifies that constructing a TestResult with a Warning-level RunResults produces
     ///     Passed == true, confirming the pass threshold is strictly below Error.
     /// </summary>

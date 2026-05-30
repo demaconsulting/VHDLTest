@@ -28,7 +28,9 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     Ordinal values encode severity rank intentionally: higher ordinal means higher
 ///     severity. <see cref="RunProcessor"/> uses the <c>&gt;</c> operator to compute
 ///     the highest-severity summary across all output lines, and downstream code
-///     compares values with <c>&gt;=</c> to determine pass/fail thresholds.
+///     compares values with <c>&gt;=</c> to determine pass/fail thresholds. As a value
+///     type (enum), <see cref="RunLineType"/> is inherently thread-safe; values may be
+///     read and compared concurrently without synchronization.
 /// </remarks>
 // Ordinal values are intentional: RunProcessor uses > to compute the highest-severity summary.
 public enum RunLineType

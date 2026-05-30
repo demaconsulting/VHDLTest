@@ -45,6 +45,7 @@ sections:
                   silent pass results when the simulator aborts without producing recognizable output.
                 tests:
                   - RunProcessor_Execute_ProgramWithNonZeroExitCode_ReturnsErrorResult
+                  - RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError
 
               - id: VHDLTest-Run-RunProcessor-VerboseLogging
                 title: >-

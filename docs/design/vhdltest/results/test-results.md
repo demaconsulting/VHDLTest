@@ -60,7 +60,7 @@ appending the resulting `TestResult` to `Tests`.
 
 - *Parameters*: `string fileName` — destination path; extension determines format.
 - *Returns*: void.
-- *Preconditions*: `fileName` is not null or empty; the destination directory is writable.
+- *Preconditions*: `fileName` is not null, empty, or whitespace-only; the destination directory is writable.
 - *Postconditions*: a file at `fileName` has been written; format is JUnit XML for the `.xml`
   extension, TRX for all other extensions. For each failed test, the error message is formed
   by joining all `RunLineType.Error` output lines with a newline separator.
@@ -85,7 +85,7 @@ test counts.
 
 `Execute` throws `InvalidOperationException` with the message "Build Failed" when
 `BuildResults.Summary >= RunLineType.Error`; `Program.Run` catches this and reports it as an error.
-`SaveResults` throws `ArgumentException` when `fileName` is null or empty. All other exceptions from
+`SaveResults` throws `ArgumentException` when `fileName` is null, empty, or whitespace-only. All other exceptions from
 the simulator propagate to the caller.
 
 #### Dependencies

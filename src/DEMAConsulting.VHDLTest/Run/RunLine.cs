@@ -29,7 +29,8 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     RunLine instances are created by <see cref="RunProcessor.Parse"/> for every line of
 ///     captured simulator output. Using a dedicated record rather than a raw string avoids
 ///     repeated pattern matching in downstream logic; the classification is applied once and
-///     carried forward throughout the processing pipeline.
+///     carried forward throughout the processing pipeline. This type is immutable and
+///     thread-safe; instances may be shared freely across threads.
 /// </remarks>
 /// <param name="Type">
 ///     Classification assigned to this line by <see cref="RunProcessor.Parse"/> through

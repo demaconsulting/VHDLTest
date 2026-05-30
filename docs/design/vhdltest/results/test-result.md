@@ -54,5 +54,8 @@ subsystem before construction.
 
 #### Callers
 
-- **TestResults** — constructs `TestResult` instances and appends them to its `Tests` collection.
+- **Concrete Simulator implementations** (`ActiveHdlSimulator`, `GhdlSimulator`, `MockSimulator`,
+  `ModelSimSimulator`, `NvcSimulator`, `QuestaSimSimulator`, `VivadoSimulator`) — construct
+  `TestResult` instances from `RunResults` returned by the simulator test step and return them
+  to `TestResults.Execute`.
 - **Validation** — constructs `TestResult` instances for self-validation scenarios.

@@ -162,12 +162,12 @@ public class ResultsSubsystemTests
                 testResults.PrintSummary(context);
             }
 
-            // Assert: output contains per-test names and aggregate pass/fail indicators
+            // Assert: output contains per-test names and aggregate pass/fail indicators with numeric counts
             output = File.ReadAllText(logPath);
             Assert.Contains("PassingTest", output);
             Assert.Contains("FailingTest", output);
-            Assert.Contains("Passed", output);
-            Assert.Contains("Failed", output);
+            Assert.Contains("Passed 1", output);
+            Assert.Contains("Failed 1", output);
         }
         finally
         {

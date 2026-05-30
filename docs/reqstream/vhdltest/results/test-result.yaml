@@ -36,6 +36,7 @@ sections:
                 tests:
                   - TestResult_PrintSummary_PassedResult_WritesPassLine
                   - TestResult_PrintSummary_FailedResult_WritesFailLine
+                  - TestResult_PrintSummary_NullContext_ThrowsArgumentNullException
 
               - id: VHDLTest-Results-TestResult-PrintSummary-Name
                 title: >-

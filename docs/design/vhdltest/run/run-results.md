@@ -27,6 +27,9 @@ Iterates over `Lines` and writes each line to the console using a color determin
 its `RunLineType`: `Info` → white, `Warning` → yellow, `Error` → red, `Text` → gray.
 Any unrecognized `RunLineType` value also maps to gray.
 When `context.Verbose` is false, lines with type `Text` are suppressed.
+Each line is written as two separate calls: `context.Write(color, line.Text)` for the
+colored text followed by `context.WriteLine("")` without a color argument; the newline is
+emitted without color to prevent console color from bleeding into the line separator.
 
 - *Preconditions*: `context` is not null.
 - *Postconditions*: Relevant lines are written to the `Context` output channels.
