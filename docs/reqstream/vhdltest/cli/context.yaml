@@ -55,21 +55,38 @@ sections:
                   - Context_Create_WithNegativeDepth_ThrowsInvalidOperationException
 
               - id: VHDLTest-Cli-Context-Write
-                title: Context shall write a message without a line terminator to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
+                title: Context shall write a message without a line terminator to the console, suppressed when silent mode is active.
                 justification: |
-                  Distinguishing console and log-file behavior explicitly prevents callers from
-                  assuming all outputs are suppressed in silent mode; the log file must always
-                  capture output so that CI systems retain complete diagnostic records.
+                  Gating console write on the silent flag ensures that CI pipeline logs remain
+                  clean when silent mode is active, while interactive users still see output.
+                tests:
+                  - Context_Write_SilentMode_WritesToLogFile
+
+              - id: VHDLTest-Cli-Context-Write-Log
+                title: Context shall write a message without a line terminator unconditionally to the log file when configured.
+                justification: |
+                  The log file must always capture output regardless of silent mode so that CI
+                  systems retain complete diagnostic records even when console output is
+                  suppressed.
                 tests:
                   - Context_Write_WithLogFile_WritesToLog
                   - Context_Write_SilentMode_WritesToLogFile
 
               - id: VHDLTest-Cli-Context-WriteLine
-                title: Context shall write a message with a line terminator to the console (suppressed when silent mode is active) and unconditionally to the log file when configured.
+                title: Context shall write a message with a line terminator to the console, suppressed when silent mode is active.
                 justification: |
-                  The majority of VHDLTest output is line-oriented; a dedicated WriteLine that
-                  respects the silent flag for the console but always writes to the log file
-                  prevents callers from having to manage multiple output targets.
+                  The majority of VHDLTest output is line-oriented; gating console WriteLine on
+                  the silent flag ensures that CI pipeline logs remain clean when silent mode is
+                  active, while interactive users still see output.
+                tests:
+                  - Context_WriteLine_SilentMode_WritesToLogFile
+
+              - id: VHDLTest-Cli-Context-WriteLine-Log
+                title: Context shall write a message with a line terminator unconditionally to the log file when configured.
+                justification: |
+                  The log file must always capture line-terminated output regardless of silent
+                  mode so that CI systems retain complete diagnostic records even when console
+                  output is suppressed.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
                   - Context_WriteLine_SilentMode_WritesToLogFile
@@ -120,7 +137,7 @@ sections:
                   - Context_WriteError_WithMessage_IncrementsErrors
 
               - id: VHDLTest-Cli-Context-Dispose
-                title: Context shall implement IDisposable and close any open log-file writer on disposal.
+                title: Context shall flush and close any open log-file writer when the context is disposed.
                 justification: |
                   Implementing IDisposable ensures the log-file StreamWriter is flushed and
                   closed deterministically when the caller disposes the Context, preventing data

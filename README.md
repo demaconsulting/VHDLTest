@@ -32,6 +32,8 @@ The tool is designed for use in regulated industries that require evidence of to
 
 ## Installation
 
+Requires .NET SDK 8.0 or later.
+
 Add VHDLTest to a .NET tool manifest file:
 
 ```bash

@@ -63,7 +63,9 @@ sections:
               - VHDLTest_SilentFlag_SuppressesOutput
             children:
               - VHDLTest-Cli-Context-Write
+              - VHDLTest-Cli-Context-Write-Log
               - VHDLTest-Cli-Context-WriteLine
+              - VHDLTest-Cli-Context-WriteLine-Log
 
           - id: VHDLTest-Cmd-Log
             title: VHDLTest shall support a --log option that writes output to the specified log file.
@@ -197,6 +199,7 @@ sections:
               - Context_Create_WithCustomTest_SetsCustomTest
               - Context_Create_WithCustomTests_SetsCustomTests
               - Options_Parse_WithCustomTest_ParsesSuccessfully
+              - VHDLTest_WithTestFilter_OnlyRunsMatchingTest
             children:
               - VHDLTest-Cli-Context-Parse
               - VHDLTest-Cli-Options-Parse
@@ -212,6 +215,11 @@ sections:
               The tests for this requirement use the SelfTest_ prefix (SelfTest_Validate_*)
               because they reside in SelfTest/ValidationTests.cs and are directly owned by
               the SelfTest subsystem; this is an accepted architectural constraint.
+              System-level validation testing is architecturally constrained: the `--validate`
+              flag invokes MockSimulator-driven self-test using embedded VHDL resources that
+              cannot be exercised through a top-level integration test without circular
+              dependency. Coverage is provided at the subsystem level in
+              `SelfTest/ValidationTests.cs`.
             tests:
               - SelfTest_Validate_MockSimulator_ReturnsSuccess
             children:
@@ -228,5 +236,8 @@ sections:
               The test for this requirement uses the SelfTest_ prefix (SelfTest_ValidateWithDepth_*)
               because it resides in SelfTest/ValidationTests.cs and is directly owned by
               the SelfTest subsystem; this is an accepted architectural constraint.
+              System-level depth testing is architecturally constrained: the `--depth` flag
+              requires embedded VHDL resources processed by MockSimulator. Coverage is provided
+              at the subsystem level in `SelfTest/ValidationTests.cs`.
             tests:
               - SelfTest_ValidateWithDepth_MockSimulator_RendersDepthHeadings

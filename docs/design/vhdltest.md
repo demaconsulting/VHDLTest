@@ -56,7 +56,7 @@ flowchart TD
     Program --> SelfTest
     Results --> Run
     Results --> Simulators
-    Run --> Simulators
+    Simulators --> Run
     SelfTest --> Program
 ```
 
@@ -67,7 +67,7 @@ flowchart TD
 - *Type*: CLI
 - *Role*: Consumer (the operator invokes this tool)
 - *Contract*: Accepts options `-h/--help`, `-v/--version`, `--validate`, `--silent`, `--verbose`,
-  `--depth`, `-l/--log`, `-c/--config`, `-r/--results`, `-s/--simulator`, `-0/--exit-0`,
+  `--depth`, `-l/--log`, `-c/--config`, `-r/--result/--results`, `-s/--simulator`, `-0/--exit-0`,
   and a positional test-filter list. Writes results and diagnostics to stdout/stderr.
 - *Constraints*: Unknown options cause an error; missing config file causes an error and prints usage.
 

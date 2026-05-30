@@ -97,6 +97,8 @@ To perform self-validation:
 dotnet vhdltest --validate --simulator ghdl
 ```
 
+Note: Self-validation uses an internal mock simulator and does not require a real simulator to be installed.
+
 ### Validation Report
 
 The validation report contains:

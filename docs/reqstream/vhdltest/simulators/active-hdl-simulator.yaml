@@ -39,7 +39,7 @@ sections:
                   - ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
 
               - id: VHDLTest-Simulators-ActiveHdlSimulator-TestScript
-                title: ActiveHdlSimulator shall append exit -code 0 to the TCL test script to signal successful completion.
+                title: ActiveHdlSimulator shall ensure a success exit code is returned to the caller when simulation completes without errors.
                 justification: |
                   The vsimsa batch-mode tool does not emit a success exit code automatically when
                   simulation completes. Appending exit -code 0 ensures that a successful simulation

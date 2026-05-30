@@ -47,6 +47,10 @@ sections:
                   ModelSim in standard installations without requiring explicit configuration.
                   This behavior is verified by CI integration tests in environments where
                   ModelSim is installed on the system PATH.
+                  PATH-based discovery is verified in CI with ModelSim installed. No unit test
+                  is possible in offline environments. Cross-reference:
+                  `VHDLTest-Simulators-ModelSimSimulator-FindPath-EnvVar` covers the env-var
+                  override path with a unit test.
                 tests: []
 
               - id: VHDLTest-Simulators-ModelSimSimulator-FindPath-EnvVar

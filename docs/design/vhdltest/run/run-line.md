@@ -31,3 +31,4 @@ N/A — immutable record with no fallible operations.
 - Instantiated by `RunProcessor.Parse` for each line of simulator output.
 - Accessed by `RunResults.Print` to determine line color for console display.
 - Accessed by `RunProcessor.Parse` to compute the run summary classification.
+- Accessed by `TestResults.SaveResults` (Results subsystem) to enumerate output lines when saving test results.

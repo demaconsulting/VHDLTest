@@ -5,7 +5,7 @@ This guide describes how to install, configure, and use VHDLTest.
 ## Purpose
 
 VHDLTest is a .NET tool for running VHDL test benches and generating standard test results files. It simplifies VHDL
-unit testing by providing a unified command-line interface for multiple VHDL simulators, generating TRX test result
+unit testing by providing a unified command-line interface for multiple VHDL simulators, generating TRX and JUnit XML test result
 files compatible with CI/CD systems, and supporting tool validation for regulated industries.
 
 ## Scope

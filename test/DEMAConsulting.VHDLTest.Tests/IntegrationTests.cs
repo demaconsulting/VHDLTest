@@ -279,6 +279,45 @@ public partial class IntegrationTests
     }
 
     /// <summary>
+    /// Test the test filter positional argument restricts execution to the named test bench
+    /// </summary>
+    [Fact]
+    public void VHDLTest_WithTestFilter_OnlyRunsMatchingTest()
+    {
+        // Arrange: create a config with two tests — one that passes and one that fails
+        var configFile = CreateConfigurationFile(
+            "test_filter",
+            "file_test.vhd",
+            "file_test_tb",
+            "file_error_test_tb");
+
+        try
+        {
+            // Act: run with a filter that selects only the passing test
+            var exitCode = Runner.Run(
+                out var output,
+                "dotnet",
+                "DEMAConsulting.VHDLTest.dll",
+                "--simulator", "mock",
+                "--config", configFile,
+                "--", "file_test_tb");
+
+            // Assert: only the passing test ran — exit code is zero
+            Assert.Equal(0, exitCode);
+
+            // The matching test should appear in the results
+            Assert.Contains("Passed file_test_tb", output);
+
+            // The excluded test should not appear in the results
+            Assert.DoesNotContain("file_error_test_tb", output);
+        }
+        finally
+        {
+            DeleteFileIfExists(configFile);
+        }
+    }
+
+    /// <summary>
     /// Test the verbose flag enables additional diagnostic output
     /// </summary>
     [Fact]
