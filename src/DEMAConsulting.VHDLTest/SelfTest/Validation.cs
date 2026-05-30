@@ -33,14 +33,21 @@ namespace DEMAConsulting.VHDLTest.SelfTest;
 internal static class Validation
 {
     /// <summary>
-    /// Validation folder name
+    ///     Fixed name of the temporary folder created during self-validation.
     /// </summary>
+    /// <remarks>
+    ///     The name is intentionally fixed (not randomized) so that any partial folder left by
+    ///     an earlier crash is deterministically located and cleaned up at the start of the next
+    ///     run. As a consequence, concurrent calls to <see cref="RunValidation"/> from the same
+    ///     working directory are unsafe: both callers would race to create, populate, and delete
+    ///     the same folder, producing unpredictable results.
+    /// </remarks>
     private const string ValidationFolder = "validation.tmp";
 
     /// <summary>
     ///     Run self-validation
     /// </summary>
-    /// <param name="context">Program context</param>
+    /// <param name="context">Program context; must not be null.</param>
     /// <remarks>
     ///     Writes a Markdown-formatted system information table (VHDLTest version, machine name,
     ///     OS description, .NET runtime, UTC timestamp) then calls
@@ -105,8 +112,8 @@ internal static class Validation
     /// <summary>
     ///     Checks that VHDLTest correctly reports passing tests as passed.
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="results">Test results</param>
+    /// <param name="context">Program context; must not be null.</param>
+    /// <param name="results">Test results collection to append to; must not be null.</param>
     /// <remarks>
     ///     Calls <see cref="RunValidation"/> and verifies that the exit code is 0 and the log
     ///     contains <c>"Passed full_adder_pass_tb"</c> and <c>"Passed half_adder_pass_tb"</c>.
@@ -139,8 +146,8 @@ internal static class Validation
     /// <summary>
     ///     Checks that VHDLTest correctly reports failing tests as failed.
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="results">Test results</param>
+    /// <param name="context">Program context; must not be null.</param>
+    /// <param name="results">Test results collection to append to; must not be null.</param>
     /// <remarks>
     ///     Calls <see cref="RunValidation"/> and verifies that the exit code is 0 and the log
     ///     contains <c>"Failed full_adder_fail_tb"</c> and <c>"Failed half_adder_fail_tb"</c>.
@@ -173,9 +180,10 @@ internal static class Validation
     /// <summary>
     ///     Runs VHDLTest in-process on the embedded VHDL reference files and returns the captured log.
     /// </summary>
-    /// <param name="results">Results output</param>
-    /// <param name="simulator">Simulator to use</param>
-    /// <returns>Exit code</returns>
+    /// <param name="results">Populated with the captured log content on return; empty string if the log file was not written.</param>
+    /// <param name="simulator">Name of the simulator to pass to VHDLTest; may be null, in which case the default simulator is used.</param>
+    /// <returns>Exit code returned by the inner VHDLTest invocation.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when a manifest resource stream cannot be opened.</exception>
     /// <remarks>
     ///     Creates a temporary <c>validation.tmp</c> directory, extracts embedded validation
     ///     resources into it, invokes <see cref="RunVhdlTest(string, string[])"/>, reads the
@@ -233,9 +241,9 @@ internal static class Validation
     /// <summary>
     ///     Report validation test results
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="results">Test results</param>
-    /// <param name="testName">Test name</param>
+    /// <param name="context">Program context; must not be null.</param>
+    /// <param name="results">Test results collection to append to; must not be null.</param>
+    /// <param name="testName">Short name identifying the validation test; must not be null.</param>
     /// <param name="start">Test start time-stamp</param>
     /// <param name="duration">Test duration</param>
     /// <param name="exitCode">Program exit-code</param>
@@ -304,7 +312,7 @@ internal static class Validation
     /// <summary>
     /// Extract the validation resources to the specified path
     /// </summary>
-    /// <param name="path">Extraction path</param>
+    /// <param name="path">Destination directory path where files will be written; must not be null and must already exist.</param>
     /// <exception cref="InvalidOperationException">Thrown when a manifest resource stream cannot be opened (resource returned null from <see cref="System.Reflection.Assembly.GetManifestResourceStream(string)"/>).</exception>
     private static void ExtractValidationFiles(string path)
     {
@@ -337,8 +345,8 @@ internal static class Validation
     /// <summary>
     ///     Run VhdlTest with the specified arguments
     /// </summary>
-    /// <param name="args">Arguments</param>
-    /// <returns>Exit code</returns>
+    /// <param name="args">Command-line arguments to pass to VHDLTest; must not be null.</param>
+    /// <returns>Exit code returned by the VHDLTest invocation.</returns>
     internal static int RunVhdlTest(string[] args)
     {
         // Create the context
@@ -354,9 +362,9 @@ internal static class Validation
     /// <summary>
     ///     Run VhdlTest in the specified folder with the specified arguments
     /// </summary>
-    /// <param name="workingFolder">Working folder</param>
-    /// <param name="args">Arguments</param>
-    /// <returns>Exit code</returns>
+    /// <param name="workingFolder">Working directory for the VHDLTest run; must not be null.</param>
+    /// <param name="args">Command-line arguments to pass to VHDLTest; must not be null.</param>
+    /// <returns>Exit code returned by the VHDLTest invocation.</returns>
     /// <remarks>
     ///     This overload calls <see cref="Directory.SetCurrentDirectory"/> which is a process-global
     ///     operation; it is not safe to call concurrently from multiple threads.

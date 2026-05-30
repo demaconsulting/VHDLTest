@@ -80,7 +80,7 @@ public class ValidationTests
     [Fact]
     public void SelfTest_ValidateWithResultsFile_MockSimulator_SavesResults()
     {
-        // Use a unique temp path to avoid interference from parallel test runs
+        // Arrange: create a unique temp path for the results file
         var resultsFile = Path.Combine(Path.GetTempPath(), $"validation_results_{Guid.NewGuid():N}.trx");
         try
         {
