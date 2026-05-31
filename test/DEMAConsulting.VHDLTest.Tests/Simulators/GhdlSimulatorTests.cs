@@ -22,17 +22,33 @@ using System.Reflection;
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DEMAConsulting.VHDLTest.Tests.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for GHDL simulator
+///     Unit tests for the <see cref="GhdlSimulator"/> class, covering the simulator name,
+///     compile and test output processor classification, path discovery, and
+///     availability guard-rail behavior.
 /// </summary>
-// All tests in this class are serialized via the SimulatorEnvVarTests collection because
-// GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
-// VHDLTEST_GHDL_PATH process-level environment variable.
-// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
-// ensures these tests run sequentially with other env-var tests, preventing race conditions.
+/// <remarks>
+///     Unit under test: <see cref="GhdlSimulator"/>.
+///     <para>
+///         The testing strategy is parse-based: <see cref="GhdlSimulator.CompileProcessor"/> and
+///         <see cref="GhdlSimulator.TestProcessor"/> are exercised by calling <c>Parse</c> with
+///         pre-captured output strings, covering clean, warning, error, info, and failure output
+///         categories without requiring a live GHDL installation. This approach keeps the
+///         tests fast, hermetic, and runnable in any CI environment.
+///     </para>
+///     <para>
+///         <c>[Collection("SimulatorEnvVarTests")]</c> serialization is required because
+///         <see cref="GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue"/> mutates the
+///         <c>VHDLTEST_GHDL_PATH</c> process-level environment variable. Concurrent mutation of
+///         the same environment variable by parallel test classes would create race conditions,
+///         producing non-deterministic test results. Serializing via the shared
+///         <c>SimulatorEnvVarTests</c> collection prevents this.
+///     </para>
+/// </remarks>
 [Collection("SimulatorEnvVarTests")]
 public class GhdlSimulatorTests
 {
@@ -566,4 +582,116 @@ public class GhdlSimulatorTests
         var ex = Assert.Throws<InvalidOperationException>(() => simulator.Test(context, options, "test_tb"));
         Assert.Equal("GHDL Simulator not available", ex.Message);
     }
+
+    /// <summary>
+    ///     Verifies that GhdlSimulator.Compile invokes the ghdl executable with analysis arguments.
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_Compile_WithValidConfig_InvokesGhdlWithAnalysisArguments()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = GhdlSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+
+            // Assert: ghdl path appears in the invocation (app or args, handles Windows cmd /c wrapping)
+            var allStrings = invoker.AllCalls
+                .SelectMany(c => new[] { c.Application }.Concat(c.Arguments))
+                .ToList();
+            Assert.Contains(Path.Combine(tempDir, "ghdl"), allStrings);
+
+            // Assert: analysis flag is present
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("-a", allArgs);
+            Assert.Contains("--std=08", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that GhdlSimulator.Test invokes the ghdl executable with run arguments.
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_Test_WithValidConfig_InvokesGhdlWithRunArguments()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            // Pre-create the GHDL output directory that the compile step would have made
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "GHDL"));
+
+            var sim = GhdlSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "my_tb");
+
+            // Assert: multiple invocations (elaborate + run)
+            Assert.True(invoker.AllCalls.Count >= 2);
+
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            // Elaboration step uses -e
+            Assert.Contains("-e", allArgs);
+            // Run step uses -r
+            Assert.Contains("-r", allArgs);
+            // Test name appears in arguments
+            Assert.Contains("my_tb", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="GhdlSimulator.Test"/> returns early without invoking the run
+    /// step when the elaboration step reports an error, confirming that failed elaboration
+    /// short-circuits the two-phase execute sequence.
+    /// </summary>
+    [Fact]
+    public void GhdlSimulator_Test_WithElaborationFailure_SkipsRunStep()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker { ExitCodeToReturn = 1 };
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "GHDL"));
+
+            var sim = GhdlSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "my_tb");
+
+            // Assert: only elaboration was called; run step was skipped
+            var call = Assert.Single(invoker.AllCalls);
+            Assert.Contains("-e", call.Arguments);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
 }

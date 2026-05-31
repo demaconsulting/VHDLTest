@@ -59,3 +59,10 @@ writes per-test names and aggregate pass/fail indicators (including test name st
 pass/fail label words) to the log output for a mixed result set.
 This scenario is tested by
 `ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput`.
+
+**Execute_WithBuildFailure_ThrowsInvalidOperationException**: Verifies that `Execute` throws
+`InvalidOperationException` with the message `"Build Failed"` when the simulator reports an
+error-severity outcome during the build phase, confirming that the subsystem aborts test
+execution before any test bench is run and propagates the failure clearly to the caller.
+This scenario is tested by
+`ResultsSubsystem_Execute_WithBuildFailure_ThrowsInvalidOperationException`.

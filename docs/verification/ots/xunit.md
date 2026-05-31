@@ -1,9 +1,9 @@
-## xUnit v3 Verification
+## xUnit Verification
 
 ### Verification Approach
 
-xUnit v3 is verified implicitly through its own operation: the test suite for VHDLTest
-runs entirely under xUnit v3. A passing `dotnet test` execution is evidence that xUnit v3
+xUnit is verified implicitly through its own operation: the test suite for VHDLTest
+runs entirely under xUnit. A passing `dotnet test` execution is evidence that xUnit
 correctly discovered and executed all test methods and reported results. The CI build job
 runs `dotnet test` on Ubuntu, Windows, and macOS to confirm cross-platform compatibility.
 
@@ -16,7 +16,7 @@ CI/CD pipeline environment — GitHub Actions runner on Ubuntu, Windows, and mac
 
 The `dotnet test` step in the CI build job completes with exit code 0 on all platform
 and runtime combinations in the matrix. A passing test run constitutes evidence that
-xUnit v3 correctly executed and reported test results.
+xUnit correctly executed and reported test results.
 
 ### Test Scenarios
 
@@ -27,4 +27,4 @@ xUnit v3 correctly executed and reported test results.
   ReqStream, confirming that xUnit's runner integration correctly writes structured
   result data.
 - **Cross-platform execution**: tests pass on Ubuntu, Windows, and macOS runner images,
-  confirming xUnit v3 operates correctly across all supported deployment platforms.
+  confirming xUnit operates correctly across all supported deployment platforms.

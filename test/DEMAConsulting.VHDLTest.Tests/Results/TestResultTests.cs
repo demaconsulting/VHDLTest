@@ -31,7 +31,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 public class TestResultTests
 {
     /// <summary>
-    /// Verifies that constructing a TestResult with an info-level RunResults produces Passed == true and Failed == false.
+    ///     Verifies that constructing a TestResult with an info-level RunResults produces Passed == true and Failed == false.
     /// </summary>
     [Fact]
     public void TestResult_Constructor_WithInfoResult_CreatesPassedTest()
@@ -60,7 +60,7 @@ public class TestResultTests
     }
 
     /// <summary>
-    /// Verifies that constructing a TestResult with an error-level RunResults produces Passed == false and Failed == true.
+    ///     Verifies that constructing a TestResult with an error-level RunResults produces Passed == false and Failed == true.
     /// </summary>
     [Fact]
     public void TestResult_Constructor_WithErrorResult_CreatesFailedTest()

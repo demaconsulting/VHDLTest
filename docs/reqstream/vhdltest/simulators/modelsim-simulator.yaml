@@ -13,7 +13,6 @@ sections:
                   professional FPGA and ASIC development. Support for ModelSim is critical for
                   enterprise users and teams with existing ModelSim-based workflows.
                 tests:
-                  - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
                   - ModelSimSimulator_SimulatorName_ReturnsModelSim
 
               - id: VHDLTest-Simulators-ModelSimSimulator-Compile
@@ -63,3 +62,4 @@ sections:
                   a unit test.
                 tests:
                   - ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+                  - ModelSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath

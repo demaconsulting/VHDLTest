@@ -63,3 +63,4 @@ sections:
                   a unit test.
                 tests:
                   - QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+                  - QuestaSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath

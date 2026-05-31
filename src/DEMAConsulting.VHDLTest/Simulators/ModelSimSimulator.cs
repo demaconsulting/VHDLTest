@@ -40,6 +40,19 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// </remarks>
 public sealed class ModelSimSimulator : Simulator
 {
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Error, ".*Error: ")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".*Note: "),
+        RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
+        RunLineRule.Create(RunLineType.Error, ".*Error: "),
+        RunLineRule.Create(RunLineType.Error, ".*Failure: ")
+    ];
+
     /// <summary>
     ///     Output classifier for ModelSim compilation (<c>vcom</c>) output.
     /// </summary>
@@ -48,11 +61,7 @@ public sealed class ModelSimSimulator : Simulator
     ///     prevents false matches on identifiers ending with "Error") are classified as Error.
     ///     Lines not matching any rule are left unclassified as Text.
     /// </remarks>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Error, ".*Error: ")
-        ]
-    );
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
     ///     Output classifier for ModelSim simulation (<c>vsim</c>) output.
@@ -67,14 +76,7 @@ public sealed class ModelSimSimulator : Simulator
     ///         <item><description>Lines matching <c>.*Failure: </c> are classified as Error.</description></item>
     ///     </list>
     /// </remarks>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".*Note: "),
-            RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
-            RunLineRule.Create(RunLineType.Error, ".*Error: "),
-            RunLineRule.Create(RunLineType.Error, ".*Failure: ")
-        ]
-    );
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
 
     /// <summary>
     ///     The singleton <see cref="ModelSimSimulator"/> instance, initialized at class load time.
@@ -86,6 +88,9 @@ public sealed class ModelSimSimulator : Simulator
     /// </remarks>
     public static ModelSimSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
     ///     Initializes a new instance of the ModelSim simulator.
     /// </summary>
@@ -94,9 +99,25 @@ public sealed class ModelSimSimulator : Simulator
     ///     <see cref="FindPath"/> is called at class-load time within the base-constructor call,
     ///     resolving <see cref="Simulator.SimulatorPath"/> once for the lifetime of the process.
     /// </remarks>
-    private ModelSimSimulator() : base("ModelSim", FindPath())
+    private ModelSimSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private ModelSimSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("ModelSim", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="ModelSimSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static ModelSimSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     /// <remarks>
@@ -145,7 +166,7 @@ public sealed class ModelSimSimulator : Simulator
 
         // Run the ModelSim compiler
         var application = Path.Combine(simPath, "vsim");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             libDir,
@@ -193,7 +214,7 @@ public sealed class ModelSimSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "vsim");
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             libDir,

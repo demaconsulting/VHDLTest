@@ -8,7 +8,7 @@ VHDL-2008 standard. Requires an explicit elaboration step before execution.
 
 #### Data Model
 
-**Instance**: `GhdlSimulator` (public static readonly) — singleton instance. `SimulatorName` is "GHDL";
+**Instance**: `GhdlSimulator` (public static get-only property) — singleton instance. `SimulatorName` is "GHDL";
 `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
 **CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for GHDL analysis output.
@@ -24,6 +24,9 @@ Applies nine classification rules in order:
 - Lines matching `.*:\(assertion error\):`, `.*:\(report error\):`, `.*:\(assertion failure\):`,
   `.*:\(report failure\):`, or `.*:error:` are classified as Error.
 
+**_compileProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
+**_testProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
+
 #### Key Methods
 
 **Compile**: Compiles all VHDL source files using GHDL analysis mode.
@@ -37,6 +40,7 @@ Applies nine classification rules in order:
 - *Postconditions*: Creates `VHDLTest.out/GHDL/` if absent. Writes `VHDLTest.out/GHDL/compile.rsp`
   listing all source files one per line. Runs
   `ghdl -a --std=08 --workdir=VHDLTest.out/GHDL @VHDLTest.out/GHDL/compile.rsp`.
+  Source files are passed to the compiler in the order they appear in `options.Config.Files`.
 
 **Test**: Elaborates and runs a single VHDL test bench using GHDL.
 
@@ -57,6 +61,9 @@ Applies nine classification rules in order:
 - *Postconditions*: Returns the value of the `VHDLTEST_GHDL_PATH` environment variable when set.
   Otherwise searches PATH for the `ghdl` executable and returns its parent directory.
 
+**CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
+Used by unit tests to verify simulator invocations without launching real processes.
+
 #### Error Handling
 
 `FindPath` returns null when GHDL is not installed, causing `Available()` to return false. Calling
@@ -74,6 +81,8 @@ misleading empty output from a simulation that cannot start.
 - **RunLineRule** — output classification rules for CompileProcessor and TestProcessor.
 - **RunResults** — return type of `RunProcessor.Execute`.
 - **TestResult** — wraps `RunResults` for a single test bench result.
+- **IProcessInvoker** — injected invoker used by instance processors.
+- **ProcessInvoker** — default invoker used by the singleton instance.
 
 #### Callers
 

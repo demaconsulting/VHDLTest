@@ -21,17 +21,20 @@
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DEMAConsulting.VHDLTest.Tests.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for QuestaSim simulator
+///     Tests for the QuestaSim simulator.
 /// </summary>
-// All tests in this class are serialized via the SimulatorEnvVarTests collection because
-// QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
-// VHDLTEST_QUESTASIM_PATH process-level environment variable.
-// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
-// ensures these tests run sequentially with other env-var tests, preventing race conditions.
+/// <remarks>
+///     All tests in this class are serialized via the SimulatorEnvVarTests collection because
+///     QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
+///     VHDLTEST_QUESTASIM_PATH process-level environment variable.
+///     The DisableParallelization = true collection definition in SimulatorTestCollections.cs
+///     ensures these tests run sequentially with other env-var tests, preventing race conditions.
+/// </remarks>
 [Collection("SimulatorEnvVarTests")]
 public class QuestaSimSimulatorTests
 {
@@ -308,6 +311,132 @@ public class QuestaSimSimulatorTests
         {
             // Restore the environment variable
             Environment.SetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that FindPath does not throw when VHDLTEST_QUESTASIM_PATH is not set.
+    ///     Result is either a valid path (QuestaSim installed) or null (QuestaSim not installed).
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
+    {
+        // Arrange: ensure VHDLTEST_QUESTASIM_PATH is not set for this test
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH", null);
+
+        try
+        {
+            // Act: call FindPath() without the env var override
+            var result = QuestaSimSimulator.FindPath();
+
+            // Assert: result is either null (QuestaSim not installed) or a non-empty path string
+            Assert.True(result == null || result.Length > 0);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_QUESTASIM_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that QuestaSimSimulator.Compile invokes vsim with do-script arguments.
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Compile_WithValidConfig_InvokesVsimWithDoScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = QuestaSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("-c", allArgs);
+            Assert.Contains("-do", allArgs);
+            Assert.Contains("compile.do", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that QuestaSimSimulator.Compile writes a TCL script containing vcom -2008.
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Compile_WithValidConfig_ScriptContainsVcom2008()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = QuestaSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var config = new ConfigDocument { Files = ["test.vhd"] };
+            var options = new Options(tempDir, config);
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: the generated compile script contains expected content
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "QuestaSim", "compile.do");
+            Assert.True(File.Exists(scriptPath));
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("vcom -2008", content);
+            Assert.Contains("exit -code 0", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that QuestaSimSimulator.Test writes a TCL script with vsim and exit code.
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Test_WithValidConfig_ScriptContainsExitCode()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            // Pre-create the QuestaSim output directory
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "QuestaSim"));
+
+            var sim = QuestaSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "my_tb");
+
+            // Assert: the generated test script contains expected content
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "QuestaSim", "test.do");
+            Assert.True(File.Exists(scriptPath));
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("vsim -quiet my_tb", content);
+            Assert.Contains("exit -code 0", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
         }
     }
 }

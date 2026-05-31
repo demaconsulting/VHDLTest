@@ -48,6 +48,28 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </summary>
     private const string LibDirPath = "VHDLTest.out/ActiveHDL";
 
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+        RunLineRule.Create(RunLineType.Error, "Error:"),
+        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
+        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
+        RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
+        RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
+        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
+        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
+        RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
+        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
+        RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
+    ];
+
     /// <summary>
     ///     Output classifier for <c>vsimsa</c> compilation output.
     /// </summary>
@@ -60,13 +82,7 @@ public sealed class ActiveHdlSimulator : Simulator
     ///     </list>
     ///     Unmatched lines are left as Text.
     /// </remarks>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
-            RunLineRule.Create(RunLineType.Error, "Error:"),
-            RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
-        ]
-    );
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
     ///     Output classifier for <c>vsimsa</c> simulation output.
@@ -89,21 +105,7 @@ public sealed class ActiveHdlSimulator : Simulator
     ///     The two Lattice Edition suppression rules must appear before the general
     ///     <c>KERNEL:\s*Warning:</c> rule so they take priority.
     /// </remarks>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
-            RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
-            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
-            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
-            RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
-            RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
-            RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
-            RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
-            RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
-            RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
-            RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
-        ]
-    );
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
 
     /// <summary>
     ///     Singleton <see cref="ActiveHdlSimulator"/> instance shared across the application.
@@ -115,6 +117,9 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </remarks>
     public static ActiveHdlSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
     ///     Initializes a new instance of the Active-HDL simulator.
     /// </summary>
@@ -124,16 +129,32 @@ public sealed class ActiveHdlSimulator : Simulator
     ///     <see cref="Simulator.Available"/> to return false and preventing accidental use
     ///     in environments without the simulator.
     /// </remarks>
-    private ActiveHdlSimulator() : base("ActiveHdl", FindPath())
+    private ActiveHdlSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private ActiveHdlSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("ActiveHdl", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="ActiveHdlSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static ActiveHdlSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <summary>
     ///     Compiles all VHDL source files using Active-HDL's <c>acom</c> utility via a TCL do-script.
     /// </summary>
     /// <remarks>
     ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, an <c>alib</c> library
-    ///     initialisation command, <c>set worklib work</c>, and one <c>acom -2008 -dbg {file}</c>
+    ///     initialization command, <c>set worklib work</c>, and one <c>acom -2008 -dbg {file}</c>
     ///     line per source file. The script is written to
     ///     <c>VHDLTest.out/ActiveHDL/compile.do</c> and executed via
     ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/compile.do</c> from the working directory.
@@ -180,7 +201,7 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Run the ActiveHDL compiler
         var application = Path.Combine(simPath, SimApp);
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -242,7 +263,7 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, SimApp);
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,

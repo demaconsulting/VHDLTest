@@ -36,9 +36,10 @@ emitted without color to prevent console color from bleeding into the line separ
 
 #### Error Handling
 
-N/A — `RunResults` is an immutable record with no fallible operations in its own code.
-Any exceptions from `Context.Write` or `Context.WriteLine` inside `Print` propagate to
-the caller.
+`Print` throws `ArgumentNullException` when `context` is null (via `ArgumentNullException.ThrowIfNull`).
+All other I/O exceptions from `Context.Write` or `Context.WriteLine` inside `Print` propagate to
+the caller unchanged. `RunResults` is an immutable record; all other properties and the record
+constructor have no fallible operations of their own.
 
 #### Dependencies
 

@@ -21,12 +21,38 @@
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DEMAConsulting.VHDLTest.Tests.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for ModelSim simulator
+///     Unit tests for the <see cref="ModelSimSimulator"/> class, covering the simulator name,
+///     compile and test output processor classification, path discovery, and
+///     availability guard-rail behavior.
 /// </summary>
+/// <remarks>
+///     Unit under test: <see cref="ModelSimSimulator"/>.
+///     <para>
+///         The testing strategy is parse-based: <see cref="ModelSimSimulator.CompileProcessor"/> and
+///         <see cref="ModelSimSimulator.TestProcessor"/> are exercised by calling <c>Parse</c> with
+///         pre-captured output strings, covering clean, info, warning, error, and failure output
+///         categories without requiring a live ModelSim installation. This approach keeps the
+///         tests fast, hermetic, and runnable in any CI environment.
+///     </para>
+///     <para>
+///         <c>[Collection("SimulatorEnvVarTests")]</c> serialization is required because
+///         <see cref="ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue"/> mutates the
+///         <c>VHDLTEST_MODELSIM_PATH</c> process-level environment variable. Concurrent mutation of
+///         the same environment variable by parallel test classes would create race conditions,
+///         producing non-deterministic test results. Serializing via the shared
+///         <c>SimulatorEnvVarTests</c> collection prevents this.
+///     </para>
+/// </remarks>
+// All tests in this class are serialized via the SimulatorEnvVarTests collection because
+// ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
+// VHDLTEST_MODELSIM_PATH process-level environment variable.
+// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
+// ensures these tests run sequentially with other env-var tests, preventing race conditions.
 [Collection("SimulatorEnvVarTests")]
 public class ModelSimSimulatorTests
 {
@@ -303,6 +329,132 @@ public class ModelSimSimulatorTests
         {
             // Restore the environment variable
             Environment.SetEnvironmentVariable("VHDLTEST_MODELSIM_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that FindPath does not throw when VHDLTEST_MODELSIM_PATH is not set.
+    ///     Result is either a valid path (ModelSim installed) or null (ModelSim not installed).
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
+    {
+        // Arrange: ensure VHDLTEST_MODELSIM_PATH is not set for this test
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_MODELSIM_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_MODELSIM_PATH", null);
+
+        try
+        {
+            // Act: call FindPath() without the env var override
+            var result = ModelSimSimulator.FindPath();
+
+            // Assert: result is either null (ModelSim not installed) or a non-empty path string
+            Assert.True(result == null || result.Length > 0);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_MODELSIM_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that ModelSimSimulator.Compile invokes vsim with do-script arguments.
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_Compile_WithValidConfig_InvokesVsimWithDoScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = ModelSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("-c", allArgs);
+            Assert.Contains("-do", allArgs);
+            Assert.Contains("compile.do", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that ModelSimSimulator.Compile writes a TCL script containing vcom -2008.
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_Compile_WithValidConfig_ScriptContainsVcom2008()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = ModelSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var config = new ConfigDocument { Files = ["test.vhd"] };
+            var options = new Options(tempDir, config);
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: the generated compile script contains expected content
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "ModelSim", "compile.do");
+            Assert.True(File.Exists(scriptPath));
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("vcom -2008", content);
+            Assert.Contains("exit -code 0", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that ModelSimSimulator.Test writes a TCL script with vsim and exit code.
+    /// </summary>
+    [Fact]
+    public void ModelSimSimulator_Test_WithValidConfig_ScriptContainsExitCode()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            // Pre-create the ModelSim output directory
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "ModelSim"));
+
+            var sim = ModelSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "my_tb");
+
+            // Assert: the generated test script contains expected content
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "ModelSim", "test.do");
+            Assert.True(File.Exists(scriptPath));
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("vsim -quiet my_tb", content);
+            Assert.Contains("exit -code 0", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
         }
     }
 }

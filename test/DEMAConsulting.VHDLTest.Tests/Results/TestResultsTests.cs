@@ -33,7 +33,7 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 public class TestResultsTests
 {
     /// <summary>
-    /// Test that Execute compiles sources and collects test outcomes using MockSimulator.
+    ///     Verifies that Execute compiles VHDL sources and collects test outcomes using MockSimulator.
     /// </summary>
     [Fact]
     public void TestResults_Execute_WithMockSimulator_CollectsTestOutcomes()
@@ -53,7 +53,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test that PrintSummary writes a formatted summary including pass and fail indicators.
+    ///     Verifies that PrintSummary writes a formatted summary including pass and fail count indicators.
     /// </summary>
     [Fact]
     public void TestResults_PrintSummary_WithMixedResults_WritesSummaryToOutput()
@@ -101,7 +101,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test saving test results to a TRX file.
+    ///     Verifies that SaveResults with a .trx extension creates a file containing valid TRX XML content.
     /// </summary>
     [Fact]
     public void TestResults_SaveResults_WithTrxExtension_CreatesTrxFile()
@@ -147,7 +147,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test saving test results to a JUnit XML file.
+    ///     Verifies that SaveResults with a .xml extension creates a file containing valid JUnit XML content.
     /// </summary>
     [Fact]
     public void TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile()
@@ -193,7 +193,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test saving failed test results to a JUnit XML file.
+    ///     Verifies that SaveResults with a failed test result serializes failure information to JUnit XML.
     /// </summary>
     [Fact]
     public void TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure()
@@ -239,7 +239,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test backward compatibility with SaveToTrx method.
+    ///     Verifies that the SaveToTrx backward-compatibility wrapper creates a valid TRX file equivalent to SaveResults.
     /// </summary>
     [Fact]
     public void TestResults_SaveToTrx_WithTestResults_CreatesTrxFile()
@@ -285,7 +285,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test that SaveResults throws ArgumentException for null/empty file name.
+    ///     Verifies that SaveResults throws ArgumentException for null, empty, and whitespace-only file names.
     /// </summary>
     [Fact]
     public void TestResults_SaveResults_WithNullFileName_ThrowsArgumentException()
@@ -300,7 +300,7 @@ public class TestResultsTests
     }
 
     /// <summary>
-    /// Test that SaveResults defaults to TRX for unknown extensions.
+    ///     Verifies that SaveResults defaults to TRX format when the file extension is not recognized.
     /// </summary>
     [Fact]
     public void TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile()

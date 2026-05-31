@@ -38,6 +38,27 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// </remarks>
 public sealed class GhdlSimulator : Simulator
 {
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
+        RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
+        RunLineRule.Create(RunLineType.Error, ".*:error:"),
+        RunLineRule.Create(RunLineType.Error, ".*: cannot open")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
+        RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
+        RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
+        RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
+        RunLineRule.Create(RunLineType.Error, ".*:error:")
+    ];
+
     /// <summary>
     ///     Output classifier for GHDL analysis (<c>ghdl -a</c>) and elaboration (<c>ghdl -e</c>) output.
     /// </summary>
@@ -61,14 +82,7 @@ public sealed class GhdlSimulator : Simulator
     ///     This processor is also reused for the elaboration step in <c>Test</c> because elaboration
     ///     output follows the same diagnostic format as analysis output.
     /// </remarks>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
-            RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
-            RunLineRule.Create(RunLineType.Error, ".*:error:"),
-            RunLineRule.Create(RunLineType.Error, ".*: cannot open")
-        ]
-    );
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
     ///     Output classifier for GHDL simulation (<c>ghdl -r</c>) output.
@@ -91,19 +105,7 @@ public sealed class GhdlSimulator : Simulator
     ///         </description></item>
     ///     </list>
     /// </remarks>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
-            RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
-            RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
-            RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
-            RunLineRule.Create(RunLineType.Error, ".*:error:")
-        ]
-    );
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
 
     /// <summary>
     ///     Gets the singleton <see cref="GhdlSimulator"/> instance shared across the application.
@@ -115,14 +117,33 @@ public sealed class GhdlSimulator : Simulator
     /// </remarks>
     public static GhdlSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
     ///     Private constructor that prevents external instantiation and enforces use of the
     ///     singleton <see cref="Instance"/>. Passes the fixed name <c>"GHDL"</c> and the path
     ///     resolved by <see cref="FindPath()"/> to the base class.
     /// </summary>
-    private GhdlSimulator() : base("GHDL", FindPath())
+    private GhdlSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private GhdlSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("GHDL", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="GhdlSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static GhdlSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     public override RunResults Compile(Context context, Options options)
@@ -157,7 +178,7 @@ public sealed class GhdlSimulator : Simulator
 
         // Run the GHDL compiler
         var application = Path.Combine(simPath, "ghdl");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -185,7 +206,7 @@ public sealed class GhdlSimulator : Simulator
         // Elaborate the test before running it; some GHDL backends require an explicit
         // elaboration step prior to execution.
         var application = Path.Combine(simPath, "ghdl");
-        var elaborateResults = CompileProcessor.Execute(
+        var elaborateResults = _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -201,7 +222,7 @@ public sealed class GhdlSimulator : Simulator
         }
 
         // Run the test
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,

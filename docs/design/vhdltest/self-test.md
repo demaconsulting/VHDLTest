@@ -51,8 +51,14 @@ reported as failed.
    produces `###`-level headings (requirement `VHDLTest-SelfTest-Depth`).
 3. It calls `ValidateTestPasses` and `ValidateTestFails`, each of which:
    - Calls `RunValidation` to extract embedded VHDL files to a temporary folder, execute VHDLTest
-     on them, capture the log output, and clean up the folder.
-   - Checks the exit code and output for expected pass/fail markers.
+     in-process via a re-entrant call to `Program.Run`, capture the log output, and clean up the folder.
+   - Checks the exit code and output for expected pass/fail markers. If `RunValidation` returns a
+     non-zero exit code (indicating a tool-level error such as an unrecognized simulator name), the
+     validation step is treated as failed; the captured output — including the descriptive error
+     message produced by the inner VHDLTest invocation — is written to the context error channel,
+     which increments `context.Errors` and causes the outer VHDLTest process to exit with a
+     non-zero code (requirements `VHDLTest-SelfTest-InvalidSimulator-ExitCode` and
+     `VHDLTest-SelfTest-InvalidSimulator-ErrorMessage`).
    - Calls `ReportTestResult` to write a check or cross symbol to the context and add a `TestResult`
      to the results collection.
 4. If `context.ResultsFile` is set, `Validation.Run` calls `results.SaveResults` to persist the

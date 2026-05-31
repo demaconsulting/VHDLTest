@@ -67,39 +67,39 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Test that Run returns zero exit code when version flag is given
+    ///     Test that Run returns zero exit code when version flag is given
     /// </summary>
     [Fact]
     public void Program_Run_WithVersionFlag_ReturnsZeroExitCode()
     {
-        // Arrange - create a silent context with version flag
+        // Arrange: create a silent context with version flag
         using var context = Context.Create(["--version", "--silent"]);
 
-        // Act - run the program
+        // Act: run the program
         Program.Run(context);
 
-        // Assert - verify zero exit code
+        // Assert: verify zero exit code
         Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
-    /// Test that Run returns zero exit code when help flag is given
+    ///     Test that Run returns zero exit code when help flag is given
     /// </summary>
     [Fact]
     public void Program_Run_WithHelpFlag_ReturnsZeroExitCode()
     {
-        // Arrange - create a silent context with help flag
+        // Arrange: create a silent context with help flag
         using var context = Context.Create(["--help", "--silent"]);
 
-        // Act - run the program
+        // Act: run the program
         Program.Run(context);
 
-        // Assert - verify zero exit code
+        // Assert: verify zero exit code
         Assert.Equal(0, context.ExitCode);
     }
 
     /// <summary>
-    /// Test that Run displays usage information when no configuration file argument is provided
+    ///     Test that Run displays usage information when no configuration file argument is provided
     /// </summary>
     [Fact]
     public void Program_Run_WithNoConfigFileArgument_DisplaysUsage()
@@ -125,7 +125,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Test that Run displays version information when version flag is given
+    ///     Test that Run displays version information when version flag is given
     /// </summary>
     [Fact]
     public void Program_Run_WithVersionFlag_DisplaysVersion()
@@ -151,7 +151,7 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Test that Run displays help information when help flag is given
+    ///     Test that Run displays help information when help flag is given
     /// </summary>
     [Fact]
     public void Program_Run_WithHelpFlag_DisplaysHelp()
@@ -177,18 +177,18 @@ public class ProgramTests
     }
 
     /// <summary>
-    /// Test that Run returns non-zero exit code when no config is given
+    ///     Test that Run returns non-zero exit code when no config is given
     /// </summary>
     [Fact]
     public void Program_Run_WithNoConfig_ReturnsNonZeroExitCode()
     {
-        // Arrange - create a silent context with no config file
+        // Arrange: create a silent context with no config file
         using var context = Context.Create(["--silent"]);
 
-        // Act - run the program
+        // Act: run the program
         Program.Run(context);
 
-        // Assert - verify non-zero exit code
+        // Assert: verify non-zero exit code
         Assert.NotEqual(0, context.ExitCode);
     }
 

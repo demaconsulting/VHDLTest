@@ -10,7 +10,7 @@ process exit code.
 #### Data Model
 
 **_log**: `StreamWriter?` — Private backing field holding the optional log-file writer opened
-when `--log` is specified. Closed and disposed by `Dispose()`.
+when `--log` is specified. Set to `null` after the writer is closed by `Dispose()`.
 
 **Version**: `bool` — True when `--version` or `-v` was passed on the command line.
 
@@ -89,7 +89,9 @@ applied because any such input is unambiguously malformed.
 - *Parameters*: none.
 - *Returns*: void.
 - *Preconditions*: none.
-- *Postconditions*: `_log` is flushed and closed; subsequent I/O methods skip log output.
+- *Postconditions*: `_log` is flushed, closed, and set to `null`; subsequent I/O methods
+  silently skip log output because the null-conditional operator (`_log?.Write`,
+  `_log?.WriteLine`) becomes a no-op.
 
 **Write**: Writes colored text to the console (unless silent) and to the log file.
 
@@ -123,7 +125,9 @@ applied because any such input is unambiguously malformed.
 - *Returns*: void.
 - *Preconditions*: none.
 - *Postconditions*: `Errors` is incremented by one; if `message` is non-null it is written in
-  `ConsoleColor.Red` to `Console` (unless `Silent`) and appended to `_log` if open.
+  `ConsoleColor.Red` to `Console` as a line (with newline, via `Console.WriteLine`) unless
+  `Silent` is true, and appended as a line (with newline, via `_log?.WriteLine`) to `_log`
+  if open. This distinguishes `WriteError` from `Write`, which writes without a newline.
 
 #### Error Handling
 

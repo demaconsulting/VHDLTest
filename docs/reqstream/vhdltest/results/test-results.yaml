@@ -6,7 +6,7 @@ sections:
         sections:
           - title: TestResults Requirements
             requirements:
-              - id: VHDLTest-Results-TestResults-Execute
+              - id: VHDLTest-Results-TestResults-Compile
                 title: >-
                   TestResults shall compile the VHDL sources using the configured simulator
                   before running any test benches.
@@ -44,7 +44,7 @@ sections:
                   - TestResults_PrintSummary_WithMixedResults_WritesSummaryToOutput
 
               - id: VHDLTest-Results-TestResults-Trx
-                title: TestResults shall serialize test results to TRX format.
+                title: TestResults shall serialize test results to TRX format when the output file path has a `.trx` extension or an unrecognized extension.
                 justification: |
                   TRX is the standard test results format for .NET and Microsoft tooling. Saving
                   results in TRX format enables integration with Visual Studio, Azure DevOps, and
@@ -55,7 +55,7 @@ sections:
                   - TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile
 
               - id: VHDLTest-Results-TestResults-JUnit
-                title: TestResults shall serialize test results to JUnit XML format.
+                title: TestResults shall serialize test results to JUnit XML format when the output file path has a `.xml` extension.
                 justification: |
                   JUnit XML is the de-facto standard test results format for CI/CD systems such as
                   Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables

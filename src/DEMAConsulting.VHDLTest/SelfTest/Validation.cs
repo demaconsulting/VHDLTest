@@ -376,7 +376,8 @@ internal static class Validation
     }
 
     /// <summary>
-    ///     Run VhdlTest in the specified folder with the specified arguments
+    ///     Runs VHDLTest in-process inside a specific working directory, restoring the original
+    ///     directory after the run completes.
     /// </summary>
     /// <param name="workingFolder">Working directory for the VHDLTest run; must not be null.</param>
     /// <param name="args">Command-line arguments to pass to VHDLTest; must not be null.</param>

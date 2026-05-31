@@ -38,6 +38,24 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// </remarks>
 public sealed class NvcSimulator : Simulator
 {
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".* Note:"),
+        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+        RunLineRule.Create(RunLineType.Error, ".* Error:"),
+        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".* Note:"),
+        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+        RunLineRule.Create(RunLineType.Error, ".* Error:"),
+        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
+    ];
+
     /// <summary>
     ///     Output classifier for NVC compilation (<c>nvc -a</c>) output.
     /// </summary>
@@ -51,15 +69,7 @@ public sealed class NvcSimulator : Simulator
     ///         <item><description>Lines matching <c>.* Fatal:</c> are classified as Error.</description></item>
     ///     </list>
     /// </remarks>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".* Note:"),
-            RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
-            RunLineRule.Create(RunLineType.Error, ".* Error:"),
-            RunLineRule.Create(RunLineType.Error, ".* Failure:"),
-            RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-        ]
-    );
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
     ///     Output classifier for NVC simulation (<c>nvc -r</c>) output.
@@ -74,15 +84,7 @@ public sealed class NvcSimulator : Simulator
     ///         <item><description>Lines matching <c>.* Fatal:</c> are classified as Error.</description></item>
     ///     </list>
     /// </remarks>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".* Note:"),
-            RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
-            RunLineRule.Create(RunLineType.Error, ".* Error:"),
-            RunLineRule.Create(RunLineType.Error, ".* Failure:"),
-            RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-        ]
-    );
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
 
     /// <summary>
     ///     Gets the singleton <see cref="NvcSimulator"/> instance shared across the application.
@@ -94,14 +96,33 @@ public sealed class NvcSimulator : Simulator
     /// </remarks>
     public static NvcSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
     ///     Private constructor that prevents external instantiation and enforces use of the
     ///     singleton <see cref="Instance"/>. Passes the fixed name <c>"NVC"</c> and the path
     ///     resolved by <see cref="FindPath()"/> to the base class.
     /// </summary>
-    private NvcSimulator() : base("NVC", FindPath())
+    private NvcSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private NvcSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("NVC", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="NvcSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static NvcSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     public override RunResults Compile(Context context, Options options)
@@ -136,7 +157,7 @@ public sealed class NvcSimulator : Simulator
 
         // Run the NVC compiler
         var application = Path.Combine(simPath, "nvc");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -163,7 +184,7 @@ public sealed class NvcSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "nvc");
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,

@@ -25,6 +25,12 @@ sections:
               - VHDLTest-Simulators-VivadoSimulator-Support
               - VHDLTest-Simulators-ActiveHdlSimulator-Support
               - VHDLTest-Simulators-MockSimulator-Support
+              - VHDLTest-Simulators-GhdlSimulator-Unavailable
+              - VHDLTest-Simulators-NvcSimulator-Unavailable
+              - VHDLTest-Simulators-ModelSimSimulator-Unavailable
+              - VHDLTest-Simulators-QuestaSimSimulator-Unavailable
+              - VHDLTest-Simulators-VivadoSimulator-Unavailable
+              - VHDLTest-Simulators-ActiveHdlSimulator-Unavailable
 
           - id: VHDLTest-Simulators-Factory-Classify
             title: The Simulators subsystem shall classify simulator output lines into diagnostic severity categories.

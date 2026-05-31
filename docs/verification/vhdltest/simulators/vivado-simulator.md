@@ -77,3 +77,28 @@ in `VivadoSimulatorTests.cs`.
 override takes precedence over PATH discovery.
 This scenario is tested by `VivadoSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
 in `VivadoSimulatorTests.cs`.
+
+**FindPath_WithoutEnvVar_ReturnsNullOrPath**: Verifies that `VivadoSimulator.FindPath()` does not
+throw when `VHDLTEST_VIVADO_PATH` is not set, returning either a valid path string (when Vivado is
+installed on PATH) or null (when not installed).
+This scenario is tested by `VivadoSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`
+in `VivadoSimulatorTests.cs`.
+
+**Compile_WithValidConfig_InvokesXvhdl**: Verifies that `VivadoSimulator.Compile()` invokes the
+`xvhdl` executable (directly or via `cmd /c` on Windows) with the expected arguments,
+using `CreateForTesting` with a `FakeProcessInvoker` to capture the invocation without
+launching a real process.
+This scenario is tested by `VivadoSimulator_Compile_WithValidConfig_InvokesXvhdl`
+in `VivadoSimulatorTests.cs`.
+
+**Test_WithValidConfig_InvokesXelab**: Verifies that `VivadoSimulator.Test()` invokes the
+`xelab` executable (directly or via `cmd /c` on Windows) with the expected simulation arguments
+for the specified test bench, using `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `VivadoSimulator_Test_WithValidConfig_InvokesXelab`
+in `VivadoSimulatorTests.cs`.
+
+**CompileAndTest_WithValidConfig_WritesDoScript**: Verifies that `VivadoSimulator.Compile()`
+and `Test()` write the argument-file scripts to the expected paths in the working directory.
+Uses `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `VivadoSimulator_CompileAndTest_WithValidConfig_WritesDoScript`
+in `VivadoSimulatorTests.cs`.

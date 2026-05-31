@@ -772,4 +772,226 @@ public class ContextTests
         // Act & Assert - verify InvalidOperationException is thrown for missing depth value
         Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth"]));
     }
+
+    /// <summary>
+    /// Test that Write suppresses console output when silent mode is active
+    /// </summary>
+    [Fact]
+    public void Context_Write_SilentMode_SuppressesConsole()
+    {
+        // Arrange: redirect standard output to capture any console writes; enable silent mode
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--silent"]);
+
+            // Act: write colored text while silent mode is active
+            context.Write(ConsoleColor.White, "silent output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify nothing reached the console
+        Assert.Empty(writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteLine suppresses console output when silent mode is active
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_SilentMode_SuppressesConsole()
+    {
+        // Arrange: redirect standard output to capture any console writes; enable silent mode
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--silent"]);
+
+            // Act: write a line while silent mode is active
+            context.WriteLine("silent line output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify nothing reached the console
+        Assert.Empty(writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteError suppresses console output when silent mode is active
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_SilentMode_SuppressesConsole()
+    {
+        // Arrange: redirect standard output to capture any console writes; enable silent mode
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--silent"]);
+
+            // Act: write an error while silent mode is active
+            context.WriteError("silent error output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify nothing reached the console
+        Assert.Empty(writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that Context.Create throws ArgumentNullException when args is null
+    /// </summary>
+    [Fact]
+    public void Context_Create_NullArguments_ThrowsArgumentNullException()
+    {
+        // Arrange - no setup required; null is passed directly to the act step
+
+        // Act & Assert - Verify ArgumentNullException is thrown for null args
+        Assert.Throws<ArgumentNullException>(() => Context.Create(null!));
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --config long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithLongConfigAlias_SetsConfigFile()
+    {
+        // Arrange: Prepare arguments with long-form config file option
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--config", "config.yaml"]);
+
+        // Assert: Verify config file is set
+        Assert.NotNull(arguments);
+        Assert.Equal("config.yaml", arguments.ConfigFile);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --result long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithResultAlias_SetsResultsFile()
+    {
+        // Arrange: Prepare arguments with --result alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--result", "results.trx"]);
+
+        // Assert: Verify results file is set
+        Assert.NotNull(arguments);
+        Assert.Equal("results.trx", arguments.ResultsFile);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --results long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithResultsAlias_SetsResultsFile()
+    {
+        // Arrange: Prepare arguments with --results alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--results", "results.trx"]);
+
+        // Assert: Verify results file is set
+        Assert.NotNull(arguments);
+        Assert.Equal("results.trx", arguments.ResultsFile);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --simulator long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithSimulatorAlias_SetsSimulator()
+    {
+        // Arrange: Prepare arguments with --simulator alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--simulator", "ghdl"]);
+
+        // Assert: Verify simulator is set
+        Assert.NotNull(arguments);
+        Assert.Equal("ghdl", arguments.Simulator);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the -0 short alias for ExitZero
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithShortExitZeroAlias_SetsExitZeroFlag()
+    {
+        // Arrange: Prepare arguments with -0 alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["-0"]);
+
+        // Assert: Verify exit-zero flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.ExitZero);
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine writes to the console when verbose mode is active and not silent
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_NonSilentVerboseMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--verbose"]);
+
+            // Act: write a verbose line with verbose mode active and silent mode inactive
+            context.WriteVerboseLine("verbose console output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the verbose message appeared on the console
+        Assert.Contains("verbose console output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine suppresses console output when both verbose and silent modes are active
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_SilentVerboseMode_SuppressesConsole()
+    {
+        // Arrange: redirect stdout; enable both verbose and silent
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--verbose", "--silent"]);
+
+            // Act: write a verbose line while silent mode is also active
+            context.WriteVerboseLine("suppressed verbose output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: nothing should reach the console
+        Assert.Empty(writer.ToString());
+    }
 }

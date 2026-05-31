@@ -8,17 +8,21 @@ bench simulation.
 
 #### Data Model
 
-**Instance**: `ModelSimSimulator` (public static property (get-only)) — singleton instance. `SimulatorName` is
+**Instance**: `ModelSimSimulator` (public static get-only property) — singleton instance. `SimulatorName` is
 "ModelSim"; `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static property (get-only)) — output classifier for ModelSim compile
-output. Classifies lines matching `.*Error:` (trailing space after the colon prevents false matches
-on identifiers ending with "Error") as Error. Lines not matching any rule are left unclassified as Text.
+**CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for ModelSim compile
+output. Classifies lines matching `` `.*Error: ` `` (trailing space after the colon requires a space character
+to follow the colon, preventing false matches on identifiers ending with "Error") as Error. Lines not
+matching any rule are left unclassified as Text.
 
-**TestProcessor**: `RunProcessor` (public static property (get-only)) — output classifier for ModelSim simulation
-output. Classifies `.*Note:` as Info, `.*Warning:` as Warning, and `.*Error:` or `.*Failure:` as
-Error (each pattern includes a trailing space after the colon, which requires a space character to
-follow the colon in the matched line, preventing false matches on identifiers ending with the keyword).
+**TestProcessor**: `RunProcessor` (public static get-only property) — output classifier for ModelSim simulation
+output. Classifies lines matching `.*Note:` (with trailing space) as Info, `.*Warning:` as Warning, and
+`.*Error:` or `.*Failure:` as Error (each pattern requires a trailing space to prevent false matches on
+identifiers ending with the keyword).
+
+**_compileProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
+**_testProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
 
 #### Key Methods
 
@@ -30,6 +34,7 @@ follow the colon in the matched line, preventing false matches on identifiers en
 - *Postconditions*: Creates `VHDLTest.out/ModelSim/` if absent. Writes `compile.do` containing
   `onerror {exit -code 1}`, `vlib work`, `set worklib work`, and `vcom -2008 ../../{file}` for each
   source file, followed by `exit -code 0`. Runs `vsim -c -do compile.do` from the library directory.
+  Source files are passed to the compiler in the order they appear in `options.Config.Files`.
 
 **Test**: Simulates a single test bench using ModelSim's vsim utility via a TCL do-script.
 
@@ -49,6 +54,9 @@ follow the colon in the matched line, preventing false matches on identifiers en
 - *Postconditions*: Returns the value of the `VHDLTEST_MODELSIM_PATH` environment variable when set.
   Otherwise searches PATH for the `vsim` executable and returns its parent directory.
 
+**CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
+Used by unit tests to verify simulator invocations without launching real processes.
+
 #### Error Handling
 
 `FindPath` returns null when ModelSim is not installed, causing `Available()` to return false. Calling
@@ -65,6 +73,8 @@ produce a non-zero exit code, which CompileProcessor and TestProcessor detect an
 - **RunLineRule** — output classification rules for CompileProcessor and TestProcessor.
 - **RunResults** — return type of `RunProcessor.Execute`.
 - **TestResult** — wraps `RunResults` for a single test bench result.
+- **IProcessInvoker** — injected invoker used by instance processors.
+- **ProcessInvoker** — default invoker used by the singleton instance.
 
 #### Callers
 

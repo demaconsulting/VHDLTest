@@ -33,17 +33,32 @@ namespace DEMAConsulting.VHDLTest.Run;
 ///     that line. Lines that match no rule are assigned <see cref="RunLineType.Text"/>.
 ///     The overall run summary is the maximum severity across all classified lines; a non-zero
 ///     process exit code forces the summary to at least <see cref="RunLineType.Error"/>.
-///     Thread-safety: the <c>rules</c> array is immutable after construction, so multiple
+///     Thread-safety: the <c>_rules</c> array is immutable after construction, so multiple
 ///     threads may call <see cref="Execute(string,string,string[])"/> or
 ///     <see cref="Parse"/> concurrently on the same instance without synchronization,
 ///     provided each call uses its own process and output string.
 /// </remarks>
-/// <param name="rules">
-///     Ordered classification rules applied to each captured output line. Rules are evaluated
-///     in array order; the first matching rule determines the line's <see cref="RunLineType"/>.
-/// </param>
-public class RunProcessor(RunLineRule[] rules)
+public class RunProcessor
 {
+    private readonly RunLineRule[] _rules;
+    private readonly IProcessInvoker _invoker;
+
+    /// <summary>
+    ///     Initializes a new instance of <see cref="RunProcessor"/> with the specified rules and an optional invoker.
+    /// </summary>
+    /// <param name="rules">
+    ///     Ordered classification rules applied to each captured output line. Rules are evaluated
+    ///     in array order; the first matching rule determines the line's <see cref="RunLineType"/>.
+    /// </param>
+    /// <param name="invoker">
+    ///     Process invoker used to launch external processes. When null, defaults to
+    ///     <see cref="ProcessInvoker.Instance"/> for production use.
+    /// </param>
+    public RunProcessor(RunLineRule[] rules, IProcessInvoker? invoker = null)
+    {
+        _rules = rules;
+        _invoker = invoker ?? ProcessInvoker.Instance;
+    }
     /// <summary>
     ///     Logs the run directory and command through <paramref name="context"/>, then launches
     ///     <paramref name="application"/> and classifies its output.
@@ -136,11 +151,11 @@ public class RunProcessor(RunLineRule[] rules)
     /// <returns>Run results with all fields populated.</returns>
     /// <exception cref="System.ComponentModel.Win32Exception">
     ///     Thrown on Windows when the simulator executable cannot be found or cannot be started.
-    ///     Propagated from <see cref="RunProgram.Run"/>.
+    ///     Propagated from <see cref="IProcessInvoker.Execute"/>.
     /// </exception>
     /// <exception cref="System.IO.FileNotFoundException">
     ///     Thrown on non-Windows platforms when the simulator executable path does not exist.
-    ///     Propagated from <see cref="RunProgram.Run"/>.
+    ///     Propagated from <see cref="IProcessInvoker.Execute"/>.
     /// </exception>
     public RunResults Execute(
         string application,
@@ -151,11 +166,7 @@ public class RunProcessor(RunLineRule[] rules)
         var start = DateTime.Now;
 
         // Run the application
-        var exitCode = RunProgram.Run(
-            out var output,
-            application,
-            workingDirectory,
-            arguments);
+        var (exitCode, output) = _invoker.Execute(workingDirectory, application, arguments);
 
         // Save the end time and calculate the duration
         var end = DateTime.Now;
@@ -219,7 +230,7 @@ public class RunProcessor(RunLineRule[] rules)
             .Replace("\r\n", "\n")
             .Split('\n')
             .Select(line => new RunLine(
-                Array.Find(rules, r => r.Pattern.IsMatch(line))?.Type ?? RunLineType.Text,
+                Array.Find(_rules, r => r.Pattern.IsMatch(line))?.Type ?? RunLineType.Text,
                 line
             ))
             .ToArray();

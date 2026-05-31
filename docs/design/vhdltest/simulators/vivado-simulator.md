@@ -8,18 +8,21 @@ options and file lists.
 
 #### Data Model
 
-**Instance**: `VivadoSimulator` (public static read-only property) — singleton instance. `SimulatorName` is "Vivado";
+**Instance**: `VivadoSimulator` (public static get-only property) — singleton instance. `SimulatorName` is "Vivado";
 `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static read-only property) — output classifier for xvhdl output.
+**CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for xvhdl output.
 Classifies lines matching `` `Error: ` `` as Error. The trailing space after the colon ensures the
 pattern only matches when a space follows the colon, preventing false matches on lines like
 `ErrorDetails: ...`. Lines not matching any rule are left unclassified.
 
-**TestProcessor**: `RunProcessor` (public static read-only property) — output classifier for xelab simulation output.
+**TestProcessor**: `RunProcessor` (public static get-only property) — output classifier for xelab simulation output.
 Classifies `` `Note: ` `` as Info, `` `Warning: ` `` as Warning, and `` `Error: ` `` or `` `Failure: ` `` as
 Error. The trailing space after the colon ensures the pattern only matches when a space follows the colon,
 preventing false matches on lines like `ErrorDetails: ...`.
+
+**_compileProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
+**_testProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
 
 #### Key Methods
 
@@ -31,6 +34,7 @@ preventing false matches on lines like `ErrorDetails: ...`.
 - *Postconditions*: Creates `VHDLTest.out/Vivado/` if absent. Writes `compile.do` containing `-2008`,
   `-nolog`, `-work work`, and `../../{file}` for each source file. Runs `xvhdl -file compile.do` from
   the library directory; `RunProcessor` handles platform-specific execution transparently.
+  Source files are passed to the compiler in the order they appear in `options.Config.Files`.
 
 **Test**: Elaborates and simulates a single test bench using xelab via an argument file.
 
@@ -48,6 +52,9 @@ preventing false matches on lines like `ErrorDetails: ...`.
 - *Postconditions*: Returns the value of the `VHDLTEST_VIVADO_PATH` environment variable when set.
   Otherwise searches PATH for the `vivado` executable and returns its parent directory.
 
+**CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
+Used by unit tests to verify simulator invocations without launching real processes.
+
 #### Error Handling
 
 `FindPath` returns null when Vivado is not installed, causing `Available()` to return false. Calling
@@ -63,6 +70,8 @@ Simulator not available".
 - **RunLineRule** — output classification rules for CompileProcessor and TestProcessor.
 - **RunResults** — return type of `RunProcessor.Execute`.
 - **TestResult** — wraps `RunResults` for a single test bench result.
+- **IProcessInvoker** — injected invoker used by instance processors.
+- **ProcessInvoker** — default invoker used by the singleton instance.
 
 #### Callers
 

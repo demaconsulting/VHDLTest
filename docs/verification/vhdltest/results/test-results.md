@@ -27,6 +27,10 @@ N/A - standard test environment.
 - `SaveResults` with an unknown extension defaults to TRX format.
 - `SaveResults` throws `ArgumentException` for null, empty, or whitespace-only file names.
 - `SaveToTrx` creates a TRX file equivalent to `SaveResults` with a `.trx` extension.
+- `PrintSummary` throws `ArgumentNullException` when `context` is null.
+- `PrintSummary` with an empty test collection writes only separator lines and no count lines.
+- `PrintSummary` with all-passing tests writes only the "Passed" count line (failed count suppressed).
+- `PrintSummary` with all-failing tests writes only the "Failed" count line (passed count suppressed).
 
 #### Test Scenarios
 
@@ -66,3 +70,19 @@ This scenario is tested by `TestResults_SaveResults_WithNullFileName_ThrowsArgum
 **SaveResults_WithUnknownExtension_CreatesTrxFile**: Verifies that an unrecognized file
 extension defaults to TRX format output.
 This scenario is tested by `TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile`.
+
+**PrintSummary_NullContext_ThrowsArgumentNullException**: Verifies that `PrintSummary` throws
+`ArgumentNullException` when `context` is null.
+This scenario is tested by `TestResults_PrintSummary_NullContext_ThrowsArgumentNullException`.
+
+**PrintSummary_EmptyTests_WritesOnlySeparators**: Verifies that `PrintSummary` with an empty
+test collection writes only separator lines and no count lines.
+This scenario is tested by `TestResults_PrintSummary_EmptyTests_WritesOnlySeparators`.
+
+**PrintSummary_AllPassTests_WritesPassedCountOnly**: Verifies that `PrintSummary` with an
+all-passing result set writes only the "Passed" count line, suppressing the "Failed" count.
+This scenario is tested by `TestResults_PrintSummary_AllPassTests_WritesPassedCountOnly`.
+
+**PrintSummary_AllFailTests_WritesFailedCountOnly**: Verifies that `PrintSummary` with an
+all-failing result set writes only the "Failed" count line, suppressing the "Passed" count.
+This scenario is tested by `TestResults_PrintSummary_AllFailTests_WritesFailedCountOnly`.

@@ -1,9 +1,9 @@
 ## Results
 
+### Overview
+
 The Results subsystem provides the data model for storing VHDL test run outcomes and serializing
 them to standard report formats (TRX and JUnit XML).
-
-### Overview
 
 The Results subsystem encapsulates two tightly related units: `TestResult`, which records the
 outcome of a single test bench execution, and `TestResults`, which holds the complete collection and
@@ -17,7 +17,8 @@ includes all data capture and reporting logic; it does not perform any simulatio
 - *Type*: in-process .NET public API.
 - *Role*: Provider.
 - *Contract*: Callers obtain a `TestResults` instance via `TestResults.Execute`, print a summary via
-  `PrintSummary`, and optionally persist results via `SaveResults`.
+  `PrintSummary`, optionally persist results via `SaveResults`, and may call `SaveToTrx` as a
+  backward-compatibility wrapper that delegates unconditionally to `SaveResults`.
 - *Constructor*: `TestResults(string runName, string codeBase)` — initializes a new instance with the
   supplied run label and code-base path.
 - *Properties*:
@@ -35,11 +36,18 @@ includes all data capture and reporting logic; it does not perform any simulatio
   - `Fails` (`IEnumerable<TestResult>`): lazily-enumerated, LINQ-queryable view over `Tests`
     containing only outcomes where the test bench encountered an error (i.e., `TestResult.Failed`
     is true). Filters `Tests` by fail outcome; consumers may call `.Count()` or iterate directly.
+- *Execute overload*: `Execute(Context context, Options options, Simulator simulator) → TestResults` —
+  convenience form called by `Program`; derives the run name from the current user, machine name, and
+  local timestamp, and the code base from `options.WorkingDirectory`; delegates to the explicit overload;
+  throws `InvalidOperationException` with message `"Build Failed"` when the build step reports errors.
 - *Explicit Execute overload*: `Execute(Context context, string runName, string codeBase, Options options,
   Simulator simulator) → TestResults` — caller-supplied run name and code base; throws
-  `InvalidOperationException` when the build step reports errors.
+  `InvalidOperationException` with message `"Build Failed"` when the build step reports errors.
 - *Constraints*: `SaveResults` requires a non-null, non-empty file path; an empty or unrecognised
   extension defaults to TRX format.
+- *SaveToTrx*: `SaveToTrx(string fileName) → void` — backward-compatibility wrapper; delegates
+  unconditionally to `SaveResults(fileName)`. Retained so callers that previously used `SaveToTrx`
+  continue to work without modification.
 
 **Consumed Interfaces**:
 

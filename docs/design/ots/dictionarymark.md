@@ -2,11 +2,10 @@
 
 ### Purpose
 
-DemaConsulting.DictionaryMark enforces correct spelling across project documentation
-using a configured custom dictionary. It checks documentation files against the
-project-defined word list and fails the build when unrecognized words are encountered,
-maintaining consistent terminology and preventing typographical errors in reviewed
-documents. DictionaryMark is not deployed with VHDLTest.
+DemaConsulting.DictionaryMark provides dictionary generation, conflict-detection, and spelling
+enforcement utilities. DictionaryMark's spelling enforcement capability is demonstrated through
+its self-validation test suite, exercised via the `--validate` mode in CI. It is not invoked
+directly against the project's documentation files. DictionaryMark is not deployed with VHDLTest.
 
 ### Features Used
 
@@ -23,11 +22,12 @@ documents. DictionaryMark is not deployed with VHDLTest.
 ### Integration Pattern
 
 DictionaryMark is available as a local dotnet tool (`.config/dotnet-tools.json`) and is
-invoked in the `quality-checks` job of `.github/workflows/build.yaml` to enforce spelling
-standards across design, requirements, and verification documentation before the
-documentation is formally compiled and reviewed. It is invoked with default project
-configuration (no explicit config file argument required):
+invoked in the `build-docs` job of `.github/workflows/build.yaml` with `--validate --results`
+to run its built-in self-validation test suite. The self-validation exercises all of
+DictionaryMark's capabilities — bullet-list generation, table generation, conflict detection,
+and spelling enforcement — against built-in fixtures, and writes a TRX result file consumed
+by ReqStream for requirements traceability:
 
 ```bash
-dotnet dictionarymark
+dotnet dictionarymark --validate --results artifacts/dictionarymark-self-validation.trx
 ```

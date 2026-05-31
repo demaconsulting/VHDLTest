@@ -2,11 +2,11 @@
 
 VHDLTest supports the following VHDL simulators:
 
-## ActiveHDL
+## Active-HDL
 
-[ActiveHDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl) is a commercial HDL simulator from Aldec.
+[Active-HDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl) is a commercial HDL simulator from Aldec.
 
-**Configuration**: Set the `VHDLTEST_ACTIVEHDL_PATH` environment variable to the ActiveHDL installation folder.
+**Configuration**: Set the `VHDLTEST_ACTIVEHDL_PATH` environment variable to the Active-HDL installation folder.
 
 ## GHDL
 
@@ -46,3 +46,18 @@ installation and is available on all platforms.
 
 **Configuration**: No installation or environment variable is required. Specify `--simulator mock` to
 use the mock simulator explicitly (for example, during `--validate` self-validation runs).
+
+## Automatic Simulator Selection
+
+When `--simulator` is omitted, VHDLTest automatically probes for installed simulators in the
+following order and selects the first one found:
+
+1. GHDL
+2. ModelSim
+3. QuestaSim
+4. Vivado
+5. Active-HDL
+6. NVC
+
+The `mock` simulator is never auto-selected and must always be specified explicitly via
+`--simulator mock`.

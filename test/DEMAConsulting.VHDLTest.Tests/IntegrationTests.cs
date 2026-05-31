@@ -286,6 +286,89 @@ public partial class IntegrationTests
     }
 
     /// <summary>
+    /// Test self-validation saves a results file when --results is specified
+    /// </summary>
+    [Fact]
+    public void VHDLTest_Validate_SavesResultsFile()
+    {
+        // Arrange: create a unique temp path for the results file
+        var resultsFile = Path.Combine(Path.GetTempPath(), $"validate_results_{Guid.NewGuid():N}.trx");
+
+        try
+        {
+            // Act: run with --validate --simulator mock --results <path>
+            var exitCode = Runner.Run(
+                out _,
+                "dotnet",
+                "DEMAConsulting.VHDLTest.dll",
+                "--validate",
+                "--simulator", "mock",
+                "--results", resultsFile);
+
+            // Assert: verify success and results file was created
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(resultsFile));
+        }
+        finally
+        {
+            if (File.Exists(resultsFile))
+            {
+                File.Delete(resultsFile);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Test self-validation output includes system information fields
+    /// </summary>
+    [Fact]
+    public void VHDLTest_Validate_IncludesSystemInfo()
+    {
+        // Arrange: (none — validation uses embedded mock simulator resources)
+
+        // Act: run the application with --validate --simulator mock
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--validate",
+            "--simulator", "mock");
+
+        // Assert: verify success and that all five system information fields are present
+        Assert.Multiple(() =>
+        {
+            Assert.Equal(0, exitCode);
+            Assert.Contains("| VHDLTest Version", output);
+            Assert.Contains("| Machine Name", output);
+            Assert.Contains("| OS Version", output);
+            Assert.Contains("| DotNet Runtime", output);
+            Assert.Contains("| Time Stamp", output);
+        });
+    }
+
+    /// <summary>
+    /// Test self-validation with an invalid simulator name returns a non-zero exit code
+    /// </summary>
+    [Fact]
+    public void VHDLTest_Validate_InvalidSimulator_ReturnsNonZeroExitCode()
+    {
+        // Arrange: use an unrecognized simulator name
+        const string invalidSimulator = "invalid_simulator_xyz";
+
+        // Act: run the application with --validate and an invalid simulator name
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "--validate",
+            "--simulator", invalidSimulator);
+
+        // Assert: verify non-zero exit code and error message
+        Assert.NotEqual(0, exitCode);
+        Assert.Contains("Simulator not found", output, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
     /// Test zero exit code is returned when all tests pass
     /// </summary>
     [Fact]
@@ -615,8 +698,8 @@ public partial class IntegrationTests
 
         try
         {
-            // Arrange: the six simulator names specified in the --simulator option contract
-            var simulatorNames = new[] { "ghdl", "nvc", "modelsim", "questasim", "vivado", "activehdl" };
+            // Arrange: the seven simulator names specified in the --simulator option contract
+            var simulatorNames = new[] { "ghdl", "nvc", "modelsim", "questasim", "vivado", "activehdl", "mock" };
 
             Assert.Multiple(() =>
             {
@@ -641,6 +724,166 @@ public partial class IntegrationTests
         }
         finally
         {
+            DeleteFileIfExists(configFile);
+        }
+    }
+
+    /// <summary>
+    /// Test VHDLTest auto-selects the first available simulator when --simulator is not specified
+    /// </summary>
+    [Fact]
+    public void VHDLTest_AutoSelectSimulator_SelectsFirstAvailable()
+    {
+        // Arrange: create a config file and a fake GHDL simulator directory
+        var configFile = CreateConfigurationFile("test_auto_select", "fake_test.vhd", "fake_test_tb");
+        var simulatorDirectory = Path.Combine(Environment.CurrentDirectory, $"fake_ghdl_auto_{Guid.NewGuid():N}");
+
+        try
+        {
+            // Create a fake GHDL executable in an isolated directory so that GHDL is
+            // discoverable via PATH and therefore auto-selected (GHDL is first in priority order).
+            Directory.CreateDirectory(simulatorDirectory);
+            if (OperatingSystem.IsWindows())
+            {
+                var simulatorScript = Path.Combine(simulatorDirectory, "ghdl.cmd");
+                File.WriteAllText(
+                    simulatorScript,
+                    """
+                    @echo off
+                    if "%1"=="-a" exit /b 0
+                    if "%1"=="-e" exit /b 0
+                    if "%1"=="-r" echo fake_test.vhd:^(report note^): simulation passed & exit /b 0
+                    exit /b 0
+                    """);
+            }
+            else
+            {
+                var simulatorScript = Path.Combine(simulatorDirectory, "ghdl");
+                File.WriteAllText(
+                    simulatorScript,
+                    """
+                    #!/bin/sh
+                    case "$1" in
+                      -a) exit 0;;
+                      -e) exit 0;;
+                      -r) echo 'fake_test.vhd:(report note): simulation passed'; exit 0;;
+                    esac
+                    exit 0
+                    """);
+                File.SetUnixFileMode(
+                    simulatorScript,
+                    UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
+                    UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
+                    UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
+            }
+
+            // Prepend the fake GHDL directory to PATH so VHDLTest discovers it automatically.
+            // VHDLTEST_GHDL_PATH is intentionally not set so PATH-based discovery is exercised.
+            var currentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            var newPath = simulatorDirectory + Path.PathSeparator + currentPath;
+
+            // Act: run without --simulator so VHDLTest must auto-select the first available simulator
+            var exitCode = Runner.Run(
+                out var output,
+                "dotnet",
+                new Dictionary<string, string>
+                {
+                    ["PATH"] = newPath
+                },
+                "DEMAConsulting.VHDLTest.dll",
+                "--config", configFile);
+
+            // Assert: VHDLTest auto-selected GHDL and ran successfully without a "simulator not found" error
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(0, exitCode);
+                Assert.DoesNotContain("Simulator not found", output, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("Passed fake_test_tb", output);
+            });
+        }
+        finally
+        {
+            DeleteDirectoryIfExists(simulatorDirectory);
+            DeleteFileIfExists(configFile);
+        }
+    }
+
+    /// <summary>
+    /// Test VHDLTest locates a simulator executable on the system PATH (without env-var override)
+    /// </summary>
+    [Fact]
+    public void VHDLTest_SimulatorPath_LocatesSimulator()
+    {
+        // Arrange: create a config file and a fake GHDL simulator in an isolated directory
+        var configFile = CreateConfigurationFile("test_path_discovery", "fake_test.vhd", "fake_test_tb");
+        var simulatorDirectory = Path.Combine(Environment.CurrentDirectory, $"fake_ghdl_path_{Guid.NewGuid():N}");
+
+        try
+        {
+            // Create a fake GHDL executable discoverable via PATH.
+            // VHDLTEST_GHDL_PATH is intentionally not set; this test validates PATH-only discovery.
+            Directory.CreateDirectory(simulatorDirectory);
+            if (OperatingSystem.IsWindows())
+            {
+                var simulatorScript = Path.Combine(simulatorDirectory, "ghdl.cmd");
+                File.WriteAllText(
+                    simulatorScript,
+                    """
+                    @echo off
+                    if "%1"=="-a" exit /b 0
+                    if "%1"=="-e" exit /b 0
+                    if "%1"=="-r" echo fake_test.vhd:^(report note^): simulation passed & exit /b 0
+                    exit /b 0
+                    """);
+            }
+            else
+            {
+                var simulatorScript = Path.Combine(simulatorDirectory, "ghdl");
+                File.WriteAllText(
+                    simulatorScript,
+                    """
+                    #!/bin/sh
+                    case "$1" in
+                      -a) exit 0;;
+                      -e) exit 0;;
+                      -r) echo 'fake_test.vhd:(report note): simulation passed'; exit 0;;
+                    esac
+                    exit 0
+                    """);
+                File.SetUnixFileMode(
+                    simulatorScript,
+                    UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
+                    UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
+                    UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
+            }
+
+            // Prepend the simulator directory to PATH; do not set VHDLTEST_GHDL_PATH so that
+            // only PATH-based discovery is exercised.
+            var currentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            var newPath = simulatorDirectory + Path.PathSeparator + currentPath;
+
+            // Act: use --simulator ghdl relying on PATH discovery (no VHDLTEST_GHDL_PATH override)
+            var exitCode = Runner.Run(
+                out var output,
+                "dotnet",
+                new Dictionary<string, string>
+                {
+                    ["PATH"] = newPath
+                },
+                "DEMAConsulting.VHDLTest.dll",
+                "--simulator", "ghdl",
+                "--config", configFile);
+
+            // Assert: GHDL was found via PATH and the test ran successfully
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(0, exitCode);
+                Assert.Contains("Passed fake_test_tb", output);
+            });
+        }
+        finally
+        {
+            DeleteDirectoryIfExists(simulatorDirectory);
             DeleteFileIfExists(configFile);
         }
     }

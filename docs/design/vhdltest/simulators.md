@@ -6,12 +6,12 @@ The Simulators subsystem provides VHDL simulator integration for the VHDLTest sy
 concerns of invoking external simulator tools: path discovery, script generation, process execution, and
 output classification. The subsystem defines an abstract `Simulator` base class that establishes the compile
 and test contracts, and a `SimulatorFactory` that maps simulator name strings to concrete singleton instances.
-Six production simulator classes implement the base class for GHDL, NVC, ModelSim, QuestaSim, Vivado, and
-Active-HDL. A `MockSimulator` provides a deterministic in-process test double used for self-validation. The
+Six production simulator classes implement the base class for GHDL, ModelSim, QuestaSim, Vivado,
+Active-HDL, and NVC. A `MockSimulator` provides a deterministic in-process test double used for self-validation. The
 subsystem boundary is the `Simulator` public API; no other subsystem invokes simulator tools directly.
 
-Contained units: Simulator, SimulatorFactory, GhdlSimulator, NvcSimulator, ModelSimSimulator,
-QuestaSimSimulator, VivadoSimulator, ActiveHdlSimulator, MockSimulator.
+Contained units: Simulator, SimulatorFactory, GhdlSimulator, ModelSimSimulator, QuestaSimSimulator,
+VivadoSimulator, ActiveHdlSimulator, NvcSimulator, MockSimulator.
 
 ### Interfaces
 
@@ -95,6 +95,8 @@ Each production simulator's `Compile` and `Test` methods follow this pattern:
 
 1. Verify `SimulatorPath` is non-null; throw `InvalidOperationException` otherwise.
 2. Create or ensure the simulator-specific working directory under `VHDLTest.out/{SimulatorName}/`.
+   Note: `ActiveHdlSimulator` is an exception — it uses a hardcoded path `VHDLTest.out/ActiveHDL/`
+   rather than the `{SimulatorName}` pattern (which would yield `VHDLTest.out/ActiveHdl/`).
 3. Generate a script file (response file or TCL `.do` file) containing the compile or simulation commands.
 4. Invoke `RunProcessor.Execute` to launch the simulator executable with the script, capturing and
    classifying output.

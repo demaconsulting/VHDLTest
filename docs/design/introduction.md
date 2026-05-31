@@ -58,6 +58,8 @@ VHDLTest (System)
 │   ├── NvcSimulator (Unit)
 │   └── MockSimulator (Unit)
 ├── Run (Subsystem)
+│   ├── IProcessInvoker (Unit)
+│   ├── ProcessInvoker (Unit)
 │   ├── RunProcessor (Unit)
 │   ├── RunProgram (Unit)
 │   ├── RunResults (Unit)
@@ -96,13 +98,15 @@ src/DEMAConsulting.VHDLTest/
 │   ├── Simulator.cs            — base class for all simulators
 │   ├── SimulatorFactory.cs     — creates simulator instances
 │   ├── GhdlSimulator.cs        — GHDL simulator integration
-│   ├── NvcSimulator.cs         — NVC simulator integration
 │   ├── ModelSimSimulator.cs    — ModelSim simulator integration
 │   ├── QuestaSimSimulator.cs   — QuestaSim simulator integration
 │   ├── VivadoSimulator.cs      — Vivado simulator integration
 │   ├── ActiveHdlSimulator.cs   — Active-HDL simulator integration
+│   ├── NvcSimulator.cs         — NVC simulator integration
 │   └── MockSimulator.cs        — Mock simulator for self-validation
 ├── Run/
+│   ├── IProcessInvoker.cs      — process invoker interface
+│   ├── ProcessInvoker.cs       — default process invoker implementation
 │   ├── RunProcessor.cs         — processes simulation run output
 │   ├── RunProgram.cs           — executes simulation programs
 │   ├── RunResults.cs           — simulation run results
@@ -126,24 +130,27 @@ test/DEMAConsulting.VHDLTest.Tests/
 │   ├── SimulatorTests.cs           — Simulator unit tests
 │   ├── SimulatorFactoryTests.cs    — SimulatorFactory unit tests
 │   ├── GhdlSimulatorTests.cs       — GhdlSimulator unit tests
-│   ├── NvcSimulatorTests.cs        — NvcSimulator unit tests
 │   ├── ModelSimSimulatorTests.cs   — ModelSimSimulator unit tests
 │   ├── QuestaSimSimulatorTests.cs  — QuestaSimSimulator unit tests
 │   ├── VivadoSimulatorTests.cs     — VivadoSimulator unit tests
 │   ├── ActiveHdlSimulatorTests.cs  — ActiveHdlSimulator unit tests
+│   ├── NvcSimulatorTests.cs        — NvcSimulator unit tests
 │   ├── MockSimulatorTests.cs       — MockSimulator unit tests
 │   └── SimulatorsSubsystemTests.cs — Simulators subsystem integration tests
 ├── Run/
+│   ├── FakeProcessInvoker.cs   — FakeProcessInvoker test double
 │   ├── RunProcessorTests.cs    — RunProcessor unit tests
 │   ├── RunProgramTests.cs      — RunProgram unit tests
+│   ├── RunLineTests.cs         — RunLine unit tests
 │   ├── RunLineRuleTests.cs     — RunLineRule unit tests
+│   ├── RunLineTypeTests.cs     — RunLineType unit tests
 │   ├── RunResultsTests.cs      — RunResults unit tests
 │   └── RunSubsystemTests.cs    — Run subsystem integration tests
 ├── Results/
 │   ├── TestResultTests.cs      — TestResult unit tests
 │   └── TestResultsTests.cs     — TestResults unit tests
 └── SelfTest/
-    └── ValidationTests.cs      — Validation unit tests
+    └── ValidationTests.cs      — Validation unit and SelfTest subsystem integration tests
 ```
 
 The design documentation mirrors this under `docs/design/vhdltest/` and the test project mirrors the same layout

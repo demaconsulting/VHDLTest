@@ -21,6 +21,13 @@ sections:
               - VHDLTest-Cli-Context-Error
               - VHDLTest-Cli-ConfigDoc-Read
               - VHDLTest-Cli-ConfigDoc-Missing
+              - VHDLTest-Cli-ConfigDoc-Null
+              - VHDLTest-Cli-ConfigDoc-Malformed
+              - VHDLTest-Cli-ConfigDoc-DefaultFiles
+              - VHDLTest-Cli-ConfigDoc-DefaultTests
+              - VHDLTest-Cli-ConfigDoc-ExplicitNullFiles
+              - VHDLTest-Cli-ConfigDoc-ExplicitNullTests
               - VHDLTest-Cli-Options-Parse
               - VHDLTest-Cli-Options-NoConfig
               - VHDLTest-Cli-Options-MissingConfig
+              - VHDLTest-Cli-Options-InvalidPath

@@ -4,17 +4,26 @@ sections:
     sections:
       - title: SonarScanner Requirements
         requirements:
-          - id: VHDLTest-OTS-SonarScanner
-            title: dotnet-sonarscanner shall perform static code analysis of VHDLTest source code and publish analysis results to SonarCloud.
+          - id: VHDLTest-OTS-SonarScanner-Analyze
+            title: SonarScanner shall perform static code analysis of the VHDLTest source code.
             justification: |
               dotnet-sonarscanner wraps the .NET build pipeline to collect code metrics,
               coverage data, and static analysis findings as part of the CI workflow,
               maintaining continuous code quality visibility for the VHDLTest project.
+              SonarMark quality-gate retrieval confirms that the analysis data was received
+              and processed, providing evidence that analysis succeeded.
+            tags: [ots]
+            tests:
+              - SonarMark_QualityGateRetrieval
+
+          - id: VHDLTest-OTS-SonarScanner-Publish
+            title: SonarScanner shall publish analysis results to SonarCloud.
+            justification: |
               Publishing analysis results to SonarCloud enables the development team to
               track code quality trends, receive alerts on quality degradation, and maintain
               a continuous quality monitoring record. SonarMark quality-gate retrieval
               confirms that SonarCloud received the published results and processed the
-              analysis data, providing evidence that both analysis and publishing succeeded.
+              analysis data, providing evidence that publishing succeeded.
             tags: [ots]
             tests:
               - SonarMark_QualityGateRetrieval

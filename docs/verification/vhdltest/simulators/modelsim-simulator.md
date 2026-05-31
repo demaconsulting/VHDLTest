@@ -77,3 +77,29 @@ in `ModelSimSimulatorTests.cs`.
 override takes precedence over PATH discovery.
 This scenario is tested by `ModelSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
 in `ModelSimSimulatorTests.cs`.
+
+**FindPath_WithoutEnvVar_ReturnsNullOrPath**: Verifies that `FindPath()` does not throw when
+`VHDLTEST_MODELSIM_PATH` is not set, and returns either a non-empty path string (ModelSim
+installed) or null (ModelSim not installed). This confirms that PATH-based discovery is safe
+to call in environments without ModelSim.
+This scenario is tested by `ModelSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`
+in `ModelSimSimulatorTests.cs`.
+
+**Compile_WithValidConfig_InvokesVcom**: Verifies that `ModelSimSimulator.Compile()` invokes the
+`vcom` executable (directly or via `cmd /c` on Windows) with the expected arguments,
+using `CreateForTesting` with a `FakeProcessInvoker` to capture the invocation without
+launching a real process.
+This scenario is tested by `ModelSimSimulator_Compile_WithValidConfig_InvokesVcom`
+in `ModelSimSimulatorTests.cs`.
+
+**Test_WithValidConfig_InvokesVsim**: Verifies that `ModelSimSimulator.Test()` invokes the
+`vsim` executable (directly or via `cmd /c` on Windows) with the expected simulation arguments
+for the specified test bench, using `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `ModelSimSimulator_Test_WithValidConfig_InvokesVsim`
+in `ModelSimSimulatorTests.cs`.
+
+**CompileAndTest_WithValidConfig_WritesDoScript**: Verifies that `ModelSimSimulator.Compile()`
+and `Test()` write the TCL do-scripts to the expected paths in the working directory.
+Uses `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `ModelSimSimulator_CompileAndTest_WithValidConfig_WritesDoScript`
+in `ModelSimSimulatorTests.cs`.

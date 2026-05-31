@@ -6,7 +6,7 @@ sections:
         sections:
           - title: RunProcessor Requirements
             requirements:
-              - id: VHDLTest-Run-RunProcessor-Pass
+              - id: VHDLTest-Run-RunProcessor-Info
                 title: >-
                   RunProcessor shall classify simulator output lines as Info type when patterns
                   configured to classify lines as Info type match.
@@ -34,6 +34,8 @@ sections:
                   configuration errors, such as an incorrectly specified simulator path.
                 tests:
                   - RunProcessor_Execute_MissingProgram_ThrowsException
+                children:
+                  - VHDLTest-Run-RunProgram-ExceptionPropagation
 
               - id: VHDLTest-Run-RunProcessor-ExitCodeFail
                 title: >-
@@ -56,6 +58,9 @@ sections:
                   Logging the working directory enables users and CI operators to confirm which
                   directory the simulator was invoked from, aiding diagnosis of path-related issues.
                   Logging is gated on the context verbose flag so it does not clutter normal output.
+                  The shared test `RunProcessor_Execute_WithContext_LogsRunInfo` asserts both the
+                  working directory and the run command are present in the log output, covering
+                  both this requirement and `VHDLTest-Run-RunProcessor-VerboseLogging-Command`.
                 tests:
                   - RunProcessor_Execute_WithContext_LogsRunInfo
 
@@ -69,6 +74,7 @@ sections:
                   Logging is gated on the context verbose flag so it does not clutter normal output.
                 tests:
                   - RunProcessor_Execute_WithContext_LogsRunInfo
+                  - RunProcessor_Execute_WithVerboseContext_LogsCommand
 
               - id: VHDLTest-Run-RunProcessor-WindowsWrapping
                 title: >-
@@ -80,3 +86,16 @@ sections:
                   entry points without requiring callers to know about this platform difference.
                 tests:
                   - windows@RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC
+
+              - id: VHDLTest-Run-RunProcessor-InjectableInvoker
+                title: >-
+                  RunProcessor shall accept an IProcessInvoker at construction time so that the
+                  process-execution strategy can be replaced for testing.
+                justification: |
+                  Making the invoker injectable decouples RunProcessor from the operating system,
+                  allowing unit tests to verify argument assembly and output classification without
+                  launching real processes. This is the foundation of the FakeProcessInvoker-based
+                  simulator unit tests.
+                tests:
+                  - GhdlSimulator_Compile_WithValidConfig_InvokesGhdl
+                  - GhdlSimulator_Test_WithValidConfig_InvokesGhdl

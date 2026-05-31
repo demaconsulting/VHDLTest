@@ -22,11 +22,13 @@ using System.Reflection;
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DEMAConsulting.VHDLTest.Tests.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for NVC simulator
+///     Verifies the correct behavior of <see cref="NvcSimulator"/> — output classification,
+///     availability guards, path discovery, and simulator identity.
 /// </summary>
 /// <remarks>
 ///     Unit under test: <see cref="NvcSimulator"/>.
@@ -55,7 +57,9 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 public class NvcSimulatorTests
 {
     /// <summary>
-    /// Check name of NVC simulator
+    ///     Validates that <see cref="NvcSimulator.Instance"/> returns <c>"NVC"</c> as the simulator
+    ///     name, confirming the singleton is registered with the expected identity for factory
+    ///     lookup and reporting.
     /// </summary>
     [Fact]
     public void NvcSimulator_SimulatorName_ReturnsNVC()
@@ -67,7 +71,8 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator compile with clean output
+    ///     Validates that clean NVC analysis output produces <see cref="RunLineType.Text"/>-classified
+    ///     lines, confirming the processor does not generate false-positive diagnostics on normal output.
     /// </summary>
     [Fact]
     public void NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
@@ -94,7 +99,8 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator compile with an info message
+    ///     Validates that an NVC note line matching <c>.* Note:</c> in compile output is classified
+    ///     as <see cref="RunLineType.Info"/>, confirming the note pattern is correctly detected.
     /// </summary>
     [Fact]
     public void NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult()
@@ -121,7 +127,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator compile with a warning message
+    ///     Validates that an NVC warning line matching <c>.* Warning:</c> in compile output is
+    ///     classified as <see cref="RunLineType.Warning"/>, confirming the warning pattern is
+    ///     correctly detected.
     /// </summary>
     [Fact]
     public void NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
@@ -148,7 +156,8 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator compile with an error message
+    ///     Validates that an NVC error line matching <c>.* Error:</c> in compile output is classified
+    ///     as <see cref="RunLineType.Error"/>, confirming the error pattern is correctly detected.
     /// </summary>
     [Fact]
     public void NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
@@ -175,7 +184,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator compile with a failure message
+    ///     Validates that an NVC failure line matching <c>.* Failure:</c> in compile output is
+    ///     classified as <see cref="RunLineType.Error"/>, confirming the failure pattern is
+    ///     correctly mapped to Error severity.
     /// </summary>
     [Fact]
     public void NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult()
@@ -202,7 +213,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator compile with a fatal message
+    ///     Validates that an NVC fatal line matching <c>.* Fatal:</c> in compile output is classified
+    ///     as <see cref="RunLineType.Error"/>, confirming the fatal pattern is correctly mapped to
+    ///     Error severity.
     /// </summary>
     [Fact]
     public void NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult()
@@ -229,7 +242,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator test with clean output
+    ///     Validates that clean NVC simulation output produces <see cref="RunLineType.Text"/>-classified
+    ///     lines, confirming the processor does not generate false-positive diagnostics on normal
+    ///     simulation output.
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
@@ -256,7 +271,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator test with an info message
+    ///     Validates that an NVC note line matching <c>.* Note:</c> in simulation output is classified
+    ///     as <see cref="RunLineType.Info"/>, confirming the note pattern is correctly detected in
+    ///     test output.
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
@@ -283,7 +300,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator test with a warning message
+    ///     Validates that an NVC warning line matching <c>.* Warning:</c> in simulation output is
+    ///     classified as <see cref="RunLineType.Warning"/>, confirming the warning pattern is
+    ///     correctly detected in test output.
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
@@ -310,7 +329,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator test with an error message
+    ///     Validates that an NVC error line matching <c>.* Error:</c> in simulation output is
+    ///     classified as <see cref="RunLineType.Error"/>, confirming the error pattern is correctly
+    ///     detected in test output.
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
@@ -337,7 +358,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator test with a failure message
+    ///     Validates that an NVC failure line matching <c>.* Failure:</c> in simulation output is
+    ///     classified as <see cref="RunLineType.Error"/>, confirming the failure pattern maps to
+    ///     Error severity in test output.
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
@@ -364,7 +387,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test NVC simulator test with a fatal message
+    ///     Validates that an NVC fatal line matching <c>.* Fatal:</c> in simulation output is
+    ///     classified as <see cref="RunLineType.Error"/>, confirming the fatal pattern maps to
+    ///     Error severity in test output.
     /// </summary>
     [Fact]
     public void NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult()
@@ -391,7 +416,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test that FindPath returns the env var value when VHDLTEST_NVC_PATH is set.
+    ///     Validates that <see cref="NvcSimulator.FindPath()"/> returns the <c>VHDLTEST_NVC_PATH</c>
+    ///     environment variable value when set, confirming the override takes precedence over
+    ///     PATH search.
     /// </summary>
     [Fact]
     public void NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue()
@@ -417,8 +444,9 @@ public class NvcSimulatorTests
     }
 
     /// <summary>
-    /// Test that FindPath does not throw when the NVC env var is not set.
-    /// Result is either a valid path (NVC installed) or null (NVC not installed).
+    ///     Validates that <see cref="NvcSimulator.FindPath()"/> returns either a valid path or null
+    ///     without throwing when <c>VHDLTEST_NVC_PATH</c> is not set, confirming graceful behavior
+    ///     in both installed and not-installed environments.
     /// </summary>
     [Fact]
     public void NvcSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
@@ -535,5 +563,81 @@ public class NvcSimulatorTests
         var ex = Assert.Throws<InvalidOperationException>(() =>
             simulator.Test(context, options, "test_bench"));
         Assert.Equal("NVC Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that NvcSimulator.Compile invokes the nvc executable with analysis arguments.
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_Compile_WithValidConfig_InvokesNvcWithAnalysisArguments()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = NvcSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+
+            // Assert: nvc path appears in the invocation
+            var allStrings = invoker.AllCalls
+                .SelectMany(c => new[] { c.Application }.Concat(c.Arguments))
+                .ToList();
+            Assert.Contains(Path.Combine(tempDir, "nvc"), allStrings);
+
+            // Assert: key flags are present
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("--std=2008", allArgs);
+            Assert.Contains("-a", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that NvcSimulator.Test invokes the nvc executable with elaboration and run arguments.
+    /// </summary>
+    [Fact]
+    public void NvcSimulator_Test_WithValidConfig_InvokesNvcWithRunArguments()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            // Pre-create the NVC output directory
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "NVC"));
+
+            var sim = NvcSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "my_tb");
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("--std=2008", allArgs);
+            Assert.Contains("-e", allArgs);
+            Assert.Contains("-r", allArgs);
+            Assert.Contains("my_tb", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
     }
 }

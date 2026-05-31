@@ -7,11 +7,14 @@ sections:
           - title: SimulatorFactory Requirements
             requirements:
               - id: VHDLTest-Simulators-SimulatorFactory-Get
-                title: SimulatorFactory shall return the correct simulator instance for a given name.
+                title: SimulatorFactory shall return the correct simulator instance for a given name,
+                  using case-insensitive name matching.
                 justification: |
                   The factory pattern centralizes simulator selection, allowing the rest of the
                   application to remain independent of the specific simulator being used and
-                  enabling easy extension with new simulators.
+                  enabling easy extension with new simulators. Case-insensitive matching allows
+                  configuration files to use any casing for simulator names without causing lookup
+                  failures.
                 tests:
                   - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
                   - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
@@ -40,4 +43,7 @@ sections:
                   immediately usable without any simulator-specific configuration.
                 tests:
                   - SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull
+                children:
+                  - VHDLTest-Simulators-Simulator-Where
+                  - VHDLTest-Simulators-Simulator-Where-NotFound
 

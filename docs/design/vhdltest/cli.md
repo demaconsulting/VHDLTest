@@ -15,7 +15,7 @@ returns a fully initialised Context instance.
 - *Role*: Provider
 - *Contract*: `static Context Create(string[] args)` — returns a `Context` exposing all parsed
   flags (`Version`, `Help`, `Silent`, `Verbose`, `ExitZero`, `Validate`, `Depth`), paths
-  (`ConfigFile`, `ResultsFile`, `Simulator`), I/O methods (`Write`, `WriteVerboseLine`,
+  (`ConfigFile`, `ResultsFile`, `Simulator`, `LogFile`), I/O methods (`Write`, `WriteVerboseLine`,
   `WriteLine`, `WriteError`), and the computed property `ExitCode`. `Context` implements
   `IDisposable`.
 - *Constraints*: Throws `InvalidOperationException` on unrecognised flags or missing required
@@ -56,14 +56,11 @@ Integration Design* for the YamlDotNet integration design.
 
 The Cli subsystem assembles as follows:
 
-1. `Program` calls `Context.Create(args)` with the raw argument array. Context parses all flags
-   and positional arguments and returns an initialised `Context` instance; if `--log` was
-   provided, an output `StreamWriter` is opened for the log file.
-2. `Program` inspects `Context.Version`, `Context.Help`, and `Context.Validate` to dispatch to
-   the appropriate handler (version display, help display, or self-validation).
-3. For a normal test run, `Program` calls `Options.Parse(context)`, which reads
-   `Context.ConfigFile`, calls `ConfigDocument.ReadFile` to deserialise the YAML configuration,
-   and resolves the working directory from the absolute path of the configuration file.
-4. `Program` passes the resulting `Options` to the Simulators subsystem to execute the test run.
-5. `Context.ExitCode` is set to `1` if any errors were reported via `WriteError`; `Program`
-   applies this to `Environment.ExitCode` before exiting.
+1. `Context.Create(args)` receives the raw argument array, parses all flags and positional
+   arguments, and returns an initialised `Context` instance. If `--log` was provided, a
+   `StreamWriter` is opened for the log file and owned by the `Context`.
+2. For a normal test run, `Options.Parse(context)` reads `Context.ConfigFile`, calls
+   `ConfigDocument.ReadFile` to deserialise the YAML configuration, and resolves the
+   working directory from the absolute path of the configuration file.
+3. `Context.ExitCode` returns `1` if any errors were reported via `WriteError`; callers
+   apply this to `Environment.ExitCode` before exiting.

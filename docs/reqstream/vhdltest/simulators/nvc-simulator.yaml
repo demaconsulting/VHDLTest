@@ -18,10 +18,9 @@ sections:
                   nvc@VHDLTest_TestFails); these are not listed here as they are system-level
                   tests, not unit tests.
                 tests:
-                  - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
                   - NvcSimulator_SimulatorName_ReturnsNVC
 
-              - id: VHDLTest-Simulators-NvcSimulator-Availability
+              - id: VHDLTest-Simulators-NvcSimulator-Unavailable
                 title: The NvcSimulator shall throw InvalidOperationException when Compile or Test is invoked and the NVC simulator is not available.
                 justification: |
                   Failing fast with a descriptive exception when the simulator is unavailable
@@ -61,7 +60,7 @@ sections:
                   - NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult
 
               - id: VHDLTest-Simulators-NvcSimulator-FindPath
-                title: NvcSimulator shall locate the NVC installation directory.
+                title: NvcSimulator shall locate the NVC installation directory, respecting the VHDLTEST_NVC_PATH environment variable override when set.
                 justification: |
                   Reliable path discovery ensures VHDLTest can locate NVC across different
                   installation layouts and environments. The VHDLTEST_NVC_PATH environment

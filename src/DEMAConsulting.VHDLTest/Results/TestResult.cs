@@ -73,7 +73,7 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     public Guid ExecutionId { get; init; } = Guid.NewGuid();
 
     /// <summary>
-    ///     Gets a value indicating whether the test passed
+    ///     Gets a value indicating whether the test passed.
     /// </summary>
     /// <remarks>
     ///     True when <see cref="RunResults.Summary"/> is less than <see cref="RunLineType.Error"/>
@@ -82,7 +82,7 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     public bool Passed => RunResults.Summary < RunLineType.Error;
 
     /// <summary>
-    ///     Gets a value indicating whether the test failed
+    ///     Gets a value indicating whether the test failed.
     /// </summary>
     /// <remarks>
     ///     True when <see cref="RunResults.Summary"/> is at or above <see cref="RunLineType.Error"/>
@@ -91,7 +91,7 @@ public sealed record TestResult(string ClassName, string TestName, RunResults Ru
     public bool Failed => RunResults.Summary >= RunLineType.Error;
 
     /// <summary>
-    ///     Print a summary line to the console
+    ///     Prints a summary line to the console.
     /// </summary>
     /// <remarks>
     ///     Writes the word "Passed" in green or "Failed" in red, followed by the test name

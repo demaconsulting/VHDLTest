@@ -41,7 +41,7 @@ public sealed class Context : IDisposable
     /// <summary>
     ///     Output log-file writer (when logging output to file)
     /// </summary>
-    private readonly StreamWriter? _log;
+    private StreamWriter? _log;
 
     /// <summary>
     ///     Initializes a new instance of the Context class.
@@ -140,6 +140,7 @@ public sealed class Context : IDisposable
     public void Dispose()
     {
         _log?.Dispose();
+        _log = null;
     }
 
     /// <summary>
@@ -158,8 +159,14 @@ public sealed class Context : IDisposable
         if (!Silent)
         {
             Console.ForegroundColor = color;
-            Console.Write(text);
-            Console.ResetColor();
+            try
+            {
+                Console.Write(text);
+            }
+            finally
+            {
+                Console.ResetColor();
+            }
         }
 
         // Write to the optional log
@@ -239,8 +246,14 @@ public sealed class Context : IDisposable
         if (!Silent)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            Console.ResetColor();
+            try
+            {
+                Console.WriteLine(message);
+            }
+            finally
+            {
+                Console.ResetColor();
+            }
         }
 
         // Write to the log if specified

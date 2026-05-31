@@ -2,11 +2,15 @@
 
 ### Verification Approach
 
-dotnet-sonarscanner is verified through CI pipeline execution. The `build` job in
-`.github/workflows/build.yaml` invokes dotnet-sonarscanner to wrap the `dotnet build`
-and `dotnet test` steps and publish analysis results to SonarCloud. A passing CI step
-constitutes evidence that dotnet-sonarscanner correctly configured the analysis context,
-collected code metrics and coverage data, and published results to SonarCloud.
+dotnet-sonarscanner is verified through CI pipeline execution and through SonarMark
+self-validation. The `build` job in `.github/workflows/build.yaml` invokes
+dotnet-sonarscanner to wrap the `dotnet build` and `dotnet test` steps and publish
+analysis results to SonarCloud. A passing CI step constitutes evidence that
+dotnet-sonarscanner correctly configured the analysis context, collected code metrics
+and coverage data, and published results to SonarCloud. SonarMark self-validation
+(`dotnet sonarmark --validate --results`) runs in the `build-docs` job and writes TRX
+results including `SonarMark_QualityGateRetrieval`, which confirms SonarCloud received
+the published analysis data and the quality-gate retrieval mechanism is operational.
 
 ### Test Environment
 
@@ -35,3 +39,8 @@ that dotnet-sonarscanner correctly collected analysis data and published it to S
 - **Cross-platform analysis**: analysis runs on Ubuntu, Windows, and macOS in a matrix
   strategy, confirming that dotnet-sonarscanner operates correctly across all supported
   CI platforms.
+- **SonarMark_QualityGateRetrieval**: `dotnet sonarmark --validate --results
+  artifacts/sonarmark-self-validation.trx` runs in the `build-docs` job and queries
+  SonarCloud for the quality gate status of the `demaconsulting_VHDLTest` project. A
+  passing test confirms that SonarCloud received the analysis results published by
+  dotnet-sonarscanner and that the quality-gate retrieval mechanism is operational.

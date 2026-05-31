@@ -33,6 +33,6 @@ rendered the versions report.
   to verify the requirements `VHDLTest-OTS-VersionMark-Capture`, `VHDLTest-OTS-VersionMark-Publish`,
   and `VHDLTest-OTS-VersionMark-Lint` are satisfied.
 - **Lint mode**: `dotnet versionmark --lint` is invoked in the `quality-checks` CI job via `lint.ps1`
-  to validate that tool version captures are consistent with the local tool manifest. A zero exit code
-  confirms that all captured tool versions match the manifest declarations, satisfying requirement
-  `VHDLTest-OTS-VersionMark-Lint`.
+  and `lint.sh` to validate that tool version captures are consistent with the local tool manifest.
+  A zero exit code confirms that all captured tool versions match the manifest declarations,
+  satisfying requirement `VHDLTest-OTS-VersionMark-Lint`.

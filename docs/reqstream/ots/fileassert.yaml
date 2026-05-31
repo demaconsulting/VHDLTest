@@ -34,3 +34,17 @@ sections:
             tags: [ots]
             tests:
               - FileAssert_Contains
+
+          - id: VHDLTest-OTS-FileAssert-Validate
+            title: FileAssert shall provide a self-validation mode that exercises its built-in test suite and writes TRX results.
+            justification: |
+              Running `dotnet fileassert --validate --results` in the CI pipeline executes
+              FileAssert's internal test suite and writes a TRX result file consumed by ReqStream.
+              This provides requirements traceability evidence that FileAssert's comparison,
+              existence-checking, and content-searching capabilities are operational.
+            tags: [ots]
+            tests:
+              - FileAssert_Results
+              - FileAssert_Exists
+              - FileAssert_Contains
+              - FileAssert_SelfValidation

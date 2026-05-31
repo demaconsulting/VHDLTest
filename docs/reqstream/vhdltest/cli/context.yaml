@@ -15,10 +15,15 @@ sections:
                 tests:
                   - Context_Create_NoArguments_ReturnsDefaultContext
                   - Context_Create_WithConfigFile_SetsConfigFile
+                  - Context_Create_WithLongConfigAlias_SetsConfigFile
                   - Context_Create_WithResultsFile_SetsResultsFile
+                  - Context_Create_WithResultAlias_SetsResultsFile
+                  - Context_Create_WithResultsAlias_SetsResultsFile
                   - Context_Create_WithSimulator_SetsSimulator
+                  - Context_Create_WithSimulatorAlias_SetsSimulator
                   - Context_Create_WithVerbose_SetsVerboseFlag
                   - Context_Create_WithExitZero_SetsExitZeroFlag
+                  - Context_Create_WithShortExitZeroAlias_SetsExitZeroFlag
                   - Context_Create_WithValidate_SetsValidateFlag
                   - Context_Create_WithCustomTest_SetsCustomTest
                   - Context_Create_WithCustomTests_SetsCustomTests
@@ -29,6 +34,16 @@ sections:
                   - Context_Create_WithQuestionHelpFlag_SetsHelpFlag
                   - Context_Create_WithSilentFlag_SetsSilentFlag
                   - Context_Create_WithLogOption_WritesToLogFile
+
+              - id: VHDLTest-Cli-Context-NullArgs
+                title: Context shall throw ArgumentNullException when the args argument to Create is null.
+                justification: |
+                  Throwing ArgumentNullException for a null args array gives callers a clear
+                  programmer-error signal and prevents cryptic null-reference failures deeper in
+                  the argument-parsing loop. This guard is implemented via
+                  ArgumentNullException.ThrowIfNull and is verified by a dedicated test.
+                tests:
+                  - Context_Create_NullArguments_ThrowsArgumentNullException
 
               - id: VHDLTest-Cli-Context-Error
                 title: The Context class shall throw InvalidOperationException for unrecognized arguments.
@@ -43,15 +58,22 @@ sections:
                   - Context_Create_MissingLogValue_ThrowsInvalidOperationException
                   - Context_Create_MissingDepthValue_ThrowsInvalidOperationException
 
-              - id: VHDLTest-Cli-Context-Depth
-                title: The Context class shall parse the --depth option and reject non-integer values and values less than 1 with InvalidOperationException.
+              - id: VHDLTest-Cli-Context-Depth-Parse
+                title: Context shall parse the --depth option and set the Depth property to the supplied integer value.
                 justification: |
                   The --depth option controls the heading-level depth of validation report output.
+                  Parsing the value into the Depth property ensures that downstream report generation
+                  receives the user-specified heading level.
+                tests:
+                  - Context_Create_WithDepth_SetsDepth
+
+              - id: VHDLTest-Cli-Context-Depth-Validate
+                title: Context shall throw InvalidOperationException when the --depth option value is not an integer or is less than 1.
+                justification: |
                   Validating the depth value at parse time ensures that downstream report generation
                   always receives a positive integer, preventing cryptic failures during report
                   rendering.
                 tests:
-                  - Context_Create_WithDepth_SetsDepth
                   - Context_Create_WithInvalidDepth_ThrowsInvalidOperationException
                   - Context_Create_WithZeroDepth_ThrowsInvalidOperationException
                   - Context_Create_WithNegativeDepth_ThrowsInvalidOperationException
@@ -63,6 +85,7 @@ sections:
                   clean when silent mode is active, while interactive users still see output.
                 tests:
                   - Context_Write_NonSilentMode_WritesToConsole
+                  - Context_Write_SilentMode_SuppressesConsole
 
               - id: VHDLTest-Cli-Context-Write-Log
                 title: Context shall write a message without a line terminator unconditionally to the log file when configured.
@@ -82,6 +105,7 @@ sections:
                   active, while interactive users still see output.
                 tests:
                   - Context_WriteLine_NonSilentMode_WritesToConsole
+                  - Context_WriteLine_SilentMode_SuppressesConsole
 
               - id: VHDLTest-Cli-Context-WriteLine-Log
                 title: Context shall write a message with a line terminator unconditionally to the log file when configured.
@@ -94,14 +118,18 @@ sections:
                   - Context_WriteLine_SilentMode_WritesToLogFile
 
               - id: VHDLTest-Cli-Context-WriteVerboseLine
-                title: Context shall write a verbose message with a line terminator only when verbose mode is active.
+                title: Context shall write a verbose message with a line terminator only when verbose mode is active, suppressed on the console when silent mode is active.
                 justification: |
                   Verbose output must be gated on the verbose flag so that normal invocations
                   produce concise output while diagnostic invocations produce detailed traces,
-                  supporting both CI use and developer debugging.
+                  supporting both CI use and developer debugging. Console output is additionally
+                  suppressed when silent mode is active, ensuring silent mode applies uniformly
+                  to all output channels.
                 tests:
                   - Context_WriteVerboseLine_VerboseMode_WritesToLog
                   - Context_WriteVerboseLine_NonVerboseMode_ProducesNoOutput
+                  - Context_WriteVerboseLine_NonSilentVerboseMode_WritesToConsole
+                  - Context_WriteVerboseLine_SilentVerboseMode_SuppressesConsole
 
               - id: VHDLTest-Cli-Context-WriteError-Message
                 title: Context shall write the provided error message to the console when WriteError is called, suppressed when silent mode is active.
@@ -111,6 +139,7 @@ sections:
                   non-critical output without losing error visibility in the log file.
                 tests:
                   - Context_WriteError_NonSilentMode_WritesToConsole
+                  - Context_WriteError_SilentMode_SuppressesConsole
 
               - id: VHDLTest-Cli-Context-WriteError-Counter
                 title: Context shall increment the error counter each time an error is reported.

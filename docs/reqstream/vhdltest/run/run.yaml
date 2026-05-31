@@ -13,10 +13,9 @@ sections:
               - RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults
             children:
               - VHDLTest-Run-RunProcessor-MissingProgram
-              - VHDLTest-Run-RunProcessor-ExitCodeFail
               - VHDLTest-Run-RunProgram-Execute
               - VHDLTest-Run-RunProgram-Output
-              - VHDLTest-Run-RunResults-SummaryElevation
+              - VHDLTest-Run-RunProgram-WorkingDirectory
 
           - id: VHDLTest-Run-Execute-ExitCode
             title: VHDLTest shall use the simulator program's exit code to determine whether the test run succeeded or failed.
@@ -26,6 +25,10 @@ sections:
               even when no individual output line matches an error pattern.
             tests:
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
+            children:
+              - VHDLTest-Run-RunProgram-ExitCode
+              - VHDLTest-Run-RunProcessor-ExitCodeFail
+              - VHDLTest-Run-RunResults-SummaryElevation
 
           - id: VHDLTest-Run-Log
             title: VHDLTest shall log the working directory and run command to the context before executing the simulator program.
@@ -53,10 +56,11 @@ sections:
               - RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults
               - RunSubsystem_ExecuteNoRules_FallsBackToTextClassification
             children:
-              - VHDLTest-Run-RunProcessor-Pass
+              - VHDLTest-Run-RunProcessor-Info
               - VHDLTest-Run-RunProcessor-Fail
               - VHDLTest-Run-RunResults-Print
               - VHDLTest-Run-RunResults-VerboseSuppression
               - VHDLTest-Run-RunLineRule-Classify
               - VHDLTest-Run-RunLine
               - VHDLTest-Run-RunLineType
+              - VHDLTest-Simulators-Factory-Classify

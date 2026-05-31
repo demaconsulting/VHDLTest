@@ -179,6 +179,7 @@ reviews:
     paths:
       - docs/reqstream/vhdltest/run/run-processor.yaml  # requirements
       - docs/design/vhdltest/run/run-processor.md  # design
+      - docs/verification/vhdltest/run/run-processor.md  # verification document
       - src/DEMAConsulting.VHDLTest/Run/RunProcessor.cs  # source
       - test/**/Run/RunProcessorTests.cs  # unit tests
 

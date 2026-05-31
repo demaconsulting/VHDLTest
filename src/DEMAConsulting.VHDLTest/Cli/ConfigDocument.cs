@@ -72,8 +72,9 @@ public class ConfigDocument
     ///     with independent file paths without synchronization.
     /// </remarks>
     /// <param name="filename">
-    ///     Path to a readable YAML file containing valid VHDLTest configuration. Must point to
-    ///     an existing file whose content can be deserialized into a <see cref="ConfigDocument"/>.
+    ///     Path to a readable YAML file containing valid VHDLTest configuration. Must not be null.
+    ///     Must point to an existing file whose content can be deserialized into a
+    ///     <see cref="ConfigDocument"/>.
     /// </param>
     /// <returns>
     ///     A non-null <see cref="ConfigDocument"/> instance populated from the file content. The
@@ -81,6 +82,7 @@ public class ConfigDocument
     ///     keys that are absent from the YAML document or that are explicitly set to null both
     ///     produce empty arrays.
     /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="filename"/> is null.</exception>
     /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist.</exception>
     /// <exception cref="InvalidOperationException">
     ///     Thrown when the configuration content is null, invalid, or cannot be deserialized into
@@ -88,6 +90,9 @@ public class ConfigDocument
     /// </exception>
     public static ConfigDocument ReadFile(string filename)
     {
+        // Validate inputs — a null path cannot be opened and produces a cryptic internal exception
+        ArgumentNullException.ThrowIfNull(filename);
+
         // Read the file contents
         var content = File.ReadAllText(filename);
 

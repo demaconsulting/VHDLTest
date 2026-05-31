@@ -14,7 +14,6 @@ sections:
                   cost-effective VHDL development and testing without commercial licenses.
                 tests:
                   - GhdlSimulator_SimulatorName_ReturnsGHDL
-                  - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
                   # CI integration tests (run in GHDL-installed environments):
                   # - ghdl@VHDLTest_TestPasses
                   # - ghdl@VHDLTest_TestFails
@@ -41,6 +40,8 @@ sections:
                   - GhdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
                   - GhdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
                   - GhdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+                  - GhdlSimulator_Test_WithValidConfig_InvokesGhdlWithRunArguments
+                  - GhdlSimulator_Test_WithElaborationFailure_SkipsRunStep
 
               - id: VHDLTest-Simulators-GhdlSimulator-FindPath
                 title: >-
@@ -55,7 +56,7 @@ sections:
                   - GhdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
                   - GhdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath
 
-              - id: VHDLTest-Simulators-GhdlSimulator-Availability
+              - id: VHDLTest-Simulators-GhdlSimulator-Unavailable
                 title: The GhdlSimulator shall throw InvalidOperationException when Compile or Test is invoked and the GHDL simulator is not available.
                 justification: |
                   Failing fast with a descriptive exception when the simulator is unavailable

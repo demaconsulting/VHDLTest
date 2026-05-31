@@ -56,8 +56,9 @@ not specified"). It propagates `FileNotFoundException` and `InvalidOperationExce
 returning null (indicating a root path such as `/` or `C:\` with no parent directory) also throws
 `InvalidOperationException`; this is a defensive guard ensuring `WorkingDirectory` is always a
 valid, absolute path before it reaches downstream units. This null-return path is unreachable with
-well-formed file system paths on supported operating systems and is not directly unit-testable. All
-exceptions propagate to `Program.Run`, which catches and reports them via `Context.WriteError`.
+well-formed file system paths on supported operating systems, but is directly testable by calling
+the internal `ResolveWorkingDirectory` method with a root path. All exceptions propagate to
+`Program.Run`, which catches and reports them via `Context.WriteError`.
 
 #### Dependencies
 

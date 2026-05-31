@@ -29,6 +29,16 @@ pipeline constitutes evidence that PandocTool correctly converted all document c
 
 ### Test Scenarios
 
+- **Pandoc_BuildNotesHtml**: FileAssert runs `.fileassert.yaml` with the `build-notes` tag
+  and verifies that `docs/build_notes/buildnotes.html` was produced by PandocTool: the file
+  exists, contains a `<title>` element, and includes the text "Build Notes". A passing
+  FileAssert check confirms PandocTool correctly converted the build notes Markdown source
+  to HTML output.
+- **Pandoc_DesignHtml**: FileAssert runs `.fileassert.yaml` with the `design` tag and
+  verifies that `docs/design/design.html` was produced by PandocTool: the file exists,
+  contains a `<title>` element, and includes the text "Design". A passing FileAssert check
+  confirms PandocTool correctly consolidated all design Markdown files into a single HTML
+  output.
 - **Design document conversion**: `dotnet pandoc --defaults docs/design/definition.yaml ...`
   consolidates all design Markdown files into `docs/design/design.html`. A zero exit code
   confirms that all input files were found and the HTML was produced.

@@ -27,6 +27,11 @@ N/A - standard test environment.
 
 #### Test Scenarios
 
+**Print_WithNullContext_ThrowsArgumentNullException**: Verifies that passing null as the
+context argument to `Print` throws `ArgumentNullException`, confirming the null-guard is
+enforced before any output is attempted.
+This scenario is tested by `RunResults_Print_WithNullContext_ThrowsArgumentNullException`.
+
 **Print_WithMixedLines_WritesColorCodedOutput**: Verifies that `Print` writes lines of all
 four severity types (Text, Info, Warning, Error) to the log when verbose is enabled,
 confirming the color-selection and output code paths for all RunLineType values.

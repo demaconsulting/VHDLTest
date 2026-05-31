@@ -2,7 +2,7 @@
 
 #### Verification Approach
 
-`RunProgram` is verified through four direct unit tests in `RunProgramTests.cs`. These tests
+`RunProgram` is verified through five direct unit tests in `RunProgramTests.cs`. These tests
 call `RunProgram.Run` directly using the `dotnet` executable as the controlled external program,
 verifying that the method correctly launches the process, captures combined stdout and stderr,
 returns the correct exit code, and propagates exceptions when the executable is not found.

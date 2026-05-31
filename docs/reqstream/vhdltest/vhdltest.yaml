@@ -52,6 +52,7 @@ sections:
               - VHDLTest_VerboseFlag_DisplaysDetailedOutput
             children:
               - VHDLTest-Cli-Context-WriteVerboseLine
+              - VHDLTest-Run-Log
 
           - id: VHDLTest-Cmd-Silent
             title: VHDLTest shall support a --silent option that suppresses non-essential output.
@@ -95,6 +96,10 @@ sections:
               - VHDLTest-Run-Execute
               - VHDLTest-Results-Collect
               - VHDLTest-Results-Save
+              - VHDLTest-Run-Classify
+              - VHDLTest-Results-Compile
+              - VHDLTest-Results-Execute
+              - VHDLTest-Results-PrintSummary
 
           - id: VHDLTest-Test-Exit0-Success
             title: VHDLTest shall return exit code 0 when all test benches pass.
@@ -119,6 +124,7 @@ sections:
             children:
               - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
+              - VHDLTest-Run-Execute-ExitCode
 
           - id: VHDLTest-Test-TestError
             title: VHDLTest shall return non-zero exit code when tests fail.
@@ -131,6 +137,7 @@ sections:
             children:
               - VHDLTest-Simulators-Factory-Select
               - VHDLTest-Run-Execute
+              - VHDLTest-Run-Execute-ExitCode
               - VHDLTest-Cli-Context-WriteError-Message
               - VHDLTest-Cli-Context-WriteError-Counter
               - VHDLTest-Cli-Context-WriteError-Silent
@@ -204,7 +211,7 @@ sections:
               - VHDLTest-Cli-Options-Parse
 
           - id: VHDLTest-Results-TRX
-            title: VHDLTest shall write test results in TRX format to the file specified by --results when the option is provided with a .trx extension.
+            title: VHDLTest shall write test results in TRX format to the file specified by `-r`/`--result`/`--results` when the option is provided with a `.trx` extension.
             justification: |
               TRX files are the standard test result format consumed by CI/CD platforms, coverage
               tools, and requirements traceability tools. Writing results to a file decouples
@@ -214,9 +221,10 @@ sections:
               - VHDLTest_ResultsFlag_WritesTrxFile
             children:
               - VHDLTest-Results-TestResults-Trx
+              - VHDLTest-Program-SaveResults
 
           - id: VHDLTest-Results-JUnit
-            title: VHDLTest shall write test results in JUnit XML format to the file specified by --results when the option is provided with a .xml extension.
+            title: VHDLTest shall write test results in JUnit XML format to the file specified by `-r`/`--result`/`--results` when the option is provided with a `.xml` extension.
             justification: |
               JUnit XML is widely consumed by CI/CD platforms and test-reporting dashboards outside
               the .NET ecosystem. Supporting JUnit XML output allows VHDLTest to integrate with
@@ -225,6 +233,7 @@ sections:
               - VHDLTest_ResultsFlag_WritesJUnitFile
             children:
               - VHDLTest-Results-TestResults-JUnit
+              - VHDLTest-Program-SaveResults
 
           - id: VHDLTest-Simulator-Select
             title: VHDLTest shall support selection of the VHDL simulator via the --simulator (-s) option, accepting values ghdl, nvc, modelsim, questasim, vivado, activehdl, and mock.
@@ -248,6 +257,42 @@ sections:
               - VHDLTest_SimulatorEnvPath_OverridesPath
             children:
               - VHDLTest-Simulators-Factory-Select
+              - VHDLTest-Simulators-GhdlSimulator-FindPath
+              - VHDLTest-Simulators-ModelSimSimulator-FindPath
+              - VHDLTest-Simulators-QuestaSimSimulator-FindPath
+              - VHDLTest-Simulators-VivadoSimulator-FindPath
+              - VHDLTest-Simulators-ActiveHdlSimulator-FindPath
+              - VHDLTest-Simulators-NvcSimulator-FindPath
+
+          - id: VHDLTest-Simulator-Path
+            title: VHDLTest shall locate a simulator executable on the system PATH.
+            justification: |
+              Runtime PATH-based discovery lets VHDLTest locate simulator installations without
+              requiring users to hard-code absolute paths in configuration or environment variables.
+              This is the default discovery mechanism when no environment variable override is set.
+            tests:
+              - VHDLTest_SimulatorEnvPath_OverridesPath
+              - VHDLTest_SimulatorPath_LocatesSimulator
+            children:
+              - VHDLTest-Simulators-Simulator-Where
+              - VHDLTest-Simulators-Simulator-Where-NotFound
+
+          - id: VHDLTest-Simulator-AutoSelect
+            title: >-
+              When --simulator is not specified, VHDLTest shall automatically select an available
+              simulator in the order: GHDL, ModelSim, QuestaSim, Vivado, Active-HDL, NVC. The
+              mock simulator is never auto-selected.
+            justification: |
+              When a developer has only one simulator installed, requiring an explicit --simulator
+              option is unnecessary friction. Auto-discovery enables zero-configuration usage: the
+              tool selects the first available simulator automatically. The mock simulator is
+              intentionally excluded from auto-selection because it is a test double that does not
+              perform real VHDL simulation; users must opt in explicitly via --simulator mock.
+            tests:
+              - SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull
+              - VHDLTest_AutoSelectSimulator_SelectsFirstAvailable
+            children:
+              - VHDLTest-Simulators-SimulatorFactory-AutoSelect
 
           - id: VHDLTest-Test-Filter
             title: VHDLTest shall support filtering test execution to named test bench(es).
@@ -260,6 +305,7 @@ sections:
             children:
               - VHDLTest-Cli-Context-Parse
               - VHDLTest-Cli-Options-Parse
+              - VHDLTest-Program-TestFilter
 
       - title: Self-Validation
         requirements:
@@ -286,7 +332,8 @@ sections:
               - VHDLTest_ValidateWithDepth_RendersDepthHeadings
             children:
               - VHDLTest-SelfTest-Depth
-              - VHDLTest-Cli-Context-Depth
+              - VHDLTest-Cli-Context-Depth-Parse
+              - VHDLTest-Cli-Context-Depth-Validate
 
           - id: VHDLTest-Validate-Results
             title: VHDLTest shall save validation results to file when the --results option is specified during self-validation.
@@ -296,17 +343,21 @@ sections:
               in qualification evidence packages for regulated industries.
             tests:
               - SelfTest_ValidateWithResultsFile_MockSimulator_SavesResults
+              - VHDLTest_Validate_SavesResultsFile
             children:
               - VHDLTest-SelfTest-Results
 
           - id: VHDLTest-Validate-SystemInfo
-            title: VHDLTest shall include system information in validation reports.
+            title: VHDLTest shall include system information (VHDLTest Version, Machine Name, OS Version, DotNet Runtime, and Time Stamp) in validation reports.
             justification: |
-              Providing environment context (OS version, runtime, timestamp) in validation
-              reports is essential for reproducing issues and diagnosing environment-specific
-              problems. It gives compliance reviewers the context needed to interpret results.
+              Providing full environment context — VHDLTest Version, Machine Name, OS Version,
+              DotNet Runtime, and Time Stamp — in validation reports is essential for
+              reproducing issues and diagnosing environment-specific problems. It gives
+              compliance reviewers the context needed to interpret results and verify that the
+              tool was operating in the expected environment at the time of validation.
             tests:
               - SelfTest_Validate_MockSimulator_IncludesOSVersionInReport
+              - VHDLTest_Validate_IncludesSystemInfo
             children:
               - VHDLTest-SelfTest-SystemInfo
 
@@ -318,6 +369,7 @@ sections:
               correct behavior when the configuration is incorrect.
             tests:
               - SelfTest_Validate_InvalidSimulator_ReturnsFailure
+              - VHDLTest_Validate_InvalidSimulator_ReturnsNonZeroExitCode
             children:
               - VHDLTest-SelfTest-InvalidSimulator-ExitCode
               - VHDLTest-SelfTest-InvalidSimulator-ErrorMessage

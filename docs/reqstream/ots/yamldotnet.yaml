@@ -7,10 +7,11 @@ sections:
           - id: VHDLTest-OTS-YamlDotNet
             title: YamlDotNet shall deserialize VHDLTest YAML configuration files into .NET objects.
             justification: |
-              YamlDotNet (v18.0.0) is the YAML parsing library used by VHDLTest to read test
-              configuration files. It deserializes the YAML document into a ConfigDocument instance
-              which is then validated and converted into an Options record for test execution.
-              Correct deserialization of all supported configuration fields confirms the library
+              YamlDotNet (the current version specified in the project SBOM) is the YAML
+              parsing library used by VHDLTest to read test configuration files. It
+              deserializes the YAML document into a ConfigDocument instance which is then
+              validated and converted into an Options record for test execution. Correct
+              deserialization of all supported configuration fields confirms the library
               is functioning as required.
             tags: [ots]
             tests:

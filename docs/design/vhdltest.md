@@ -24,11 +24,11 @@ flowchart TD
         Simulator
         SimulatorFactory
         GhdlSimulator
-        NvcSimulator
         ModelSimSimulator
         QuestaSimSimulator
         VivadoSimulator
         ActiveHdlSimulator
+        NvcSimulator
         MockSimulator
     end
 
@@ -77,8 +77,8 @@ flowchart TD
 
 - *Type*: File (YAML)
 - *Role*: Consumer (reads file from disk)
-- *Contract*: Parsed by `ConfigDocument` into an `Options` instance; fields include simulator name,
-  test names, compile files, and simulator-specific arguments.
+- *Contract*: Parsed by `ConfigDocument` into an `Options` instance; fields include compile files
+  (`files`) and test bench entity names (`tests`).
 - *Constraints*: File must be valid YAML conforming to the VHDLTest configuration schema.
 
 **Environment Variables**: Simulator executable path overrides.
@@ -128,16 +128,19 @@ Data moves through VHDLTest in the following sequence:
    select the active simulator (Simulators subsystem).
 3. `Options.Parse` calls `ConfigDocument.ReadFile` to deserialize the YAML configuration file into a
    `ConfigDocument` instance (using YamlDotNet), then constructs an `Options` record (Cli subsystem).
-4a. `TestResults.Execute` calls `simulator.Compile` to build the VHDL sources; if compilation produces
-    an Error-severity result, execution halts with `InvalidOperationException("Build Failed")`.
-4b. On build success, `TestResults.Execute` iterates over the configured tests; for each test it
-    delegates to the active simulator which invokes `RunProgram` to spawn the simulator process and
-    `RunProcessor` to classify each output line (Run subsystem).
-4. Each classified line is accumulated into `RunResults`, from which pass/fail `TestResult` records
-   are created and collected into `TestResults` (Results subsystem).
-5. `TestResults.PrintSummary` writes the summary to the `Context` output stream.
-6. If a results file path is present, `TestResults.SaveResults` writes the TRX or JUnit file.
-7. `Program.Main` sets `Environment.ExitCode` from `context.ExitCode`.
+4. `TestResults.Execute` calls `simulator.Compile` to build the VHDL sources in the order they are
+   declared in the configuration file; if compilation produces an Error-severity result, execution
+   halts with `InvalidOperationException("Build Failed")`.
+5. On build success, `TestResults.Execute` iterates over the configured tests; for each test it
+   delegates to the active simulator which invokes `RunProgram` to spawn the simulator process and
+   `RunProcessor` to classify each output line (Run subsystem). Each classified line is accumulated
+   into `RunResults`, from which pass/fail `TestResult` records are created and collected into
+   `TestResults` (Results subsystem).
+6. `TestResults.PrintSummary` writes the summary to the `Context` output stream.
+7. If a results file path is present, `TestResults.SaveResults` writes the TRX or JUnit file.
+8. `Program.Main` sets `Environment.ExitCode` from `context.ExitCode`. When `--exit-0` is
+   active, `Context.ExitCode` always reports 0 regardless of test failures, so the exit
+   code written to `Environment.ExitCode` is always 0 in that mode.
 
 ### Self-Validation Data Flow (`--validate`)
 
@@ -153,8 +156,12 @@ When `--validate` is specified, data flows through a re-entrant self-test path:
 4. Each re-entrant `Program.Run` call follows the normal 8-step data flow above using
    `MockSimulator` in place of a real simulator.
 5. `Validation` collects the per-scenario `RunResults`, formats a Markdown validation
-   report at the configured heading depth, and writes it to the `Context` output stream.
-6. `Program.Main` sets `Environment.ExitCode` from the aggregate validation result.
+   report at the configured heading depth — including system information (VHDLTest Version,
+   Machine Name, OS Version, DotNet Runtime, and Time Stamp) — and writes it to the `Context` output stream.
+6. If a results file path is present (`--results`), `TestResults.SaveResults` writes the
+   validation report to the specified file (TRX or JUnit format, determined by extension),
+   in addition to the output stream write in step 5.
+7. `Program.Main` sets `Environment.ExitCode` from the aggregate validation result.
 
 ## Design Constraints
 
@@ -169,10 +176,14 @@ When `--validate` is specified, data flows through a re-entrant self-test path:
 
 | Error Condition | Detection | Response |
 | --- | --- | --- |
-| Unknown CLI option | `Context.Create` parser encounters unrecognised flag | Writes error message, prints usage, exits non-zero |
-| Missing config file path | `Context.ConfigFile` is null | Writes "Error: Missing arguments", prints usage, exits non-zero |
-| Missing config file on disk | `ConfigDocument.ReadFile` throws `FileNotFoundException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
-| Invalid configuration YAML | `ConfigDocument.ReadFile` throws `InvalidOperationException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
-| Unknown simulator name | `SimulatorFactory.Get` returns null | `Program.Run` throws `InvalidOperationException("Simulator not found")`, exits non-zero |
-| Simulator executable absent | Simulator `Compile` or `Test` throws `InvalidOperationException` | Caught in `Program.Run`; writes "Error: ..." message, exits non-zero |
-| Results file write failure | `TestResults.SaveResults` throws any exception | Caught in `Program.Run`; writes "Error: Failed to write results file: ..." message, exits non-zero |
+| Compilation error | Error-severity result from Compile | `InvalidOperationException` thrown; exits non-zero |
+| Unknown CLI option | `Context.Create` encounters unknown flag | Writes error and usage; exits non-zero |
+| Missing config file path | `Context.ConfigFile` is null | Writes "Error: Missing arguments"; exits non-zero |
+| Missing config file on disk | `ReadFile` throws `FileNotFoundException` | Writes error; exits non-zero |
+| Invalid configuration YAML | `ReadFile` throws `InvalidOperationException` | Writes error; exits non-zero |
+| Unknown simulator name | `SimulatorFactory.Get` returns null | Throws "Simulator not found"; exits non-zero |
+| Simulator executable absent | `Compile`/`Test` throws `InvalidOperationException` | Writes error; exits non-zero |
+| Results file write failure | `TestResults.SaveResults` throws exception | Writes error; exits non-zero |
+
+**Note**: All console error output (produced via `Context.WriteError`) is suppressed when
+`--silent` is active. Log-file output to the `--log` file is unaffected by `--silent` mode.

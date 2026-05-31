@@ -36,12 +36,14 @@ the behavior of absent keys.
 
 #### Error Handling
 
-`ReadFile` propagates `FileNotFoundException` from `File.ReadAllText` if the specified file
-does not exist. It throws `InvalidOperationException` if the deserialization yields null or
-if any exception is raised during deserialization (not only YamlDotNet exceptions — all
-exceptions from the deserialization call are caught and wrapped). Both exception types
-propagate through `Options.Parse` to `Program.Run`, which catches and reports them via
-`Context.WriteError`.
+`ReadFile` throws `ArgumentNullException` if `filename` is null (via
+`ArgumentNullException.ThrowIfNull`). This is a programmer-error guard, not a user-facing
+runtime error. `ReadFile` propagates `FileNotFoundException` from `File.ReadAllText` if
+the specified file does not exist. It throws `InvalidOperationException` if the
+deserialization yields null or if any exception is raised during deserialization (not only
+YamlDotNet exceptions — all exceptions from the deserialization call are caught and wrapped).
+All three exception types propagate through `Options.Parse` to `Program.Run`, which catches
+and reports them via `Context.WriteError`.
 
 #### Dependencies
 

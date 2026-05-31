@@ -110,14 +110,29 @@ in `ActiveHdlSimulatorTests.cs`.
 
 **Test_WithCleanConfig_AppendsTclExitCode**: Verifies that the TCL test script written by
 `ActiveHdlSimulator.Test()` contains `exit -code 0` to signal successful simulation
-completion to vsimsa.
+completion to vsimsa. Uses `CreateForTesting` with a `FakeProcessInvoker` to avoid
+launching a real process; the test captures the written do-script content via a temp directory.
 This scenario is tested by `ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode`
 in `ActiveHdlSimulatorTests.cs`.
 
+**Compile_WithValidConfig_InvokesVsimsaWithDoScript**: Verifies that `ActiveHdlSimulator.Compile()`
+invokes the `vsimsa` executable (directly or via `cmd /c` on Windows) with the `-do` argument
+and the path to the generated do-script, confirming the correct process invocation.
+Uses `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `ActiveHdlSimulator_Compile_WithValidConfig_InvokesVsimsaWithDoScript`
+in `ActiveHdlSimulatorTests.cs`.
+
 **FindPath_WithEnvVar_ReturnsEnvVarValue**: Verifies that `ActiveHdlSimulator.FindPath()`
-returns the value of the `VHDLTEST_ACTIVEHDL_PATH` environment variable when set,
+returns the value of the `VHDLTEST_ACTIVEHDL_PATH` environment variable when it is set,
 confirming the environment variable override path works correctly.
 This scenario is tested by `ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
+in `ActiveHdlSimulatorTests.cs`.
+
+**FindPath_WithoutEnvVar_ReturnsNullOrPath**: Verifies that `ActiveHdlSimulator.FindPath()`
+does not throw when `VHDLTEST_ACTIVEHDL_PATH` is not set, and returns either null (Active-HDL
+not installed) or a non-empty string (Active-HDL found on PATH), confirming the PATH-based
+discovery path handles both the installed and not-installed cases without error.
+This scenario is tested by `ActiveHdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`
 in `ActiveHdlSimulatorTests.cs`.
 
 **Compile_SimulatorNotAvailable_ThrowsInvalidOperationException**: Verifies that `Compile()`

@@ -28,6 +28,16 @@ PDF/A-3u format.
 
 ### Test Scenarios
 
+- **WeasyPrint_BuildNotesPdf**: FileAssert runs `.fileassert.yaml` with the `build-notes`
+  tag and confirms that `docs/VHDLTest Build Notes.pdf` was produced by WeasyprintTool:
+  the file exists, carries the expected PDF metadata (Title, Author, Subject), has at least
+  one page, and includes the text "Build Notes". A passing FileAssert check confirms
+  WeasyprintTool correctly converted the build notes HTML to PDF/A-3u format.
+- **WeasyPrint_DesignPdf**: FileAssert runs `.fileassert.yaml` with the `design` tag and
+  confirms that `docs/VHDLTest Design.pdf` was produced by WeasyprintTool: the file exists,
+  carries the expected PDF metadata (Title, Author, Subject), has at least three pages, and
+  includes the text "Design". A passing FileAssert check confirms WeasyprintTool correctly
+  converted the design HTML to PDF/A-3u format.
 - **Design document PDF generation**: `dotnet weasyprint --pdf-variant pdf/a-3u docs/design/design.html "docs/VHDLTest Design.pdf"`
   converts the design HTML to a PDF/A-3u file. A zero exit code and a non-empty output
   file confirm successful conversion.

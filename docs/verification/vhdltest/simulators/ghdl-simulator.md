@@ -113,3 +113,19 @@ This scenario is tested by `GhdlSimulator_Compile_WhenNotAvailable_ThrowsInvalid
 throws `InvalidOperationException` when the GHDL simulator is not available (i.e., `SimulatorPath`
 is null), preventing silent incorrect behavior when the simulator is not installed.
 This scenario is tested by `GhdlSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`.
+
+**Compile_WithValidConfig_InvokesGhdl**: Verifies that `GhdlSimulator.Compile()` invokes the
+`ghdl` executable (directly or via `cmd /c` on Windows) with the expected analysis arguments,
+using `CreateForTesting` with a `FakeProcessInvoker` to capture the invocation without
+launching a real process.
+This scenario is tested by `GhdlSimulator_Compile_WithValidConfig_InvokesGhdl`.
+
+**Test_WithValidConfig_InvokesGhdl**: Verifies that `GhdlSimulator.Test()` invokes the
+`ghdl` executable (directly or via `cmd /c` on Windows) with elaboration and run arguments
+for the specified test bench, using `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `GhdlSimulator_Test_WithValidConfig_InvokesGhdl`.
+
+**Test_WithElaborationFailure_SkipsRunStep**: Verifies that `GhdlSimulator.Test()` returns
+early without invoking the run step when the elaboration step reports an error (non-zero exit
+code), confirming the two-phase execute sequence short-circuits on elaboration failure.
+This scenario is tested by `GhdlSimulator_Test_WithElaborationFailure_SkipsRunStep`.

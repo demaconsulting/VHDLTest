@@ -8,15 +8,18 @@ standard, combining elaboration and simulation in a single invocation.
 
 #### Data Model
 
-**Instance**: `NvcSimulator` (public static readonly) — singleton instance. `SimulatorName` is "NVC";
+**Instance**: `NvcSimulator` (public static get-only property) — singleton instance. `SimulatorName` is "NVC";
 `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for NVC analysis output.
+**CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for NVC analysis output.
 Classifies lines matching `.* Note:` as Info, `.* Warning:` as Warning, and `.* Error:`, `.* Failure:`,
 `.* Fatal:` as Error.
 
-**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for NVC simulation output.
+**TestProcessor**: `RunProcessor` (public static get-only property) — output classifier for NVC simulation output.
 Uses the same classification patterns as CompileProcessor.
+
+**_compileProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
+**_testProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
 
 #### Key Methods
 
@@ -31,6 +34,7 @@ Uses the same classification patterns as CompileProcessor.
   `nvc --std=2008 --work=work:VHDLTest.out/NVC/lib -a @VHDLTest.out/NVC/compile.rsp`.
   All paths in the `nvc` command arguments are relative to `options.WorkingDirectory`,
   which is also passed as the working directory to `CompileProcessor.Execute`.
+  Source files are passed to the compiler in the order they appear in `options.Config.Files`.
 
 **Test**: Elaborates and runs a single test bench in a single NVC invocation.
 
@@ -47,6 +51,9 @@ Uses the same classification patterns as CompileProcessor.
 - *Returns*: `string?` — directory path, or null if NVC is not found.
 - *Postconditions*: Returns the value of the `VHDLTEST_NVC_PATH` environment variable when set. Otherwise
   searches PATH for the `nvc` executable and returns its parent directory.
+
+**CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
+Used by unit tests to verify simulator invocations without launching real processes.
 
 #### Error Handling
 
@@ -69,6 +76,8 @@ behavior is delegated to NVC.
 - **RunLineRule** — output classification rules for CompileProcessor and TestProcessor.
 - **RunResults** — return type of `RunProcessor.Execute`.
 - **TestResult** — wraps `RunResults` for a single test bench result.
+- **IProcessInvoker** — injected invoker used by instance processors.
+- **ProcessInvoker** — default invoker used by the singleton instance.
 
 #### Callers
 

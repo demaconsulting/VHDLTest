@@ -151,13 +151,15 @@ public class SimulatorFactoryTests
     }
 
     /// <summary>
-    /// Test querying the simulator factory with a null name returns the first available simulator
-    /// or null when none is installed.
+    ///     Verifies that <see cref="SimulatorFactory.Get"/> performs auto-discovery when called
+    ///     with null: returns the first available production simulator, or null when no simulator
+    ///     is installed, and never returns <see cref="MockSimulator"/>.
     /// </summary>
     /// <remarks>
-    /// Satisfies <c>VHDLTest-Simulators-SimulatorFactory-AutoSelect</c>: auto-discovery returns either
-    /// a non-null Simulator instance (when at least one simulator is installed in the current
-    /// environment) or null (when no simulator is installed, as is typical in CI).
+    ///     Satisfies <c>VHDLTest-Simulators-SimulatorFactory-AutoSelect</c>: auto-discovery returns either
+    ///     a non-null Simulator instance (when at least one simulator is installed in the current
+    ///     environment) or null (when no simulator is installed, as is typical in CI).
+    ///     MockSimulator is excluded from auto-discovery results regardless of environment.
     /// </remarks>
     [Fact]
     public void SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull()
@@ -167,8 +169,8 @@ public class SimulatorFactoryTests
         // Act: request auto-discovery by passing null
         var result = SimulatorFactory.Get(null);
 
-        // Assert: result is null (no simulator installed) or a Simulator instance (not MockSimulator,
-        // since MockSimulator.Available() always returns false and is excluded from auto-discovery)
-        Assert.True(result is not MockSimulator);
+        // Assert: result is null (no simulator installed) or a non-MockSimulator Simulator instance
+        // (MockSimulator.Available() always returns false and is excluded from auto-discovery)
+        Assert.True(result is null || ((result != null) && result is not MockSimulator));
     }
 }

@@ -8,7 +8,7 @@ units in isolation, exercising normal paths, boundary conditions, and error path
 integration test class (`CliSubsystemTests.cs`) exercises the full Cli pipeline — from raw
 command-line arguments through `Context`, `ConfigDocument`, and `Options` — to verify that
 the three units work together correctly. A real YAML configuration file is written to disk
-and cleaned up after each test; no mocking is used.
+and cleaned up after the happy-path test; no mocking is used.
 
 ### Test Environment
 

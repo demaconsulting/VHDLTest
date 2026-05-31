@@ -26,6 +26,10 @@ Live simulator integration: CI environment with NVC installed on PATH.
 
 #### Test Scenarios
 
+**SimulatorName_ReturnsNVC**: Verifies that `NvcSimulator.Instance.SimulatorName` is `"NVC"`,
+confirming the instance is registered with the correct name for factory lookup.
+This scenario is tested by `NvcSimulator_SimulatorName_ReturnsNVC`.
+
 **Compile_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `NvcSimulator.Compile()`
 throws `InvalidOperationException` when the NVC simulator is not available (i.e., `SimulatorPath` is null),
 preventing silent incorrect behavior when the simulator is not installed.
@@ -36,13 +40,13 @@ throws `InvalidOperationException` when the NVC simulator is not available (i.e.
 preventing silent incorrect behavior when the simulator is not installed.
 This scenario is tested by `NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`.
 
-**SimulatorName_ReturnsNVC**: Verifies that `NvcSimulator.Instance.SimulatorName` is `"NVC"`,
-confirming the instance is registered with the correct name for factory lookup.
-This scenario is tested by `NvcSimulator_SimulatorName_ReturnsNVC`.
-
 **CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean NVC analysis output
 produces a `RunLineType.Text` summary with correctly classified lines.
 This scenario is tested by `NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult`.
+
+**CompileProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an NVC info (note) line in
+compile output is classified as `RunLineType.Info`, confirming the `.* Note:` pattern works.
+This scenario is tested by `NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult`.
 
 **CompileProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an NVC warning line
 is classified as `RunLineType.Warning`.
@@ -51,6 +55,14 @@ This scenario is tested by `NvcSimulator_CompileProcessor_WarningOutput_ReturnsW
 **CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an NVC error line is
 classified as `RunLineType.Error`.
 This scenario is tested by `NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult`.
+
+**CompileProcessor_FailureOutput_ReturnsErrorResult**: Verifies that an NVC failure line
+matching `.* Failure:` in compile output is classified as `RunLineType.Error`.
+This scenario is tested by `NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult`.
+
+**CompileProcessor_FatalOutput_ReturnsErrorResult**: Verifies that an NVC fatal line
+matching `.* Fatal:` in compile output is classified as `RunLineType.Error`.
+This scenario is tested by `NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult`.
 
 **TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean NVC simulation output
 produces a `RunLineType.Text` summary.
@@ -68,18 +80,6 @@ This scenario is tested by `NvcSimulator_TestProcessor_WarningOutput_ReturnsWarn
 simulation output is classified as `RunLineType.Error`.
 This scenario is tested by `NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult`.
 
-**CompileProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an NVC info (note) line in
-compile output is classified as `RunLineType.Info`, confirming the `.* Note:` pattern works.
-This scenario is tested by `NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult`.
-
-**CompileProcessor_FailureOutput_ReturnsErrorResult**: Verifies that an NVC failure line
-matching `.* Failure:` in compile output is classified as `RunLineType.Error`.
-This scenario is tested by `NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult`.
-
-**CompileProcessor_FatalOutput_ReturnsErrorResult**: Verifies that an NVC fatal line
-matching `.* Fatal:` in compile output is classified as `RunLineType.Error`.
-This scenario is tested by `NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult`.
-
 **TestProcessor_FailureOutput_ReturnsErrorResult**: Verifies that an NVC failure line
 matching `.* Failure:` in simulation output is classified as `RunLineType.Error`.
 This scenario is tested by `NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult`.
@@ -96,3 +96,14 @@ This scenario is tested by `NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
 throw when `VHDLTEST_NVC_PATH` is not set, returning either a valid path string (when NVC is
 installed) or null (when not installed).
 This scenario is tested by `NvcSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`.
+
+**Compile_WithValidConfig_InvokesNvc**: Verifies that `NvcSimulator.Compile()` invokes the
+`nvc` executable (directly or via `cmd /c` on Windows) with the expected analysis arguments,
+using `CreateForTesting` with a `FakeProcessInvoker` to capture the invocation without
+launching a real process.
+This scenario is tested by `NvcSimulator_Compile_WithValidConfig_InvokesNvc`.
+
+**Test_WithValidConfig_InvokesNvc**: Verifies that `NvcSimulator.Test()` invokes the
+`nvc` executable (directly or via `cmd /c` on Windows) with elaboration and run arguments
+for the specified test bench, using `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `NvcSimulator_Test_WithValidConfig_InvokesNvc`.

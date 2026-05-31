@@ -9,17 +9,20 @@ registered name ("QuestaSim"), its path environment variable, and its working di
 
 #### Data Model
 
-**Instance**: `QuestaSimSimulator` (public static readonly) — singleton instance. `SimulatorName` is
+**Instance**: `QuestaSimSimulator` (public static get-only property) — singleton instance. `SimulatorName` is
 "QuestaSim"; `SimulatorPath` is resolved by `FindPath()` at class initialization.
 
-**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for QuestaSim compile
-output. Classifies lines matching `.*Error:` (trailing space after the colon prevents false positives
+**CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for QuestaSim compile
+output. Classifies lines matching `` `.*Error: ` `` (trailing space after the colon prevents false positives
 on identifiers ending with "Error") as Error. Lines not matching any rule are left unclassified as Text.
 
-**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for QuestaSim simulation
-output. Classifies `.*Note:` as Info, `.*Warning:` as Warning, and `.*Error:` or `.*Failure:` as
-Error (each pattern includes a trailing space after the colon to prevent false positives on identifiers
-ending with the pattern keyword). Lines not matching any rule are left unclassified as Text.
+**TestProcessor**: `RunProcessor` (public static get-only property) — output classifier for QuestaSim simulation
+output. Classifies lines matching `.*Note:` (with trailing space) as Info, `.*Warning:` as Warning, and
+`.*Error:` or `.*Failure:` as Error (each pattern requires a trailing space to prevent false positives on
+identifiers ending with the keyword). Lines not matching any rule are left unclassified as Text.
+
+**_compileProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
+**_testProcessor**: `RunProcessor` (private instance field) — per-instance processor backed by the injected invoker.
 
 #### Key Methods
 
@@ -31,6 +34,7 @@ ending with the pattern keyword). Lines not matching any rule are left unclassif
 - *Postconditions*: Creates `VHDLTest.out/QuestaSim/` if absent. Writes `compile.do` containing
   `onerror {exit -code 1}`, `vlib work`, `set worklib work`, and `vcom -2008 ../../{file}` for each
   source file, followed by `exit -code 0`. Runs `vsim -c -do compile.do` from the library directory.
+  Source files are passed to the compiler in the order they appear in `options.Config.Files`.
 
 **Test** (public override): Simulates a single test bench using QuestaSim's vsim utility via a TCL do-script.
 
@@ -50,6 +54,9 @@ ending with the pattern keyword). Lines not matching any rule are left unclassif
 - *Postconditions*: Returns the value of the `VHDLTEST_QUESTASIM_PATH` environment variable when set.
   Otherwise searches PATH for the `vsim` executable and returns its parent directory.
 
+**CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
+Used by unit tests to verify simulator invocations without launching real processes.
+
 #### Error Handling
 
 `FindPath` returns null when QuestaSim is not installed, causing `Available()` to return false. Calling
@@ -66,6 +73,8 @@ as non-zero exit codes.
 - **RunLineRule** — output classification rules for CompileProcessor and TestProcessor.
 - **RunResults** — return type of `RunProcessor.Execute`.
 - **TestResult** — wraps `RunResults` for a single test bench result.
+- **IProcessInvoker** — injected invoker used by instance processors.
+- **ProcessInvoker** — default invoker used by the singleton instance.
 
 #### Callers
 

@@ -18,42 +18,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Reflection;
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DEMAConsulting.VHDLTest.Tests.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for the ActiveHDL simulator
+///     Tests for the ActiveHDL simulator
 /// </summary>
 /// <remarks>
 ///     Tests in this class are serialized via the <c>SimulatorEnvVarTests</c> collection because
 ///     <c>ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue</c> modifies the
-///     <c>VHDLTEST_ACTIVEHDL_PATH</c> process-level environment variable, requiring sequentialization
+///     <c>VHDLTEST_ACTIVEHDL_PATH</c> process-level environment variable, requiring serialization
 ///     to prevent race conditions with other environment-variable tests running in parallel.
 /// </remarks>
-// All tests in this class are serialized via the SimulatorEnvVarTests collection because
-// ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue modifies the
-// VHDLTEST_ACTIVEHDL_PATH process-level environment variable.
-// The DisableParallelization = true collection definition in SimulatorTestCollections.cs
-// ensures these tests run sequentially with other env-var tests, preventing race conditions.
 [Collection("SimulatorEnvVarTests")]
 public class ActiveHdlSimulatorTests
 {
     /// <summary>
-    /// Check name of ActiveHDL simulator name
+    ///     Check name of ActiveHDL simulator name
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_SimulatorName_ReturnsActiveHdl()
     {
+        // Arrange: N/A - uses the pre-initialized singleton instance
+
         // Act / Assert: simulator name is "ActiveHdl"
         Assert.Equal("ActiveHdl", ActiveHdlSimulator.Instance.SimulatorName);
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator compile with clean output
+    ///     Test ActiveHDL simulator compile with clean output
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
@@ -83,7 +80,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator compile with a warning message
+    ///     Test ActiveHDL simulator compile with a warning message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
@@ -113,7 +110,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator compile with an error message
+    ///     Test ActiveHDL simulator compile with an error message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
@@ -143,7 +140,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator compile with a fatal runtime error message
+    ///     Test ActiveHDL simulator compile with a fatal runtime error message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_CompileProcessor_FatalRuntimeError_ReturnsErrorResult()
@@ -170,7 +167,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with clean output
+    ///     Test ActiveHDL simulator test with clean output
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
@@ -200,7 +197,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with an info message
+    ///     Test ActiveHDL simulator test with an info message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
@@ -230,7 +227,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with a warning message
+    ///     Test ActiveHDL simulator test with a warning message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
@@ -260,7 +257,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with an error message
+    ///     Test ActiveHDL simulator test with an error message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
@@ -290,7 +287,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test that the first Lattice Edition warning is suppressed to Text
+    ///     Test ActiveHDL simulator test that the first Lattice Edition warning is suppressed to Text
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsTextResult()
@@ -317,7 +314,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test that the second Lattice Edition warning is suppressed to Text
+    ///     Test ActiveHDL simulator test that the second Lattice Edition warning is suppressed to Text
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsTextResult()
@@ -344,7 +341,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with a KERNEL Warning message
+    ///     Test ActiveHDL simulator test with a KERNEL Warning message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_KernelWarning_ReturnsWarningResult()
@@ -371,7 +368,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with a KERNEL WARNING (uppercase) message
+    ///     Test ActiveHDL simulator test with a KERNEL WARNING (uppercase) message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_KernelWarningUpper_ReturnsWarningResult()
@@ -398,7 +395,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with an EXECUTION FAILURE message
+    ///     Test ActiveHDL simulator test with an EXECUTION FAILURE message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_ExecutionFailure_ReturnsErrorResult()
@@ -425,7 +422,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with a KERNEL ERROR message
+    ///     Test ActiveHDL simulator test with a KERNEL ERROR message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_KernelError_ReturnsErrorResult()
@@ -452,7 +449,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with a RUNTIME Fatal Error message
+    ///     Test ActiveHDL simulator test with a RUNTIME Fatal Error message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_RuntimeFatalError_ReturnsErrorResult()
@@ -479,7 +476,7 @@ public class ActiveHdlSimulatorTests
     }
 
     /// <summary>
-    /// Test ActiveHDL simulator test with a VSIM Error message
+    ///     Test ActiveHDL simulator test with a VSIM Error message
     /// </summary>
     [Fact]
     public void ActiveHdlSimulator_TestProcessor_VsimError_ReturnsErrorResult()
@@ -512,76 +509,32 @@ public class ActiveHdlSimulatorTests
     [Fact]
     public void ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode()
     {
-        // Arrange: create an isolated temporary working directory and a fake vsimsa executable
-        // so that SimulatorPath is non-null and the script-write step is reached without
-        // requiring a real Active-HDL installation.
+        // Arrange
+        var invoker = new FakeProcessInvoker();
         var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
         Directory.CreateDirectory(tempDir);
         try
         {
-            // Create a fake vsimsa stub so the simulator path resolves to a real directory
-            if (OperatingSystem.IsWindows())
-            {
-                File.WriteAllText(Path.Combine(tempDir, "vsimsa.bat"), "@echo off\r\nexit /b 0\r\n");
-            }
-            else
-            {
-                File.WriteAllText(Path.Combine(tempDir, "vsimsa"), "#!/bin/sh\nexit 0\n");
-            }
+            // Pre-create the ActiveHDL output directory
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "ActiveHDL"));
 
-            // Pre-create the library output directory that Test() expects to exist
-            var workDir = Path.Combine(tempDir, "work");
-            Directory.CreateDirectory(Path.Combine(workDir, "VHDLTest.out", "ActiveHDL"));
-
+            var sim = ActiveHdlSimulator.CreateForTesting(tempDir, invoker);
             using var context = Context.Create(["--silent"]);
-            var options = new Options(workDir, new ConfigDocument());
+            var options = new Options(tempDir, new ConfigDocument());
 
-            // Create a test-only instance with tempDir as the simulator path.
-            // Set VHDLTEST_ACTIVEHDL_PATH temporarily and invoke the private constructor
-            // via reflection to bypass the singleton while keeping production code intact.
-            var savedEnv = Environment.GetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH");
-            Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", tempDir);
-            ActiveHdlSimulator simulator;
-            try
-            {
-                var ctor = typeof(ActiveHdlSimulator).GetConstructor(
-                    BindingFlags.NonPublic | BindingFlags.Instance,
-                    null,
-                    Type.EmptyTypes,
-                    null)!;
-                simulator = (ActiveHdlSimulator)ctor.Invoke(null);
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", savedEnv);
-            }
+            // Act
+            sim.Test(context, options, "my_tb");
 
-            // Act: invoke Test so the script file is written.
-            // Execution may fail because the stub vsimsa produces no expected output;
-            // only the script file content matters so execution failures are suppressed.
-            try
-            {
-                simulator.Test(context, options, "clean_tb");
-            }
-            catch (Exception)
-            {
-                // execution failure is expected with a stub executable
-            }
-
-            // Assert: the generated TCL test script contains "exit -code 0" to signal
-            // successful simulation completion back to vsimsa
-            var scriptPath = Path.Combine(workDir, "VHDLTest.out", "ActiveHDL", "test.do");
+            // Assert: the generated TCL test script contains "exit -code 0"
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "ActiveHDL", "test.do");
             Assert.True(File.Exists(scriptPath), "TCL test script file was not created");
-            var scriptContent = File.ReadAllText(scriptPath);
-            Assert.Contains("exit -code 0", scriptContent);
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("exit -code 0", content);
+            Assert.Contains("asim my_tb", content);
         }
         finally
         {
-            // Cleanup: remove the temporary directory and all its contents
-            if (Directory.Exists(tempDir))
-            {
-                Directory.Delete(tempDir, recursive: true);
-            }
+            Directory.Delete(tempDir, true);
         }
     }
 
@@ -604,6 +557,33 @@ public class ActiveHdlSimulatorTests
 
             // Assert: result is the env var value
             Assert.Equal(expectedPath, result);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that <see cref="ActiveHdlSimulator.FindPath"/> does not throw when
+    ///     <c>VHDLTEST_ACTIVEHDL_PATH</c> is not set. Result is either a valid path
+    ///     (Active-HDL installed) or null (Active-HDL not installed).
+    /// </summary>
+    [Fact]
+    public void ActiveHdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
+    {
+        // Arrange: ensure VHDLTEST_ACTIVEHDL_PATH is not set for this test
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_ACTIVEHDL_PATH", null);
+
+        try
+        {
+            // Act: call FindPath() without the env var override
+            var result = ActiveHdlSimulator.FindPath();
+
+            // Assert: result is either null (Active-HDL not installed) or a non-empty path string
+            Assert.True(result == null || result.Length > 0);
         }
         finally
         {
@@ -660,5 +640,35 @@ public class ActiveHdlSimulatorTests
         var ex = Assert.Throws<InvalidOperationException>(
             () => ActiveHdlSimulator.Instance.Test(context, options, "test_tb"));
         Assert.Contains("ActiveHDL Simulator not available", ex.Message);
+    }
+
+    /// <summary>
+    ///     Verifies that ActiveHdlSimulator.Compile invokes vsimsa with a do-script argument.
+    /// </summary>
+    [Fact]
+    public void ActiveHdlSimulator_Compile_WithValidConfig_InvokesVsimsaWithDoScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = ActiveHdlSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("-do", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
     }
 }

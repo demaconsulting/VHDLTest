@@ -101,8 +101,10 @@ public class RunProcessorTests
         // Act: run dotnet help, which outputs usage information
         var result = processor.Execute("dotnet", "", "help");
 
-        // Assert: the Info-matched lines drive the summary to Info
-        Assert.Equal(RunLineType.Info, result.Summary);
+        // Assert: individual lines are classified as Info and the summary reflects that
+        Assert.Multiple(
+            () => Assert.Equal(RunLineType.Info, result.Summary),
+            () => Assert.Contains(result.Lines, l => l.Type == RunLineType.Info));
     }
 
     /// <summary>
@@ -196,6 +198,42 @@ public class RunProcessorTests
             Assert.Multiple(
                 () => Assert.Contains("Run Directory", logContent),
                 () => Assert.Contains("Run Command", logContent));
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that <c>Execute(Context, ...)</c> writes a verbose log entry for the run
+    ///     command (including the application name) independently of the working-directory entry.
+    /// </summary>
+    [Fact]
+    public void RunProcessor_Execute_WithVerboseContext_LogsCommand()
+    {
+        // Arrange: use a unique per-test temp log file to capture verbose context output
+        var logFile = Path.Combine(Path.GetTempPath(), $"rp_cmd_test_{Guid.NewGuid():N}.log");
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using (var context = Context.Create(["--verbose", "--log", logFile, "--silent"]))
+            {
+                // Act: invoke Execute(Context, ...) with a known application
+                processor.Execute(context, "dotnet", "", "help");
+            }
+
+            // Assert: the verbose log contains the "Run Command" entry with the application name
+            var logContent = File.ReadAllText(logFile);
+            Assert.Multiple(
+                () => Assert.Contains("Run Command", logContent),
+                () => Assert.Contains("dotnet", logContent));
         }
         finally
         {

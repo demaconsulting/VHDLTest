@@ -60,6 +60,7 @@ public record RunLineRule(RunLineType Type, Regex Pattern)
     ///     method, which compiles the pattern string and applies the construction-time guard.
     /// </remarks>
     public Regex Pattern { get; init; } = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
+
     /// <summary>
     ///     Creates a new <see cref="RunLineRule"/> by compiling <paramref name="pattern"/>
     ///     into a <see cref="Regex"/> and pairing it with <paramref name="type"/>.

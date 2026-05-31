@@ -11,9 +11,10 @@ implementations and the output-processing pipeline.
 
 #### Data Model
 
-| Field   | Type            | Description                                                          |
-| ------- | --------------- | -------------------------------------------------------------------- |
-| `rules` | `RunLineRule[]` | Ordered rules injected at construction; immutable for the instance lifetime. |
+| Field      | Type              | Description                                                                  |
+| ---------- | ----------------- | ---------------------------------------------------------------------------- |
+| `_rules`   | `RunLineRule[]`   | Ordered rules injected at construction; immutable for the instance lifetime. |
+| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null.           |
 
 #### Key Methods
 
@@ -34,7 +35,7 @@ returns its result.
 **`Execute(string application, string workingDirectory, string[] arguments) → RunResults`**
 
 Records the start time using `DateTime.Now` (local wall-clock time) immediately before process
-launch, calls `RunProgram.Run` to launch the process and capture output, then records the end
+launch, calls `_invoker.Execute` to launch the process and capture output, then records the end
 time with `DateTime.Now` immediately after exit. Local time is used intentionally — results are
 displayed to end users who expect local timestamps in run logs. Calls `Parse` and returns
 the result. No logging is performed.
@@ -62,7 +63,8 @@ caller unchanged.
 
 #### Dependencies
 
-- **RunProgram** — called to launch the external simulator process.
+- **IProcessInvoker** — called to launch the external simulator process via Execute.
+- **ProcessInvoker** — default IProcessInvoker used when none is supplied at construction; delegates to RunProgram.
 - **RunLine** — instantiated during output parsing for each classified line.
 - **RunLineRule** — applied to each output line to determine its `RunLineType`.
 - **RunLineType** — used for the default line type, summary computation, and error threshold.

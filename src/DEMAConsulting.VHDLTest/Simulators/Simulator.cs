@@ -46,22 +46,22 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 public abstract class Simulator(string simulatorName, string? simulatorPath)
 {
     /// <summary>
-    ///     Gets the name of the simulator
+    ///     Gets the name of the simulator.
     /// </summary>
-    /// <returns>
+    /// <value>
     ///     The display name of this simulator instance (for example, "GHDL" or "NVC"). This
     ///     value is guaranteed non-null; it is set from the constructor's
     ///     <c>simulatorName</c> parameter at initialization time.
-    /// </returns>
+    /// </value>
     public string SimulatorName => simulatorName;
 
     /// <summary>
     ///     Gets the path to the simulator installation directory.
     /// </summary>
-    /// <returns>
+    /// <value>
     ///     The path to the simulator executable or directory, or <c>null</c> if the simulator
     ///     is not installed.
-    /// </returns>
+    /// </value>
     public string? SimulatorPath => simulatorPath;
 
     /// <summary>
@@ -76,7 +76,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     }
 
     /// <summary>
-    ///     Compile the simulator library
+    ///     Compiles all VHDL source files listed in the run options.
     /// </summary>
     /// <param name="context">
     ///     Execution context used for logging output and error reporting. Must not be null.
@@ -94,7 +94,7 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     public abstract RunResults Compile(Context context, Options options);
 
     /// <summary>
-    ///     Execute a test
+    ///     Executes a single named VHDL test bench.
     /// </summary>
     /// <param name="context">
     ///     Execution context used for logging output and error reporting. Must not be null.

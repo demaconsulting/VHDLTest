@@ -25,12 +25,23 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
 /// <summary>
-/// Tests for the Mock simulator
+///     Unit tests for the <see cref="MockSimulator"/> class, verifying that its deterministic
+///     compile and test simulation behaviors produce the correct output classifications and
+///     overall result severity from filename and test-name patterns.
 /// </summary>
+/// <remarks>
+///     Tests cover: <see cref="Simulator.SimulatorName"/> and <see cref="Simulator.Available"/>
+///     registration properties; <see cref="MockSimulator.CompileProcessor"/> and
+///     <see cref="MockSimulator.TestProcessor"/> line-classification rules; and the
+///     <see cref="MockSimulator.Compile"/> and <see cref="MockSimulator.Test"/> pattern-matching
+///     algorithms end-to-end.
+/// </remarks>
 public class MockSimulatorTests
 {
     /// <summary>
-    /// Test the simulator name of the mock simulator
+    ///     Verifies that <see cref="MockSimulator.Instance"/> has <see cref="Simulator.SimulatorName"/>
+    ///     equal to <c>"Mock"</c>, confirming it is registered under the name the factory uses to
+    ///     locate it when the caller passes <c>--simulator mock</c>.
     /// </summary>
     [Fact]
     public void MockSimulator_SimulatorName_ReturnsMock()
@@ -46,7 +57,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test that the mock simulator reports unavailable (no path)
+    ///     Verifies that <see cref="MockSimulator.Instance"/> reports unavailable, confirming
+    ///     that <see cref="Simulator.SimulatorPath"/> is null and auto-discovery by the
+    ///     simulator factory never selects MockSimulator during normal runs.
     /// </summary>
     [Fact]
     public void MockSimulator_Available_WithNullPath_ReturnsFalse()
@@ -62,7 +75,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile processor with clean output
+    ///     Verifies that clean output through the mock compile processor produces a
+    ///     <see cref="RunLineType.Text"/> summary with correct line count and timing fields,
+    ///     confirming the minimum-severity baseline classification when no severity markers are present.
     /// </summary>
     [Fact]
     public void MockSimulator_CompileProcessor_CleanOutput_ReturnsTextResult()
@@ -88,7 +103,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile processor with an info message
+    ///     Verifies that a line prefixed <c>"Info:"</c> is classified as <see cref="RunLineType.Info"/>
+    ///     by the mock compile processor, confirming the Info classification rule is present and
+    ///     takes precedence over the default Text classification.
     /// </summary>
     [Fact]
     public void MockSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult()
@@ -114,7 +131,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile processor with a warning message
+    ///     Verifies that a line prefixed <c>"Warning:"</c> is classified as
+    ///     <see cref="RunLineType.Warning"/> by the mock compile processor, confirming the Warning
+    ///     classification rule correctly elevates severity above the Text baseline.
     /// </summary>
     [Fact]
     public void MockSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult()
@@ -140,7 +159,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile processor with an error message
+    ///     Verifies that a line prefixed <c>"Error:"</c> is classified as
+    ///     <see cref="RunLineType.Error"/> by the mock compile processor, confirming the Error
+    ///     classification rule produces the highest severity in the compile output path.
     /// </summary>
     [Fact]
     public void MockSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult()
@@ -166,7 +187,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test processor with clean output
+    ///     Verifies that clean output through the mock test processor produces a
+    ///     <see cref="RunLineType.Text"/> summary with correct line count and timing fields,
+    ///     confirming the minimum-severity baseline classification when no severity markers are present.
     /// </summary>
     [Fact]
     public void MockSimulator_TestProcessor_CleanOutput_ReturnsTextResult()
@@ -192,7 +215,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test processor with an info message
+    ///     Verifies that a line prefixed <c>"Info:"</c> is classified as <see cref="RunLineType.Info"/>
+    ///     by the mock test processor, confirming the Info classification rule is present and
+    ///     takes precedence over the default Text classification.
     /// </summary>
     [Fact]
     public void MockSimulator_TestProcessor_InfoOutput_ReturnsInfoResult()
@@ -218,7 +243,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test processor with a warning message
+    ///     Verifies that a line prefixed <c>"Warning:"</c> is classified as
+    ///     <see cref="RunLineType.Warning"/> by the mock test processor, confirming the Warning
+    ///     classification rule correctly elevates severity above the Text baseline.
     /// </summary>
     [Fact]
     public void MockSimulator_TestProcessor_WarningOutput_ReturnsWarningResult()
@@ -244,7 +271,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test processor with a failure message (maps to Error)
+    ///     Verifies that a line prefixed <c>"Failure:"</c> is classified as
+    ///     <see cref="RunLineType.Error"/> by the mock test processor, confirming that VHDL
+    ///     assertion-failure lines are treated as errors even when the process exit code is zero.
     /// </summary>
     [Fact]
     public void MockSimulator_TestProcessor_FailureOutput_ReturnsErrorResult()
@@ -270,7 +299,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test processor with an error message
+    ///     Verifies that a line prefixed <c>"Error:"</c> is classified as
+    ///     <see cref="RunLineType.Error"/> by the mock test processor, confirming the Error
+    ///     classification rule produces the highest severity in the test execution output path.
     /// </summary>
     [Fact]
     public void MockSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult()
@@ -296,7 +327,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile with an error filename pattern returns error result
+    ///     Verifies that <see cref="MockSimulator.Compile"/> returns an <see cref="RunLineType.Error"/>
+    ///     summary when a source file name contains <c>_error_</c>, confirming the error filename
+    ///     pattern triggers error classification and a non-zero exit code.
     /// </summary>
     [Fact]
     public void MockSimulator_Compile_WithErrorFile_ReturnsErrorResult()
@@ -315,7 +348,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile with a warning filename pattern returns warning result
+    ///     Verifies that <see cref="MockSimulator.Compile"/> returns a <see cref="RunLineType.Warning"/>
+    ///     summary when a source file name contains <c>_warning_</c>, confirming the warning filename
+    ///     pattern exercises the compile warning reporting path without triggering a failure.
     /// </summary>
     [Fact]
     public void MockSimulator_Compile_WithWarningFile_ReturnsWarningResult()
@@ -334,7 +369,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile with an info filename pattern returns info result
+    ///     Verifies that <see cref="MockSimulator.Compile"/> returns a <see cref="RunLineType.Info"/>
+    ///     summary when a source file name contains <c>_info_</c>, confirming the info filename
+    ///     pattern exercises the compile info reporting path without escalating to a warning.
     /// </summary>
     [Fact]
     public void MockSimulator_Compile_WithInfoFile_ReturnsInfoResult()
@@ -353,7 +390,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator compile with a clean filename returns success result
+    ///     Verifies that <see cref="MockSimulator.Compile"/> returns a <see cref="RunLineType.Text"/>
+    ///     summary when a source file name contains no special pattern, confirming the clean compile
+    ///     path produces no severity escalation.
     /// </summary>
     [Fact]
     public void MockSimulator_Compile_WithCleanFile_ReturnsSuccessResult()
@@ -372,7 +411,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test with an error test name pattern returns error result
+    ///     Verifies that <see cref="MockSimulator.Test"/> returns a <see cref="RunLineType.Error"/>
+    ///     summary when the test bench name contains <c>_error_</c>, confirming the error pattern
+    ///     generates an <c>"Error:"</c> output line and sets a non-zero exit code.
     /// </summary>
     [Fact]
     public void MockSimulator_Test_WithErrorPattern_ReturnsErrorResult()
@@ -391,7 +432,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test with a fail test name pattern returns error result
+    ///     Verifies that <see cref="MockSimulator.Test"/> returns a <see cref="RunLineType.Error"/>
+    ///     summary when the test bench name contains <c>_fail_</c>, confirming that a
+    ///     <c>"Failure:"</c> output line is classified as Error by the test processor.
     /// </summary>
     [Fact]
     public void MockSimulator_Test_WithFailPattern_ReturnsErrorResult()
@@ -410,7 +453,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test with a warning test name pattern returns warning result
+    ///     Verifies that <see cref="MockSimulator.Test"/> returns a <see cref="RunLineType.Warning"/>
+    ///     summary when the test bench name contains <c>_warning_</c>, confirming the warning pattern
+    ///     exercises the test warning reporting path without triggering a failure.
     /// </summary>
     [Fact]
     public void MockSimulator_Test_WithWarningPattern_ReturnsWarningResult()
@@ -429,7 +474,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test with an info test name pattern returns info result
+    ///     Verifies that <see cref="MockSimulator.Test"/> returns a <see cref="RunLineType.Info"/>
+    ///     summary when the test bench name contains <c>_info_</c>, confirming the info pattern
+    ///     exercises the test info reporting path without escalating to a warning.
     /// </summary>
     [Fact]
     public void MockSimulator_Test_WithInfoPattern_ReturnsInfoResult()
@@ -448,7 +495,9 @@ public class MockSimulatorTests
     }
 
     /// <summary>
-    /// Test mock simulator test with a clean test name returns success result
+    ///     Verifies that <see cref="MockSimulator.Test"/> returns a <see cref="RunLineType.Text"/>
+    ///     summary when the test bench name contains no special pattern, confirming the clean
+    ///     pass path produces no severity escalation.
     /// </summary>
     [Fact]
     public void MockSimulator_Test_WithCleanName_ReturnsSuccessResult()

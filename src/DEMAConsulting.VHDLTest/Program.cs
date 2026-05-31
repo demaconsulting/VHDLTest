@@ -95,7 +95,8 @@ public static class Program
     }
 
     /// <summary>
-    ///     Run the program context
+    ///     Executes the dispatched operation for the given context, routing to version display,
+    ///     help, self-validation, or the primary test-execution path based on parsed flags.
     /// </summary>
     /// <remarks>
     ///     Dispatch order: version display → help display → self-validation → normal test run.
@@ -187,7 +188,7 @@ public static class Program
     }
 
     /// <summary>
-    ///     Print usage information
+    ///     Writes the usage and help text to the context output channel.
     /// </summary>
     /// <remarks>
     ///     Writes the usage/help text to the context output channel. The method is stateless —

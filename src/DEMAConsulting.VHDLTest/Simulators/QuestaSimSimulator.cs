@@ -39,6 +39,19 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// </remarks>
 public sealed class QuestaSimSimulator : Simulator
 {
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Error, ".*Error: ")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".*Note: "),
+        RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
+        RunLineRule.Create(RunLineType.Error, ".*Error: "),
+        RunLineRule.Create(RunLineType.Error, ".*Failure: ")
+    ];
+
     /// <summary>
     ///     Output classifier for QuestaSim compilation (<c>vcom</c>) output.
     /// </summary>
@@ -47,11 +60,7 @@ public sealed class QuestaSimSimulator : Simulator
     ///     prevents false positives on identifiers ending with "Error") are classified as Error.
     ///     Lines not matching any rule are left unclassified as Text.
     /// </remarks>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Error, ".*Error: ")
-        ]
-    );
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
     ///     Output classifier for QuestaSim simulation (<c>vsim</c>) output.
@@ -66,14 +75,7 @@ public sealed class QuestaSimSimulator : Simulator
     ///         <item><description>Lines matching <c>.*Failure: </c> are classified as Error.</description></item>
     ///     </list>
     /// </remarks>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".*Note: "),
-            RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
-            RunLineRule.Create(RunLineType.Error, ".*Error: "),
-            RunLineRule.Create(RunLineType.Error, ".*Failure: ")
-        ]
-    );
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
 
     /// <summary>
     ///     The singleton <see cref="QuestaSimSimulator"/> instance, initialized at class load time.
@@ -86,12 +88,31 @@ public sealed class QuestaSimSimulator : Simulator
     /// </remarks>
     public static QuestaSimSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
     ///     Initializes a new instance of the QuestaSim simulator.
     /// </summary>
-    private QuestaSimSimulator() : base("QuestaSim", FindPath())
+    private QuestaSimSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private QuestaSimSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("QuestaSim", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="QuestaSimSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static QuestaSimSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     /// <remarks>
@@ -137,7 +158,7 @@ public sealed class QuestaSimSimulator : Simulator
 
         // Run the QuestaSim compiler
         var application = Path.Combine(simPath, "vsim");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             libDir,
@@ -182,7 +203,7 @@ public sealed class QuestaSimSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "vsim");
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             libDir,

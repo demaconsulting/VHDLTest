@@ -42,6 +42,16 @@ public class ConfigDocumentTests
         """;
 
     /// <summary>
+    /// Test that passing null as the filename throws ArgumentNullException
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_NullFilename_ThrowsArgumentNullException()
+    {
+        // Act + Assert: passing null should throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => ConfigDocument.ReadFile(null!));
+    }
+
+    /// <summary>
     /// Test reading a missing configuration file
     /// </summary>
     [Fact]
@@ -85,7 +95,7 @@ public class ConfigDocumentTests
     /// Test reading a configuration file with null content (should throw InvalidOperationException)
     /// </summary>
     [Fact]
-    public void ConfigDocument_ReadFile_InvalidContent_ThrowsInvalidOperationException()
+    public void ConfigDocument_ReadFile_NullDeserializationResult_ThrowsInvalidOperationException()
     {
         // Arrange: write a file that deserializes to null
         var invalidFile = Path.GetTempFileName();

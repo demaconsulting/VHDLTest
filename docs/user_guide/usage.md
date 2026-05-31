@@ -82,7 +82,8 @@ The TRX file format is compatible with most CI/CD systems and can be displayed i
 VHDLTest returns the following exit codes:
 
 - `0` - All tests passed (or `--exit-0` was used)
-- `Non-zero` - Compilation failed or one or more tests failed
+- `Non-zero` — Any error condition, including compilation failure, test failure,
+  invalid configuration, or unknown simulator.
 
 ## Self-Validation
 
@@ -101,6 +102,18 @@ Self-validation uses the `mock` simulator to execute embedded VHDL test scenario
 requiring a real simulator installation. Specifying `--simulator mock` is required to use
 the built-in mock; without it, VHDLTest attempts to auto-discover an installed simulator.
 
+### Saving the Validation Report
+
+When `--results` is provided during a `--validate` run, the validation report is written
+to the specified file in addition to being displayed on the console. For example:
+
+```bash
+dotnet vhdltest --validate --simulator mock --results validation.trx
+```
+
+The output format is determined by the file extension (`.trx` for TRX format or `.xml`
+for JUnit XML format).
+
 ### Validation Report
 
 The validation report contains:
@@ -108,8 +121,8 @@ The validation report contains:
 - VHDLTest version
 - Machine name
 - Operating system version
-- .NET runtime version
-- Timestamp
+- DotNet Runtime
+- Time Stamp
 - Test results
 
 Example validation report:

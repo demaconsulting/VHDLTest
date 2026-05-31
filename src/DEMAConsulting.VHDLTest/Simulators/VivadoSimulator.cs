@@ -45,6 +45,19 @@ public sealed class VivadoSimulator : Simulator
     /// </summary>
     private const string OutputSubDirectory = "VHDLTest.out/Vivado";
 
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Error, "Error: ")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, "Note: "),
+        RunLineRule.Create(RunLineType.Warning, "Warning: "),
+        RunLineRule.Create(RunLineType.Error, "Error: "),
+        RunLineRule.Create(RunLineType.Error, "Failure: ")
+    ];
+
     /// <summary>
     ///     Output classifier for xvhdl compilation output.
     /// </summary>
@@ -56,11 +69,7 @@ public sealed class VivadoSimulator : Simulator
     ///     Unmatched lines are left as Text. The trailing space in each pattern prevents false
     ///     matches on identifiers that share a keyword prefix (for example, <c>ErrorDetails:</c>).
     /// </remarks>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Error, "Error: ")
-        ]
-    );
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
     ///     Output classifier for xelab simulation output.
@@ -76,14 +85,7 @@ public sealed class VivadoSimulator : Simulator
     ///     Unmatched lines are left as Text. The trailing space in each pattern prevents false
     ///     matches on identifiers that share a keyword prefix (for example, <c>ErrorDetails:</c>).
     /// </remarks>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, "Note: "),
-            RunLineRule.Create(RunLineType.Warning, "Warning: "),
-            RunLineRule.Create(RunLineType.Error, "Error: "),
-            RunLineRule.Create(RunLineType.Error, "Failure: ")
-        ]
-    );
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
 
     /// <summary>
     ///     Singleton <see cref="VivadoSimulator"/> instance shared across the application.
@@ -95,6 +97,9 @@ public sealed class VivadoSimulator : Simulator
     /// </remarks>
     public static VivadoSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
     ///     Initializes a new instance of the Vivado simulator.
     /// </summary>
@@ -103,9 +108,25 @@ public sealed class VivadoSimulator : Simulator
     ///     <see cref="FindPath"/> is invoked within the base-constructor call, initializing
     ///     <see cref="Simulator.SimulatorPath"/> to null when Vivado is not found.
     /// </remarks>
-    private VivadoSimulator() : base("Vivado", FindPath())
+    private VivadoSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private VivadoSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("Vivado", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="VivadoSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static VivadoSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     public override RunResults Compile(Context context, Options options)
@@ -143,7 +164,7 @@ public sealed class VivadoSimulator : Simulator
 
         // Run the Vivado compiler; RunProcessor handles platform-specific execution transparently
         var application = Path.Combine(simPath, "xvhdl");
-        return CompileProcessor.Execute(context, application, libDir, "-file", "compile.do");
+        return _compileProcessor.Execute(context, application, libDir, "-file", "compile.do");
     }
 
     /// <inheritdoc />
@@ -175,7 +196,7 @@ public sealed class VivadoSimulator : Simulator
 
         // Run the Vivado test; RunProcessor handles platform-specific execution transparently
         var application = Path.Combine(simPath, "xelab");
-        var testRunResults = TestProcessor.Execute(context, application, libDir, "-file", "test.do");
+        var testRunResults = _testProcessor.Execute(context, application, libDir, "-file", "test.do");
 
         // Return the test results
         return new TestResult(

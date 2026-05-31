@@ -44,7 +44,7 @@ The `tests` section specifies which test benches to execute:
 
 Configure simulator paths using environment variables:
 
-- `VHDLTEST_ACTIVEHDL_PATH` - Path to ActiveHDL installation
+- `VHDLTEST_ACTIVEHDL_PATH` - Path to Active-HDL installation
 - `VHDLTEST_GHDL_PATH` - Path to GHDL installation
 - `VHDLTEST_MODELSIM_PATH` - Path to ModelSim installation
 - `VHDLTEST_NVC_PATH` - Path to NVC installation

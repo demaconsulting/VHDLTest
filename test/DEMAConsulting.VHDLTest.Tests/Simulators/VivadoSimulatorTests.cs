@@ -21,6 +21,7 @@
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
+using DEMAConsulting.VHDLTest.Tests.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 
@@ -359,6 +360,131 @@ public class VivadoSimulatorTests
         {
             // Restore the environment variable
             Environment.SetEnvironmentVariable("VHDLTEST_VIVADO_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that FindPath does not throw when VHDLTEST_VIVADO_PATH is not set.
+    ///     Result is either a valid path (Vivado installed) or null (Vivado not installed).
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath()
+    {
+        // Arrange: ensure VHDLTEST_VIVADO_PATH is not set for this test
+        var previousValue = Environment.GetEnvironmentVariable("VHDLTEST_VIVADO_PATH");
+        Environment.SetEnvironmentVariable("VHDLTEST_VIVADO_PATH", null);
+
+        try
+        {
+            // Act: call FindPath() without the env var override
+            var result = VivadoSimulator.FindPath();
+
+            // Assert: result is either null (Vivado not installed) or a non-empty path string
+            Assert.True(result == null || result.Length > 0);
+        }
+        finally
+        {
+            // Restore the environment variable
+            Environment.SetEnvironmentVariable("VHDLTEST_VIVADO_PATH", previousValue);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that VivadoSimulator.Compile invokes xvhdl with argument-file arguments.
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Compile_WithValidConfig_InvokesXvhdlWithArgumentFile()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = VivadoSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: at least one invocation occurred
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("-file", allArgs);
+            Assert.Contains("compile.do", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that VivadoSimulator.Compile writes an argument file containing -2008 and -nolog.
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Compile_WithValidConfig_ScriptContains2008AndNolog()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = VivadoSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: the generated compile script contains expected content
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "Vivado", "compile.do");
+            Assert.True(File.Exists(scriptPath));
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("-2008", content);
+            Assert.Contains("-nolog", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that VivadoSimulator.Test writes an argument file containing the test name.
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Test_WithValidConfig_ScriptContainsTestName()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            // Pre-create the Vivado output directory
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "Vivado"));
+
+            var sim = VivadoSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "my_tb");
+
+            // Assert: the generated test script contains expected content
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "Vivado", "test.do");
+            Assert.True(File.Exists(scriptPath));
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("-nolog", content);
+            Assert.Contains("-standalone", content);
+            Assert.Contains("my_tb", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
         }
     }
 }

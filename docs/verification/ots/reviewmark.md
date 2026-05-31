@@ -33,9 +33,13 @@ review plan and review report documents.
 - **Review report generation**: `dotnet reviewmark --report docs/code_review_report/report.md`
   produces a report showing review status for each file. Successful subsequent PDF
   conversion confirms the output is well-formed markdown.
-- **Self-validation TRX output**: `dotnet reviewmark --validate --results artifacts/reviewmark-self-validation.trx`
-  executes ReviewMark's internal test suite and writes TRX results consumed by ReqStream.
+- **ReviewMark_SelfValidation**: `dotnet reviewmark --validate --results artifacts/reviewmark-self-validation.trx`
+  executes ReviewMark's internal test suite and writes TRX results consumed by ReqStream,
+  providing traceability evidence that ReviewMark's self-validation mode is operational.
 - **ReviewMark_LintPasses**: `dotnet reviewmark --validate --results artifacts/reviewmark-self-validation.trx`
   in the `build-docs` job executes ReviewMark's internal test suite. The `ReviewMark_LintPasses`
   test ID is written to the TRX result file and consumed by ReqStream to confirm that
-  ReviewMark's lint-pass validation logic is operational.
+  ReviewMark's lint-pass validation logic is operational. This is an internal self-validation
+  test case that indirectly evidences the `--lint` capability; this indirect approach is
+  intentional because `--lint` is used only in development-time scripts (`lint.ps1`,
+  `lint.sh`) and is not invoked as a separate CI step.

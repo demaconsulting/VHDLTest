@@ -43,7 +43,8 @@ read-only via `SimulatorPath`.
 - *Returns*: `RunResults` — classified compiler output including severity summary.
 - *Preconditions*: SimulatorPath must be non-null.
 - *Postconditions*: Returns structured results; concrete implementations must throw
-  `InvalidOperationException` if `SimulatorPath` is null.
+  `InvalidOperationException` if `SimulatorPath` is null. Source files are written to the
+  compiler in the order they appear in `options.Config.Files`.
 
 **Test** (abstract): Executes a single named VHDL test bench.
 

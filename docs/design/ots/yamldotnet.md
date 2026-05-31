@@ -16,11 +16,11 @@ for use by the rest of the application.
 
 ### Integration Pattern
 
-`ConfigDocument.ReadFile` opens the configuration file and passes the stream to a
-`YamlDotNet.Serialization.Deserializer` instance. The deserializer maps YAML fields to
-`ConfigDocument` properties. If the YAML is malformed or cannot be deserialized, the
-`YamlDotNet.Core.YamlException` is caught and re-thrown as an `InvalidOperationException`,
-ensuring a consistent exception type for callers.
+`ConfigDocument.ReadFile` reads the configuration file into a string via `File.ReadAllText` and
+passes that text content to a `YamlDotNet.Serialization.Deserializer` instance. The deserializer
+maps YAML fields to `ConfigDocument` properties. If the YAML is malformed or cannot be deserialized,
+any exception is caught and re-thrown as an `InvalidOperationException`, ensuring a consistent
+exception type for callers.
 
 ```csharp
 var deserializer = new DeserializerBuilder()

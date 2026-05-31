@@ -8,14 +8,14 @@ names, with no external process invocation. Selected only when the simulator nam
 
 #### Data Model
 
-**Instance**: `MockSimulator` (public static readonly) — singleton instance. `SimulatorName` is "Mock";
+**Instance**: `MockSimulator` (public static get-only property) — singleton instance. `SimulatorName` is "Mock";
 `SimulatorPath` is always null, meaning `Available()` always returns false and auto-discovery by
 SimulatorFactory never selects MockSimulator.
 
-**CompileProcessor**: `RunProcessor` (public static readonly) — output classifier for synthetic compile
+**CompileProcessor**: `RunProcessor` (public static get-only property) — output classifier for synthetic compile
 output. Classifies lines matching `Info:` as Info, `Warning:` as Warning, and `Error:` as Error.
 
-**TestProcessor**: `RunProcessor` (public static readonly) — output classifier for synthetic test output.
+**TestProcessor**: `RunProcessor` (public static get-only property) — output classifier for synthetic test output.
 Classifies `Info:` as Info, `Warning:` as Warning, and `Failure:` or `Error:` as Error.
 
 #### Key Methods
@@ -25,10 +25,12 @@ Classifies `Info:` as Info, `Warning:` as Warning, and `Failure:` or `Error:` as
 - *Parameters*: `Context context` — verbose logging. `Options options` — file list.
 - *Returns*: `RunResults` — synthetic classified compile output.
 - *Preconditions*: None (callable regardless of SimulatorPath being null).
-- *Postconditions*: Iterates `options.Config.Files`. For each file: appends `Error: {file}` and sets
-  exitCode to 1 when the name contains `_error_`; appends `Warning: {file}` when it contains `_warning_`;
-  appends `Info: {file}` when it contains `_info_`; otherwise appends `Compiled {file}`. Passes the
-  accumulated output to `CompileProcessor.Parse`.
+- *Postconditions*: Iterates `options.Config.Files` in order. For each file: appends
+  `Error: {file}` and sets exitCode to 1 when the name contains `_error_`; appends
+  `Warning: {file}` when it contains `_warning_`; appends `Info: {file}` when it contains
+  `_info_`; otherwise appends `Compiled {file}`. Passes the accumulated output to
+  `CompileProcessor.Parse`. Source files are processed in the order they appear in
+  `options.Config.Files`.
 
 **Test**: Generates synthetic test output from the test bench name pattern.
 

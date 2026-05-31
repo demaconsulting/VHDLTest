@@ -78,3 +78,28 @@ in `QuestaSimSimulatorTests.cs`.
 override takes precedence over PATH discovery.
 This scenario is tested by `QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue`
 in `QuestaSimSimulatorTests.cs`.
+
+**FindPath_WithoutEnvVar_ReturnsNullOrPath**: Verifies that `FindPath()` does not throw when
+`VHDLTEST_QUESTASIM_PATH` is not set, and that the result is either null (QuestaSim not
+installed) or a non-empty path string (QuestaSim found on PATH).
+This scenario is tested by `QuestaSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath`
+in `QuestaSimSimulatorTests.cs`.
+
+**Compile_WithValidConfig_InvokesVcom**: Verifies that `QuestaSimSimulator.Compile()` invokes the
+`vcom` executable (directly or via `cmd /c` on Windows) with the expected arguments,
+using `CreateForTesting` with a `FakeProcessInvoker` to capture the invocation without
+launching a real process.
+This scenario is tested by `QuestaSimSimulator_Compile_WithValidConfig_InvokesVcom`
+in `QuestaSimSimulatorTests.cs`.
+
+**Test_WithValidConfig_InvokesVsim**: Verifies that `QuestaSimSimulator.Test()` invokes the
+`vsim` executable (directly or via `cmd /c` on Windows) with the expected simulation arguments
+for the specified test bench, using `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `QuestaSimSimulator_Test_WithValidConfig_InvokesVsim`
+in `QuestaSimSimulatorTests.cs`.
+
+**CompileAndTest_WithValidConfig_WritesDoScript**: Verifies that `QuestaSimSimulator.Compile()`
+and `Test()` write the TCL do-scripts to the expected paths in the working directory.
+Uses `CreateForTesting` with a `FakeProcessInvoker`.
+This scenario is tested by `QuestaSimSimulator_CompileAndTest_WithValidConfig_WritesDoScript`
+in `QuestaSimSimulatorTests.cs`.

@@ -109,7 +109,7 @@ Before running tests, configure simulator paths via environment variables if nee
 - `VHDLTEST_MODELSIM_PATH` — path to ModelSim folder
 - `VHDLTEST_QUESTASIM_PATH` — path to QuestaSim folder
 - `VHDLTEST_VIVADO_PATH` — path to Vivado folder
-- `VHDLTEST_ACTIVEHDL_PATH` — path to ActiveHDL folder
+- `VHDLTEST_ACTIVEHDL_PATH` — path to Active-HDL folder
 - `VHDLTEST_NVC_PATH` — path to NVC folder
 
 ## Building
@@ -120,7 +120,8 @@ pwsh ./build.ps1
 
 ## User Guide
 
-The VHDLTest User Guide is available on the [VHDLTest releases page](https://github.com/demaconsulting/VHDLTest/releases).
+The VHDLTest User Guide is available on the
+[VHDLTest releases page](https://github.com/demaconsulting/VHDLTest/releases).
 
 ## Contributing
 
