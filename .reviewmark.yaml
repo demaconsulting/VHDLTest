@@ -255,7 +255,7 @@ reviews:
   - id: VHDLTest-Simulators
     title: Review that VHDLTest Simulators Subsystem Satisfies Subsystem Requirements
     paths:
-      - docs/reqstream/vhdltest/simulators/simulators.yaml  # subsystem requirements
+      - docs/reqstream/vhdltest/simulators.yaml  # subsystem requirements
       - docs/design/vhdltest/simulators.md  # subsystem design
       - test/**/Simulators/SimulatorsSubsystemTests.cs  # subsystem integration tests
       - docs/verification/vhdltest/simulators.md
