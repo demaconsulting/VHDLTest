@@ -711,6 +711,20 @@ jobs:
       # This section converts markdown documents to HTML using Pandoc.
       # Downstream projects: Add any additional Pandoc HTML generation steps here.
 
+      - name: Create document output directories
+        shell: bash
+        run: |
+          mkdir -p docs/generated
+          mkdir -p docs/build_notes/generated
+          mkdir -p docs/code_quality/generated
+          mkdir -p docs/code_review_plan/generated
+          mkdir -p docs/code_review_report/generated
+          mkdir -p docs/design/generated
+          mkdir -p docs/verification/generated
+          mkdir -p docs/user_guide/generated
+          mkdir -p docs/requirements_doc/generated
+          mkdir -p docs/requirements_report/generated
+
       - name: Generate Build Notes HTML with Pandoc
         shell: bash
         run: >
@@ -719,7 +733,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/build_notes/buildnotes.html
+          --output docs/build_notes/generated/build_notes.html
 
       - name: Generate Design HTML with Pandoc
         shell: bash
@@ -729,9 +743,19 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/design/design.html
+          --output docs/design/generated/design.html
 
-      - name: Generate Guide HTML with Pandoc
+      - name: Generate Verification HTML with Pandoc
+        shell: bash
+        run: >
+          dotnet pandoc
+          --defaults docs/verification/definition.yaml
+          --filter node_modules/.bin/mermaid-filter.cmd
+          --metadata version="${{ inputs.version }}"
+          --metadata date="$(date +'%Y-%m-%d')"
+          --output docs/verification/generated/verification.html
+
+      - name: Generate User Guide HTML with Pandoc
         shell: bash
         run: >
           dotnet pandoc
@@ -739,7 +763,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/user_guide/introduction.html
+          --output docs/user_guide/generated/user_guide.html
 
       - name: Generate Code Quality HTML with Pandoc
         shell: bash
@@ -749,7 +773,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/code_quality/quality.html
+          --output docs/code_quality/generated/quality.html
 
       - name: Generate Requirements HTML with Pandoc
         shell: bash
@@ -759,7 +783,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/requirements_doc/requirements.html
+          --output docs/requirements_doc/generated/requirements.html
 
       - name: Generate Trace Matrix HTML with Pandoc
         shell: bash
@@ -769,7 +793,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/requirements_report/trace_matrix.html
+          --output docs/requirements_report/generated/trace_matrix.html
 
       - name: Generate Review Plan HTML with Pandoc
         shell: bash
@@ -779,7 +803,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/code_review_plan/plan.html
+          --output docs/code_review_plan/generated/plan.html
 
       - name: Generate Review Report HTML with Pandoc
         shell: bash
@@ -789,7 +813,7 @@ jobs:
           --filter node_modules/.bin/mermaid-filter.cmd
           --metadata version="${{ inputs.version }}"
           --metadata date="$(date +'%Y-%m-%d')"
-          --output docs/code_review_report/report.html
+          --output docs/code_review_report/generated/report.html
 
       # === GENERATE PDF DOCUMENTS WITH WEASYPRINT ===
       # This section converts HTML documents to PDF using Weasyprint.
@@ -799,57 +823,64 @@ jobs:
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/build_notes/buildnotes.html
-          "docs/VHDLTest Build Notes.pdf"
+          docs/build_notes/generated/build_notes.html
+          "docs/generated/VHDLTest Build Notes.pdf"
 
       - name: Generate Design PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/design/design.html
-          "docs/VHDLTest Design.pdf"
+          docs/design/generated/design.html
+          "docs/generated/VHDLTest Software Design Document.pdf"
 
-      - name: Generate Guide PDF with Weasyprint
+      - name: Generate Verification PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/user_guide/introduction.html
-          "docs/VHDLTest User Guide.pdf"
+          docs/verification/generated/verification.html
+          "docs/generated/VHDLTest Verification Design Document.pdf"
+
+      - name: Generate User Guide PDF with Weasyprint
+        run: >
+          dotnet weasyprint
+          --pdf-variant pdf/a-3u
+          docs/user_guide/generated/user_guide.html
+          "docs/generated/VHDLTest User Guide.pdf"
 
       - name: Generate Code Quality PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/code_quality/quality.html
-          "docs/VHDLTest Code Quality.pdf"
+          docs/code_quality/generated/quality.html
+          "docs/generated/VHDLTest Code Quality Report.pdf"
 
       - name: Generate Requirements PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/requirements_doc/requirements.html
-          "docs/VHDLTest Requirements.pdf"
+          docs/requirements_doc/generated/requirements.html
+          "docs/generated/VHDLTest Requirements Document.pdf"
 
       - name: Generate Trace Matrix PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/requirements_report/trace_matrix.html
-          "docs/VHDLTest Trace Matrix.pdf"
+          docs/requirements_report/generated/trace_matrix.html
+          "docs/generated/VHDLTest Trace Matrix.pdf"
 
       - name: Generate Review Plan PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/code_review_plan/plan.html
-          "docs/VHDLTest Review Plan.pdf"
+          docs/code_review_plan/generated/plan.html
+          "docs/generated/VHDLTest Code Review Plan.pdf"
 
       - name: Generate Review Report PDF with Weasyprint
         run: >
           dotnet weasyprint
           --pdf-variant pdf/a-3u
-          docs/code_review_report/report.html
-          "docs/VHDLTest Review Report.pdf"
+          docs/code_review_report/generated/report.html
+          "docs/generated/VHDLTest Code Review Report.pdf"
 
       - name: Run FileAssert document validation
         run: >
@@ -861,6 +892,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: documents
-          path: |
-            docs/*.pdf
-            docs/build_notes.md
+          path: docs/generated/*
