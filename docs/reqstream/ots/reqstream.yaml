@@ -24,4 +24,4 @@ sections:
               a development-time quality gate to catch malformed requirements before CI.
             tags: [ots]
             tests:
-              - ReqStream_LintPasses
+              - ReqStream_Lint

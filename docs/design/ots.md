@@ -40,7 +40,6 @@ The following OTS tools are used in the build pipeline and are not deployed with
 | DemaConsulting.PandocTool | Markdown to HTML conversion |
 | DemaConsulting.WeasyprintTool | HTML to PDF conversion |
 | DemaConsulting.FileAssert | File comparison in CI |
-| DemaConsulting.DictionaryMark | Spell-checking enforcement |
 | DemaConsulting.SarifMark | SARIF report processing |
 | DemaConsulting.SonarMark | SonarCloud quality gate check |
 

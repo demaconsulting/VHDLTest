@@ -29,7 +29,7 @@ to produce `docs/build_notes/versions.md`, which is then converted to HTML and P
 ```bash
 dotnet versionmark --capture --job-id "build-docs" \
   --output "artifacts/versionmark-build-docs.json" -- \
-  dotnet git node npm pandoc weasyprint sarifmark sonarmark reqstream buildmark versionmark reviewmark fileassert dictionarymark
+  dotnet git node npm pandoc weasyprint sarifmark sonarmark reqstream buildmark versionmark reviewmark fileassert
 
 dotnet versionmark --publish \
   --report docs/build_notes/versions.md \

@@ -104,19 +104,16 @@ reviews:
       - docs/reqstream/ots/pandoctool.yaml
       - docs/reqstream/ots/weasyprinttool.yaml
       - docs/reqstream/ots/fileassert.yaml
-      - docs/reqstream/ots/dictionarymark.yaml
       - docs/reqstream/ots/sonarscanner.yaml
       - docs/design/ots/reviewmark.md
       - docs/design/ots/pandoctool.md
       - docs/design/ots/weasyprinttool.md
       - docs/design/ots/fileassert.md
-      - docs/design/ots/dictionarymark.md
       - docs/design/ots/sonarscanner.md
       - docs/verification/ots/reviewmark.md
       - docs/verification/ots/pandoctool.md
       - docs/verification/ots/weasyprinttool.md
       - docs/verification/ots/fileassert.md
-      - docs/verification/ots/dictionarymark.md
       - docs/verification/ots/sonarscanner.md
 
   # Cli subsystem review

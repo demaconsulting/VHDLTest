@@ -97,5 +97,5 @@ sections:
                   launching real processes. This is the foundation of the FakeProcessInvoker-based
                   simulator unit tests.
                 tests:
-                  - GhdlSimulator_Compile_WithValidConfig_InvokesGhdl
-                  - GhdlSimulator_Test_WithValidConfig_InvokesGhdl
+                  - GhdlSimulator_Compile_WithValidConfig_InvokesGhdlWithAnalysisArguments
+                  - GhdlSimulator_Test_WithValidConfig_InvokesGhdlWithRunArguments

@@ -31,7 +31,6 @@ VHDLTest verifies OTS software items through two complementary approaches:
 | DemaConsulting.PandocTool | Build | CI pipeline execution |
 | DemaConsulting.WeasyprintTool | Build | CI pipeline execution |
 | DemaConsulting.FileAssert | Build | CI pipeline execution |
-| DemaConsulting.DictionaryMark | Build | CI pipeline execution |
 | dotnet-sonarscanner | Build | CI pipeline execution |
 
 Detailed verification evidence for each OTS item is in its own document under

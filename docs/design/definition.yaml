@@ -51,7 +51,6 @@ input-files:
   - docs/design/ots/pandoctool.md
   - docs/design/ots/weasyprinttool.md
   - docs/design/ots/fileassert.md
-  - docs/design/ots/dictionarymark.md
   - docs/design/ots/sonarscanner.md
 
 # Template configuration

@@ -51,7 +51,6 @@ input-files:
   - docs/verification/ots/pandoctool.md
   - docs/verification/ots/weasyprinttool.md
   - docs/verification/ots/fileassert.md
-  - docs/verification/ots/dictionarymark.md
   - docs/verification/ots/sonarscanner.md
 
 # Template configuration

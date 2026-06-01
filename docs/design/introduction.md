@@ -25,7 +25,7 @@ OTS items:
 
 - **YamlDotNet**: integration and usage design.
 - **DemaConsulting.TestResults**: integration and usage design.
-- Build and analysis tool OTS items (PandocTool, WeasyprintTool, FileAssert, DictionaryMark, SonarScanner, and
+- Build and analysis tool OTS items (PandocTool, WeasyprintTool, FileAssert, SonarScanner, and
   others): see *OTS Software Design*.
 
 The following topics are out of scope:

@@ -33,4 +33,4 @@ sections:
               gate to detect manifest drift before it reaches CI.
             tags: [ots]
             tests:
-              - VersionMark_LintPasses
+              - VersionMark_LintPassesForValidConfig

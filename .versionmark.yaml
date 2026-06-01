@@ -62,11 +62,6 @@ tools:
     command: dotnet tool list
     regex: (?i)demaconsulting\.fileassert\s+(?<version>\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)
 
-  # DictionaryMark (DemaConsulting.DictionaryMark from dotnet tool list)
-  dictionarymark:
-    command: dotnet tool list
-    regex: (?i)demaconsulting\.dictionarymark\s+(?<version>\d+\.\d+\.\d+(?:-[a-zA-Z0-9.]+)?)
-
   # SarifMark (DemaConsulting.SarifMark from dotnet tool list)
   sarifmark:
     command: dotnet tool list

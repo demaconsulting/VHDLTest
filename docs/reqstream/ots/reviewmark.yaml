@@ -13,7 +13,8 @@ sections:
               (--enforce flag) requires a populated reviews branch with PDF evidence.
             tags: [ots]
             tests:
-              - ReviewMark_CoverageReport
+              - ReviewMark_ReviewPlanGeneration
+              - ReviewMark_ReviewReportGeneration
 
           - id: VHDLTest-OTS-ReviewMark-Lint
             title: ReviewMark shall validate .reviewmark.yaml syntax and structure when invoked with --lint.
@@ -24,15 +25,4 @@ sections:
               preventing CI failures caused by invalid review configuration.
             tags: [ots]
             tests:
-              - ReviewMark_LintPasses
-
-          - id: VHDLTest-OTS-ReviewMark-SelfValidation
-            title: ReviewMark shall write TRX self-validation results when invoked with --validate.
-            justification: |
-              dotnet reviewmark --validate --results executes ReviewMark's internal test
-              suite and writes TRX results that are consumed by ReqStream for requirements
-              traceability. This provides independent evidence that the ReviewMark tool itself
-              is functioning correctly in the CI environment.
-            tags: [ots]
-            tests:
-              - ReviewMark_SelfValidation
+              - ReviewMark_Lint

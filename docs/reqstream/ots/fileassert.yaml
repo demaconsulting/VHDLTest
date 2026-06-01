@@ -47,4 +47,3 @@ sections:
               - FileAssert_Results
               - FileAssert_Exists
               - FileAssert_Contains
-              - FileAssert_SelfValidation
