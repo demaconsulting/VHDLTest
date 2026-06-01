@@ -340,6 +340,7 @@ jobs:
           sparse-checkout: |
             .versionmark.yaml
             .config/dotnet-tools.json
+            test/example
 
       - name: Download package
         uses: actions/download-artifact@v8
@@ -467,6 +468,7 @@ jobs:
           sparse-checkout: |
             .versionmark.yaml
             .config/dotnet-tools.json
+            test/example
 
       - name: Download package
         uses: actions/download-artifact@v8
