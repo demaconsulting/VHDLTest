@@ -33,7 +33,7 @@ tests:
             - field: Author
               contains: DEMA Consulting
             - field: Subject
-              contains: Build notes
+              contains: Build Notes
           pages:
             min: 1
           text:
@@ -157,7 +157,7 @@ tests:
             - field: Author
               contains: DEMA Consulting
             - field: Subject
-              contains: design document
+              contains: Software Design Document
           pages:
             min: 3
           text:
@@ -188,7 +188,7 @@ tests:
             - field: Author
               contains: DEMA Consulting
             - field: Subject
-              contains: Verification design document
+              contains: Verification Design Document
           pages:
             min: 3
           text:
@@ -219,7 +219,7 @@ tests:
             - field: Author
               contains: DEMA Consulting
             - field: Subject
-              contains: User guide
+              contains: User Guide
           pages:
             min: 3
           text:
@@ -283,7 +283,7 @@ tests:
             - field: Author
               contains: DEMA Consulting
             - field: Subject
-              contains: Traceability
+              contains: Trace Matrix
           pages:
             min: 1
           text:
