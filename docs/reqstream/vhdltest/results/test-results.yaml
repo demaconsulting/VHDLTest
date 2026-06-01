@@ -78,7 +78,7 @@ sections:
                   the VHDL compilation step produces errors.
                 justification: |
                   Aborting execution with a clear error when the build step fails prevents
-                  misleading results — running tests against a broken build would produce
+                  misleading results -- running tests against a broken build would produce
                   unreliable outcomes and hide the root cause. A descriptive error signal
                   lets callers and CI/CD systems report the failure accurately.
                 tests:

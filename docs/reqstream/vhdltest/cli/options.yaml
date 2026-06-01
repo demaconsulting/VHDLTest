@@ -31,7 +31,7 @@ sections:
                 title: The Options class shall report an error and halt processing when the specified configuration file does not exist.
                 justification: |
                   A clear error for a missing configuration file is critical for CI pipeline
-                  reliability — users must be able to quickly identify and fix misconfigured
+                  reliability -- users must be able to quickly identify and fix misconfigured
                   pipelines without interpreting cryptic exceptions. The error is surfaced as a
                   FileNotFoundException, which gives the user the file path that could not be found,
                   enabling immediate diagnosis.

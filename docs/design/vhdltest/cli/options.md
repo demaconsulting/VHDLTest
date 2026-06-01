@@ -3,7 +3,7 @@
 #### Purpose
 
 `Options` is a record that holds the fully resolved configuration for a VHDLTest run. It
-combines the working directory (derived from the configuration file path) and the deserialised
+combines the working directory (derived from the configuration file path) and the deserialized
 `ConfigDocument`, providing all information needed by the Simulators subsystem to execute tests.
 
 #### Data Model
@@ -12,22 +12,22 @@ combines the working directory (derived from the configuration file path) and th
 file path. All relative VHDL file paths in `ConfigDocument.Files` are resolved relative to
 this directory during test execution.
 
-**Config**: `ConfigDocument` — The deserialised configuration document containing the `Files`
+**Config**: `ConfigDocument` — The deserialized configuration document containing the `Files`
 and `Tests` arrays.
 
 #### Key Methods
 
 **Parse**: Constructs an `Options` record from a parsed `Context`.
 
-- *Parameters*: `Context args` — a fully initialised Context from which `ConfigFile` is read.
+- *Parameters*: `Context args` — a fully initialized Context from which `ConfigFile` is read.
 - *Returns*: `Options` — a record with `WorkingDirectory` and `Config` populated.
 - *Preconditions*: `args` must not be null; `args.ConfigFile` must be non-null, non-empty, and point to a
   valid, readable YAML configuration file.
 - *Postconditions*: `WorkingDirectory` holds the absolute directory containing the
-  configuration file; `Config` holds the deserialised `ConfigDocument`.
+  configuration file; `Config` holds the deserialized `ConfigDocument`.
 
 Validates that `args` is not null (throws `ArgumentNullException` if null). Verifies that
-`args.ConfigFile` is non-null and non-empty, calls `ConfigDocument.ReadFile` to deserialise
+`args.ConfigFile` is non-null and non-empty, calls `ConfigDocument.ReadFile` to deserialize
 the YAML content, resolves the full path of the config file via `Path.GetFullPath`, and
 extracts the parent directory via `Path.GetDirectoryName`. Throws `InvalidOperationException`
 if the directory cannot be resolved.
@@ -62,7 +62,7 @@ the internal `ResolveWorkingDirectory` method with a root path. All exceptions p
 
 #### Dependencies
 
-- **ConfigDocument** — deserialised configuration loaded by `Parse`.
+- **ConfigDocument** — deserialized configuration loaded by `Parse`.
 - **System.IO.Path** — resolves the absolute configuration file path and extracts its parent
   directory.
 

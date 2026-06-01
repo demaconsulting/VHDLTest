@@ -8,8 +8,8 @@ sections:
             title: >-
               VHDLTest shall execute the complete command-line configuration pipeline, producing a fully resolved run configuration from raw arguments and a configuration file.
             justification: |
-              The end-to-end CLI pipeline — argument parsing, configuration loading, and option
-              combination — must function correctly as an integrated whole. Verifying this
+              The end-to-end CLI pipeline -- argument parsing, configuration loading, and option
+              combination -- must function correctly as an integrated whole. Verifying this
               integration catches issues that cannot be found by testing each unit in isolation.
             tests:
               - CliSubsystem_ParseArgsAndLoadConfig_WithValidConfig_ProducesCorrectOptions

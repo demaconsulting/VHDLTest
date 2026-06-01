@@ -350,8 +350,8 @@ sections:
           - id: VHDLTest-Validate-SystemInfo
             title: VHDLTest shall include system information (VHDLTest Version, Machine Name, OS Version, DotNet Runtime, and Time Stamp) in validation reports.
             justification: |
-              Providing full environment context — VHDLTest Version, Machine Name, OS Version,
-              DotNet Runtime, and Time Stamp — in validation reports is essential for
+              Providing full environment context -- VHDLTest Version, Machine Name, OS Version,
+              DotNet Runtime, and Time Stamp -- in validation reports is essential for
               reproducing issues and diagnosing environment-specific problems. It gives
               compliance reviewers the context needed to interpret results and verify that the
               tool was operating in the expected environment at the time of validation.

@@ -18,7 +18,7 @@ reported as failed.
 - *Type*: in-process .NET public API.
 - *Role*: Provider.
 - *Contract*: `Validation.Run(Context context)` is the single entry point. The caller provides a
-  fully-initialised `Context`; `Validation.Run` writes all output to the context and increments
+  fully-initialized `Context`; `Validation.Run` writes all output to the context and increments
   `context.Errors` on failure.
 - *Constraints*: Requires a writable filesystem for the temporary validation folder and a configured
   simulator. The caller must not dispose `context` before `Run` returns.

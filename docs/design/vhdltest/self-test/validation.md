@@ -11,9 +11,10 @@ correctly installed and that the configured simulator is functioning.
 
 `Validation` is a static class with no instance state. It defines one named constant:
 
-| Symbol | Type | Value | Description |
-| :----- | :--- | :---- | :---------- |
-| `ValidationFolder` | `const string` | `"validation.tmp"` | Fixed name of the temporary folder used during self-validation. The name is intentionally fixed (not randomized) so that any partial folder left by an earlier crash is deterministically located and cleaned up at the start of the next run. |
+- **`ValidationFolder`** (`const string`, `"validation.tmp"`): Fixed name of the temporary
+  folder used during self-validation. The name is intentionally fixed (not randomized) so
+  that any partial folder left by an earlier crash is deterministically located and cleaned
+  up at the start of the next run.
 
 Note that `RunValidation` is not safe to call concurrently from the same working directory
 because both callers would attempt to create and delete the same fixed-name temporary folder.

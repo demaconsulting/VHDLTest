@@ -10,14 +10,17 @@ and result serialization.
 
 #### Data Model
 
-| Property   | Type                          | Description                                                |
-| ---------- | ----------------------------- | ---------------------------------------------------------- |
-| `Summary`  | `RunLineType`                 | Highest-severity line type; at least `Error` if non-zero. The SummaryElevation invariant (Summary ≥ Error when ExitCode ≠ 0) is enforced by `RunProcessor.Parse` at construction time, not by `RunResults` itself. |
-| `Start`    | `DateTime`                    | Timestamp recorded before `RunProgram.Run` is called.      |
-| `Duration` | `double`                      | Elapsed time in seconds between `Start` and process exit.  |
-| `ExitCode` | `int`                         | Raw process exit code returned by the simulator.           |
-| `Output`   | `string`                      | Full combined stdout and stderr text, unmodified.          |
-| `Lines`    | `ReadOnlyCollection<RunLine>` | Classified output lines from `RunProcessor.Parse`.         |
+| Property   | Type                          | Description                                                            |
+| ---------- | ----------------------------- | ---------------------------------------------------------------------- |
+| `Summary`  | `RunLineType`                 | Highest-severity line type; at least `Error` if ExitCode is non-zero.  |
+| `Start`    | `DateTime`                    | Timestamp recorded before `RunProgram.Run` is called.                  |
+| `Duration` | `double`                      | Elapsed time in seconds between `Start` and process exit.              |
+| `ExitCode` | `int`                         | Raw process exit code returned by the simulator.                       |
+| `Output`   | `string`                      | Full combined stdout and stderr text, unmodified.                      |
+| `Lines`    | `ReadOnlyCollection<RunLine>` | Classified output lines from `RunProcessor.Parse`.                     |
+
+**Note on `Summary`**: The SummaryElevation invariant (Summary ≥ Error when ExitCode ≠ 0) is enforced
+by `RunProcessor.Parse` at construction time, not by `RunResults` itself.
 
 #### Key Methods
 

@@ -3,7 +3,7 @@
 #### Purpose
 
 `Context` is responsible for parsing the raw command-line argument array, exposing typed
-properties for each recognised flag and path, providing I/O output methods that write to both
+properties for each recognized flag and path, providing I/O output methods that write to both
 the console and an optional log file, and accumulating an error count that determines the
 process exit code.
 
@@ -48,13 +48,13 @@ collected from positional arguments or after `--`. Null if no tests were specifi
 
 #### Key Methods
 
-**Create**: Parses raw command-line arguments and returns an initialised Context instance.
+**Create**: Parses raw command-line arguments and returns an initialized Context instance.
 
 - *Parameters*: `string[] args` — the process argument array.
-- *Returns*: `Context` — a fully initialised context; caller is responsible for disposal.
+- *Returns*: `Context` — a fully initialized context; caller is responsible for disposal.
 - *Preconditions*: `args` must not be null.
-- *Postconditions*: All recognised flags are parsed into the corresponding properties; any
-  unrecognised flags or missing argument values throw `InvalidOperationException`.
+- *Postconditions*: All recognized flags are parsed into the corresponding properties; any
+  unrecognized flags or missing argument values throw `InvalidOperationException`.
 
 Iterates through `args` using an enumerator and switches on each token to set boolean flags or
 read the following token as a value argument. The following tokens are accepted:
@@ -75,7 +75,7 @@ read the following token as a value argument. The following tokens are accepted:
 | `CustomTests`   | `--` followed by remaining args           | Collects all remaining tokens            |
 | `CustomTests`   | Any positional arg not starting with `-`  | Appended to the custom tests list        |
 
-Unrecognised tokens starting with `-` throw `InvalidOperationException`.
+Unrecognized tokens starting with `-` throw `InvalidOperationException`.
 
 **Note on value-argument token consumption**: `GetArgument()` simply advances the enumerator
 to the next token and returns it verbatim. If a value-argument flag such as `--depth` is
@@ -132,7 +132,7 @@ applied because any such input is unambiguously malformed.
 #### Error Handling
 
 `Create` throws `ArgumentNullException` if `args` is null (via `ArgumentNullException.ThrowIfNull`).
-It throws `InvalidOperationException` for unrecognised option flags (tokens beginning with `-`)
+It throws `InvalidOperationException` for unrecognized option flags (tokens beginning with `-`)
 or when a value argument is required but the argument array is exhausted. An invalid value for
 `--depth` (non-integer or less than 1) also throws `InvalidOperationException`. All exceptions
 from `Create` propagate to `Program.Main`, which catches and reports them.

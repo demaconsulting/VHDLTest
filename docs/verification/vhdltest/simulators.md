@@ -38,7 +38,7 @@ This scenario is tested by
 `SimulatorsSubsystem_GetSimulatorAndProcessCompileOutput_WithErrorOutput_ClassifiesAsError`.
 
 **GetSimulatorByName_WithUnknownName_ReturnsNull**: Verifies that the factory returns null when
-given an unrecognised simulator name, confirming that the null-return contract is upheld for
+given an unrecognized simulator name, confirming that the null-return contract is upheld for
 any name that does not match a registered simulator.
 This scenario is tested by
 `SimulatorsSubsystem_GetSimulatorByName_WithUnknownName_ReturnsNull`.

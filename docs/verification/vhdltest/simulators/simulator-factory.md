@@ -48,7 +48,7 @@ This scenario is tested by `SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulato
 `"QuestaSim"` resolve to the QuestaSim simulator instance.
 This scenario is tested by `SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator`.
 
-**Get_UnknownSimulator_ReturnsNull**: Verifies that an unrecognised name returns null,
+**Get_UnknownSimulator_ReturnsNull**: Verifies that an unrecognized name returns null,
 confirming the factory does not throw for unknown names.
 This scenario is tested by `SimulatorFactory_Get_UnknownSimulator_ReturnsNull`.
 

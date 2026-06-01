@@ -267,7 +267,7 @@ public sealed class Context : IDisposable
     ///     This static factory is the only supported construction path for <see cref="Context"/>.
     ///     The caller is responsible for disposing the returned instance (e.g., with a
     ///     <c>using</c> statement) to ensure any open log-file writer is flushed and closed
-    ///     deterministically. Arguments are parsed left-to-right; unrecognised flags (any token
+    ///     deterministically. Arguments are parsed left-to-right; unrecognized flags (any token
     ///     starting with <c>-</c> that does not match a known option) cause an
     ///     <see cref="InvalidOperationException"/> to be thrown. Bare tokens (tokens not starting
     ///     with <c>-</c>) are accumulated as custom test names. The separator <c>--</c> switches
@@ -277,10 +277,10 @@ public sealed class Context : IDisposable
     ///     The command-line argument array to parse. Must not be null; pass an empty array to
     ///     obtain a default-valued <see cref="Context"/>.
     /// </param>
-    /// <returns>A fully initialised <see cref="Context"/> ready for use.</returns>
+    /// <returns>A fully initialized <see cref="Context"/> ready for use.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="args"/> is null.</exception>
     /// <exception cref="InvalidOperationException">
-    ///     Thrown when an unrecognised argument flag is provided or a required option value
+    ///     Thrown when an unrecognized argument flag is provided or a required option value
     ///     is missing (e.g., <c>-c</c> with no following filename).
     /// </exception>
     public static Context Create(string[] args)

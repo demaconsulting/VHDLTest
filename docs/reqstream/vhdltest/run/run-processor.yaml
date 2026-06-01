@@ -80,7 +80,7 @@ sections:
                 title: >-
                   RunProcessor shall support invocation of Windows batch files on Windows platforms.
                 justification: |
-                  Windows batch files (.bat/.cmd) cannot be launched directly as a process — they
+                  Windows batch files (.bat/.cmd) cannot be launched directly as a process -- they
                   require a command interpreter. Supporting batch-file-based simulator launchers on
                   Windows ensures that VHDLTest integrates with simulators that provide .bat/.cmd
                   entry points without requiring callers to know about this platform difference.

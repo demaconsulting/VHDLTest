@@ -43,7 +43,7 @@ includes all data capture and reporting logic; it does not perform any simulatio
 - *Explicit Execute overload*: `Execute(Context context, string runName, string codeBase, Options options,
   Simulator simulator) → TestResults` — caller-supplied run name and code base; throws
   `InvalidOperationException` with message `"Build Failed"` when the build step reports errors.
-- *Constraints*: `SaveResults` requires a non-null, non-empty file path; an empty or unrecognised
+- *Constraints*: `SaveResults` requires a non-null, non-empty file path; an empty or unrecognized
   extension defaults to TRX format.
 - *SaveToTrx*: `SaveToTrx(string fileName) → void` — backward-compatibility wrapper; delegates
   unconditionally to `SaveResults(fileName)`. Retained so callers that previously used `SaveToTrx`

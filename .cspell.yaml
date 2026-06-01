@@ -5,8 +5,8 @@
 # - Maintain professional documentation and code quality
 # - Catch spelling errors before publication
 # - Support consistent technical terminology usage
-# - Misspelled words should be fixed in the source
-# - NEVER add a misspelled word to the 'words' list
+# - NEVER add a misspelled word - fix the typo in the source instead
+# - NEVER add a British-English spelling - correct to US-English in the source
 # - PROPOSE only genuine technical terms/names as needed
 version: '0.2'
 language: en
@@ -35,14 +35,20 @@ words:
   - dcterms
   - Dema
   - demaconsulting
+  - dictionarymark
   - dotnet
   - dorny
   - endsim
+  - esac
   - errorlevel
+  - fileassert
+  - hotspot
+  - hotspots
   - ghdl
   - gitattributes
   - ibiqlik
   - lifecycles
+  - LINQ
   - markdownlint
   - metacharacters
   - mingw
@@ -60,6 +66,7 @@ words:
   - pandoc
   - pandoctool
   - PATHEXT
+  - Postconditions
   - Questa
   - QuestaSim
   - Qube
@@ -87,10 +94,12 @@ words:
   - spdx
   - testbench
   - testbenches
+  - testresults
   - trace_matrix
   - tracematrix
   - thirdparty
   - trx
+  - unfragmented
   - venv
   - vcom
   - VHDL
@@ -112,6 +121,7 @@ words:
   - xunit
   - yaml
   - yamlfix
+  - yamldotnet
   - yamllint
 # Exclude common build artifacts, dependencies, and vendored third-party code
 ignorePaths:

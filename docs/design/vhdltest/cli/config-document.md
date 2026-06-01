@@ -2,7 +2,7 @@
 
 #### Purpose
 
-`ConfigDocument` is responsible for deserialising the YAML configuration file that specifies
+`ConfigDocument` is responsible for deserializing the YAML configuration file that specifies
 the VHDL test suite to run. It exposes the list of VHDL source file paths and test bench
 patterns required to execute a test run.
 
@@ -16,22 +16,22 @@ patterns required to execute a test run.
 
 #### Key Methods
 
-**ReadFile**: Reads and deserialises the YAML configuration file at the given path.
+**ReadFile**: Reads and deserializes the YAML configuration file at the given path.
 
 - *Parameters*: `string filename` — path to the YAML configuration file.
 - *Returns*: `ConfigDocument` — a fully populated document instance.
 - *Preconditions*: `filename` must be a readable file path containing valid YAML that can be
-  deserialised into a `ConfigDocument`.
+  deserialized into a `ConfigDocument`.
 - *Postconditions*: Returns a `ConfigDocument` with `Files` and `Tests` populated from the
-  YAML content; throws if the file is absent or the content cannot be deserialised.
+  YAML content; throws if the file is absent or the content cannot be deserialized.
 
 Reads the file content via `File.ReadAllText`, constructs a YamlDotNet `DeserializerBuilder`
 with `HyphenatedNamingConvention` (so YAML keys use hyphens, while C# properties use
 PascalCase — for example, a hypothetical multi-word property `SomeKey` would map from the
-YAML key `some-key`), then deserialises the content into a `ConfigDocument` instance.
-Throws `InvalidOperationException` if the deserialised result is null.
+YAML key `some-key`), then deserializes the content into a `ConfigDocument` instance.
+Throws `InvalidOperationException` if the deserialized result is null.
 After the null check, `ReadFile` applies null-coalescing guards (`??= []`) to `Files` and
-`Tests` so that explicit YAML nulls (`files: null`) are normalised to empty arrays, matching
+`Tests` so that explicit YAML nulls (`files: null`) are normalized to empty arrays, matching
 the behavior of absent keys.
 
 #### Error Handling
@@ -48,7 +48,7 @@ and reports them via `Context.WriteError`.
 #### Dependencies
 
 - **YamlDotNet** — provides `DeserializerBuilder`, `HyphenatedNamingConvention`, and YAML
-  deserialisation.
+  deserialization.
 - **System.IO.File** — reads the raw YAML content from disk.
 
 #### Callers

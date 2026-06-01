@@ -14,7 +14,7 @@ N/A - standard test environment.
 #### Acceptance Criteria
 
 - All unit tests in `ContextTests.cs` pass with zero failures.
-- All recognised flags are correctly parsed into typed properties.
+- All recognized flags are correctly parsed into typed properties.
 - `InvalidOperationException` is thrown for unknown flags and missing value arguments.
 
 #### Test Scenarios
@@ -24,7 +24,7 @@ context with all option properties at their default values (null paths, false fl
 tests), confirming the default state is correct.
 This scenario is tested by `Context_Create_NoArguments_ReturnsDefaultContext`.
 
-**Create_UnknownArgument_ThrowsInvalidOperationException**: Verifies that an unrecognised option
+**Create_UnknownArgument_ThrowsInvalidOperationException**: Verifies that an unrecognized option
 flag causes `Context.Create` to throw `InvalidOperationException`, ensuring unknown flags do not
 silently pass through.
 This scenario is tested by `Context_Create_UnknownArgument_ThrowsInvalidOperationException`.

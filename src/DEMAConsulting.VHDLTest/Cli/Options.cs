@@ -48,7 +48,7 @@ public record Options(string WorkingDirectory,
     ///     instances.
     /// </remarks>
     /// <param name="args">
-    ///     A fully initialised <see cref="Context"/> from which <see cref="Context.ConfigFile"/>
+    ///     A fully initialized <see cref="Context"/> from which <see cref="Context.ConfigFile"/>
     ///     is read. Must not be null.
     /// </param>
     /// <returns>A non-null <see cref="Options"/> record with <see cref="WorkingDirectory"/> set to the absolute directory of the configuration file and <see cref="Config"/> populated from the YAML content.</returns>

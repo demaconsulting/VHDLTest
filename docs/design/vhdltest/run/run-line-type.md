@@ -9,12 +9,12 @@ lines.
 
 #### Data Model
 
-| Value     | Ordinal | Description                                                                            |
-| --------- | ------- | -------------------------------------------------------------------------------------- |
-| `Text`    | 0       | Standard unclassified output. The default when no `RunLineRule` matches.               |
-| `Info`    | 1       | Informational message produced by the simulator.                                       |
+| Value     | Ordinal | Description                                                                             |
+| --------- | ------- | --------------------------------------------------------------------------------------- |
+| `Text`    | 0       | Standard unclassified output. The default when no `RunLineRule` matches.                |
+| `Info`    | 1       | Informational message produced by the simulator.                                        |
 | `Warning` | 2       | Non-fatal warning; does not by itself cause the run summary to be classified as failed. |
-| `Error`   | 3       | Error or failure condition. Causes the run summary to be `Error`.                      |
+| `Error`   | 3       | Error or failure condition. Causes the run summary to be `Error`.                       |
 
 #### Key Methods
 

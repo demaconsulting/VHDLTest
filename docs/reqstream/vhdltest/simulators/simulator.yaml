@@ -13,8 +13,8 @@ sections:
                   supported simulator without knowledge of the specific simulator being used.
                 justification: |
                   A uniform interface decouples the core run logic from simulator-specific
-                  details, enabling VHDLTest to support multiple simulators — GHDL, NVC,
-                  ModelSim, QuestaSim, Vivado, Active-HDL — without modifying the execution
+                  details, enabling VHDLTest to support multiple simulators -- GHDL, NVC,
+                  ModelSim, QuestaSim, Vivado, Active-HDL -- without modifying the execution
                   pipeline. This also makes it straightforward to add new simulator
                   integrations in the future.
                 tests:

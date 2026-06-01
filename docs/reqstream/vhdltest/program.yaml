@@ -95,7 +95,7 @@ sections:
               [tests] argument list when one or more test names are provided.
             justification: |
               Allowing users to specify which tests to run enables faster feedback cycles during
-              development — developers can target a single failing test without waiting for the
+              development -- developers can target a single failing test without waiting for the
               full suite to complete. When no test names are provided, all tests configured in
               the configuration file are executed.
             tests:
