@@ -2,22 +2,68 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: TestResult Unit
-        requirements:
-          - id: VHDLTest-TestResult-Pass
-            title: TestResult shall record a passed test when the run result indicates success.
-            justification: |
-              Accurately recording pass results ensures that the test report correctly
-              reflects the outcome of each test bench execution and provides traceability
-              from simulator output to the final test report.
-            tests:
-              - TestResult_Constructor_WithInfoResult_CreatesPassedTest
+      - title: Results Requirements
+        sections:
+          - title: TestResult Requirements
+            requirements:
+              - id: VHDLTest-Results-TestResult-Pass
+                title: TestResult shall record a passed test when the run result indicates success.
+                justification: |
+                  Accurately recording pass results ensures that the test report correctly
+                  reflects the outcome of each test bench execution and provides traceability
+                  from simulator output to the final test report.
+                tests:
+                  - TestResult_Constructor_WithInfoResult_CreatesPassedTest
 
-          - id: VHDLTest-TestResult-Fail
-            title: TestResult shall record a failed test when the run result indicates an error.
-            justification: |
-              Accurately recording failure results is essential for CI/CD systems to detect
-              and report test failures, enabling rapid identification and resolution of
-              VHDL design defects.
-            tests:
-              - TestResult_Constructor_WithErrorResult_CreatesFailedTest
+              - id: VHDLTest-Results-TestResult-Fail
+                title: TestResult shall record a failed test when the run result indicates an error.
+                justification: |
+                  Accurately recording failure results is essential for CI/CD systems to detect
+                  and report test failures, enabling rapid identification and resolution of
+                  VHDL design defects.
+                tests:
+                  - TestResult_Constructor_WithErrorResult_CreatesFailedTest
+
+              - id: VHDLTest-Results-TestResult-PrintSummary-Label
+                title: >-
+                  TestResult shall display a pass/fail label word ("Passed" or "Failed")
+                  in the summary line.
+                justification: |
+                  The label word written to the log confirms which outcome occurred for each
+                  test bench. The color applied to the console output is a cosmetic display
+                  feature not verifiable via the log-based test approach because
+                  Context.Write logs the text content without color metadata.
+                tests:
+                  - TestResult_PrintSummary_PassedResult_WritesPassLine
+                  - TestResult_PrintSummary_FailedResult_WritesFailLine
+
+              - id: VHDLTest-Results-TestResult-PrintSummary-Name
+                title: >-
+                  TestResult shall include the test bench name in the summary line.
+                justification: |
+                  Including the test name alongside the pass/fail label lets developers quickly
+                  identify which test bench passed or failed without cross-referencing other output.
+                tests:
+                  - TestResult_PrintSummary_PassedResult_WritesPassLine
+                  - TestResult_PrintSummary_FailedResult_WritesFailLine
+
+              - id: VHDLTest-Results-TestResult-PrintSummary-Duration
+                title: >-
+                  TestResult shall include the execution duration in the summary line.
+                justification: |
+                  Showing the duration in the summary line helps users identify slow test benches
+                  and diagnose timing-related failures without examining full simulator output.
+                tests:
+                  - TestResult_PrintSummary_PassedResult_WritesPassLine
+                  - TestResult_PrintSummary_FailedResult_WritesFailLine
+
+              - id: VHDLTest-Results-TestResult-Identifiers
+                title: >-
+                  TestResult shall carry unique test and execution identifiers for TRX report format.
+                justification: |
+                  TRX report format requires distinct GUIDs for each test definition and each
+                  test execution. Generating fresh GUIDs at construction ensures that every
+                  TestResult instance is uniquely identifiable in the report, which is required
+                  for correct integration with Azure DevOps and Visual Studio test infrastructure.
+                tests:
+                  - TestResult_Constructor_CreatesUniqueTestAndExecutionIds

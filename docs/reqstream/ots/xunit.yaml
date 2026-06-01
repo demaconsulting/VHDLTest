@@ -1,0 +1,25 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: xUnit v3 Requirements
+        requirements:
+          - id: VHDLTest-OTS-xUnit-Execute
+            title: xUnit shall discover and execute the VHDLTest automated tests.
+            justification: |
+              xUnit v3 (xunit.v3 and xunit.runner.visualstudio) is the unit-testing framework used
+              by the project. It must discover and execute test methods reliably so that the build
+              pipeline can validate product behavior on every change.
+            tags: [ots]
+            tests:
+              - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
+
+          - id: VHDLTest-OTS-xUnit-Report
+            title: xUnit shall report executed test outcomes in the build test results.
+            justification: |
+              Reported test outcomes provide the evidence consumed by downstream tooling such as
+              ReqStream and CI dashboards. Without result reporting, passing test execution would
+              not produce auditable compliance evidence.
+            tags: [ots]
+            tests:
+              - GhdlSimulator_SimulatorName_ReturnsGHDL

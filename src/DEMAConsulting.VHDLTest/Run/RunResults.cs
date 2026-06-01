@@ -24,14 +24,35 @@ using DEMAConsulting.VHDLTest.Cli;
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-///     Run Results Class
+///     Immutable record holding the complete outcome of a single simulator execution. It is
+///     the primary return value from <see cref="RunProcessor"/> and the data source for
+///     simulator pass/fail decisions, result serialization, and console output display.
 /// </summary>
-/// <param name="Summary">Result summary</param>
-/// <param name="Start">Start time</param>
-/// <param name="Duration">Duration</param>
-/// <param name="ExitCode">Exit code</param>
-/// <param name="Output">Output text</param>
-/// <param name="Lines">Result lines</param>
+/// <param name="Summary">
+///     Highest-severity <see cref="RunLineType"/> across all classified output lines. Elevated to at least
+///     <see cref="RunLineType.Error"/> when <paramref name="ExitCode"/> is non-zero, ensuring downstream
+///     pass/fail decisions always reflect a simulator-reported error.
+/// </param>
+/// <param name="Start">
+///     Wall-clock timestamp recorded immediately before the simulator process was launched. Used to compute
+///     <paramref name="Duration"/> and stored in test-result reports for traceability.
+/// </param>
+/// <param name="Duration">
+///     Elapsed time in seconds between <paramref name="Start"/> and process exit. Must be non-negative.
+///     Formatted to one decimal place in summary output.
+/// </param>
+/// <param name="ExitCode">
+///     Raw process exit code returned by the simulator. Zero indicates success; any non-zero value indicates
+///     failure and causes <paramref name="Summary"/> to be elevated to at least <see cref="RunLineType.Error"/>.
+/// </param>
+/// <param name="Output">
+///     Full combined stdout and stderr text captured from the simulator process, unmodified. May be empty;
+///     never null.
+/// </param>
+/// <param name="Lines">
+///     Ordered collection of classified output lines produced by <see cref="RunProcessor.Parse"/>. Each entry
+///     pairs the original text with its assigned <see cref="RunLineType"/>. May be empty; never null.
+/// </param>
 public sealed record RunResults(
     RunLineType Summary,
     DateTime Start,
@@ -41,10 +62,28 @@ public sealed record RunResults(
     ReadOnlyCollection<RunLine> Lines)
 {
     /// <summary>
-    ///     Print the results to the console colorized
+    ///     Iterates over <see cref="Lines"/> and writes each line to the console using a color
+    ///     determined by its <see cref="RunLineType"/>. Text-classified lines are suppressed
+    ///     unless verbose output is enabled.
     /// </summary>
+    /// <remarks>
+    ///     <c>Print</c> writes to <paramref name="context"/> as a side effect; the number of
+    ///     lines written depends on <see cref="Lines"/> content and the value of
+    ///     <c>context.Verbose</c>. <see cref="RunResults"/> is immutable and thread-safe for
+    ///     concurrent reads; multiple callers may read its properties simultaneously without
+    ///     synchronization. Concurrent calls to <c>Print</c> that share the same
+    ///     <see cref="Context"/> instance are subject to <see cref="Context"/>'s own
+    ///     thread-safety contract.
+    /// </remarks>
+    /// <param name="context">
+    ///     Context used for colored console output. Must not be null. The <c>Verbose</c>
+    ///     property controls whether <see cref="RunLineType.Text"/> lines are written.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     public void Print(Context context)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         // Filter and write all lines
         foreach (var line in Lines.Where(l => context.Verbose || l.Type != RunLineType.Text))
         {
@@ -57,7 +96,8 @@ public sealed record RunResults(
                 _ => ConsoleColor.Gray
             };
 
-            // Write the line
+            // Write the line with its severity color, then emit the newline separately without
+            // color to prevent console color from bleeding into the line separator
             context.Write(color, line.Text);
             context.WriteLine("");
         }

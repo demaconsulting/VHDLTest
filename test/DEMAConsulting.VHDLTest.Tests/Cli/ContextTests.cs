@@ -23,295 +23,975 @@ using DEMAConsulting.VHDLTest.Cli;
 namespace DEMAConsulting.VHDLTest.Tests.Cli;
 
 /// <summary>
-/// Tests for argument parsing
+/// Tests for the Context class
 /// </summary>
-[TestClass]
 public class ContextTests
 {
     /// <summary>
     /// Test parsing arguments with no arguments
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_NoArguments_ReturnsDefaultContext()
     {
-        // Arrange - Prepare empty arguments array
+        // Arrange: Prepare empty arguments array
 
-        // Act - Parse the arguments
-        var arguments = Context.Create([]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create([]);
 
-        // Assert - Verify default context is returned with all properties set to defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify default context is returned with all properties set to defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Version);
+        Assert.False(arguments.Help);
+        Assert.False(arguments.Silent);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Equal(1, arguments.Depth);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with unknown argument
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_UnknownArgument_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for unknown argument
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--unknown"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--unknown"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a config file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithConfigFile_SetsConfigFile()
     {
-        // Arrange - Prepare arguments with config file option
+        // Arrange: Prepare arguments with config file option
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["-c", "config.json"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["-c", "config.json"]);
 
-        // Assert - Verify config file is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.AreEqual("config.json", arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify config file is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Equal("config.json", arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a missing config file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MissingConfigValue_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for missing config value
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-c"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-c"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a results file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithResultsFile_SetsResultsFile()
     {
-        // Arrange - Prepare arguments with results file option
+        // Arrange: Prepare arguments with results file option
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["-r", "results.trx"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["-r", "results.trx"]);
 
-        // Assert - Verify results file is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.AreEqual("results.trx", arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify results file is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Equal("results.trx", arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a missing results file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MissingResultsValue_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for missing results value
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-r"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-r"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a specified simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithSimulator_SetsSimulator()
     {
-        // Arrange - Prepare arguments with simulator option
+        // Arrange: Prepare arguments with simulator option
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["-s", "GHDL"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["-s", "GHDL"]);
 
-        // Assert - Verify simulator is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.AreEqual("GHDL", arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify simulator is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Equal("GHDL", arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a missing simulator
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_MissingSimulatorValue_ThrowsInvalidOperationException()
     {
+        // Arrange - no setup required; the invalid/missing argument is passed directly to the act step
+
         // Act & Assert - Verify InvalidOperationException is thrown for missing simulator value
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["-s"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-s"]));
     }
 
     /// <summary>
     /// Test parsing arguments with verbose
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithVerbose_SetsVerboseFlag()
     {
-        // Arrange - Prepare arguments with verbose flag
+        // Arrange: Prepare arguments with verbose flag
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["--verbose"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--verbose"]);
 
-        // Assert - Verify verbose flag is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsTrue(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify verbose flag is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.True(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with exit-zero flag
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithExitZero_SetsExitZeroFlag()
     {
-        // Arrange - Prepare arguments with exit-zero flag
+        // Arrange: Prepare arguments with exit-zero flag
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["--exit-0"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--exit-0"]);
 
-        // Assert - Verify exit-zero flag is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsTrue(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify exit-zero flag is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.True(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with validate flag
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithValidate_SetsValidateFlag()
     {
-        // Arrange - Prepare arguments with validate flag
+        // Arrange: Prepare arguments with validate flag
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["--validate"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--validate"]);
 
-        // Assert - Verify validate flag is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsTrue(arguments.Validate);
-        Assert.IsNull(arguments.CustomTests);
+        // Assert: Verify validate flag is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.True(arguments.Validate);
+        Assert.Null(arguments.CustomTests);
     }
 
     /// <summary>
     /// Test parsing arguments with a valid depth value
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithDepth_SetsDepth()
     {
-        // Act - Parse the arguments
-        var arguments = Context.Create(["--depth", "2"]);
+        // Arrange: no setup required
 
-        // Assert - Verify depth is set
-        Assert.IsNotNull(arguments);
-        Assert.AreEqual(2, arguments.Depth);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--depth", "2"]);
+
+        // Assert: Verify depth is set
+        Assert.NotNull(arguments);
+        Assert.Equal(2, arguments.Depth);
     }
 
     /// <summary>
     /// Test parsing arguments with a non-integer depth value
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithInvalidDepth_ThrowsInvalidOperationException()
     {
+        // Arrange: no setup required
+
         // Act & Assert - Verify InvalidOperationException is thrown for non-integer depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "abc"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "abc"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a zero depth value (out of range)
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithZeroDepth_ThrowsInvalidOperationException()
     {
+        // Arrange: no setup required
+
         // Act & Assert - Verify InvalidOperationException is thrown for zero depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "0"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "0"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a negative depth value (out of range)
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithNegativeDepth_ThrowsInvalidOperationException()
     {
+        // Arrange: no setup required
+
         // Act & Assert - Verify InvalidOperationException is thrown for negative depth
-        Assert.ThrowsExactly<InvalidOperationException>(() => Context.Create(["--depth", "-1"]));
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth", "-1"]));
     }
 
     /// <summary>
     /// Test parsing arguments with a custom test
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithCustomTest_SetsCustomTest()
     {
-        // Arrange - Prepare arguments with single custom test name
+        // Arrange: Prepare arguments with single custom test name
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["custom_test"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["custom_test"]);
 
-        // Assert - Verify custom test is set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNotNull(arguments.CustomTests);
-        Assert.HasCount(1, arguments.CustomTests);
-        Assert.AreEqual("custom_test", arguments.CustomTests[0]);
+        // Assert: Verify custom test is set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.NotNull(arguments.CustomTests);
+        Assert.Single(arguments.CustomTests);
+        Assert.Equal("custom_test", arguments.CustomTests[0]);
     }
 
     /// <summary>
     /// Test parsing arguments with multiple custom tests
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Context_Create_WithCustomTests_SetsCustomTests()
     {
-        // Arrange - Prepare arguments with multiple custom test names
+        // Arrange: Prepare arguments with multiple custom test names
 
-        // Act - Parse the arguments
-        var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--", "custom_test1", "custom_test2"]);
 
-        // Assert - Verify all custom tests are set and other properties are defaults
-        Assert.IsNotNull(arguments);
-        Assert.IsNull(arguments.ConfigFile);
-        Assert.IsNull(arguments.ResultsFile);
-        Assert.IsNull(arguments.Simulator);
-        Assert.IsFalse(arguments.Verbose);
-        Assert.IsFalse(arguments.ExitZero);
-        Assert.IsFalse(arguments.Validate);
-        Assert.IsNotNull(arguments.CustomTests);
-        Assert.HasCount(2, arguments.CustomTests);
-        Assert.AreEqual("custom_test1", arguments.CustomTests[0]);
-        Assert.AreEqual("custom_test2", arguments.CustomTests[1]);
+        // Assert: Verify all custom tests are set and other properties are defaults
+        Assert.NotNull(arguments);
+        Assert.Null(arguments.ConfigFile);
+        Assert.Null(arguments.ResultsFile);
+        Assert.Null(arguments.Simulator);
+        Assert.False(arguments.Verbose);
+        Assert.False(arguments.ExitZero);
+        Assert.False(arguments.Validate);
+        Assert.NotNull(arguments.CustomTests);
+        Assert.Equal(2, arguments.CustomTests.Count);
+        Assert.Equal("custom_test1", arguments.CustomTests[0]);
+        Assert.Equal("custom_test2", arguments.CustomTests[1]);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with version flag (long form)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithVersionFlag_SetsVersionFlag()
+    {
+        // Arrange: no setup required
+
+        // Act: parse the arguments
+        using var arguments = Context.Create(["--version"]);
+
+        // Assert: verify version flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Version);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with version flag (short form)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithShortVersionFlag_SetsVersionFlag()
+    {
+        // Arrange: no setup required
+
+        // Act: parse the arguments
+        using var arguments = Context.Create(["-v"]);
+
+        // Assert: verify version flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Version);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with help flag (long form)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithHelpFlag_SetsHelpFlag()
+    {
+        // Arrange: no setup required
+
+        // Act: parse the arguments
+        using var arguments = Context.Create(["--help"]);
+
+        // Assert: verify help flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Help);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with help flag (short form -h)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithShortHelpFlag_SetsHelpFlag()
+    {
+        // Arrange: no setup required
+
+        // Act: parse the arguments
+        using var arguments = Context.Create(["-h"]);
+
+        // Assert: verify help flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Help);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with help flag (short form -?)
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithQuestionHelpFlag_SetsHelpFlag()
+    {
+        // Arrange: no setup required
+
+        // Act: parse the arguments
+        using var arguments = Context.Create(["-?"]);
+
+        // Assert: verify help flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Help);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with silent flag
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithSilentFlag_SetsSilentFlag()
+    {
+        // Arrange: no setup required
+
+        // Act: parse the arguments
+        using var arguments = Context.Create(["--silent"]);
+
+        // Assert: verify silent flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.Silent);
+    }
+
+    /// <summary>
+    /// Test that ExitCode returns zero when no errors have been reported
+    /// </summary>
+    [Fact]
+    public void Context_ExitCode_NoErrors_ReturnsZero()
+    {
+        // Arrange: create a context with no arguments
+        using var context = Context.Create([]);
+
+        // Act: read the exit code without writing any errors
+        var exitCode = context.ExitCode;
+
+        // Assert: verify exit code is zero when no errors have been reported
+        Assert.Equal(0, exitCode);
+    }
+
+    /// <summary>
+    /// Test that the log option writes output to the specified log file
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithLogOption_WritesToLogFile()
+    {
+        // Arrange: create a temporary log file path
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["-l", logFile]))
+            {
+                // Act: write a line through the context
+                arguments.WriteLine("test output");
+            }
+
+            // Assert: verify the output was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("test output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that the --log long-form option writes output to the specified log file
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithLongLogOption_WritesToLogFile()
+    {
+        // Arrange: create a temporary log file path
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--log", logFile]))
+            {
+                // Act: write a line through the context
+                arguments.WriteLine("test output");
+            }
+
+            // Assert: verify the output was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("test output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine writes to the log file when verbose mode is active
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_VerboseMode_WritesToLog()
+    {
+        // Arrange: create a context with verbose mode and a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--verbose", "-l", logFile]))
+            {
+                // Act: write a verbose line
+                arguments.WriteVerboseLine("verbose output");
+            }
+
+            // Assert: verify the verbose output was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("verbose output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine produces no output when verbose mode is not active
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_NonVerboseMode_ProducesNoOutput()
+    {
+        // Arrange: create a context without verbose mode but with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["-l", logFile]))
+            {
+                // Act: write a verbose line without verbose mode enabled
+                arguments.WriteVerboseLine("verbose output");
+            }
+
+            // Assert: verify nothing was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Empty(content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that WriteError increments the error counter
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_WithMessage_IncrementsErrors()
+    {
+        // Arrange: create a silent context (to suppress console output)
+        using var arguments = Context.Create(["--silent"]);
+
+        // Act: write an error message
+        arguments.WriteError("test error");
+
+        // Assert: verify the error counter was incremented and exit code reflects the error
+        Assert.Equal(1, arguments.Errors);
+        Assert.NotEqual(0, arguments.ExitCode);
+    }
+
+    /// <summary>
+    /// Test that WriteError writes to the log file even when silent mode is enabled
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_SilentMode_WritesToLogFile()
+    {
+        // Arrange: create a silent context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--silent", "-l", logFile]))
+            {
+                // Act: write an error through the context
+                arguments.WriteError("test error");
+            }
+
+            // Assert: verify the error was written to the log file despite silent mode
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("test error", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Write sends output to the log file even when silent mode is enabled
+    /// </summary>
+    [Fact]
+    public void Context_Write_SilentMode_WritesToLogFile()
+    {
+        // Arrange: create a silent context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--silent", "-l", logFile]))
+            {
+                // Act: write colored text through the context
+                arguments.Write(ConsoleColor.White, "silent output");
+            }
+
+            // Assert: verify the text was written to the log file despite silent mode
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("silent output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Write sends output to the log file
+    /// </summary>
+    [Fact]
+    public void Context_Write_WithLogFile_WritesToLog()
+    {
+        // Arrange: create a context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["-l", logFile]))
+            {
+                // Act: write colored text through the context
+                arguments.Write(ConsoleColor.White, "colored output");
+            }
+
+            // Assert: verify the text was written to the log file
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("colored output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Write outputs to the console when not in silent mode
+    /// </summary>
+    [Fact]
+    public void Context_Write_NonSilentMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create([]);
+
+            // Act: write colored text without silent mode active
+            context.Write(ConsoleColor.White, "console output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the output reached the console
+        Assert.Contains("console output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteLine outputs to the console when not in silent mode
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_NonSilentMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create([]);
+
+            // Act: write a line without silent mode active
+            context.WriteLine("console line output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the line reached the console
+        Assert.Contains("console line output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteError outputs to the console when not in silent mode
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_NonSilentMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create([]);
+
+            // Act: write an error without silent mode active
+            context.WriteError("error output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the error reached the console
+        Assert.Contains("error output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteLine writes to the log file even when silent mode is enabled
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_SilentMode_WritesToLogFile()
+    {
+        // Arrange: create a silent context with a log file
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var arguments = Context.Create(["--silent", "-l", logFile]))
+            {
+                // Act: write a line through the context while in silent mode
+                arguments.WriteLine("silent line output");
+            }
+
+            // Assert: verify the line was written to the log file despite silent mode
+            var content = File.ReadAllText(logFile);
+            Assert.Contains("silent line output", content);
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that Context.Create throws InvalidOperationException when -l/--log is provided without a value
+    /// </summary>
+    [Fact]
+    public void Context_Create_MissingLogValue_ThrowsInvalidOperationException()
+    {
+        // Arrange - no setup required; the missing value is the scenario under test
+
+        // Act & Assert - verify InvalidOperationException is thrown for missing log value
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["-l"]));
+    }
+
+    /// <summary>
+    /// Test that Context.Create throws InvalidOperationException when --depth is provided without a value
+    /// </summary>
+    [Fact]
+    public void Context_Create_MissingDepthValue_ThrowsInvalidOperationException()
+    {
+        // Arrange - no setup required; the missing value is the scenario under test
+
+        // Act & Assert - verify InvalidOperationException is thrown for missing depth value
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--depth"]));
+    }
+
+    /// <summary>
+    /// Test that Write suppresses console output when silent mode is active
+    /// </summary>
+    [Fact]
+    public void Context_Write_SilentMode_SuppressesConsole()
+    {
+        // Arrange: redirect standard output to capture any console writes; enable silent mode
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--silent"]);
+
+            // Act: write colored text while silent mode is active
+            context.Write(ConsoleColor.White, "silent output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify nothing reached the console
+        Assert.Empty(writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteLine suppresses console output when silent mode is active
+    /// </summary>
+    [Fact]
+    public void Context_WriteLine_SilentMode_SuppressesConsole()
+    {
+        // Arrange: redirect standard output to capture any console writes; enable silent mode
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--silent"]);
+
+            // Act: write a line while silent mode is active
+            context.WriteLine("silent line output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify nothing reached the console
+        Assert.Empty(writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteError suppresses console output when silent mode is active
+    /// </summary>
+    [Fact]
+    public void Context_WriteError_SilentMode_SuppressesConsole()
+    {
+        // Arrange: redirect standard output to capture any console writes; enable silent mode
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--silent"]);
+
+            // Act: write an error while silent mode is active
+            context.WriteError("silent error output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify nothing reached the console
+        Assert.Empty(writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that Context.Create throws ArgumentNullException when args is null
+    /// </summary>
+    [Fact]
+    public void Context_Create_NullArguments_ThrowsArgumentNullException()
+    {
+        // Arrange - no setup required; null is passed directly to the act step
+
+        // Act & Assert - Verify ArgumentNullException is thrown for null args
+        Assert.Throws<ArgumentNullException>(() => Context.Create(null!));
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --config long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithLongConfigAlias_SetsConfigFile()
+    {
+        // Arrange: Prepare arguments with long-form config file option
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--config", "config.yaml"]);
+
+        // Assert: Verify config file is set
+        Assert.NotNull(arguments);
+        Assert.Equal("config.yaml", arguments.ConfigFile);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --result long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithResultAlias_SetsResultsFile()
+    {
+        // Arrange: Prepare arguments with --result alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--result", "results.trx"]);
+
+        // Assert: Verify results file is set
+        Assert.NotNull(arguments);
+        Assert.Equal("results.trx", arguments.ResultsFile);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --results long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithResultsAlias_SetsResultsFile()
+    {
+        // Arrange: Prepare arguments with --results alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--results", "results.trx"]);
+
+        // Assert: Verify results file is set
+        Assert.NotNull(arguments);
+        Assert.Equal("results.trx", arguments.ResultsFile);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the --simulator long-form alias
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithSimulatorAlias_SetsSimulator()
+    {
+        // Arrange: Prepare arguments with --simulator alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["--simulator", "ghdl"]);
+
+        // Assert: Verify simulator is set
+        Assert.NotNull(arguments);
+        Assert.Equal("ghdl", arguments.Simulator);
+    }
+
+    /// <summary>
+    /// Test parsing arguments with the -0 short alias for ExitZero
+    /// </summary>
+    [Fact]
+    public void Context_Create_WithShortExitZeroAlias_SetsExitZeroFlag()
+    {
+        // Arrange: Prepare arguments with -0 alias
+
+        // Act: Parse the arguments
+        using var arguments = Context.Create(["-0"]);
+
+        // Assert: Verify exit-zero flag is set
+        Assert.NotNull(arguments);
+        Assert.True(arguments.ExitZero);
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine writes to the console when verbose mode is active and not silent
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_NonSilentVerboseMode_WritesToConsole()
+    {
+        // Arrange: redirect standard output to capture console writes
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--verbose"]);
+
+            // Act: write a verbose line with verbose mode active and silent mode inactive
+            context.WriteVerboseLine("verbose console output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: verify the verbose message appeared on the console
+        Assert.Contains("verbose console output", writer.ToString());
+    }
+
+    /// <summary>
+    /// Test that WriteVerboseLine suppresses console output when both verbose and silent modes are active
+    /// </summary>
+    [Fact]
+    public void Context_WriteVerboseLine_SilentVerboseMode_SuppressesConsole()
+    {
+        // Arrange: redirect stdout; enable both verbose and silent
+        var writer = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(writer);
+        try
+        {
+            using var context = Context.Create(["--verbose", "--silent"]);
+
+            // Act: write a verbose line while silent mode is also active
+            context.WriteVerboseLine("suppressed verbose output");
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        // Assert: nothing should reach the console
+        Assert.Empty(writer.ToString());
     }
 }

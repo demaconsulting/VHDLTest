@@ -26,44 +26,101 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     QuestaSim Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the QuestaSim commercial VHDL simulator
+///     by Mentor/Siemens.
 /// </summary>
+/// <remarks>
+///     Structurally identical to <see cref="ModelSimSimulator"/>: drives <c>vsim</c> via TCL
+///     do-scripts using <c>vcom</c> for VHDL-2008 compilation and <c>vsim</c>/<c>run</c> for
+///     test bench simulation. Distinguished from <see cref="ModelSimSimulator"/> by its registered
+///     name ("QuestaSim"), its path environment variable (<c>VHDLTEST_QUESTASIM_PATH</c>), and its
+///     working directory path. Implemented as a singleton (<see cref="Instance"/>) initialized at
+///     class load time; stateless after construction and therefore thread-safe.
+/// </remarks>
 public sealed class QuestaSimSimulator : Simulator
 {
-    /// <summary>
-    /// Compile processor
-    /// </summary>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Error, ".*Error: ")
-        ]
-    );
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Error, ".*Error: ")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".*Note: "),
+        RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
+        RunLineRule.Create(RunLineType.Error, ".*Error: "),
+        RunLineRule.Create(RunLineType.Error, ".*Failure: ")
+    ];
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for QuestaSim compilation (<c>vcom</c>) output.
     /// </summary>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".*Note: "),
-            RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
-            RunLineRule.Create(RunLineType.Error, ".*Error: "),
-            RunLineRule.Create(RunLineType.Error, ".*Failure: ")
-        ]
-    );
+    /// <remarks>
+    ///     Applies one classification rule: lines matching <c>.*Error: </c> (trailing space
+    ///     prevents false positives on identifiers ending with "Error") are classified as Error.
+    ///     Lines not matching any rule are left unclassified as Text.
+    /// </remarks>
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
-    ///     QuestaSim simulator instance
+    ///     Output classifier for QuestaSim simulation (<c>vsim</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies four classification rules in order (each includes a trailing space to
+    ///     prevent false positives on identifiers ending with the keyword):
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.*Note: </c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.*Warning: </c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.*Error: </c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.*Failure: </c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
+
+    /// <summary>
+    ///     The singleton <see cref="QuestaSimSimulator"/> instance, initialized at class load time.
+    /// </summary>
+    /// <remarks>
+    ///     Singleton pattern: only one instance is created per process, held in this static
+    ///     property. The instance is stateless after construction (path is resolved once in the
+    ///     constructor via <see cref="FindPath"/>); concurrent reads from multiple threads are safe.
+    ///     Always access the simulator through this property rather than constructing a new instance.
+    /// </remarks>
     public static QuestaSimSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
-    ///     Initializes a new instance of the QuestaSim simulator
+    ///     Initializes a new instance of the QuestaSim simulator.
     /// </summary>
-    private QuestaSimSimulator() : base("QuestaSim", FindPath())
+    private QuestaSimSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
 
+    private QuestaSimSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("QuestaSim", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="QuestaSimSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static QuestaSimSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
+
     /// <inheritdoc />
+    /// <remarks>
+    ///     Creates the <c>VHDLTest.out/QuestaSim/</c> output directory if it does not already exist,
+    ///     writes <c>compile.do</c> to that directory, and invokes <c>vsim -c -do compile.do</c> to
+    ///     compile all source files. Throws <see cref="InvalidOperationException"/> when
+    ///     <see cref="Simulator.SimulatorPath"/> is null (QuestaSim not installed).
+    /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -101,7 +158,7 @@ public sealed class QuestaSimSimulator : Simulator
 
         // Run the QuestaSim compiler
         var application = Path.Combine(simPath, "vsim");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             libDir,
@@ -111,9 +168,14 @@ public sealed class QuestaSimSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Writes <c>test.do</c> to <c>VHDLTest.out/QuestaSim/</c> and invokes <c>vsim</c> to run
+    ///     the specified test bench. Throws <see cref="InvalidOperationException"/> when
+    ///     <see cref="Simulator.SimulatorPath"/> is null (QuestaSim not installed).
+    /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting QuestaSim test {test}...");
 
         // Fail if we cannot find the simulator
@@ -141,7 +203,7 @@ public sealed class QuestaSimSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "vsim");
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             libDir,
@@ -157,9 +219,20 @@ public sealed class QuestaSimSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the QuestaSim installation directory.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>Directory path containing the QuestaSim executables, or null if QuestaSim is not found.</returns>
+    /// <remarks>
+    ///     Resolution order:
+    ///     <list type="number">
+    ///         <item><description>Returns the <c>VHDLTEST_QUESTASIM_PATH</c> environment variable value when set,
+    ///         allowing CI environments and users to override the default installation path.</description></item>
+    ///         <item><description>Searches the system PATH for the <c>vsim</c> executable and returns its
+    ///         parent directory (the simulator installation directory).</description></item>
+    ///     </list>
+    ///     Returns null when QuestaSim is not found by either mechanism, causing
+    ///     <see cref="Simulator.Available"/> to return false.
+    /// </remarks>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -176,7 +249,7 @@ public sealed class QuestaSimSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing vsim (the simulator installation directory)
         return Path.GetDirectoryName(simPath);
     }
 }

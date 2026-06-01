@@ -2,36 +2,65 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: QuestaSimSimulator Unit
-        requirements:
-          - id: VHDLTest-Sim-QuestaSim
-            title: VHDLTest shall support the QuestaSim simulator.
-            justification: |
-              QuestaSim is the advanced verification tool from Siemens/Mentor Graphics, offering
-              enhanced debugging and coverage features. Supporting QuestaSim enables VHDLTest
-              to integrate with high-end verification environments.
-            tests:
-              - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
-              - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
+      - title: Simulators Requirements
+        sections:
+          - title: QuestaSimSimulator Requirements
+            requirements:
+              - id: VHDLTest-Simulators-QuestaSimSimulator-Support
+                title: VHDLTest shall support the QuestaSim simulator.
+                justification: |
+                  QuestaSim is the advanced verification tool from Siemens/Mentor Graphics, offering
+                  enhanced debugging and coverage features. Supporting QuestaSim enables VHDLTest
+                  to integrate with high-end verification environments.
+                tests:
+                  - QuestaSimSimulator_SimulatorName_ReturnsQuestaSim
+                  - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
 
-          - id: VHDLTest-Sim-QuestaSim-Compile
-            title: QuestaSimSimulator shall classify QuestaSim compilation output lines by severity.
-            justification: |
-              Accurate classification of compilation output enables VHDLTest to detect
-              errors during the vcom analysis phase and report them clearly to the user.
-            tests:
-              - QuestaSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
-              - QuestaSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+              - id: VHDLTest-Simulators-QuestaSimSimulator-Compile
+                title: QuestaSimSimulator shall classify QuestaSim compilation output lines by severity.
+                justification: |
+                  Accurate classification of compilation output enables VHDLTest to detect
+                  errors during the vcom analysis phase and report them clearly to the user.
+                tests:
+                  - QuestaSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+                  - QuestaSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
 
-          - id: VHDLTest-Sim-QuestaSim-Test
-            title: QuestaSimSimulator shall classify QuestaSim simulation output lines by severity.
-            justification: |
-              Accurate classification of simulation output enables VHDLTest to detect pass,
-              warning, failure, and error conditions during vsim execution and reflect them
-              in the test report.
-            tests:
-              - QuestaSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult
-              - QuestaSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
-              - QuestaSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
-              - QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
-              - QuestaSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
+              - id: VHDLTest-Simulators-QuestaSimSimulator-Test
+                title: QuestaSimSimulator shall classify QuestaSim simulation output lines by severity.
+                justification: |
+                  Accurate classification of simulation output enables VHDLTest to detect pass,
+                  warning, failure, and error conditions during vsim execution and reflect them
+                  in the test report.
+                tests:
+                  - QuestaSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+                  - QuestaSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+                  - QuestaSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+                  - QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+                  - QuestaSimSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
+
+              - id: VHDLTest-Simulators-QuestaSimSimulator-Unavailable
+                title: >-
+                  When QuestaSim is not available, VHDLTest shall report that the QuestaSim
+                  simulator is not available when compile or test is invoked.
+                justification: |
+                  Clear error reporting when the simulator is not installed prevents silent
+                  failures and gives users an actionable message when the simulator binary
+                  cannot be located.
+                tests:
+                  - QuestaSimSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
+                  - QuestaSimSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Simulators-QuestaSimSimulator-FindPath
+                title: >-
+                  QuestaSim Simulator shall locate the QuestaSim installation directory, respecting
+                  the VHDLTEST_QUESTASIM_PATH environment variable override when set.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate QuestaSim across different
+                  installation layouts and environments. The VHDLTEST_QUESTASIM_PATH environment
+                  variable override enables CI pipelines and non-standard installations to specify
+                  the QuestaSim path explicitly without modifying PATH. PATH-based discovery is
+                  verified in CI with QuestaSim installed; the env-var override path is covered by
+                  a unit test.
+                tests:
+                  - QuestaSimSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+                  - QuestaSimSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath

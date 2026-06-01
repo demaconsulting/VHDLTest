@@ -27,22 +27,48 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest;
 
 /// <summary>
-///     VHDLTest program class
+///     CLI entry point and dispatch coordinator for the VHDLTest application.
 /// </summary>
+/// <remarks>
+///     <see cref="Main"/> creates the <see cref="Cli.Context"/> from raw command-line
+///     arguments and delegates to <see cref="Run"/> for all dispatch logic.
+///     <see cref="Run"/> handles version display, help, self-validation, and the primary
+///     test-execution path, communicating results through the context's error channel and
+///     exit code. All operational errors are caught and reported without re-throwing;
+///     unexpected exceptions are reported and re-thrown so the runtime records them as
+///     unhandled.
+/// </remarks>
 public static class Program
 {
     /// <summary>
-    ///     Gets the version of this programs assembly
+    ///     Gets the informational version string of this program's assembly, read from
+    ///     <see cref="System.Reflection.AssemblyInformationalVersionAttribute"/>.
     /// </summary>
+    /// <remarks>
+    ///     The value is resolved once at static initialization from the assembly's
+    ///     <see cref="System.Reflection.AssemblyInformationalVersionAttribute"/>; if the
+    ///     attribute is absent, the value is <c>"Unknown"</c>. The property is read-only
+    ///     after static initialization and is therefore safe to read from any thread.
+    /// </remarks>
     public static string Version { get; } =
         typeof(Program).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion ?? "Unknown";
 
     /// <summary>
-    ///     Application entry point
+    ///     Creates the program context from command-line arguments, delegates execution to
+    ///     <see cref="Run"/>, and propagates the resulting exit code to the process.
     /// </summary>
-    /// <param name="args">Program arguments</param>
+    /// <remarks>
+    ///     The primary output channel is <see cref="System.Environment.ExitCode"/>, set from
+    ///     <see cref="Context.ExitCode"/> after <see cref="Run"/> completes. Two exception
+    ///     layers are present: <see cref="InvalidOperationException"/> is caught and reported
+    ///     as a formatted error message with exit code 1; all other exceptions are reported
+    ///     and re-thrown so that the runtime reports an unhandled exception with a non-zero
+    ///     exit code.
+    /// </remarks>
+    /// <param name="args">Program arguments. Must not be null.</param>
+    /// <exception cref="Exception">Thrown when an unexpected error occurs that cannot be attributed to an operational condition; the exception propagates to the runtime unhandled.</exception>
     public static void Main(string[] args)
     {
         try
@@ -69,9 +95,18 @@ public static class Program
     }
 
     /// <summary>
-    ///     Run the program context
+    ///     Executes the dispatched operation for the given context, routing to version display,
+    ///     help, self-validation, or the primary test-execution path based on parsed flags.
     /// </summary>
-    /// <param name="context">Program context</param>
+    /// <remarks>
+    ///     Dispatch order: version display → help display → self-validation → normal test run.
+    ///     Each early-exit path returns without setting an error on <paramref name="context"/>,
+    ///     so <see cref="Context.ExitCode"/> remains 0 on normal dispatch. Results from test
+    ///     execution are communicated through <paramref name="context"/> via
+    ///     <see cref="Context.WriteError"/>, which increments <see cref="Context.Errors"/> and
+    ///     causes <see cref="Context.ExitCode"/> to return non-zero.
+    /// </remarks>
+    /// <param name="context">Program context. Must not be null.</param>
     public static void Run(Context context)
     {
         // Handle version query
@@ -122,12 +157,21 @@ public static class Program
             // Save the test results
             if (context.ResultsFile != null)
             {
-                results.SaveResults(context.ResultsFile);
+                try
+                {
+                    results.SaveResults(context.ResultsFile);
+                }
+                catch (Exception ex)
+                {
+                    context.WriteError($"Error: Failed to write results file: {ex.Message}");
+                }
             }
 
             // If we got failures then exit with an error code
             if (!context.ExitZero && results.Fails.Any())
             {
+                // Pass null to increment the error counter without printing a duplicate message —
+                // the test failure details have already been written by PrintSummary
                 context.WriteError(null);
             }
         }
@@ -144,9 +188,17 @@ public static class Program
     }
 
     /// <summary>
-    ///     Print usage information
+    ///     Writes the usage and help text to the context output channel.
     /// </summary>
-    /// <param name="context">Program context</param>
+    /// <remarks>
+    ///     Writes the usage/help text to the context output channel. The method is stateless —
+    ///     it only reads from the constant usage string and writes to <paramref name="context"/>;
+    ///     it has no side effects beyond writing to the context. It is not responsible for setting
+    ///     an error condition; callers must call <see cref="Context.WriteError"/> separately if a
+    ///     non-zero exit code is required. Stateless and thread-safe provided the caller does not
+    ///     share <paramref name="context"/> across threads.
+    /// </remarks>
+    /// <param name="context">Output target that receives the usage text. Must not be null.</param>
     private static void PrintUsage(Context context)
     {
         context.WriteLine(
@@ -166,6 +218,9 @@ public static class Program
               -s, --simulator <name>       Specify simulator
               -0, --exit-0                 Exit with code 0 if test fail
               --                           End of options
+
+            Arguments:
+              [tests]                      Optional test bench names to filter which tests to run
             """);
     }
 }

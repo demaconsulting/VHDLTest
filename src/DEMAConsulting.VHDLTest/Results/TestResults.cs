@@ -27,56 +27,111 @@ using DEMAConsulting.VHDLTest.Simulators;
 namespace DEMAConsulting.VHDLTest.Results;
 
 /// <summary>
-///     Test Results class
+///     Aggregate container for a complete VHDLTest run, driving build and test execution
+///     through a simulator and serializing outcomes to standard report formats.
 /// </summary>
-/// <param name="runName">Test Run Name</param>
-/// <param name="codeBase">Code Base</param>
+/// <remarks>
+///     TestResults owns the compile-then-test workflow: <c>Execute</c> invokes the
+///     simulator for the build step and for each test bench in sequence, collecting
+///     <see cref="TestResult"/> instances in <see cref="Tests"/>. After execution callers
+///     can print a human-readable summary via <see cref="PrintSummary"/> and persist the
+///     collection as TRX or JUnit XML via <see cref="SaveResults"/>.
+///     Instances are not thread-safe; concurrent access to a single instance requires
+///     external synchronization. The static <c>Execute</c> methods are safe to call
+///     concurrently provided each call uses independent arguments.
+/// </remarks>
+/// <param name="runName">
+///     Human-readable label for this test run used in generated reports. Must not be null.
+/// </param>
+/// <param name="codeBase">
+///     Path or label identifying the source tree under test, stored in TRX output for
+///     traceability. Must not be null.
+/// </param>
 public sealed class TestResults(string runName, string codeBase)
 {
     /// <summary>
     ///     Gets the Test Run ID
     /// </summary>
+    /// <remarks>
+    ///     Unique identifier for this test run instance; correlates TRX output back to a
+    ///     specific VHDLTest invocation.
+    /// </remarks>
     public Guid RunId { get; init; } = Guid.NewGuid();
 
     /// <summary>
     ///     Gets the Test Run Name
     /// </summary>
+    /// <remarks>
+    ///     Human-readable label set at construction; used in generated reports to identify
+    ///     who ran the tests and when.
+    /// </remarks>
     public string RunName => runName;
 
     /// <summary>
     ///     Gets the Code Base
     /// </summary>
+    /// <remarks>
+    ///     Path or label identifying the source tree under test; stored in TRX output so
+    ///     report consumers can trace results back to the code revision.
+    /// </remarks>
     public string CodeBase => codeBase;
 
     /// <summary>
     ///     Gets or sets the build run information
     /// </summary>
+    /// <remarks>
+    ///     Null before <c>Execute</c> completes; set once compilation finishes
+    ///     regardless of whether the build passed or failed.
+    /// </remarks>
     public RunResults? BuildResults { get; set; }
 
     /// <summary>
     ///     Gets the tests
     /// </summary>
+    /// <remarks>
+    ///     Ordered list of individual test bench outcomes, one per configured test bench;
+    ///     populated in order by the <c>Execute</c> method.
+    /// </remarks>
     public List<TestResult> Tests { get; init; } = [];
 
     /// <summary>
     ///     Gets the passed tests
     /// </summary>
+    /// <remarks>
+    ///     Lazily enumerated view over <see cref="Tests"/> containing only outcomes where
+    ///     the test bench ran without error; used by <see cref="PrintSummary"/> to compute
+    ///     pass counts.
+    /// </remarks>
     public IEnumerable<TestResult> Passes => Tests.Where(r => r.Passed);
 
     /// <summary>
     ///     Gets the failing tests
     /// </summary>
+    /// <remarks>
+    ///     Lazily enumerated view over <see cref="Tests"/> containing only outcomes where
+    ///     the test bench encountered an error; used by <see cref="PrintSummary"/> to
+    ///     compute fail counts.
+    /// </remarks>
     public IEnumerable<TestResult> Fails => Tests.Where(r => r.Failed);
 
     /// <summary>
     ///     Execute the requested tests
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="options">Test options</param>
-    /// <param name="simulator">Simulator</param>
-    /// <returns>Test results</returns>
+    /// <remarks>
+    ///     Convenience overload that derives the run name from the current user, machine
+    ///     name, and local timestamp, and the code base from the options working directory.
+    ///     Delegates to the explicit overload; stateless and safe to call concurrently for
+    ///     independent contexts.
+    /// </remarks>
+    /// <param name="context">Program context providing output channels. Must not be null.</param>
+    /// <param name="options">Test options supplying working directory and test list. Must not be null.</param>
+    /// <param name="simulator">Simulator to use for compilation and test execution. Must not be null.</param>
+    /// <returns>Populated <see cref="TestResults"/> instance with build and test outcomes.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the build step reports errors.</exception>
     public static TestResults Execute(Context context, Options options, Simulator simulator)
     {
+        // Delegate to the explicit overload, deriving the run name from the current user and
+        // machine context and the code base from the options working directory
         return Execute(
             context,
             $"{Environment.UserName}@{Environment.MachineName} {DateTime.Now}",
@@ -88,12 +143,22 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Execute the requested tests
     /// </summary>
-    /// <param name="context">Program context</param>
-    /// <param name="runName">Run name</param>
-    /// <param name="codeBase">Code base</param>
-    /// <param name="options">Test options</param>
-    /// <param name="simulator">Simulator</param>
-    /// <returns>Test results</returns>
+    /// <remarks>
+    ///     Primary execution method. Invokes the simulator's compile step; throws
+    ///     <see cref="InvalidOperationException"/> with the message "Build Failed" if the
+    ///     build reports errors. On success iterates <see cref="Context.CustomTests"/> when
+    ///     set, or <c>options.Config.Tests</c>, calling the simulator's test step for each
+    ///     and appending a <see cref="TestResult"/> to <see cref="Tests"/>. Stateless with
+    ///     respect to <c>this</c>; each call constructs a fresh <see cref="TestResults"/>
+    ///     instance.
+    /// </remarks>
+    /// <param name="context">Program context providing output channels. Must not be null.</param>
+    /// <param name="runName">Human-readable run label used in generated reports. Must not be null.</param>
+    /// <param name="codeBase">Path or label identifying the code under test. Must not be null.</param>
+    /// <param name="options">Test options supplying working directory and test list. Must not be null.</param>
+    /// <param name="simulator">Simulator to use for compilation and test execution. Must not be null.</param>
+    /// <returns>Populated <see cref="TestResults"/> instance with build and test outcomes.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the build step reports errors.</exception>
     public static TestResults Execute(Context context, string runName, string codeBase, Options options, Simulator simulator)
     {
         // Construct the results
@@ -140,8 +205,15 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Save results to a file (TRX or JUnit based on file extension)
     /// </summary>
+    /// <remarks>
+    ///     Selects TRX format for <c>.trx</c> extensions and JUnit XML for <c>.xml</c> extensions;
+    ///     all other extensions default to TRX. Writes the serialized content to disk via
+    ///     <see cref="File.WriteAllText(string, string)"/>; the file is created or overwritten. Throws
+    ///     <see cref="ArgumentException"/> before any I/O if <paramref name="fileName"/> is
+    ///     null, empty, or whitespace-only.
+    /// </remarks>
     /// <param name="fileName">File name (extension determines format: .trx for TRX, .xml for JUnit, others default to TRX)</param>
-    /// <exception cref="ArgumentException">Thrown when fileName is null or empty</exception>
+    /// <exception cref="ArgumentException">Thrown when fileName is null, empty, or whitespace-only</exception>
     public void SaveResults(string fileName)
     {
         // Validate parameter
@@ -199,7 +271,13 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Save results to TRX file (backward compatibility)
     /// </summary>
+    /// <remarks>
+    ///     Backward-compatibility wrapper that delegates unconditionally to
+    ///     <see cref="SaveResults"/>. Retained so callers that previously used
+    ///     <c>SaveToTrx</c> continue to work without modification.
+    /// </remarks>
     /// <param name="fileName">TRX file name</param>
+    /// <exception cref="ArgumentException">Thrown when fileName is null, empty, or whitespace-only; propagated from <see cref="SaveResults"/>.</exception>
     public void SaveToTrx(string fileName)
     {
         SaveResults(fileName);
@@ -208,9 +286,20 @@ public sealed class TestResults(string runName, string codeBase)
     /// <summary>
     ///     Print test results summary
     /// </summary>
-    /// <param name="context">Program context</param>
+    /// <remarks>
+    ///     Writes a separator line, then one summary line per test in <see cref="Tests"/> via
+    ///     <see cref="TestResult.PrintSummary"/>. After the per-test lines, writes a closing
+    ///     separator, then aggregate "Passed N of M" (green) and/or "Failed N of M" (red)
+    ///     totals. All output goes through the injected <paramref name="context"/>; the method
+    ///     has no other side effects. <paramref name="context"/> must not be null.
+    /// </remarks>
+    /// <param name="context">Program context. Must not be null.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     public void PrintSummary(Context context)
     {
+        // Validate the context before dereferencing it
+        ArgumentNullException.ThrowIfNull(context);
+
         // Print the summary table
         context.WriteLine("==== summary ===========================");
         foreach (var r in Tests)

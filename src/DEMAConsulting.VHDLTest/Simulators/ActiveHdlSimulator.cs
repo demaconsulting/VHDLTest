@@ -26,63 +26,146 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     Active-HDL Simulator Class
+///     Active-HDL simulator integration that drives <c>vsimsa</c> in batch mode via TCL do-scripts,
+///     using <c>acom</c> for VHDL-2008 compilation and <c>asim</c>/<c>run</c> for test-bench
+///     execution. Classifies output lines by severity and suppresses Lattice Edition license
+///     advisory messages.
 /// </summary>
+/// <remarks>
+///     All public members are thread-safe for concurrent read access; the singleton
+///     <see cref="Instance"/> is initialized once at class load time.
+/// </remarks>
 public sealed class ActiveHdlSimulator : Simulator
 {
     /// <summary>
-    /// Simulation application
+    ///     Name of the Active-HDL batch-mode simulator executable used to drive compilation and test execution.
     /// </summary>
     private const string SimApp = "vsimsa";
 
     /// <summary>
-    /// Library output directory path (relative to working directory)
+    ///     Relative path (from the working directory) to the Active-HDL library output directory where
+    ///     compiled work libraries and do-scripts are stored.
     /// </summary>
     private const string LibDirPath = "VHDLTest.out/ActiveHDL";
 
-    /// <summary>
-    /// Compile processor
-    /// </summary>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
-            RunLineRule.Create(RunLineType.Error, "Error:"),
-            RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
-        ]
-    );
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+        RunLineRule.Create(RunLineType.Error, "Error:"),
+        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
+        RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
+        RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
+        RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
+        RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
+        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
+        RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
+        RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
+        RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
+        RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
+    ];
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for <c>vsimsa</c> compilation output.
     /// </summary>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition"),
-            RunLineRule.Create(RunLineType.Text, @"KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options"),
-            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*Warning:"),
-            RunLineRule.Create(RunLineType.Warning, @"KERNEL:\s*WARNING:"),
-            RunLineRule.Create(RunLineType.Info, @"EXECUTION::\s*NOTE"),
-            RunLineRule.Create(RunLineType.Warning, @"EXECUTION::\s*WARNING"),
-            RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*ERROR"),
-            RunLineRule.Create(RunLineType.Error, @"EXECUTION::\s*FAILURE"),
-            RunLineRule.Create(RunLineType.Error, @"KERNEL:\s*ERROR"),
-            RunLineRule.Create(RunLineType.Error, @"RUNTIME:\s*Fatal Error:"),
-            RunLineRule.Create(RunLineType.Error, @"VSIM:\s*Error:")
-        ]
-    );
+    /// <remarks>
+    ///     Classification rules:
+    ///     <list type="bullet">
+    ///         <item><description><c>KERNEL:\s*Warning:</c> — classified as Warning.</description></item>
+    ///         <item><description><c>Error:</c> — classified as Error.</description></item>
+    ///         <item><description><c>RUNTIME:\s*Fatal Error</c> — classified as Error.</description></item>
+    ///     </list>
+    ///     Unmatched lines are left as Text.
+    /// </remarks>
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
-    ///     Active-HDL simulator instance
+    ///     Output classifier for <c>vsimsa</c> simulation output.
     /// </summary>
+    /// <remarks>
+    ///     Classification rules (applied in order):
+    ///     <list type="bullet">
+    ///         <item><description><c>KERNEL:\s*Warning:\s*You are using the Active-HDL Lattice Edition</c> — suppressed (classified as Text).</description></item>
+    ///         <item><description><c>KERNEL:\s*Warning:\s*Contact Aldec for available upgrade options</c> — suppressed (classified as Text).</description></item>
+    ///         <item><description><c>KERNEL:\s*Warning:</c> — classified as Warning.</description></item>
+    ///         <item><description><c>KERNEL:\s*WARNING:</c> — classified as Warning.</description></item>
+    ///         <item><description><c>EXECUTION::\s*NOTE</c> — classified as Info.</description></item>
+    ///         <item><description><c>EXECUTION::\s*WARNING</c> — classified as Warning.</description></item>
+    ///         <item><description><c>EXECUTION::\s*ERROR</c> — classified as Error.</description></item>
+    ///         <item><description><c>EXECUTION::\s*FAILURE</c> — classified as Error.</description></item>
+    ///         <item><description><c>KERNEL:\s*ERROR</c> — classified as Error.</description></item>
+    ///         <item><description><c>RUNTIME:\s*Fatal Error:</c> — classified as Error.</description></item>
+    ///         <item><description><c>VSIM:\s*Error:</c> — classified as Error.</description></item>
+    ///     </list>
+    ///     The two Lattice Edition suppression rules must appear before the general
+    ///     <c>KERNEL:\s*Warning:</c> rule so they take priority.
+    /// </remarks>
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
+
+    /// <summary>
+    ///     Singleton <see cref="ActiveHdlSimulator"/> instance shared across the application.
+    /// </summary>
+    /// <remarks>
+    ///     Initialized once at class load time. If Active-HDL is not installed,
+    ///     <see cref="Simulator.SimulatorPath"/> is null and <see cref="Simulator.Available"/>
+    ///     returns false.
+    /// </remarks>
     public static ActiveHdlSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
-    ///     Initializes a new instance of the ActiveHdl simulator
+    ///     Initializes a new instance of the Active-HDL simulator.
     /// </summary>
-    private ActiveHdlSimulator() : base("ActiveHdl", FindPath())
+    /// <remarks>
+    ///     Private to enforce the singleton pattern — callers must use <see cref="Instance"/>.
+    ///     Passes null for the path when Active-HDL is not installed, causing
+    ///     <see cref="Simulator.Available"/> to return false and preventing accidental use
+    ///     in environments without the simulator.
+    /// </remarks>
+    private ActiveHdlSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
 
-    /// <inheritdoc />
+    private ActiveHdlSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("ActiveHdl", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="ActiveHdlSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static ActiveHdlSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
+
+    /// <summary>
+    ///     Compiles all VHDL source files using Active-HDL's <c>acom</c> utility via a TCL do-script.
+    /// </summary>
+    /// <remarks>
+    ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, an <c>alib</c> library
+    ///     initialization command, <c>set worklib work</c>, and one <c>acom -2008 -dbg {file}</c>
+    ///     line per source file. The script is written to
+    ///     <c>VHDLTest.out/ActiveHDL/compile.do</c> and executed via
+    ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/compile.do</c> from the working directory.
+    ///     Creates the <c>VHDLTest.out/ActiveHDL/</c> output directory when it does not already exist.
+    /// </remarks>
+    /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
+    /// <param name="options">Parsed options providing the VHDL file list and working directory. Must not be null.</param>
+    /// <returns>Classified compile output as <see cref="RunResults"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when <see cref="Simulator.SimulatorPath"/> is null (Active-HDL not installed).
+    /// </exception>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -90,7 +173,7 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Fail if we cannot find the simulator
         var simPath = SimulatorPath ??
-                      throw new InvalidOperationException("ActiveHdl Simulator not available");
+                      throw new InvalidOperationException("ActiveHDL Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
@@ -118,7 +201,7 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Run the ActiveHDL compiler
         var application = Path.Combine(simPath, SimApp);
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -126,10 +209,33 @@ public sealed class ActiveHdlSimulator : Simulator
             $"{LibDirPath}/compile.do");
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Simulates a single test bench using Active-HDL's <c>asim</c> utility via a TCL do-script.
+    /// </summary>
+    /// <remarks>
+    ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, <c>set worklib work</c>,
+    ///     <c>asim {test}</c>, <c>run -all</c>, <c>endsim</c>, and <c>exit -code 0</c>. The script
+    ///     is written to <c>VHDLTest.out/ActiveHDL/test.do</c> and executed via
+    ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/test.do</c> from the working directory. The
+    ///     trailing <c>exit -code 0</c> is required because <c>vsimsa</c> does not emit a success
+    ///     exit code automatically when simulation completes normally.
+    /// </remarks>
+    /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
+    /// <param name="options">Parsed options providing the working directory. Must not be null.</param>
+    /// <param name="test">Test bench entity name to simulate. Must not be null or empty, and must not
+    ///     contain whitespace or TCL metacharacters because it is interpolated directly into the TCL
+    ///     script without escaping.</param>
+    /// <returns>Simulation outcome as a <see cref="TestResult"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when <see cref="Simulator.SimulatorPath"/> is null (Active-HDL not installed).
+    /// </exception>
+    /// <exception cref="DirectoryNotFoundException">
+    ///     Thrown when <c>VHDLTest.out/ActiveHDL/</c> does not exist — i.e., when
+    ///     <see cref="Compile"/> has not been called first.
+    /// </exception>
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting ActiveHDL test {test}...");
 
         // Fail if we cannot find the simulator
@@ -157,7 +263,7 @@ public sealed class ActiveHdlSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, SimApp);
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -172,9 +278,16 @@ public sealed class ActiveHdlSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the Active-HDL installation directory.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <remarks>
+    ///     Resolution order:
+    ///     <list type="number">
+    ///         <item><description>Returns the <c>VHDLTEST_ACTIVEHDL_PATH</c> environment variable value when set, allowing CI environments to override the default installation path.</description></item>
+    ///         <item><description>Searches the system PATH for <c>vsimsa</c> and returns its parent directory.</description></item>
+    ///     </list>
+    /// </remarks>
+    /// <returns>Directory path containing <c>vsimsa</c>, or null if Active-HDL is not found.</returns>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -191,7 +304,7 @@ public sealed class ActiveHdlSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the simulator installation directory (parent of the vsimsa executable)
         return Path.GetDirectoryName(simPath);
     }
 }

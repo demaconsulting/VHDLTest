@@ -2,28 +2,81 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Results Subsystem
+      - title: Results Requirements
         requirements:
           - id: VHDLTest-Results-Collect
-            title: VHDLTest shall collect individual test results and report pass and fail counts.
+            title: >-
+              The Results subsystem shall track and expose the count of passed and
+              failed test results.
             justification: |
-              Aggregating individual test outcomes into a summary with pass/fail counts lets
-              users and CI/CD systems quickly determine overall test health without inspecting
-              every individual test result.
+              Aggregating individual test outcomes and exposing accurate pass/fail
+              counts via properties lets users and CI/CD systems quickly determine
+              overall test health without inspecting every individual test result.
             tests:
               - ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts
             children:
-              - VHDLTest-TestResult-Pass
-              - VHDLTest-TestResult-Fail
+              - VHDLTest-Results-TestResult-Pass
+              - VHDLTest-Results-TestResult-Fail
+
+          - id: VHDLTest-Results-Compile
+            title: >-
+              The Results subsystem shall compile VHDL source files before executing test benches.
+            justification: |
+              Compiling sources before running tests ensures that test benches are always
+              executed against a known-good build, preventing misleading test outcomes
+              caused by running tests against a broken or stale build artifact. The
+              compile step is independently required so that callers receive a clear
+              signal when the build fails before any test is run.
+            tests:
+              - ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes
+            children:
+              - VHDLTest-Results-TestResults-Compile
+              - VHDLTest-Results-TestResults-BuildFailure
+
+          - id: VHDLTest-Results-Execute
+            title: >-
+              The Results subsystem shall execute each configured test bench and collect
+              the test outcomes into a TestResults object.
+            justification: |
+              Centralizing test-bench execution in the Results subsystem ensures a consistent,
+              ordered workflow: outcomes are always captured and the caller receives a fully
+              populated results object regardless of which simulator is in use. The child
+              requirements decompose this step at the unit level.
+            tests:
+              - ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes
+            children:
+              - VHDLTest-Results-TestResults-Execute-Run
+
+          - id: VHDLTest-Results-PrintSummary
+            title: >-
+              TestResults shall print individual test outcome lines and aggregate pass and fail
+              counts to the context output when summarizing results.
+            justification: |
+              Printing a per-test outcome line for every collected result lets developers
+              and CI/CD pipelines identify which specific test benches passed or failed.
+              Providing numeric totals for passed and failed tests gives an at-a-glance view
+              of overall test run health without counting individual result lines. The per-test
+              output and aggregate count behaviors are intentionally kept under one requirement
+              because they are both produced by a single PrintSummary call and are inseparable
+              from the caller's perspective; the child requirement provides the unit-level
+              breakdown. This compound form is accepted per the project's risk acceptance process.
+            tests:
+              - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
+            children:
+              - VHDLTest-Results-TestResults-PrintSummary
+              - VHDLTest-Results-TestResult-PrintSummary-Label
+              - VHDLTest-Results-TestResult-PrintSummary-Name
+              - VHDLTest-Results-TestResult-PrintSummary-Duration
 
           - id: VHDLTest-Results-Save
-            title: VHDLTest shall save a collection of test results to a results file.
+            title: The Results subsystem shall save a collection of test results to a results file.
             justification: |
               Persisting the collected test results to a file enables integration with CI/CD
               platforms and test reporting tools that consume standard test result formats.
             tests:
               - ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts
             children:
-              - VHDLTest-TestResults-Trx
-              - VHDLTest-TestResults-JUnit
-              - VHDLTest-TestResults-NullFile
+              - VHDLTest-Results-TestResults-Trx
+              - VHDLTest-Results-TestResults-JUnit
+              - VHDLTest-Results-TestResults-NullFile
+              - VHDLTest-Results-TestResult-Identifiers

@@ -1,13 +1,12 @@
 ---
-title: VHDLTest Review Plan
-subtitle: File Review Plan for VHDLTest
-author: DEMA Consulting
-description: File Review Plan for VHDLTest
+title: "VHDLTest Code Review Plan"
+subtitle: "VHDL unit test runner for .NET"
+author: "DEMA Consulting"
+description: "Code Review Plan for VHDLTest"
 lang: en-US
 keywords:
+  - Code Review
   - VHDLTest
-  - Review Plan
-  - File Reviews
   - .NET
   - VHDL
 ---

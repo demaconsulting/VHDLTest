@@ -26,44 +26,106 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     ModelSim Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the ModelSim commercial VHDL simulator
+///     by Mentor/Siemens.
 /// </summary>
+/// <remarks>
+///     Drives the <c>vsim</c> command-line tool using TCL do-scripts: <c>vcom</c> for VHDL-2008
+///     compilation and <c>vsim</c>/<c>run</c> for test bench simulation. Both compile and test
+///     scripts include <c>onerror {exit -code 1}</c> so tool-level errors produce a non-zero exit
+///     code that the processors detect. Implemented as a singleton (<see cref="Instance"/>)
+///     initialized at class load time; stateless after construction and therefore thread-safe.
+///     Concurrent calls targeting the same working directory are not safe; each test run should
+///     use a distinct working directory.
+/// </remarks>
 public sealed class ModelSimSimulator : Simulator
 {
-    /// <summary>
-    /// Compile processor
-    /// </summary>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Error, ".*Error: ")
-        ]
-    );
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Error, ".*Error: ")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".*Note: "),
+        RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
+        RunLineRule.Create(RunLineType.Error, ".*Error: "),
+        RunLineRule.Create(RunLineType.Error, ".*Failure: ")
+    ];
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for ModelSim compilation (<c>vcom</c>) output.
     /// </summary>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".*Note: "),
-            RunLineRule.Create(RunLineType.Warning, ".*Warning: "),
-            RunLineRule.Create(RunLineType.Error, ".*Error: "),
-            RunLineRule.Create(RunLineType.Error, ".*Failure: ")
-        ]
-    );
+    /// <remarks>
+    ///     Applies one classification rule: lines matching <c>.*Error: </c> (trailing space
+    ///     prevents false matches on identifiers ending with "Error") are classified as Error.
+    ///     Lines not matching any rule are left unclassified as Text.
+    /// </remarks>
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
-    ///     ModelSim simulator instance
+    ///     Output classifier for ModelSim simulation (<c>vsim</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies four classification rules in order (each includes a trailing space to
+    ///     prevent false matches on identifiers ending with the keyword):
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.*Note: </c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.*Warning: </c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.*Error: </c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.*Failure: </c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
+
+    /// <summary>
+    ///     The singleton <see cref="ModelSimSimulator"/> instance, initialized at class load time.
+    /// </summary>
+    /// <remarks>
+    ///     Singleton pattern: only one instance is created per process, held in this static
+    ///     property. The instance is stateless after construction (path is resolved once in the
+    ///     constructor); concurrent reads from multiple threads are safe.
+    /// </remarks>
     public static ModelSimSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
-    ///     Initializes a new instance of the ModelSim simulator
+    ///     Initializes a new instance of the ModelSim simulator.
     /// </summary>
-    private ModelSimSimulator() : base("ModelSim", FindPath())
+    /// <remarks>
+    ///     Private to enforce the singleton pattern — callers must use <see cref="Instance"/>.
+    ///     <see cref="FindPath"/> is called at class-load time within the base-constructor call,
+    ///     resolving <see cref="Simulator.SimulatorPath"/> once for the lifetime of the process.
+    /// </remarks>
+    private ModelSimSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
 
+    private ModelSimSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("ModelSim", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="ModelSimSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static ModelSimSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
+
     /// <inheritdoc />
+    /// <remarks>
+    ///     Creates the <c>VHDLTest.out/ModelSim/</c> output directory if it does not already exist,
+    ///     writes <c>compile.do</c> to that directory, and invokes <c>vcom</c> via <c>vsim</c> to
+    ///     compile all source files. File paths must be free of TCL metacharacters because they are
+    ///     interpolated directly into the TCL script without escaping.
+    /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -87,6 +149,9 @@ public sealed class ModelSimSimulator : Simulator
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("vlib work");
         writer.AppendLine("set worklib work");
+
+        // Precondition: each file path must not contain TCL metacharacters — this is a documented
+        // precondition, not a runtime guard (see design documentation and Key Methods / Compile)
         foreach (var file in options.Config.Files)
         {
             writer.AppendLine($"vcom -2008 ../../{file}");
@@ -101,7 +166,7 @@ public sealed class ModelSimSimulator : Simulator
 
         // Run the ModelSim compiler
         var application = Path.Combine(simPath, "vsim");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             libDir,
@@ -111,9 +176,14 @@ public sealed class ModelSimSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Writes <c>test.do</c> to <c>VHDLTest.out/ModelSim/</c> and invokes <c>vsim</c> to run
+    ///     the specified test bench. The <paramref name="test"/> argument must be free of TCL
+    ///     metacharacters because it is interpolated directly into the TCL script without escaping.
+    /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting ModelSim test {test}...");
 
         // Fail if we cannot find the simulator
@@ -129,6 +199,9 @@ public sealed class ModelSimSimulator : Simulator
         var writer = new StringBuilder();
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("set worklib work");
+
+        // Precondition: test must not contain whitespace or TCL metacharacters — this is a
+        // documented precondition, not a runtime guard (see design documentation and Key Methods / Test)
         writer.AppendLine($"vsim -quiet {test}");
         writer.AppendLine("run -all");
         writer.AppendLine("endsim");
@@ -141,7 +214,7 @@ public sealed class ModelSimSimulator : Simulator
 
         // Run the test
         var application = Path.Combine(simPath, "vsim");
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             libDir,
@@ -157,9 +230,20 @@ public sealed class ModelSimSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the ModelSim installation directory.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <returns>Directory path containing the ModelSim executables, or null if ModelSim is not found.</returns>
+    /// <remarks>
+    ///     Resolution order:
+    ///     <list type="number">
+    ///         <item><description>Returns the <c>VHDLTEST_MODELSIM_PATH</c> environment variable value when set,
+    ///         allowing CI environments and users to override the default installation path.</description></item>
+    ///         <item><description>Searches the system PATH for the <c>vsim</c> executable and returns its
+    ///         parent directory (the simulator installation directory).</description></item>
+    ///     </list>
+    ///     Returns null when ModelSim is not found by either mechanism, causing
+    ///     <see cref="Simulator.Available"/> to return false.
+    /// </remarks>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -176,7 +260,7 @@ public sealed class ModelSimSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing vsim (the simulator installation directory)
         return Path.GetDirectoryName(simPath);
     }
 }

@@ -2,28 +2,100 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: RunProcessor Unit
-        requirements:
-          - id: VHDLTest-RunProcessor-Pass
-            title: RunProcessor shall classify simulator output as a pass when pass patterns match.
-            justification: |
-              Correct classification of pass output is essential for accurate test reporting and
-              for distinguishing successful test bench executions from failures.
-            tests:
-              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+      - title: Run Requirements
+        sections:
+          - title: RunProcessor Requirements
+            requirements:
+              - id: VHDLTest-Run-RunProcessor-Info
+                title: >-
+                  RunProcessor shall classify simulator output lines as Info type when patterns
+                  configured to classify lines as Info type match.
+                justification: |
+                  Correct classification of info output is essential for accurate test reporting and
+                  for distinguishing successful test bench executions from failures.
+                tests:
+                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
 
-          - id: VHDLTest-RunProcessor-Fail
-            title: RunProcessor shall classify simulator output as a fail when fail patterns match.
-            justification: |
-              Correct classification of fail output enables VHDLTest to accurately identify
-              test failures and report them to the user and CI/CD system.
-            tests:
-              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+              - id: VHDLTest-Run-RunProcessor-Fail
+                title: >-
+                  RunProcessor shall classify simulator output lines as Error type when patterns
+                  configured to classify lines as Error type match.
+                justification: |
+                  Correct classification of error output enables VHDLTest to accurately identify
+                  test failures and report them to the user and CI/CD system.
+                tests:
+                  - RunProcessor_Parse_OutputWithErrorPattern_ReturnsErrorClassification
+                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
 
-          - id: VHDLTest-RunProcessor-MissingProgram
-            title: RunProcessor shall raise an exception when the simulator program cannot be found.
-            justification: |
-              Raising a clear exception for missing programs helps users quickly diagnose
-              configuration errors, such as an incorrectly specified simulator path.
-            tests:
-              - RunProcessor_Execute_MissingProgram_ThrowsException
+              - id: VHDLTest-Run-RunProcessor-MissingProgram
+                title: RunProcessor shall raise an exception when the simulator program cannot be found.
+                justification: |
+                  Raising a clear exception for missing programs helps users quickly diagnose
+                  configuration errors, such as an incorrectly specified simulator path.
+                tests:
+                  - RunProcessor_Execute_MissingProgram_ThrowsException
+                children:
+                  - VHDLTest-Run-RunProgram-ExceptionPropagation
+
+              - id: VHDLTest-Run-RunProcessor-ExitCodeFail
+                title: >-
+                  RunProcessor shall classify simulator output as a failure when the simulator process
+                  exits with a non-zero exit code, regardless of matched output patterns.
+                justification: |
+                  A non-zero exit code is the simulator's primary signal that something went wrong,
+                  such as a compilation error or runtime fault, even when no individual output line
+                  matches an error pattern. Treating any non-zero exit code as a failure prevents
+                  silent pass results when the simulator aborts without producing recognizable output.
+                tests:
+                  - RunProcessor_Execute_ProgramWithNonZeroExitCode_ReturnsErrorResult
+                  - RunProcessor_Parse_WithNonZeroExitCode_ElevatesSummaryToAtLeastError
+
+              - id: VHDLTest-Run-RunProcessor-VerboseLogging
+                title: >-
+                  RunProcessor shall log the working directory to the context before executing the
+                  simulator program.
+                justification: |
+                  Logging the working directory enables users and CI operators to confirm which
+                  directory the simulator was invoked from, aiding diagnosis of path-related issues.
+                  Logging is gated on the context verbose flag so it does not clutter normal output.
+                  The shared test `RunProcessor_Execute_WithContext_LogsRunInfo` asserts both the
+                  working directory and the run command are present in the log output, covering
+                  both this requirement and `VHDLTest-Run-RunProcessor-VerboseLogging-Command`.
+                tests:
+                  - RunProcessor_Execute_WithContext_LogsRunInfo
+
+              - id: VHDLTest-Run-RunProcessor-VerboseLogging-Command
+                title: >-
+                  RunProcessor shall log the run command to the context before executing the
+                  simulator program.
+                justification: |
+                  Logging the run command enables users and CI operators to reproduce and verify
+                  the exact simulator invocation, aiding diagnosis of argument-related issues.
+                  Logging is gated on the context verbose flag so it does not clutter normal output.
+                tests:
+                  - RunProcessor_Execute_WithContext_LogsRunInfo
+                  - RunProcessor_Execute_WithVerboseContext_LogsCommand
+
+              - id: VHDLTest-Run-RunProcessor-WindowsWrapping
+                title: >-
+                  RunProcessor shall support invocation of Windows batch files on Windows platforms.
+                justification: |
+                  Windows batch files (.bat/.cmd) cannot be launched directly as a process -- they
+                  require a command interpreter. Supporting batch-file-based simulator launchers on
+                  Windows ensures that VHDLTest integrates with simulators that provide .bat/.cmd
+                  entry points without requiring callers to know about this platform difference.
+                tests:
+                  - windows@RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC
+
+              - id: VHDLTest-Run-RunProcessor-InjectableInvoker
+                title: >-
+                  RunProcessor shall accept an IProcessInvoker at construction time so that the
+                  process-execution strategy can be replaced for testing.
+                justification: |
+                  Making the invoker injectable decouples RunProcessor from the operating system,
+                  allowing unit tests to verify argument assembly and output classification without
+                  launching real processes. This is the foundation of the FakeProcessInvoker-based
+                  simulator unit tests.
+                tests:
+                  - GhdlSimulator_Compile_WithValidConfig_InvokesGhdlWithAnalysisArguments
+                  - GhdlSimulator_Test_WithValidConfig_InvokesGhdlWithRunArguments

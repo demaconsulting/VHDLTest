@@ -1,0 +1,17 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Run Requirements
+        sections:
+          - title: RunLineRule Requirements
+            requirements:
+              - id: VHDLTest-Run-RunLineRule-Classify
+                title: RunLineRule shall classify simulator output lines into RunLineType categories.
+                justification: |
+                  Pattern-based line classification allows each simulator integration to define
+                  its own output patterns without changing the core execution logic, making it
+                  easy to add support for new simulators or update patterns when simulator
+                  output formats change.
+                tests:
+                  - RunLineRule_Create_ValidPattern_ReturnsRuleWithMatchingProperties

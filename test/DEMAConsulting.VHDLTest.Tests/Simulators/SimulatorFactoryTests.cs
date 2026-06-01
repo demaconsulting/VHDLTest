@@ -25,87 +25,152 @@ namespace DEMAConsulting.VHDLTest.Tests.Simulators;
 /// <summary>
 /// Tests for <see cref="SimulatorFactory"/> class.
 /// </summary>
-[TestClass]
 public class SimulatorFactoryTests
 {
     /// <summary>
-    /// Test querying the simulator factory for GHDL
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="GhdlSimulator"/>
+    /// instance for both lower-case and upper-case spellings of the GHDL name, confirming that
+    /// name matching is case-insensitive and the GHDL integration is registered correctly.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("ghdl"));
-        Assert.IsNotNull(SimulatorFactory.Get("GHDL"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns a GhdlSimulator instance for both cases of the GHDL name
+        Assert.IsType<GhdlSimulator>(SimulatorFactory.Get("ghdl"));
+        Assert.IsType<GhdlSimulator>(SimulatorFactory.Get("GHDL"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for ModelSim
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="ModelSimSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the ModelSim name, confirming
+    /// case-insensitive registration for the ModelSim integration.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("modelsim"));
-        Assert.IsNotNull(SimulatorFactory.Get("ModelSim"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns a ModelSimSimulator instance for both cases of the ModelSim name
+        Assert.IsType<ModelSimSimulator>(SimulatorFactory.Get("modelsim"));
+        Assert.IsType<ModelSimSimulator>(SimulatorFactory.Get("ModelSim"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for Vivado
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="VivadoSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the Vivado name, confirming
+    /// case-insensitive registration for the Vivado integration.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("vivado"));
-        Assert.IsNotNull(SimulatorFactory.Get("Vivado"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns a VivadoSimulator instance for both cases of the Vivado name
+        Assert.IsType<VivadoSimulator>(SimulatorFactory.Get("vivado"));
+        Assert.IsType<VivadoSimulator>(SimulatorFactory.Get("Vivado"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for ActiveHDL
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns an <see cref="ActiveHdlSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the ActiveHDL name, confirming
+    /// case-insensitive registration for the Active-HDL integration.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("activehdl"));
-        Assert.IsNotNull(SimulatorFactory.Get("ActiveHDL"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns an ActiveHdlSimulator instance for both cases of the ActiveHDL name
+        Assert.IsType<ActiveHdlSimulator>(SimulatorFactory.Get("activehdl"));
+        Assert.IsType<ActiveHdlSimulator>(SimulatorFactory.Get("ActiveHDL"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for NVC
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns an <see cref="NvcSimulator"/>
+    /// instance for both lower-case and upper-case spellings of the NVC name, confirming
+    /// case-insensitive registration for the NVC integration.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("nvc"));
-        Assert.IsNotNull(SimulatorFactory.Get("NVC"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns an NvcSimulator instance for both cases of the NVC name
+        Assert.IsType<NvcSimulator>(SimulatorFactory.Get("nvc"));
+        Assert.IsType<NvcSimulator>(SimulatorFactory.Get("NVC"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for QuestaSim
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="QuestaSimSimulator"/>
+    /// instance for both lower-case and mixed-case spellings of the QuestaSim name, confirming
+    /// case-insensitive registration for the QuestaSim integration.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("questasim"));
-        Assert.IsNotNull(SimulatorFactory.Get("QuestaSim"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns a QuestaSimSimulator instance for both cases of the QuestaSim name
+        Assert.IsType<QuestaSimSimulator>(SimulatorFactory.Get("questasim"));
+        Assert.IsType<QuestaSimSimulator>(SimulatorFactory.Get("QuestaSim"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for an unknown simulator
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns null for any name that does not
+    /// match a registered simulator, satisfying the null-return contract for
+    /// <c>VHDLTest-Simulators-SimulatorFactory-Unknown</c>. Callers must handle null to report
+    /// a clear "simulator not found" error rather than a NullReferenceException.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_UnknownSimulator_ReturnsNull()
     {
-        Assert.IsNull(SimulatorFactory.Get("unknown"));
-        Assert.IsNull(SimulatorFactory.Get("Unknown"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns null for unrecognized names
+        Assert.Null(SimulatorFactory.Get("unknown"));
+        Assert.Null(SimulatorFactory.Get("Unknown"));
     }
 
     /// <summary>
-    /// Test querying the simulator factory for the mock simulator
+    /// Verifies that <see cref="SimulatorFactory.Get"/> returns a <see cref="MockSimulator"/>
+    /// instance for all case variants of the mock name, confirming that the test-double
+    /// simulator is registered and accessible for pipeline tests that must not invoke real
+    /// simulator processes.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator()
     {
-        Assert.IsNotNull(SimulatorFactory.Get("mock"));
-        Assert.IsNotNull(SimulatorFactory.Get("Mock"));
-        Assert.IsNotNull(SimulatorFactory.Get("MOCK"));
+        // Arrange: N/A - static factory requires no setup
+
+        // Act / Assert: factory returns a MockSimulator instance for all cases of the mock name
+        Assert.IsType<MockSimulator>(SimulatorFactory.Get("mock"));
+        Assert.IsType<MockSimulator>(SimulatorFactory.Get("Mock"));
+        Assert.IsType<MockSimulator>(SimulatorFactory.Get("MOCK"));
+    }
+
+    /// <summary>
+    ///     Verifies that <see cref="SimulatorFactory.Get"/> performs auto-discovery when called
+    ///     with null: returns the first available production simulator, or null when no simulator
+    ///     is installed, and never returns <see cref="MockSimulator"/>.
+    /// </summary>
+    /// <remarks>
+    ///     Satisfies <c>VHDLTest-Simulators-SimulatorFactory-AutoSelect</c>: auto-discovery returns either
+    ///     a non-null Simulator instance (when at least one simulator is installed in the current
+    ///     environment) or null (when no simulator is installed, as is typical in CI).
+    ///     MockSimulator is excluded from auto-discovery results regardless of environment.
+    /// </remarks>
+    [Fact]
+    public void SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull()
+    {
+        // Arrange: N/A - static factory requires no setup
+
+        // Act: request auto-discovery by passing null
+        var result = SimulatorFactory.Get(null);
+
+        // Assert: result is null (no simulator installed) or a non-MockSimulator Simulator instance
+        // (MockSimulator.Available() always returns false and is excluded from auto-discovery)
+        Assert.True(result is null || ((result != null) && result is not MockSimulator));
     }
 }

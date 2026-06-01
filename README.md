@@ -1,19 +1,41 @@
-# VHDLTest Tool
+# VHDLTest
 
+<!-- IMPORTANT: All links in this file must be absolute URLs.
+     This file is distributed in packages and relative links will not resolve. -->
+
+[![CI][github-build-badge]](https://github.com/demaconsulting/VHDLTest/actions/workflows/build_on_push.yaml)
+[![Quality Gate Status][sonarcloud-quality-badge]][sonarcloud-quality-url]
+[![Security Rating][sonarcloud-security-badge]][sonarcloud-security-url]
+[![NuGet][nuget-badge]][nuget-url]
 ![GitHub forks][github-forks-badge]
 ![GitHub Repo stars][github-stars-badge]
 ![GitHub contributors][github-contributors-badge]
 ![GitHub][github-license-badge]
-![Build][github-build-badge]
-[![Quality Gate Status][sonarcloud-quality-badge]][sonarcloud-quality-url]
-[![Security Rating][sonarcloud-security-badge]][sonarcloud-security-url]
-[![NuGet][nuget-badge]][nuget-url]
 
-This tool runs VHDL test benches and generates standard test results files.
+## Overview
+
+VHDLTest is a .NET command-line tool that runs VHDL test benches and generates standard test results files.
+It supports multiple VHDL simulators including GHDL, ModelSim, QuestaSim, Active-HDL, NVC, and Vivado Simulator.
+The tool is designed for use in regulated industries that require evidence of tool validation.
+
+## Features
+
+- Runs VHDL test benches via a simple YAML configuration file
+- Generates standard `.trx` or JUnit XML test results files compatible with CI/CD pipelines
+- Supports [GHDL](https://github.com/ghdl/ghdl), [ModelSim](https://eda.sw.siemens.com/en-US/ic/modelsim/),
+  [QuestaSim](https://eda.sw.siemens.com/en-US/ic/questa-one/simulation/),
+  [Active-HDL](https://www.aldec.com/en/products/fpga_simulation/active-hdl),
+  [NVC](https://www.nickg.me.uk/nvc),
+  [Vivado Simulator](https://www.xilinx.com/products/design-tools/vivado.html), and a built-in `mock`
+  simulator for self-validation
+- Configurable simulator paths via environment variables
+- Built-in self-validation mode for tool qualification evidence in regulated industries
 
 ## Installation
 
-The following will add VHDLTest to a Dotnet tool manifest file:
+Requires .NET SDK 8.0 or later.
+
+Add VHDLTest to a .NET tool manifest file:
 
 ```bash
 dotnet new tool-manifest # if you are setting up this repo
@@ -26,7 +48,42 @@ The tool can then be executed by:
 dotnet vhdltest <arguments>
 ```
 
-## Options
+## Usage
+
+Create a YAML configuration file specifying the VHDL source files and test benches to run:
+
+```yaml
+# List of VHDL source files
+files:
+  - full_adder.vhd
+  - full_adder_pass_tb.vhd
+  - full_adder_fail_tb.vhd
+
+# List of test benches to execute
+tests:
+  - full_adder_pass_tb
+  - full_adder_fail_tb
+```
+
+Run VHDLTest with the configuration file:
+
+```bash
+dotnet vhdltest --config test_suite.yaml
+```
+
+Generate a test results file for CI environments:
+
+```bash
+dotnet vhdltest --config test_suite.yaml --results test_results.trx
+```
+
+To generate a JUnit XML test results file instead, use a `.xml` extension:
+
+```bash
+dotnet vhdltest --config test_suite.yaml --results test_results.xml
+```
+
+Full command-line options:
 
 ```text
 Usage: VHDLTest [options] [tests]
@@ -40,118 +97,52 @@ Options:
   --depth <n>                  Validation report depth (default: 1)
   -l, --log <log.txt>          Log output to file
   -c, --config <config.yaml>   Specify configuration
-  -r, --results <out.trx>      Specify test results file
+  -r, --result, --results <out.trx|out.xml>  Specify test results file (.trx or JUnit XML)
   -s, --simulator <name>       Specify simulator
-  -0, --exit-0                 Exit with code 0 if test fail
+  -0, --exit-0                 Exit with code 0 if tests fail
   --                           End of options
 ```
 
-## Supported Simulators
+Before running tests, configure simulator paths via environment variables if needed:
 
-The current list of supported simulators are:
+- `VHDLTEST_GHDL_PATH` — path to GHDL folder
+- `VHDLTEST_MODELSIM_PATH` — path to ModelSim folder
+- `VHDLTEST_QUESTASIM_PATH` — path to QuestaSim folder
+- `VHDLTEST_VIVADO_PATH` — path to Vivado folder
+- `VHDLTEST_ACTIVEHDL_PATH` — path to Active-HDL folder
+- `VHDLTEST_NVC_PATH` — path to NVC folder
 
-- [GHDL][ghdl-url]
-- [ModelSim][modelsim-url]
-- [QuestaSim][questasim-url]
-- [Vivado][vivado-url]
-- [ActiveHDL][activehdl-url]
-- [NVC][nvc-url]
+## Building
 
-## Configuration
-
-VHDLTest needs a YAML configuration file specifying the VHDL files and test benches.
-
-```yaml
-# List of VHDL source files
-files:
- - full_adder.vhd
- - full_adder_pass_tb.vhd
- - full_adder_fail_tb.vhd
- - half_adder.vhd
- - half_adder_pass_tb.vhd
- - half_adder_fail_tb.vhd
-
-# List of test benches to execute
-tests:
- - full_adder_pass_tb
- - full_adder_fail_tb
- - half_adder_pass_tb
- - half_adder_fail_tb
+```pwsh
+pwsh ./build.ps1
 ```
 
-## Running Tests
+## User Guide
 
-Before running the tests, it may be necessary to configure where the simulators are installed.
-This can be done through environment variables:
-
-- VHDLTEST_GHDL_PATH = path to GHDL folder
-- VHDLTEST_MODELSIM_PATH = path to ModelSim folder
-- VHDLTEST_QUESTASIM_PATH = path to QuestaSim folder
-- VHDLTEST_VIVADO_PATH = path to Vivado folder
-- VHDLTEST_ACTIVEHDL_PATH = path to ActiveHDL folder
-- VHDLTEST_NVC_PATH = path to NVC folder
-
-To run the tests, execute VHDLTest with the name of the configuration file.
-
-```bash
-dotnet VHDLTest --config test_suite.yaml
-```
-
-A test results file can be generated when working in CI environments.
-
-```bash
-dotnet VHDLTest --config test_suite.yaml --results test_results.trx
-```
-
-## Self Validation
-
-Running self-validation produces a report containing the following information:
-
-```text
-# DEMAConsulting.VHDLTest
-
-| Information         | Value                                              |
-| :------------------ | :------------------------------------------------- |
-| VHDLTest Version    | <version>                                          |
-| Machine Name        | <machine-name>                                     |
-| OS Version          | <os-version>                                       |
-| DotNet Runtime      | <dotnet-runtime-version>                           |
-| Time Stamp          | <timestamp> UTC                                    |
-
-Tests:
-
-✓ VHDLTest_TestPasses - Passed
-✓ VHDLTest_TestFails - Passed
-
-Total Tests: 2
-Passed: 2
-Failed: 0
-
-Validation Passed
-```
-
-Each test in the report proves:
-
-- **`VHDLTest_TestPasses`** - The simulator correctly reports passing test benches.
-- **`VHDLTest_TestFails`** - The simulator correctly reports failing test benches.
-
-On validation failure the tool will exit with a non-zero exit code.
-
-This report may be useful in regulated industries requiring evidence of tool validation.
+The VHDLTest User Guide is available on the
+[VHDLTest releases page](https://github.com/demaconsulting/VHDLTest/releases).
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines][contributing-url] for details on how to submit
-pull requests, report issues, and contribute to the project.
+We welcome contributions! See [CONTRIBUTING.md](https://github.com/demaconsulting/VHDLTest/blob/main/CONTRIBUTING.md)
+for guidelines on submitting pull requests, reporting issues, and contributing to the project.
 
-## Code of Conduct
+This project adheres to a [Code of Conduct](https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md)
+to ensure a welcoming environment for all contributors.
 
-This project adheres to a [Code of Conduct][code-of-conduct-url] to ensure a welcoming environment for all contributors.
+## License
 
-## Security
+This project is licensed under the MIT License —
+see [LICENSE](https://github.com/demaconsulting/VHDLTest/blob/main/LICENSE).
 
-Security is a top priority for this project. If you discover a security vulnerability, please review our
-[Security Policy][security-url] for information on how to report it responsibly.
+## Support
+
+- [Report a bug or request a feature](https://github.com/demaconsulting/VHDLTest/issues)
+- [Ask a question or start a discussion](https://github.com/demaconsulting/VHDLTest/discussions)
+
+If you discover a security vulnerability, please review our
+[Security Policy](https://github.com/demaconsulting/VHDLTest/blob/main/SECURITY.md) for responsible disclosure.
 
 <!-- Link References -->
 [nuget-badge]: https://img.shields.io/nuget/v/DemaConsulting.VHDLTest?style=plastic
@@ -165,12 +156,3 @@ Security is a top priority for this project. If you discover a security vulnerab
 [sonarcloud-quality-url]: https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest
 [sonarcloud-security-badge]: https://sonarcloud.io/api/project_badges/measure?project=demaconsulting_VHDLTest&metric=security_rating
 [sonarcloud-security-url]: https://sonarcloud.io/summary/new_code?id=demaconsulting_VHDLTest
-[ghdl-url]: https://github.com/ghdl/ghdl
-[modelsim-url]: https://eda.sw.siemens.com/en-US/ic/modelsim/
-[questasim-url]: https://eda.sw.siemens.com/en-US/ic/questa-one/simulation/
-[vivado-url]: https://www.xilinx.com/products/design-tools/vivado.html
-[activehdl-url]: https://www.aldec.com/en/products/fpga_simulation/active-hdl
-[nvc-url]: https://www.nickg.me.uk/nvc
-[contributing-url]: https://github.com/demaconsulting/VHDLTest/blob/main/CONTRIBUTING.md
-[code-of-conduct-url]: https://github.com/demaconsulting/VHDLTest/blob/main/CODE_OF_CONDUCT.md
-[security-url]: https://github.com/demaconsulting/VHDLTest/blob/main/SECURITY.md

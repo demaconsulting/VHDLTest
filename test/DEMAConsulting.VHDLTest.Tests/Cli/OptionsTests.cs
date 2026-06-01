@@ -25,14 +25,8 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// <summary>
 /// Tests for parsing options
 /// </summary>
-[TestClass]
 public class OptionsTests
 {
-    /// <summary>
-    /// Configuration file name
-    /// </summary>
-    private const string ConfigFile = "options-test.yaml";
-
     /// <summary>
     /// Configuration file contents
     /// </summary>
@@ -50,101 +44,145 @@ public class OptionsTests
     /// <summary>
     /// Test parsing options with no configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_NoConfigProvided_ThrowsInvalidOperationException()
     {
+        // Arrange: create a context with no configuration file
         var arguments = Context.Create([]);
-        Assert.ThrowsExactly<InvalidOperationException>(() => Options.Parse(arguments));
+
+        // Act + Assert: parsing without a config file should throw
+        Assert.Throws<InvalidOperationException>(() => Options.Parse(arguments));
     }
 
     /// <summary>
     /// Test parsing options with missing configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_MissingConfigFile_ThrowsFileNotFoundException()
     {
+        // Arrange: create a context referencing a non-existent configuration file
         var arguments = Context.Create(["-c", "missing-config.yaml"]);
-        Assert.ThrowsExactly<FileNotFoundException>(() => Options.Parse(arguments));
+
+        // Act + Assert: parsing with a missing config file should throw
+        Assert.Throws<FileNotFoundException>(() => Options.Parse(arguments));
     }
 
     /// <summary>
     /// Test parsing options with configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_ValidConfigFile_ParsesSuccessfully()
     {
+        // Arrange: use a unique per-test temp file to avoid cross-test file conflicts
+        var configFile = Path.Combine(Path.GetTempPath(), $"options_test_{Guid.NewGuid():N}.yaml");
         try
         {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            // Arrange: write the config file
+            File.WriteAllText(configFile, ConfigContent);
 
-            // Parse the options
-            var arguments = Context.Create(["-c", ConfigFile]);
+            // Act: parse the options
+            var arguments = Context.Create(["-c", configFile]);
             var options = Options.Parse(arguments);
 
-            // Check the options
-            Assert.IsNotNull(options);
-            Assert.HasCount(2, options.Config.Files);
-            Assert.AreEqual("file1.vhd", options.Config.Files[0]);
-            Assert.AreEqual("file2.vhd", options.Config.Files[1]);
-            Assert.HasCount(2, options.Config.Tests);
-            Assert.AreEqual("test1", options.Config.Tests[0]);
-            Assert.AreEqual("test2", options.Config.Tests[1]);
+            // Assert: check the options
+            Assert.NotNull(options);
+            Assert.Equal(2, options.Config.Files.Length);
+            Assert.Equal("file1.vhd", options.Config.Files[0]);
+            Assert.Equal("file2.vhd", options.Config.Files[1]);
+            Assert.Equal(2, options.Config.Tests.Length);
+            Assert.Equal("test1", options.Config.Tests[0]);
+            Assert.Equal("test2", options.Config.Tests[1]);
+            Assert.Equal(Path.GetDirectoryName(Path.GetFullPath(configFile)), options.WorkingDirectory);
         }
         finally
         {
             // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(configFile);
         }
     }
 
     /// <summary>
     /// Test parsing options with verbose flag
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_WithVerboseFlag_ParsesSuccessfully()
     {
+        // Arrange: use a unique per-test temp file to avoid cross-test file conflicts
+        var configFile = Path.Combine(Path.GetTempPath(), $"options_test_{Guid.NewGuid():N}.yaml");
         try
         {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            // Arrange: write the config file
+            File.WriteAllText(configFile, ConfigContent);
 
-            // Parse the options
-            var arguments = Context.Create(["-c", ConfigFile, "--verbose"]);
+            // Act: parse the options
+            var arguments = Context.Create(["-c", configFile, "--verbose"]);
             var options = Options.Parse(arguments);
 
-            // Check the options
-            Assert.IsNotNull(options);
+            // Assert: verify options are non-null, working directory is absolute, and config is populated
+            Assert.NotNull(options);
+            Assert.True(Path.IsPathRooted(options.WorkingDirectory), "WorkingDirectory should be an absolute path");
+            Assert.NotNull(options.Config);
+            Assert.Equal(2, options.Config.Files.Length);
         }
         finally
         {
             // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(configFile);
         }
     }
 
     /// <summary>
     /// Test parsing options with custom test
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void Options_Parse_WithCustomTest_ParsesSuccessfully()
     {
+        // Arrange: use a unique per-test temp file to avoid cross-test file conflicts
+        var configFile = Path.Combine(Path.GetTempPath(), $"options_test_{Guid.NewGuid():N}.yaml");
         try
         {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            // Arrange: write the config file
+            File.WriteAllText(configFile, ConfigContent);
 
-            // Parse the options
-            var arguments = Context.Create(["-c", ConfigFile, "custom_test"]);
+            // Act: parse the options
+            var arguments = Context.Create(["-c", configFile, "custom_test"]);
             var options = Options.Parse(arguments);
 
-            // Check the options
-            Assert.IsNotNull(options);
+            // Assert: verify options are non-null, working directory is absolute, and config is populated
+            Assert.NotNull(options);
+            Assert.True(Path.IsPathRooted(options.WorkingDirectory), "WorkingDirectory should be an absolute path");
+            Assert.NotNull(options.Config);
+            Assert.Equal(2, options.Config.Tests.Length);
         }
         finally
         {
             // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(configFile);
         }
+    }
+
+    /// <summary>
+    /// Test that a root config path throws InvalidOperationException
+    /// </summary>
+    [Fact]
+    public void Options_ResolveWorkingDirectory_RootPath_ThrowsInvalidOperationException()
+    {
+        // Arrange: determine the root path for the current platform (e.g. "C:\" on Windows, "/" on Linux)
+        var rootPath = Path.GetPathRoot(Path.GetFullPath("."))!;
+
+        // Act + Assert: a root path has no parent directory and should throw
+        Assert.Throws<InvalidOperationException>(() => Options.ResolveWorkingDirectory(rootPath));
+    }
+
+    /// <summary>
+    /// Test that passing null to Options.Parse throws ArgumentNullException
+    /// </summary>
+    [Fact]
+    public void Options_Parse_NullArgs_ThrowsArgumentNullException()
+    {
+        // Arrange: no setup required
+
+        // Act + Assert: passing null must throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => Options.Parse(null!));
     }
 }

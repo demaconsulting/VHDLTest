@@ -2,7 +2,7 @@
 sections:
   - title: OTS Software Requirements
     sections:
-      - title: SonarMark
+      - title: SonarMark Requirements
         requirements:
           - id: VHDLTest-OTS-SonarMark
             title: SonarMark shall generate a SonarCloud quality report.

@@ -2,33 +2,84 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: TestResults Unit
-        requirements:
-          - id: VHDLTest-TestResults-Trx
-            title: TestResults shall serialize test results to TRX format.
-            justification: |
-              TRX is the standard test results format for .NET and Microsoft tooling. Saving
-              results in TRX format enables integration with Visual Studio, Azure DevOps, and
-              other .NET-ecosystem CI/CD tools.
-            tests:
-              - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
-              - TestResults_SaveToTrx_WithTestResults_CreatesTrxFile
-              - TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile
+      - title: Results Requirements
+        sections:
+          - title: TestResults Requirements
+            requirements:
+              - id: VHDLTest-Results-TestResults-Compile
+                title: >-
+                  TestResults shall compile the VHDL sources using the configured simulator
+                  before running any test benches.
+                justification: |
+                  Compiling sources before running tests ensures that test benches are always
+                  executed against a known-good build, preventing misleading test outcomes
+                  caused by running tests against a broken or stale build artifact.
+                tests:
+                  - TestResults_Execute_WithMockSimulator_CollectsTestOutcomes
 
-          - id: VHDLTest-TestResults-JUnit
-            title: TestResults shall serialize test results to JUnit XML format.
-            justification: |
-              JUnit XML is the de-facto standard test results format for CI/CD systems such as
-              Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables
-              broad CI/CD integration.
-            tests:
-              - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
-              - TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure
+              - id: VHDLTest-Results-TestResults-Execute-Run
+                title: >-
+                  TestResults shall execute all configured test benches and collect each test
+                  outcome after the VHDL sources have been compiled successfully.
+                justification: |
+                  Collecting every test bench outcome in a single structured object lets
+                  callers inspect individual results, compute aggregate pass/fail counts, and
+                  serialize results to report files without re-executing the tests.
+                tests:
+                  - TestResults_Execute_WithMockSimulator_CollectsTestOutcomes
 
-          - id: VHDLTest-TestResults-NullFile
-            title: TestResults shall raise an exception when a null file path is provided.
-            justification: |
-              Raising a clear exception for a null path prevents silent failures and provides
-              callers with an actionable error message.
-            tests:
-              - TestResults_SaveResults_WithNullFileName_ThrowsArgumentException
+              - id: VHDLTest-Results-TestResults-PrintSummary
+                title: >-
+                  TestResults shall print a formatted summary of test results including the
+                  total count of passed and failed tests, printing each count only when it is
+                  greater than zero.
+                justification: |
+                  Printing an aggregate summary alongside individual per-test lines lets
+                  developers see the overall outcome of a run at a glance without counting
+                  individual lines. CI/CD pipelines benefit from the numeric totals when
+                  parsing output for pass/fail decisions. Suppressing zero-count lines keeps
+                  the output clean for runs that are all-pass or all-fail, avoiding a
+                  misleading "Passed 0 of N tests" line.
+                tests:
+                  - TestResults_PrintSummary_WithMixedResults_WritesSummaryToOutput
+
+              - id: VHDLTest-Results-TestResults-Trx
+                title: TestResults shall serialize test results to TRX format when the output file path has a `.trx` extension or an unrecognized extension.
+                justification: |
+                  TRX is the standard test results format for .NET and Microsoft tooling. Saving
+                  results in TRX format enables integration with Visual Studio, Azure DevOps, and
+                  other .NET-ecosystem CI/CD tools.
+                tests:
+                  - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
+                  - TestResults_SaveToTrx_WithTestResults_CreatesTrxFile
+                  - TestResults_SaveResults_WithUnknownExtension_CreatesTrxFile
+
+              - id: VHDLTest-Results-TestResults-JUnit
+                title: TestResults shall serialize test results to JUnit XML format when the output file path has a `.xml` extension.
+                justification: |
+                  JUnit XML is the de-facto standard test results format for CI/CD systems such as
+                  Jenkins, GitLab CI, and GitHub Actions. Saving results in JUnit XML format enables
+                  broad CI/CD integration.
+                tests:
+                  - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
+                  - TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure
+
+              - id: VHDLTest-Results-TestResults-NullFile
+                title: TestResults shall raise an exception when a null, empty, or whitespace file path is provided.
+                justification: |
+                  Raising a clear exception for a null, empty, or whitespace-only path prevents
+                  silent failures and provides callers with an actionable error message.
+                tests:
+                  - TestResults_SaveResults_WithNullFileName_ThrowsArgumentException
+
+              - id: VHDLTest-Results-TestResults-BuildFailure
+                title: >-
+                  TestResults shall signal an unrecoverable build failure to the caller when
+                  the VHDL compilation step produces errors.
+                justification: |
+                  Aborting execution with a clear error when the build step fails prevents
+                  misleading results -- running tests against a broken build would produce
+                  unreliable outcomes and hide the root cause. A descriptive error signal
+                  lets callers and CI/CD systems report the failure accurately.
+                tests:
+                  - TestResults_Execute_WithBuildFailure_ThrowsInvalidOperationException

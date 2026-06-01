@@ -26,47 +26,103 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     NVC Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the NVC open-source VHDL simulator.
 /// </summary>
+/// <remarks>
+///     Drives the <c>nvc</c> command-line tool using a combined elaboration-and-simulation
+///     design: the <c>Test</c> method passes both <c>-e {test}</c> (elaboration) and
+///     <c>-r {test}</c> (simulation) as arguments in a single <c>nvc</c> invocation,
+///     so NVC handles elaboration and execution in one step. Implemented as a singleton
+///     (<see cref="Instance"/>) initialized at class load time; stateless after construction
+///     and therefore thread-safe.
+/// </remarks>
 public sealed class NvcSimulator : Simulator
 {
-    /// <summary>
-    /// Compile processor
-    /// </summary>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".* Note:"),
-            RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
-            RunLineRule.Create(RunLineType.Error, ".* Error:"),
-            RunLineRule.Create(RunLineType.Error, ".* Failure:"),
-            RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-        ]
-    );
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".* Note:"),
+        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+        RunLineRule.Create(RunLineType.Error, ".* Error:"),
+        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, ".* Note:"),
+        RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
+        RunLineRule.Create(RunLineType.Error, ".* Error:"),
+        RunLineRule.Create(RunLineType.Error, ".* Failure:"),
+        RunLineRule.Create(RunLineType.Error, ".* Fatal:")
+    ];
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for NVC compilation (<c>nvc -a</c>) output.
     /// </summary>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, ".* Note:"),
-            RunLineRule.Create(RunLineType.Warning, ".* Warning:"),
-            RunLineRule.Create(RunLineType.Error, ".* Error:"),
-            RunLineRule.Create(RunLineType.Error, ".* Failure:"),
-            RunLineRule.Create(RunLineType.Error, ".* Fatal:")
-        ]
-    );
+    /// <remarks>
+    ///     Applies five classification rules in order:
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.* Note:</c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.* Warning:</c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.* Error:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Failure:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Fatal:</c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
-    ///     NVC simulator instance
+    ///     Output classifier for NVC simulation (<c>nvc -r</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies the same five classification rules as <see cref="CompileProcessor"/>:
+    ///     <list type="bullet">
+    ///         <item><description>Lines matching <c>.* Note:</c> are classified as Info.</description></item>
+    ///         <item><description>Lines matching <c>.* Warning:</c> are classified as Warning.</description></item>
+    ///         <item><description>Lines matching <c>.* Error:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Failure:</c> are classified as Error.</description></item>
+    ///         <item><description>Lines matching <c>.* Fatal:</c> are classified as Error.</description></item>
+    ///     </list>
+    /// </remarks>
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
+
+    /// <summary>
+    ///     Gets the singleton <see cref="NvcSimulator"/> instance shared across the application.
+    /// </summary>
+    /// <remarks>
+    ///     Initialized once at class-load time by calling <see cref="FindPath()"/> to resolve the
+    ///     NVC installation directory. Stateless after construction and therefore thread-safe.
+    ///     Always access the simulator through this property rather than constructing a new instance.
+    /// </remarks>
     public static NvcSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
-    ///     Initializes a new instance of the NVC simulator
+    ///     Private constructor that prevents external instantiation and enforces use of the
+    ///     singleton <see cref="Instance"/>. Passes the fixed name <c>"NVC"</c> and the path
+    ///     resolved by <see cref="FindPath()"/> to the base class.
     /// </summary>
-    private NvcSimulator() : base("NVC", FindPath())
+    private NvcSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private NvcSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("NVC", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="NvcSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static NvcSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     public override RunResults Compile(Context context, Options options)
@@ -79,12 +135,12 @@ public sealed class NvcSimulator : Simulator
                       throw new InvalidOperationException("NVC Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
-        // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
-        context.WriteVerboseLine($"  Library Directory: {libDir}");
-        if (!Directory.Exists(libDir))
+        // Create the NVC output directory
+        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "NVC");
+        context.WriteVerboseLine($"  NVC Output Directory: {outputDir}");
+        if (!Directory.Exists(outputDir))
         {
-            Directory.CreateDirectory(libDir);
+            Directory.CreateDirectory(outputDir);
         }
 
         // Build the batch file
@@ -95,13 +151,13 @@ public sealed class NvcSimulator : Simulator
         }
 
         // Write the batch file
-        var script = Path.Combine(libDir, "compile.rsp");
+        var script = Path.Combine(outputDir, "compile.rsp");
         context.WriteVerboseLine($"  Script File: {script}");
         File.WriteAllText(script, writer.ToString());
 
         // Run the NVC compiler
         var application = Path.Combine(simPath, "nvc");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -114,7 +170,7 @@ public sealed class NvcSimulator : Simulator
     /// <inheritdoc />
     public override TestResult Test(Context context, Options options, string test)
     {
-        // Log the start of the compile command
+        // Log the start of the test command
         context.WriteVerboseLine($"Starting NVC test {test}...");
 
         // Fail if we cannot find the simulator
@@ -122,13 +178,13 @@ public sealed class NvcSimulator : Simulator
                       throw new InvalidOperationException("NVC Simulator not available");
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
-        // Get the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/NVC");
-        context.WriteVerboseLine($"  Library Directory: {libDir}");
+        // Get the NVC output directory
+        var outputDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "NVC");
+        context.WriteVerboseLine($"  NVC Output Directory: {outputDir}");
 
         // Run the test
         var application = Path.Combine(simPath, "nvc");
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -147,9 +203,22 @@ public sealed class NvcSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the NVC installation directory by locating the <c>nvc</c> executable
+    ///     on the system PATH, returning null when NVC is not installed.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <remarks>
+    ///     The <c>VHDLTEST_NVC_PATH</c> environment variable takes precedence over PATH search:
+    ///     when set, its value is returned immediately without invoking <see cref="Simulator.Where"/>.
+    ///     When the environment variable is not set, <see cref="Simulator.Where"/> performs the PATH
+    ///     search and returns the full path to the <c>nvc</c> executable, from which the containing
+    ///     directory is derived. Stateless and thread-safe: the method reads environment variables
+    ///     and file-system paths but does not modify any shared state.
+    /// </remarks>
+    /// <returns>
+    ///     The directory containing the <c>nvc</c> executable, or null if NVC is not found.
+    ///     The <c>VHDLTEST_NVC_PATH</c> environment variable, when set, overrides PATH search
+    ///     and returns its value directly as the installation directory path.
+    /// </returns>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -166,7 +235,7 @@ public sealed class NvcSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing the NVC executable
         return Path.GetDirectoryName(simPath);
     }
 }

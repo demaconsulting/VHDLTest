@@ -25,14 +25,8 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// <summary>
 /// Tests for configuration documents
 /// </summary>
-[TestClass]
 public class ConfigDocumentTests
 {
-    /// <summary>
-    /// Configuration file name
-    /// </summary>
-    private const string ConfigFile = "options-test.yaml";
-
     /// <summary>
     /// Configuration file contents
     /// </summary>
@@ -48,41 +42,147 @@ public class ConfigDocumentTests
         """;
 
     /// <summary>
+    /// Test that passing null as the filename throws ArgumentNullException
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_NullFilename_ThrowsArgumentNullException()
+    {
+        // Act + Assert: passing null should throw ArgumentNullException
+        Assert.Throws<ArgumentNullException>(() => ConfigDocument.ReadFile(null!));
+    }
+
+    /// <summary>
     /// Test reading a missing configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException()
     {
-        Assert.ThrowsExactly<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
+        // Act + Assert: reading a non-existent file should throw FileNotFoundException
+        Assert.Throws<FileNotFoundException>(() => ConfigDocument.ReadFile("invalid-file"));
     }
 
     /// <summary>
     /// Test reading a valid configuration file
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully()
     {
+        // Arrange: write a temporary config file
+        var tempFile = Path.GetTempFileName();
         try
         {
-            // Write the config file
-            File.WriteAllText(ConfigFile, ConfigContent);
+            File.WriteAllText(tempFile, ConfigContent);
 
-            // Read the configuration
-            var config = ConfigDocument.ReadFile(ConfigFile);
+            // Act: read the configuration
+            var config = ConfigDocument.ReadFile(tempFile);
 
-            // Check the content
-            Assert.IsNotNull(config);
-            Assert.HasCount(2, config.Files);
-            Assert.AreEqual("file1.vhd", config.Files[0]);
-            Assert.AreEqual("file2.vhd", config.Files[1]);
-            Assert.HasCount(2, config.Tests);
-            Assert.AreEqual("test1", config.Tests[0]);
-            Assert.AreEqual("test2", config.Tests[1]);
+            // Assert: check the content
+            Assert.NotNull(config);
+            Assert.Equal(2, config.Files.Length);
+            Assert.Equal("file1.vhd", config.Files[0]);
+            Assert.Equal("file2.vhd", config.Files[1]);
+            Assert.Equal(2, config.Tests.Length);
+            Assert.Equal("test1", config.Tests[0]);
+            Assert.Equal("test2", config.Tests[1]);
         }
         finally
         {
-            // Delete the config file
-            File.Delete(ConfigFile);
+            File.Delete(tempFile);
+        }
+    }
+
+    /// <summary>
+    /// Test reading a configuration file with null content (should throw InvalidOperationException)
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_NullDeserializationResult_ThrowsInvalidOperationException()
+    {
+        // Arrange: write a file that deserializes to null
+        var invalidFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(invalidFile, "null\n");
+
+            // Act + Assert: reading the file should throw InvalidOperationException
+            Assert.Throws<InvalidOperationException>(() => ConfigDocument.ReadFile(invalidFile));
+        }
+        finally
+        {
+            File.Delete(invalidFile);
+        }
+    }
+
+    /// <summary>
+    /// Test reading a configuration file with malformed YAML content
+    /// (should throw InvalidOperationException, not a raw YamlException)
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException()
+    {
+        // Arrange: write a YAML file that cannot be deserialized into ConfigDocument
+        var malformedFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(malformedFile, "key: : invalid\n");
+
+            // Act + Assert: reading the file should throw InvalidOperationException (not YamlException)
+            Assert.Throws<InvalidOperationException>(() => ConfigDocument.ReadFile(malformedFile));
+        }
+        finally
+        {
+            File.Delete(malformedFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that ConfigDocument returns empty arrays when YAML keys are absent
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_MissingKeys_ReturnsEmptyArrays()
+    {
+        // Arrange: write a YAML file with no 'files' or 'tests' keys
+        var emptyFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(emptyFile, "{}\n");
+
+            // Act: read the configuration
+            var config = ConfigDocument.ReadFile(emptyFile);
+
+            // Assert: verify empty arrays are returned for missing keys
+            Assert.NotNull(config);
+            Assert.Empty(config.Files);
+            Assert.Empty(config.Tests);
+        }
+        finally
+        {
+            File.Delete(emptyFile);
+        }
+    }
+
+    /// <summary>
+    /// Test that ConfigDocument returns empty arrays when YAML list keys are explicitly set to null
+    /// </summary>
+    [Fact]
+    public void ConfigDocument_ReadFile_ExplicitNullLists_ReturnsEmptyArrays()
+    {
+        // Arrange: write a YAML file with files and tests explicitly set to null
+        var nullFile = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(nullFile, "files: null\ntests: null\n");
+
+            // Act: read the configuration
+            var config = ConfigDocument.ReadFile(nullFile);
+
+            // Assert: verify empty arrays are returned for explicit null values
+            Assert.NotNull(config);
+            Assert.Empty(config.Files);
+            Assert.Empty(config.Tests);
+        }
+        finally
+        {
+            File.Delete(nullFile);
         }
     }
 }

@@ -18,23 +18,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 
 namespace DEMAConsulting.VHDLTest.Tests.Run;
 
 /// <summary>
-/// Subsystem integration tests for the Run subsystem.
-/// These tests verify that <see cref="RunProcessor"/>, <see cref="RunProgram"/>, and
-/// <see cref="RunResults"/> work together to execute programs and classify their output.
+///     Subsystem integration tests for the Run subsystem.
+///     These tests verify that <see cref="RunProcessor"/>, <see cref="RunProgram"/>, and
+///     <see cref="RunResults"/> work together to execute programs and classify their output.
 /// </summary>
-[TestClass]
+/// <remarks>
+///     The <c>dotnet</c> CLI tool is used as the controlled external program throughout these
+///     tests because it is guaranteed to be available in any .NET SDK environment, provides
+///     predictable exit codes and output, and exercises the full process-launch and
+///     output-capture pipeline without requiring any additional test infrastructure.
+/// </remarks>
 public class RunSubsystemTests
 {
     /// <summary>
-    /// Test that RunProcessor executes a real program via RunProgram, and produces a
-    /// RunResults object with correctly classified output lines.
+    ///     Test that RunProcessor executes a real program via RunProgram, and produces a
+    ///     RunResults object with correctly classified output lines.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunSubsystem_ExecuteRealProgram_WithClassificationRules_ProducesClassifiedRunResults()
     {
         // Arrange - create a processor with an Info classification rule
@@ -47,19 +53,19 @@ public class RunSubsystemTests
         var results = processor.Execute("dotnet", "", "help");
 
         // Assert - RunProgram ran the program and RunProcessor classified the output into RunResults
-        Assert.IsNotNull(results);
-        Assert.AreEqual(0, results.ExitCode);
-        Assert.IsTrue(results.Output.Length > 0);
-        Assert.IsTrue(results.Lines.Count > 0);
-        Assert.IsTrue(results.Lines.Any(l => l.Type == RunLineType.Info));
-        Assert.IsTrue(results.Duration >= 0.0);
+        Assert.NotNull(results);
+        Assert.Equal(0, results.ExitCode);
+        Assert.True(results.Output.Length > 0);
+        Assert.True(results.Lines.Count > 0);
+        Assert.Contains(results.Lines, line => line.Type == RunLineType.Info);
+        Assert.True(results.Duration >= 0.0);
     }
 
     /// <summary>
-    /// Test that RunProcessor correctly surfaces a non-zero exit code from RunProgram
-    /// as an Error summary in the RunResults.
+    ///     Test that RunProcessor correctly surfaces a non-zero exit code from RunProgram
+    ///     as an Error summary in the RunResults.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void RunSubsystem_ExecuteRealProgram_WithErrorExitCode_ProducesErrorRunResults()
     {
         // Arrange - create a processor with no special classification rules
@@ -69,8 +75,76 @@ public class RunSubsystemTests
         var results = processor.Execute("dotnet", "", "unknown-command");
 
         // Assert - RunResults reflects the non-zero exit code as an error summary
-        Assert.IsNotNull(results);
-        Assert.AreNotEqual(0, results.ExitCode);
-        Assert.AreEqual(RunLineType.Error, results.Summary);
+        Assert.NotNull(results);
+        Assert.NotEqual(0, results.ExitCode);
+        Assert.Equal(RunLineType.Error, results.Summary);
+
+        // Assert: with no classification rules, every output line falls back to Text type
+        Assert.All(results.Lines, line => Assert.Equal(RunLineType.Text, line.Type));
+    }
+
+    /// <summary>
+    ///     Verifies that the <c>Execute(Context, string, string, string[])</c> overload logs
+    ///     the working directory and run command to the context before delegating to the
+    ///     process execution path.
+    /// </summary>
+    [Fact]
+    public void RunSubsystem_Execute_WithContext_LogsWorkingDirectoryAndCommandToContext()
+    {
+        // Arrange: create a verbose context backed by a log file so that verbose output can
+        // be read back after execution; use a unique filename to avoid cross-test conflicts
+        var logFile = Path.Combine(Path.GetTempPath(), $"run_test_{Guid.NewGuid():N}.log");
+        try
+        {
+            RunResults results;
+            using (var context = Context.Create(["--verbose", "--log", logFile, "--silent"]))
+            {
+                var processor = new RunProcessor(
+                [
+                    RunLineRule.Create(RunLineType.Info, "Usage")
+                ]);
+
+                // Act: call the Execute overload that accepts a Context — this overload writes
+                // verbose log lines for the working directory and command before running
+                results = processor.Execute(context, "dotnet", "", "help");
+            }
+
+            // Assert: RunResults contain expected classified output from the real program
+            Assert.NotNull(results);
+            Assert.Equal(0, results.ExitCode);
+            Assert.True(results.Lines.Count > 0, "Expected at least one classified output line");
+            Assert.Contains(results.Lines, line => line.Type == RunLineType.Info);
+
+            // Assert: the Context captured the verbose log lines written before execution
+            var logContent = File.ReadAllText(logFile);
+            Assert.Contains("Run Directory", logContent);
+            Assert.Contains("Run Command", logContent);
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that output lines fall back to <see cref="RunLineType.Text"/> classification
+    ///     when no rules are configured, confirming the Text-fallback path for
+    ///     <c>VHDLTest-Run-Classify</c>.
+    /// </summary>
+    [Fact]
+    public void RunSubsystem_ExecuteNoRules_FallsBackToTextClassification()
+    {
+        // Arrange: create a processor with no classification rules so all lines fall through to Text
+        var processor = new RunProcessor([]);
+
+        // Act: execute dotnet help which produces non-empty output
+        var results = processor.Execute("dotnet", "", "help");
+
+        // Assert: every output line is classified as Text when no rules match
+        Assert.NotNull(results);
+        Assert.All(results.Lines, line => Assert.Equal(RunLineType.Text, line.Type));
     }
 }

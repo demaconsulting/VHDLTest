@@ -1,0 +1,49 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: FileAssert Requirements
+        requirements:
+          - id: VHDLTest-OTS-FileAssert
+            title: FileAssert shall compare generated output files against expected baselines and fail the build on mismatch.
+            justification: |
+              DemaConsulting.FileAssert performs byte-level or normalized comparison
+              of generated artifacts against reference baselines in CI pipelines. This prevents
+              unintentional changes to generated documentation and traceability reports from
+              silently passing the build.
+            tags: [ots]
+            tests:
+              - FileAssert_Results
+
+          - id: VHDLTest-OTS-FileAssert-Exists
+            title: FileAssert shall verify the existence of generated output files during CI pipeline execution.
+            justification: |
+              Verifying that expected output files are created by the pipeline ensures that
+              generation steps have completed successfully before downstream comparison steps
+              are run, catching missing outputs as a build-breaking condition.
+            tags: [ots]
+            tests:
+              - FileAssert_Exists
+
+          - id: VHDLTest-OTS-FileAssert-Contains
+            title: FileAssert shall verify that generated output files contain expected content during CI pipeline execution.
+            justification: |
+              Checking that output files contain specific expected content provides a lighter-weight
+              smoke-test than a full byte-level comparison, confirming that key sections of
+              generated documentation are present without requiring exact baseline matching.
+            tags: [ots]
+            tests:
+              - FileAssert_Contains
+
+          - id: VHDLTest-OTS-FileAssert-Validate
+            title: FileAssert shall provide a self-validation mode that exercises its built-in test suite and writes TRX results.
+            justification: |
+              Running `dotnet fileassert --validate --results` in the CI pipeline executes
+              FileAssert's internal test suite and writes a TRX result file consumed by ReqStream.
+              This provides requirements traceability evidence that FileAssert's comparison,
+              existence-checking, and content-searching capabilities are operational.
+            tags: [ots]
+            tests:
+              - FileAssert_Results
+              - FileAssert_Exists
+              - FileAssert_Contains

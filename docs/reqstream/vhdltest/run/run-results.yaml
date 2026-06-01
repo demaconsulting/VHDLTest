@@ -2,14 +2,39 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: RunResults Unit
-        requirements:
-          - id: VHDLTest-RunResults-Print
-            title: RunResults shall print classified output lines with color-coded severity.
-            justification: |
-              Color-coded output helps users quickly distinguish between informational,
-              warning, and error output lines when reviewing simulator output in the console,
-              reducing the time needed to identify failures.
-            tests:
-              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
-              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
+      - title: Run Requirements
+        sections:
+          - title: RunResults Requirements
+            requirements:
+              - id: VHDLTest-Run-RunResults-Print
+                title: RunResults shall print classified output lines with color-coded severity.
+                justification: |
+                  Color-coded output helps users quickly distinguish between informational,
+                  warning, and error output lines when reviewing simulator output in the console,
+                  reducing the time needed to identify failures.
+                tests:
+                  - RunResults_Print_WithMixedLines_WritesColorCodedOutput
+                  - RunResults_Print_WithNullContext_ThrowsArgumentNullException
+
+              - id: VHDLTest-Run-RunResults-VerboseSuppression
+                title: RunResults.Print shall suppress Text-classified lines unless verbose output is enabled.
+                justification: |
+                  Suppressing unclassified Text lines by default keeps simulator output concise,
+                  showing only informational, warning, and error lines. Users can re-enable full
+                  output via the verbose flag when deeper diagnosis is needed.
+                tests:
+                  - RunResults_Print_WithVerboseDisabled_SuppressesTextLines
+
+              - id: VHDLTest-Run-RunResults-SummaryElevation
+                title: >-
+                  The Summary property of a RunResults instance shall be at least RunLineType.Error
+                  whenever ExitCode is non-zero.
+                justification: |
+                  A non-zero exit code is the simulator's primary failure signal. Elevating the
+                  summary to at least Error when the exit code is non-zero ensures that downstream
+                  pass/fail decisions always reflect a simulator-reported error, even when no
+                  individual output line matched an error pattern. This invariant is enforced by
+                  RunProcessor.Parse at construction time; RunResults itself does not validate the
+                  property because it is an immutable positional record.
+                tests:
+                  - RunResults_SummaryElevation_NonZeroExitCode_HasErrorSummary

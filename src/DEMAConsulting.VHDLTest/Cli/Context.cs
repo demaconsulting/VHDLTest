@@ -21,100 +21,136 @@
 namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
-/// Program Arguments Class
+///     Parses the raw command-line argument array and aggregates all typed CLI options,
+///     output channels, and runtime state for the lifetime of a single VHDLTest invocation.
 /// </summary>
+/// <remarks>
+///     Context is the single point of truth for all command-line–derived state. It aggregates
+///     parsed flags and path options, owns the optional log-file <see cref="StreamWriter"/>,
+///     and exposes unified output methods so callers do not need to manage multiple output
+///     targets. Implements <see cref="IDisposable"/> to ensure the log-file writer is closed
+///     deterministically; always construct via <see cref="Create"/> and wrap in a
+///     <c>using</c> statement.
+///     <para>
+///         This class is not thread-safe. <see cref="Errors"/> is a mutable field with no
+///         synchronization; external locking is required when accessing from multiple threads.
+///     </para>
+/// </remarks>
 public sealed class Context : IDisposable
 {
     /// <summary>
     ///     Output log-file writer (when logging output to file)
     /// </summary>
-    private readonly StreamWriter? _log;
+    private StreamWriter? _log;
 
     /// <summary>
-    ///     Initializes a new instance of the Context class
+    ///     Initializes a new instance of the Context class.
     /// </summary>
-    /// <param name="log">Optional log-file writer</param>
+    /// <remarks>
+    ///     Private to enforce construction via the <see cref="Create"/> factory method.
+    ///     Ownership of <paramref name="log"/> is transferred to this instance; the writer
+    ///     will be disposed when this instance is disposed via <see cref="Dispose"/>.
+    /// </remarks>
+    /// <param name="log">Optional log-file writer; may be null when logging is not configured.</param>
     private Context(StreamWriter? log)
     {
         _log = log;
     }
 
     /// <summary>
-    ///     Gets a value indicating the version has been requested
+    ///     Gets a value indicating whether the version has been requested via <c>-v</c> or <c>--version</c>.
     /// </summary>
     public bool Version { get; private init; }
 
     /// <summary>
-    ///     Gets a value indicating help has been requested
+    ///     Gets a value indicating whether help has been requested via <c>-h</c>, <c>-?</c>, or <c>--help</c>.
     /// </summary>
     public bool Help { get; private init; }
 
     /// <summary>
-    ///     Gets a value indicating silent-output has been requested
+    ///     Gets a value indicating whether silent-output has been requested via <c>--silent</c>.
     /// </summary>
     public bool Silent { get; private init; }
 
     /// <summary>
-    ///     Gets a value indicating whether verbose output should be written
+    ///     Gets a value indicating whether verbose output should be written, set via <c>--verbose</c>.
     /// </summary>
     public bool Verbose { get; private init; }
 
     /// <summary>
-    ///     Gets a flag indicating whether to force a zero exit-code on test failures
+    ///     Gets a flag indicating whether to force a zero exit-code on test failures, set via <c>-0</c> or <c>--exit-0</c>.
     /// </summary>
     public bool ExitZero { get; private init; }
 
     /// <summary>
-    ///     Gets a flag indicating whether to perform validation
+    ///     Gets a flag indicating whether to perform validation, set via <c>--validate</c>.
     /// </summary>
     public bool Validate { get; private init; }
 
     /// <summary>
-    ///     Gets the depth of the validation report
+    ///     Gets the depth of the validation report.
     /// </summary>
+    /// <value>
+    ///     Number of heading levels to include in the validation report output. Defaults to
+    ///     <c>1</c> when <c>--depth</c> is not specified. Must be greater than or equal to
+    ///     <c>1</c>; passing a value less than <c>1</c> causes <see cref="Create"/> to throw
+    ///     <see cref="InvalidOperationException"/>.
+    /// </value>
     public int Depth { get; private init; }
 
     /// <summary>
-    ///     Gets the config file name
+    ///     Gets the path to the YAML configuration file for the test run, set via <c>-c</c> or <c>--config</c>.
     /// </summary>
+    /// <value>The configuration file path, or <see langword="null"/> when the flag was absent from the command line.</value>
     public string? ConfigFile { get; private init; }
 
     /// <summary>
-    ///     Gets the results file name
+    ///     Gets the path where test results will be saved, set via <c>-r</c>, <c>--result</c>, or <c>--results</c>.
     /// </summary>
+    /// <value>The results file path, or <see langword="null"/> when the flag was absent from the command line.</value>
     public string? ResultsFile { get; private init; }
 
     /// <summary>
-    ///     Gets the simulator name
+    ///     Gets the name of the simulator to use for the test run, set via <c>-s</c> or <c>--simulator</c>.
     /// </summary>
+    /// <value>The simulator name, or <see langword="null"/> when the flag was absent from the command line.</value>
     public string? Simulator { get; private init; }
 
     /// <summary>
-    ///     Gets the custom tests
+    ///     Gets the optional list of test names to run; when set, only matching tests are executed.
+    ///     Populated from positional arguments or tokens after <c>--</c> on the command line.
     /// </summary>
+    /// <value>A read-only list of test names, or <see langword="null"/> when no positional arguments were provided.</value>
     public IReadOnlyList<string>? CustomTests { get; private init; }
 
     /// <summary>
-    ///     Gets the errors count
+    ///     Gets the number of errors encountered during the test run.
     /// </summary>
     public int Errors { get; private set; }
 
     /// <summary>
-    ///     Gets the proposed exit code
+    ///     Gets the process exit code to return on completion.
     /// </summary>
+    /// <value>Returns <c>0</c> when <see cref="Errors"/> is zero; returns <c>1</c> when <see cref="Errors"/> is greater than zero.</value>
     public int ExitCode => Errors > 0 ? 1 : 0;
 
     /// <summary>
-    ///     Dispose of this context
+    ///     Flushes and closes the log-file writer, releasing all resources held by this instance.
     /// </summary>
     public void Dispose()
     {
         _log?.Dispose();
+        _log = null;
     }
 
     /// <summary>
-    ///     Write colored text
+    ///     Writes colored text without a line terminator to the console (unless silent mode is
+    ///     active) and to the log file.
     /// </summary>
+    /// <remarks>
+    ///     The log-file write is unconditional with respect to the Silent flag; only the console
+    ///     write is suppressed.
+    /// </remarks>
     /// <param name="color">Text color</param>
     /// <param name="text">Text to write</param>
     public void Write(ConsoleColor color, string text)
@@ -123,8 +159,14 @@ public sealed class Context : IDisposable
         if (!Silent)
         {
             Console.ForegroundColor = color;
-            Console.Write(text);
-            Console.ResetColor();
+            try
+            {
+                Console.Write(text);
+            }
+            finally
+            {
+                Console.ResetColor();
+            }
         }
 
         // Write to the optional log
@@ -132,8 +174,12 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write text to output
+    ///     Writes a line of text to all configured outputs only when verbose mode is active.
     /// </summary>
+    /// <remarks>
+    ///     If <see cref="Verbose"/> is false the call is a no-op. When Verbose is true the line
+    ///     is written to the console (unless <see cref="Silent"/> is true) and to the log file.
+    /// </remarks>
     /// <param name="text">Text to write</param>
     public void WriteVerboseLine(string text)
     {
@@ -154,8 +200,12 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write text to output
+    ///     Writes a line of text to all configured outputs unless silent mode is active.
     /// </summary>
+    /// <remarks>
+    ///     Always writes to the log file when one is open, regardless of the Silent flag.
+    ///     Console output is suppressed when <see cref="Silent"/> is true.
+    /// </remarks>
     /// <param name="text">Text to write</param>
     public void WriteLine(string text)
     {
@@ -170,8 +220,16 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Write an error message to output
+    ///     Increments the error counter and writes an error message to the console (unless
+    ///     silent mode is active) and unconditionally to all configured log outputs.
     /// </summary>
+    /// <remarks>
+    ///     <see cref="Errors"/> is always incremented, even when <paramref name="message"/> is
+    ///     null. Console output is suppressed when <see cref="Silent"/> is true; log-file output
+    ///     is unconditional and is always written when a log file is configured. The message,
+    ///     when non-null, is written to the console in <see cref="ConsoleColor.Red"/> (unless
+    ///     silent mode is active) and to the log file.
+    /// </remarks>
     /// <param name="message">Error message to write</param>
     public void WriteError(string? message)
     {
@@ -188,8 +246,14 @@ public sealed class Context : IDisposable
         if (!Silent)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            Console.ResetColor();
+            try
+            {
+                Console.WriteLine(message);
+            }
+            finally
+            {
+                Console.ResetColor();
+            }
         }
 
         // Write to the log if specified
@@ -197,11 +261,28 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Create the context
+    ///     Creates a new <see cref="Context"/> by parsing the supplied argument array.
     /// </summary>
-    /// <param name="args">Program arguments</param>
-    /// <returns>Program context</returns>
-    /// <exception cref="InvalidOperationException">On invalid arguments</exception>
+    /// <remarks>
+    ///     This static factory is the only supported construction path for <see cref="Context"/>.
+    ///     The caller is responsible for disposing the returned instance (e.g., with a
+    ///     <c>using</c> statement) to ensure any open log-file writer is flushed and closed
+    ///     deterministically. Arguments are parsed left-to-right; unrecognized flags (any token
+    ///     starting with <c>-</c> that does not match a known option) cause an
+    ///     <see cref="InvalidOperationException"/> to be thrown. Bare tokens (tokens not starting
+    ///     with <c>-</c>) are accumulated as custom test names. The separator <c>--</c> switches
+    ///     all subsequent tokens to custom test names regardless of their prefix.
+    /// </remarks>
+    /// <param name="args">
+    ///     The command-line argument array to parse. Must not be null; pass an empty array to
+    ///     obtain a default-valued <see cref="Context"/>.
+    /// </param>
+    /// <returns>A fully initialized <see cref="Context"/> ready for use.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="args"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when an unrecognized argument flag is provided or a required option value
+    ///     is missing (e.g., <c>-c</c> with no following filename).
+    /// </exception>
     public static Context Create(string[] args)
     {
         // Validate input
@@ -333,7 +414,11 @@ public sealed class Context : IDisposable
     }
 
     /// <summary>
-    ///     Get the next argument
+    ///     Advances the enumerator to the next argument and returns it, centralizing the
+    ///     enumerator-exhaustion check across all value-argument call sites in
+    ///     <see cref="Create"/> so each call site stays readable. Throws
+    ///     <see cref="InvalidOperationException"/> with the caller-provided diagnostic message
+    ///     when the argument array has been exhausted before the required value was found.
     /// </summary>
     /// <param name="enumerator">Argument enumerator</param>
     /// <param name="message">Error message if missing</param>

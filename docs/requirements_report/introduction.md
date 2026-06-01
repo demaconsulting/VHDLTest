@@ -1,50 +1,28 @@
 # Introduction
 
-This document provides a requirements traceability matrix for the VHDLTest tool, showing the relationship between
-requirements and test cases that verify them.
+This document provides the requirements Trace Matrix for VHDLTest, mapping each requirement to its corresponding
+test evidence.
 
 ## Purpose
 
-The traceability matrix demonstrates that all requirements have been adequately tested and provides evidence of
-verification coverage. This is essential for:
+To demonstrate that every requirement is covered by at least one passing test, providing compliance evidence for
+VHDLTest.
 
-* Quality assurance
-* Regulatory compliance
-* Change impact analysis
-* Test completeness assessment
+The matrix aggregates test results from unit tests and integration tests across multiple .NET runtime versions and
+platforms, and maps them to the requirements defined in the VHDLTest Requirements Document. Requirements are
+considered verified when all associated test cases have been executed and passed with adequate coverage.
 
-## Matrix Contents
+## Scope
 
-For each requirement in the VHDLTest requirements specification, this matrix shows:
+This document covers all requirements defined in `docs/reqstream/` for VHDLTest and their test evidence, drawn from:
 
-* Requirement identifier and title
-* Associated test cases
-* Test execution status (Passed/Failed/Not Executed)
-* Test result summary
+- Unit tests executed on .NET runtime versions net8.0, net9.0, and net10.0
+- GHDL integration tests on multiple platforms and .NET versions
+- NVC integration tests on multiple platforms and .NET versions
 
-## Test Sources
+The matrix identifies requirements with full coverage, partial coverage, or no coverage, and highlights failed
+tests requiring remediation.
 
-The matrix aggregates test results from multiple sources:
+## References
 
-* **Unit Tests**: Tests executed on different .NET runtime versions (net8.0, net9.0, net10.0)
-* **GHDL Integration Tests**: Tests validating GHDL simulator integration on different platforms and .NET versions
-* **NVC Integration Tests**: Tests validating NVC simulator integration on different platforms and .NET versions
-
-## Coverage Analysis
-
-The matrix provides coverage analysis to identify:
-
-* Requirements with full test coverage
-* Requirements with partial coverage
-* Untested requirements
-* Failed tests requiring attention
-
-## Verification Status
-
-Requirements are considered verified when:
-
-1. All associated test cases have been executed
-2. All test cases have passed
-3. Tests cover the requirement adequately
-
-Failed or not-executed tests indicate incomplete verification and require remediation.
+- [VHDLTest releases](https://github.com/demaconsulting/VHDLTest/releases) — Requirements Document

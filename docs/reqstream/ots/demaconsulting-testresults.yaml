@@ -1,0 +1,31 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: DemaConsulting.TestResults Requirements
+        requirements:
+          - id: VHDLTest-OTS-TestResults
+            title: DemaConsulting.TestResults shall generate TRX test results files from VHDLTest run outcomes.
+            justification: |
+              DemaConsulting.TestResults (the current version specified in the project SBOM)
+              is the TRX file generation library used by VHDLTest to write structured test
+              result files. When --results is specified, TestResults.SaveResults delegates
+              to this library to produce a TRX file consumed by CI/CD platforms and
+              requirements traceability tools. A successful integration test with results
+              output confirms the library is functioning correctly.
+            tags: [ots]
+            tests:
+              - TestResults_SaveResults_WithTrxExtension_CreatesTrxFile
+              - VHDLTest_ResultsFlag_WritesTrxFile
+          - id: VHDLTest-OTS-TestResults-JUnit
+            title: DemaConsulting.TestResults shall generate JUnit XML test results files from VHDLTest run outcomes.
+            justification: |
+              DemaConsulting.TestResults (the current version specified in the project SBOM)
+              also supports JUnit XML output via JUnitSerializer.Serialize when the output
+              file has a .xml extension. VHDLTest.Results.TestResults.SaveResults dispatches
+              to JUnitSerializer when the extension is .xml, enabling CI/CD platforms that
+              consume JUnit format to receive structured test result files.
+            tags: [ots]
+            tests:
+              - TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile
+              - TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure

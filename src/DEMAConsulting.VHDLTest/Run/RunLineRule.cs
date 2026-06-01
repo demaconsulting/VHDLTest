@@ -23,20 +23,71 @@ using System.Text.RegularExpressions;
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-///     Run Line Rule Record
+///     Immutable record that pairs a compiled regular expression with the
+///     <see cref="RunLineType"/> to assign when the pattern matches a simulator output line.
+///     It is the rule element that <see cref="RunProcessor"/> applies in order to classify
+///     each captured line; the first matching rule in the ordered rule set wins.
 /// </summary>
-/// <param name="Type">Run Line Type</param>
-/// <param name="Pattern">Text Match Pattern</param>
+/// <remarks>
+///     Design intent: rules are evaluated in order by <see cref="RunProcessor.Parse"/> and
+///     the first matching rule wins, allowing callers to express priority-ordered pattern sets.
+///     A 100 ms evaluation timeout is applied to each <see cref="Regex"/> at construction
+///     time as a guard against catastrophic backtracking (ReDoS) on unexpectedly long or
+///     pathological simulator output lines. This type is immutable and thread-safe;
+///     <see cref="Regex"/> is safe for concurrent reads, so instances may be shared freely
+///     across threads without synchronization.
+/// </remarks>
+/// <param name="Type">
+///     The severity category to assign to any output line whose text matches
+///     <paramref name="Pattern"/>. Any valid <see cref="RunLineType"/> value is accepted.
+/// </param>
+/// <param name="Pattern">
+///     The compiled regular expression used to test each simulator output line.
+///     Must not be null.
+/// </param>
 public record RunLineRule(RunLineType Type, Regex Pattern)
 {
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
     /// <summary>
-    /// Create a new RunLineRule
+    ///     Gets the compiled regular expression used to test each simulator output line.
     /// </summary>
-    /// <param name="type">Type</param>
-    /// <param name="pattern">Pattern</param>
-    /// <returns>New RunLineRule</returns>
+    /// <remarks>
+    ///     Overrides the auto-generated positional property to enforce a null guard at
+    ///     construction time. Any attempt to construct a <see cref="RunLineRule"/> directly
+    ///     with a null <see cref="System.Text.RegularExpressions.Regex"/> (e.g.,
+    ///     <c>new RunLineRule(type, null!)</c>) will throw <see cref="ArgumentNullException"/>
+    ///     before the instance is returned to the caller. Prefer the <see cref="Create"/> factory
+    ///     method, which compiles the pattern string and applies the construction-time guard.
+    /// </remarks>
+    public Regex Pattern { get; init; } = Pattern ?? throw new ArgumentNullException(nameof(Pattern));
+
+    /// <summary>
+    ///     Creates a new <see cref="RunLineRule"/> by compiling <paramref name="pattern"/>
+    ///     into a <see cref="Regex"/> and pairing it with <paramref name="type"/>.
+    /// </summary>
+    /// <remarks>
+    ///     The regex is compiled with <see cref="RegexOptions.None"/> to preserve case
+    ///     sensitivity, which is required for correct matching of simulator output where
+    ///     keyword casing is significant. A 100 ms evaluation timeout is applied as a guard
+    ///     against catastrophic backtracking (ReDoS) on unexpectedly long or pathological
+    ///     simulator output lines.
+    /// </remarks>
+    /// <param name="type">
+    ///     The <see cref="RunLineType"/> to assign to any line whose text matches
+    ///     <paramref name="pattern"/>.
+    /// </param>
+    /// <param name="pattern">
+    ///     A syntactically valid regular expression string. Must not be null.
+    /// </param>
+    /// <returns>A new <see cref="RunLineRule"/> whose <see cref="Pattern"/> is ready for use.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Thrown (as <see cref="System.Text.RegularExpressions.RegexParseException"/>, a
+    ///     subtype) when <paramref name="pattern"/> is not a syntactically valid regular expression.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="pattern"/> is null.</exception>
     public static RunLineRule Create(RunLineType type, string pattern)
     {
+        ArgumentNullException.ThrowIfNull(pattern);
         return new RunLineRule(
             type,
             new Regex(pattern, RegexOptions.None, TimeSpan.FromMilliseconds(100)));

@@ -2,22 +2,91 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: ConfigDocument Unit
-        requirements:
-          - id: VHDLTest-ConfigDoc-Read
-            title: The ConfigDocument class shall deserialize a YAML configuration file.
-            justification: |
-              Deserializing the YAML configuration into a typed object ensures configuration
-              values are validated at load time and provides a clear interface for downstream
-              code to access test parameters.
-            tests:
-              - ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully
+      - title: Cli Requirements
+        sections:
+          - title: ConfigDocument Requirements
+            requirements:
+              - id: VHDLTest-Cli-ConfigDoc-NullFilename
+                title: ConfigDocument shall throw ArgumentNullException when the filename argument to ReadFile is null.
+                justification: |
+                  Throwing ArgumentNullException for a null filename is a programmer-error guard
+                  implemented via ArgumentNullException.ThrowIfNull. It prevents a cryptic
+                  internal exception from escaping the method and gives callers an unambiguous
+                  signal that a null path is not a supported input.
+                tests:
+                  - ConfigDocument_ReadFile_NullFilename_ThrowsArgumentNullException
 
-          - id: VHDLTest-ConfigDoc-Missing
-            title: The ConfigDocument class shall throw FileNotFoundException for missing files.
-            justification: |
-              Throwing a descriptive exception for missing configuration files allows the
-              application to surface a clear error message to the user rather than a
-              cryptic null-reference error.
-            tests:
-              - ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException
+              - id: VHDLTest-Cli-ConfigDoc-Read
+                title: The ConfigDocument class shall deserialize a YAML configuration file.
+                justification: |
+                  Deserializing the YAML configuration into a typed object ensures configuration
+                  values are validated at load time and provides a clear interface for downstream
+                  code to access test parameters.
+                tests:
+                  - ConfigDocument_ReadFile_ValidFile_ReadsSuccessfully
+
+              - id: VHDLTest-Cli-ConfigDoc-Missing
+                title: The ConfigDocument class shall throw FileNotFoundException for missing files.
+                justification: |
+                  Throwing a descriptive exception for missing configuration files allows the
+                  application to surface a clear error message to the user rather than a
+                  cryptic null-reference error.
+                tests:
+                  - ConfigDocument_ReadFile_MissingFile_ThrowsFileNotFoundException
+
+              - id: VHDLTest-Cli-ConfigDoc-Null
+                title: The ConfigDocument class shall throw InvalidOperationException when the configuration file deserializes to null.
+                justification: |
+                  Throwing a descriptive exception when deserialization yields null ensures the application
+                  surfaces a clear error rather than silently returning a null configuration instance,
+                  which would cause a cryptic null reference error downstream in CI pipelines.
+                tests:
+                  - ConfigDocument_ReadFile_NullDeserializationResult_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Cli-ConfigDoc-Malformed
+                title: The ConfigDocument class shall throw InvalidOperationException when the configuration file contains malformed YAML that cannot be deserialized.
+                justification: |
+                  A predictable exception type allows CLI pipeline error handling to be consistent
+                  regardless of the YAML library used.
+                tests:
+                  - ConfigDocument_ReadFile_MalformedContent_ThrowsInvalidOperationException
+
+              - id: VHDLTest-Cli-ConfigDoc-DefaultFiles
+                title: ConfigDocument shall initialize Files to an empty list when not specified.
+                justification: |
+                  Defaulting Files to an empty list when the key is absent prevents null
+                  reference errors in downstream code that iterates over this collection, and
+                  matches the defensive programming pattern used throughout the codebase for
+                  optional configuration properties.
+                tests:
+                  - ConfigDocument_ReadFile_MissingKeys_ReturnsEmptyArrays
+
+              - id: VHDLTest-Cli-ConfigDoc-DefaultTests
+                title: ConfigDocument shall initialize Tests to an empty list when not specified.
+                justification: |
+                  Defaulting Tests to an empty list when the key is absent prevents null
+                  reference errors in downstream code that iterates over this collection, and
+                  matches the defensive programming pattern used throughout the codebase for
+                  optional configuration properties.
+                tests:
+                  - ConfigDocument_ReadFile_MissingKeys_ReturnsEmptyArrays
+
+              - id: VHDLTest-Cli-ConfigDoc-ExplicitNullFiles
+                title: ConfigDocument shall initialize Files to an empty list when explicitly set to null.
+                justification: |
+                  Treating an explicit null value the same as an absent key prevents null reference
+                  errors in downstream code that iterates over this collection, ensuring
+                  consistent behavior regardless of whether a YAML author omits the key or sets
+                  it to null.
+                tests:
+                  - ConfigDocument_ReadFile_ExplicitNullLists_ReturnsEmptyArrays
+
+              - id: VHDLTest-Cli-ConfigDoc-ExplicitNullTests
+                title: ConfigDocument shall initialize Tests to an empty list when explicitly set to null.
+                justification: |
+                  Treating an explicit null value the same as an absent key prevents null reference
+                  errors in downstream code that iterates over this collection, ensuring
+                  consistent behavior regardless of whether a YAML author omits the key or sets
+                  it to null.
+                tests:
+                  - ConfigDocument_ReadFile_ExplicitNullLists_ReturnsEmptyArrays

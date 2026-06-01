@@ -26,50 +26,124 @@ using DEMAConsulting.VHDLTest.Run;
 namespace DEMAConsulting.VHDLTest.Simulators;
 
 /// <summary>
-///     GHDL Simulator Class
+///     Concrete <see cref="Simulator"/> implementation for the GHDL open-source VHDL simulator.
 /// </summary>
+/// <remarks>
+///     Drives the <c>ghdl</c> command-line tool in a two-phase workflow: the <c>Compile</c>
+///     method runs <c>ghdl -a</c> (analysis) for all source files, and the <c>Test</c> method
+///     runs <c>ghdl -e</c> (elaboration) followed by <c>ghdl -r</c> (simulation) for each
+///     individual test bench. The elaboration step is explicit and mandatory for some GHDL
+///     backends. Implemented as a singleton (<see cref="Instance"/>) initialized at class
+///     load time; stateless after construction and therefore thread-safe.
+/// </remarks>
 public sealed class GhdlSimulator : Simulator
 {
-    /// <summary>
-    /// Compile processor
-    /// </summary>
-    public static RunProcessor CompileProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
-            RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
-            RunLineRule.Create(RunLineType.Error, ".*:error:"),
-            RunLineRule.Create(RunLineType.Error, ".*: cannot open")
-        ]
-    );
+    private static readonly RunLineRule[] CompileRules =
+    [
+        RunLineRule.Create(RunLineType.Warning, @".*:\d+:\d+:warning:"),
+        RunLineRule.Create(RunLineType.Error, @".*:\d+:\d+: "),
+        RunLineRule.Create(RunLineType.Error, ".*:error:"),
+        RunLineRule.Create(RunLineType.Error, ".*: cannot open")
+    ];
+
+    private static readonly RunLineRule[] TestRules =
+    [
+        RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
+        RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
+        RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
+        RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
+        RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
+        RunLineRule.Create(RunLineType.Error, ".*:error:")
+    ];
 
     /// <summary>
-    /// Test processor
+    ///     Output classifier for GHDL analysis (<c>ghdl -a</c>) and elaboration (<c>ghdl -e</c>) output.
     /// </summary>
-    public static RunProcessor TestProcessor { get; } = new(
-        [
-            RunLineRule.Create(RunLineType.Info, @".*:\(assertion note\):"),
-            RunLineRule.Create(RunLineType.Info, @".*:\(report note\):"),
-            RunLineRule.Create(RunLineType.Warning, @".*:\(assertion warning\):"),
-            RunLineRule.Create(RunLineType.Warning, @".*:\(report warning\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(assertion error\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(report error\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(assertion failure\):"),
-            RunLineRule.Create(RunLineType.Error, @".*:\(report failure\):"),
-            RunLineRule.Create(RunLineType.Error, ".*:error:")
-        ]
-    );
+    /// <remarks>
+    ///     Applies four classification rules in order:
+    ///     <list type="bullet">
+    ///         <item><description>
+    ///             Lines matching <c>.*:\d+:\d+:warning:</c> are classified as Warning.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:\d+:\d+: </c> (trailing space prevents false matches on
+    ///             warning-prefixed lines) are classified as Error.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:error:</c> are classified as Error.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*: cannot open</c> are classified as Error.
+    ///         </description></item>
+    ///     </list>
+    ///     This processor is also reused for the elaboration step in <c>Test</c> because elaboration
+    ///     output follows the same diagnostic format as analysis output.
+    /// </remarks>
+    public static RunProcessor CompileProcessor { get; } = new(CompileRules);
 
     /// <summary>
-    ///     GHDL simulator instance
+    ///     Output classifier for GHDL simulation (<c>ghdl -r</c>) output.
     /// </summary>
+    /// <remarks>
+    ///     Applies classification rules matching GHDL's VHDL assertion and report message format:
+    ///     <list type="bullet">
+    ///         <item><description>
+    ///             Lines matching <c>.*:\(assertion note\):</c> or <c>.*:\(report note\):</c>
+    ///             are classified as Info.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:\(assertion warning\):</c> or <c>.*:\(report warning\):</c>
+    ///             are classified as Warning.
+    ///         </description></item>
+    ///         <item><description>
+    ///             Lines matching <c>.*:\(assertion error\):</c>, <c>.*:\(report error\):</c>,
+    ///             <c>.*:\(assertion failure\):</c>, <c>.*:\(report failure\):</c>, or
+    ///             <c>.*:error:</c> are classified as Error.
+    ///         </description></item>
+    ///     </list>
+    /// </remarks>
+    public static RunProcessor TestProcessor { get; } = new(TestRules);
+
+    /// <summary>
+    ///     Gets the singleton <see cref="GhdlSimulator"/> instance shared across the application.
+    /// </summary>
+    /// <remarks>
+    ///     Initialized once at class-load time by calling <see cref="FindPath()"/> to resolve the
+    ///     GHDL installation directory. Stateless after construction and therefore thread-safe.
+    ///     Always access the simulator through this property rather than constructing a new instance.
+    /// </remarks>
     public static GhdlSimulator Instance { get; } = new();
 
+    private readonly RunProcessor _compileProcessor;
+    private readonly RunProcessor _testProcessor;
+
     /// <summary>
-    ///     Initializes a new instance of the GHDL simulator
+    ///     Private constructor that prevents external instantiation and enforces use of the
+    ///     singleton <see cref="Instance"/>. Passes the fixed name <c>"GHDL"</c> and the path
+    ///     resolved by <see cref="FindPath()"/> to the base class.
     /// </summary>
-    private GhdlSimulator() : base("GHDL", FindPath())
+    private GhdlSimulator() : this(FindPath(), ProcessInvoker.Instance)
     {
     }
+
+    private GhdlSimulator(string? simulatorPath, IProcessInvoker invoker)
+        : base("GHDL", simulatorPath)
+    {
+        _compileProcessor = new RunProcessor(CompileRules, invoker);
+        _testProcessor = new RunProcessor(TestRules, invoker);
+    }
+
+    /// <summary>
+    ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
+    /// </summary>
+    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
+    /// <returns>A new <see cref="GhdlSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
+    internal static GhdlSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+        => new(simulatorPath, invoker);
 
     /// <inheritdoc />
     public override RunResults Compile(Context context, Options options)
@@ -83,7 +157,7 @@ public sealed class GhdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Create the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
+        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
         if (!Directory.Exists(libDir))
         {
@@ -104,7 +178,7 @@ public sealed class GhdlSimulator : Simulator
 
         // Run the GHDL compiler
         var application = Path.Combine(simPath, "ghdl");
-        return CompileProcessor.Execute(
+        return _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -126,13 +200,13 @@ public sealed class GhdlSimulator : Simulator
         context.WriteVerboseLine($"  Simulator Path: {simPath}");
 
         // Get the library directory
-        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out/GHDL");
+        var libDir = Path.Combine(options.WorkingDirectory, "VHDLTest.out", "GHDL");
         context.WriteVerboseLine($"  Library Directory: {libDir}");
 
         // Elaborate the test before running it; some GHDL backends require an explicit
         // elaboration step prior to execution.
         var application = Path.Combine(simPath, "ghdl");
-        var elaborateResults = CompileProcessor.Execute(
+        var elaborateResults = _compileProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -148,7 +222,7 @@ public sealed class GhdlSimulator : Simulator
         }
 
         // Run the test
-        var testRunResults = TestProcessor.Execute(
+        var testRunResults = _testProcessor.Execute(
             context,
             application,
             options.WorkingDirectory,
@@ -165,9 +239,22 @@ public sealed class GhdlSimulator : Simulator
     }
 
     /// <summary>
-    ///     Find the simulator path
+    ///     Searches for the GHDL installation directory by locating the <c>ghdl</c> executable
+    ///     on the system PATH, returning null when GHDL is not installed.
     /// </summary>
-    /// <returns>Simulator path or null if not found</returns>
+    /// <remarks>
+    ///     Called at class-load time to initialize the <see cref="Instance"/> singleton; the
+    ///     result is stored as <see cref="Simulator.SimulatorPath"/> and never re-evaluated.
+    ///     The <c>VHDLTEST_GHDL_PATH</c> environment variable takes priority over PATH search:
+    ///     when set, its value is returned immediately without invoking <see cref="Simulator.Where"/>.
+    ///     When the environment variable is not set, <see cref="Simulator.Where"/> performs the
+    ///     PATH search and returns the full path to the <c>ghdl</c> executable, from which the
+    ///     containing directory is derived.
+    /// </remarks>
+    /// <returns>
+    ///     The directory containing the <c>ghdl</c> executable, or null if GHDL is not found.
+    ///     The <c>VHDLTEST_GHDL_PATH</c> environment variable, when set, overrides PATH search.
+    /// </returns>
     public static string? FindPath()
     {
         // Look for an environment variable
@@ -184,7 +271,7 @@ public sealed class GhdlSimulator : Simulator
             return null;
         }
 
-        // Return the working directory
+        // Return the directory containing the GHDL executable
         return Path.GetDirectoryName(simPath);
     }
 }

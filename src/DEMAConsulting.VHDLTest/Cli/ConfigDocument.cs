@@ -24,29 +24,75 @@ using YamlDotNet.Serialization.NamingConventions;
 namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
-///     Configuration document class
+///     Represents the deserialized content of a VHDLTest YAML configuration file, providing lists of VHDL source files and test names.
 /// </summary>
+/// <remarks>
+///     ConfigDocument is a stateless deserialization target for YamlDotNet. Instances are
+///     effectively immutable value objects after <see cref="ReadFile"/> returns; callers
+///     should treat the <see cref="Files"/> and <see cref="Tests"/> arrays as read-only.
+///     The YAML property names use hyphenated-naming-convention (e.g., <c>files</c>,
+///     <c>tests</c>) mapped by <c>HyphenatedNamingConvention</c>.
+/// </remarks>
 public class ConfigDocument
 {
     /// <summary>
-    ///     List of VHDL files
+    ///     Gets or sets the list of VHDL source files to compile.
     /// </summary>
+    /// <value>
+    ///     An array of relative or absolute paths to VHDL source files, populated from the
+    ///     <c>files</c> YAML key (using the <c>HyphenatedNamingConvention</c>). Defaults to
+    ///     an empty array when the key is absent from the YAML document or when the key is
+    ///     explicitly set to null. Callers may iterate this collection safely without a null check.
+    /// </value>
     public string[] Files { get; set; } = [];
 
     /// <summary>
-    ///     List of tests
+    ///     Gets or sets the list of VHDL test bench entity names to run.
     /// </summary>
+    /// <value>
+    ///     An array of VHDL test bench entity names, populated from the <c>tests</c> YAML
+    ///     key (using the <c>HyphenatedNamingConvention</c>). Defaults to an empty array when
+    ///     the key is absent from the YAML document or when the key is explicitly set to null.
+    ///     Callers may iterate this collection safely without a null check.
+    /// </value>
     public string[] Tests { get; set; } = [];
 
     /// <summary>
-    ///     Read the configuration document from file
+    ///     Reads and deserializes a VHDLTest YAML configuration file into a <see cref="ConfigDocument"/> instance.
     /// </summary>
-    /// <param name="filename">Configuration file</param>
-    /// <returns>Configuration document</returns>
-    /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the configuration content is invalid or cannot be deserialized into a configuration document</exception>
+    /// <remarks>
+    ///     Encapsulates deserialization so callers receive a stable exception contract
+    ///     (<see cref="FileNotFoundException"/> or <see cref="InvalidOperationException"/>) regardless
+    ///     of the underlying YAML library behavior. <see cref="HyphenatedNamingConvention"/> is used
+    ///     so YAML keys match natural hyphenated style (e.g., a multi-word property such as
+    ///     <c>SomeKey</c> would map from <c>some-key</c> in the YAML) while C# properties use
+    ///     PascalCase. All exceptions raised during deserialization are caught and wrapped as
+    ///     <see cref="InvalidOperationException"/> to prevent library-internal types from leaking into
+    ///     callers. The method is stateless and thread-safe; multiple threads may call it concurrently
+    ///     with independent file paths without synchronization.
+    /// </remarks>
+    /// <param name="filename">
+    ///     Path to a readable YAML file containing valid VHDLTest configuration. Must not be null.
+    ///     Must point to an existing file whose content can be deserialized into a
+    ///     <see cref="ConfigDocument"/>.
+    /// </param>
+    /// <returns>
+    ///     A non-null <see cref="ConfigDocument"/> instance populated from the file content. The
+    ///     returned instance always has non-null <see cref="Files"/> and <see cref="Tests"/> arrays;
+    ///     keys that are absent from the YAML document or that are explicitly set to null both
+    ///     produce empty arrays.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="filename"/> is null.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the configuration file does not exist.</exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the configuration content is null, invalid, or cannot be deserialized into
+    ///     a configuration document.
+    /// </exception>
     public static ConfigDocument ReadFile(string filename)
     {
+        // Validate inputs — a null path cannot be opened and produces a cryptic internal exception
+        ArgumentNullException.ThrowIfNull(filename);
+
         // Read the file contents
         var content = File.ReadAllText(filename);
 
@@ -56,8 +102,24 @@ public class ConfigDocument
             .Build();
 
         // Parse the document
-        var doc = deserializer.Deserialize<ConfigDocument?>(content) ??
-                  throw new InvalidOperationException($"Configuration document {filename} invalid");
+        ConfigDocument? doc;
+        try
+        {
+            doc = deserializer.Deserialize<ConfigDocument?>(content);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Configuration document {filename} is invalid", ex);
+        }
+
+        if (doc == null)
+        {
+            throw new InvalidOperationException($"Configuration document {filename} is null");
+        }
+
+        // Ensure null list properties are treated as empty arrays
+        doc.Files ??= [];
+        doc.Tests ??= [];
 
         // Return the document
         return doc;

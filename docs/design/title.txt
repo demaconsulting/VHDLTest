@@ -1,7 +1,21 @@
 ---
-title: 'VHDLTest Design'
-subtitle: 'VHDLTest Detailed Software Design'
-author: 'DEMA Consulting'
-description: 'Detailed design documentation for VHDLTest, a .NET command-line tool for running VHDL unit tests and generating test reports'
-keywords: [VHDL, testing, automation, design, simulation, GHDL, ModelSim, Vivado, ActiveHDL, NVC]
+title: "VHDLTest Software Design Document"
+subtitle: "VHDL unit test runner for .NET"
+author: "DEMA Consulting"
+description: "Software Design Document for VHDLTest"
+lang: en-US
+keywords:
+  - Design
+  - Software Design Document
+  - VHDL
+  - .NET
+  - C#
+  - simulation
+  - testing
+  - GHDL
+  - NVC
+  - ModelSim
+  - QuestaSim
+  - Vivado
+  - Active-HDL
 ---

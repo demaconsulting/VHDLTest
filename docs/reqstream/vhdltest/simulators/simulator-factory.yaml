@@ -2,28 +2,47 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: SimulatorFactory Unit
-        requirements:
-          - id: VHDLTest-SimulatorFactory-Get
-            title: SimulatorFactory shall return the correct simulator instance for a given name.
-            justification: |
-              The factory pattern centralizes simulator selection, allowing the rest of the
-              application to remain independent of the specific simulator being used and
-              enabling easy extension with new simulators.
-            tests:
-              - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
-              - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
-              - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
-              - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
-              - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
-              - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
-              - SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator
+      - title: Simulators Requirements
+        sections:
+          - title: SimulatorFactory Requirements
+            requirements:
+              - id: VHDLTest-Simulators-SimulatorFactory-Get
+                title: SimulatorFactory shall return the correct simulator instance for a given name,
+                  using case-insensitive name matching.
+                justification: |
+                  The factory pattern centralizes simulator selection, allowing the rest of the
+                  application to remain independent of the specific simulator being used and
+                  enabling easy extension with new simulators. Case-insensitive matching allows
+                  configuration files to use any casing for simulator names without causing lookup
+                  failures.
+                tests:
+                  - SimulatorFactory_Get_GhdlSimulator_ReturnsGhdlSimulator
+                  - SimulatorFactory_Get_ModelSimSimulator_ReturnsModelSimSimulator
+                  - SimulatorFactory_Get_VivadoSimulator_ReturnsVivadoSimulator
+                  - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
+                  - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
+                  - SimulatorFactory_Get_QuestaSimSimulator_ReturnsQuestaSimSimulator
+                  - SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator
 
-          - id: VHDLTest-SimulatorFactory-Unknown
-            title: SimulatorFactory shall return null for unknown simulator names.
-            justification: |
-              Returning null for unknown simulator names allows the calling code to provide
-              a descriptive error message, rather than surfacing an opaque exception from
-              within the factory.
-            tests:
-              - SimulatorFactory_Get_UnknownSimulator_ReturnsNull
+              - id: VHDLTest-Simulators-SimulatorFactory-Unknown
+                title: SimulatorFactory shall return null for unknown simulator names.
+                justification: |
+                  Returning null for unknown simulator names allows the calling code to provide
+                  a descriptive error message, rather than surfacing an opaque exception from
+                  within the factory.
+                tests:
+                  - SimulatorFactory_Get_UnknownSimulator_ReturnsNull
+
+              - id: VHDLTest-Simulators-SimulatorFactory-AutoSelect
+                title: SimulatorFactory shall return the first available installed simulator when no simulator
+                  name is specified.
+                justification: |
+                  When a developer has only one simulator installed, requiring an explicit simulator name
+                  in the configuration is unnecessary friction. Auto-discovery enables zero-configuration
+                  usage: the tool selects the first available simulator automatically, making VHDLTest
+                  immediately usable without any simulator-specific configuration.
+                tests:
+                  - SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull
+                children:
+                  - VHDLTest-Simulators-Simulator-Where
+                  - VHDLTest-Simulators-Simulator-Where-NotFound

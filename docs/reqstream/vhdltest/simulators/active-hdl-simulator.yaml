@@ -2,37 +2,90 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: ActiveHdlSimulator Unit
-        requirements:
-          - id: VHDLTest-Sim-ActiveHDL
-            title: VHDLTest shall support the ActiveHDL simulator.
-            justification: |
-              Active-HDL from Aldec is a popular VHDL simulator particularly in the aerospace
-              and defense industries. Supporting Active-HDL ensures VHDLTest can be used in
-              regulated environments and specialized application domains.
-            tests:
-              - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
-              - ActiveHdlSimulator_SimulatorName_ReturnsActiveHDL
+      - title: Simulators Requirements
+        sections:
+          - title: ActiveHdlSimulator Requirements
+            requirements:
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-Support
+                title: VHDLTest shall support the ActiveHDL simulator.
+                justification: |
+                  Active-HDL from Aldec is a popular VHDL simulator particularly in the aerospace
+                  and defense industries. Supporting Active-HDL ensures VHDLTest can be used in
+                  regulated environments and specialized application domains.
+                tests:
+                  - SimulatorFactory_Get_ActiveHDLSimulator_ReturnsActiveHDLSimulator
+                  - ActiveHdlSimulator_SimulatorName_ReturnsActiveHdl
 
-          - id: VHDLTest-Sim-ActiveHDL-Compile
-            title: ActiveHdlSimulator shall classify Active-HDL compilation output lines by severity.
-            justification: |
-              Accurate classification of compilation output enables VHDLTest to detect
-              warnings and errors during the analysis phase and report them clearly to
-              the user.
-            tests:
-              - ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
-              - ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
-              - ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-Compile
+                title: ActiveHdlSimulator shall classify Active-HDL compilation output lines by severity.
+                justification: |
+                  Accurate classification of compilation output enables VHDLTest to detect
+                  warnings and errors during the analysis phase and report them clearly to
+                  the user.
+                tests:
+                  - ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+                  - ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
+                  - ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+                  - ActiveHdlSimulator_CompileProcessor_FatalRuntimeError_ReturnsErrorResult
 
-          - id: VHDLTest-Sim-ActiveHDL-Test
-            title: ActiveHdlSimulator shall classify Active-HDL simulation output lines by severity.
-            justification: |
-              Accurate classification of simulation output enables VHDLTest to detect pass,
-              warning, and error conditions during test bench execution and reflect them
-              in the test report.
-            tests:
-              - ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult
-              - ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
-              - ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
-              - ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-Test
+                title: ActiveHdlSimulator shall classify Active-HDL simulation output lines by severity.
+                justification: |
+                  Accurate classification of simulation output enables VHDLTest to detect pass,
+                  warning, and error conditions during test bench execution and reflect them
+                  in the test report.
+                tests:
+                  - ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+                  - ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+                  - ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+                  - ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+                children:
+                  - VHDLTest-Simulators-ActiveHdlSimulator-TestScript
+                  - VHDLTest-Simulators-ActiveHdlSimulator-LatticeSuppression
+
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-TestScript
+                title: ActiveHdlSimulator shall ensure a success exit code is returned to the caller when simulation completes without errors.
+                justification: |
+                  The vsimsa batch-mode tool does not emit a success exit code automatically when
+                  simulation completes without errors. An explicit workaround is required to
+                  distinguish a successful simulation run from one that terminated abnormally
+                  without an exit code, ensuring that CI pipelines correctly detect pass results.
+                tests:
+                  - ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode
+
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-LatticeSuppression
+                title: ActiveHdlSimulator shall suppress Active-HDL Lattice Edition license advisory messages from test output.
+                justification: |
+                  Active-HDL Lattice Edition emits license advisory warnings on every run that
+                  are not indicative of VHDL design issues. Suppressing these prevents false
+                  positive diagnostic results that would confuse users and obscure genuine warnings.
+                tests:
+                  - ActiveHdlSimulator_TestProcessor_LatticeSuppression1_ReturnsTextResult
+                  - ActiveHdlSimulator_TestProcessor_LatticeSuppression2_ReturnsTextResult
+
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-FindPath
+                title: >-
+                  ActiveHdl Simulator shall locate the Active-HDL installation directory,
+                  respecting the VHDLTEST_ACTIVEHDL_PATH environment variable override when set.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate Active-HDL across different
+                  installation layouts and environments. The VHDLTEST_ACTIVEHDL_PATH environment
+                  variable override enables CI pipelines and non-standard installations to specify
+                  the Active-HDL path explicitly without modifying PATH. PATH-based discovery is
+                  verified in CI with Active-HDL installed; the env-var override path is covered by
+                  a unit test.
+                tests:
+                  - ActiveHdlSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+                  - ActiveHdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath
+
+              - id: VHDLTest-Simulators-ActiveHdlSimulator-Unavailable
+                title: >-
+                  When Active-HDL is not available, VHDLTest shall report that the
+                  ActiveHDL simulator is not available when compile or test is invoked.
+                justification: |
+                  Clear error reporting when the simulator is not installed prevents silent
+                  failures and gives users an actionable message when the simulator binary
+                  cannot be located.
+                tests:
+                  - ActiveHdlSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
+                  - ActiveHdlSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException

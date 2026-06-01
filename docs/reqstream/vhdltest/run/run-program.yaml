@@ -2,16 +2,63 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: RunProgram Unit
-        requirements:
-          - id: VHDLTest-RunProgram-Execute
-            title: RunProgram shall execute an external program and return its combined output.
-            justification: |
-              Executing simulator tools as external processes decouples VHDLTest from any
-              specific simulator API, allowing it to integrate with any command-line VHDL
-              simulator. Capturing both stdout and stderr ensures no output is lost when
-              diagnosing failures.
-            tests:
-              - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
-              - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult
-              - RunProcessor_Execute_MissingProgram_ThrowsException
+      - title: Run Requirements
+        sections:
+          - title: RunProgram Requirements
+            requirements:
+              - id: VHDLTest-Run-RunProgram-Execute
+                title: >-
+                  RunProgram shall launch the specified external program with the given arguments.
+                justification: |
+                  Executing simulator tools as external processes decouples VHDLTest from any
+                  specific simulator API, allowing it to integrate with any command-line VHDL
+                  simulator without a custom programmatic binding.
+                tests:
+                  - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+
+              - id: VHDLTest-Run-RunProgram-ExitCode
+                title: >-
+                  RunProgram shall return the exit code of the executed program to the caller.
+                justification: |
+                  Returning the exit code allows the caller to determine whether the simulator
+                  reported success or failure, enabling accurate test result classification even
+                  when no individual output line matches an error pattern.
+                tests:
+                  - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+                  - RunProgram_Run_ProgramWithNonZeroExit_ReturnsNonZeroExitCode
+
+              - id: VHDLTest-Run-RunProgram-Output
+                title: >-
+                  RunProgram shall capture the combined standard output and standard error of the
+                  executed program and return it to the caller.
+                justification: |
+                  Merging stdout and stderr into a single output string ensures that all simulator
+                  diagnostic messages are available for pattern classification and logging, regardless
+                  of which output stream the simulator uses.
+                tests:
+                  - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+                  - RunProgram_Run_ProgramWithStderr_CapturesBothStreamsInOutput
+
+              - id: VHDLTest-Run-RunProgram-WorkingDirectory
+                title: >-
+                  RunProgram shall use the caller's current working directory when an empty string
+                  is provided as the working directory.
+                justification: |
+                  Inheriting the caller's working directory when no explicit directory is given
+                  provides a sensible default that allows simulators to resolve relative paths
+                  correctly without requiring callers to always specify an absolute working directory.
+                tests:
+                  - RunProgram_Run_ValidProgram_ReturnsZeroExitCodeAndNonEmptyOutput
+                  - RunProgram_Run_EmptyWorkingDirectory_UsesCallerCurrentDirectory
+
+              - id: VHDLTest-Run-RunProgram-ExceptionPropagation
+                title: >-
+                  RunProgram shall propagate an exception to the caller when the specified
+                  executable cannot be found or cannot be started.
+                justification: |
+                  Propagating the launch exception instead of swallowing it ensures that callers
+                  (RunProcessor and, transitively, simulator implementations) can detect and report
+                  missing simulator executables as a clear error, rather than returning an empty
+                  result or a misleading exit code.
+                tests:
+                  - RunProgram_Run_MissingExecutable_ThrowsException

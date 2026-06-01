@@ -21,22 +21,47 @@
 namespace DEMAConsulting.VHDLTest.Cli;
 
 /// <summary>
-///     Program Options Class
+///     Immutable value type carrying the fully resolved configuration for a VHDLTest run, derived from the parsed command-line context and the loaded YAML configuration document.
 /// </summary>
-/// <param name="WorkingDirectory">Working directory</param>
-/// <param name="Config">Configuration options</param>
+/// <remarks>
+///     Options is constructed exclusively via <see cref="Parse"/>, which validates that a
+///     configuration file was specified, loads the YAML document, and resolves the working
+///     directory to an absolute path. Callers treat Options as a read-only record after
+///     construction.
+/// </remarks>
+/// <param name="WorkingDirectory">Absolute path to the directory containing the configuration file. Equals <c>Path.GetDirectoryName(Path.GetFullPath(configFile))</c> and is guaranteed to be non-null.</param>
+/// <param name="Config">Deserialized YAML configuration document. Guaranteed non-null; populated by <see cref="ConfigDocument.ReadFile"/>.</param>
 public record Options(string WorkingDirectory,
     ConfigDocument Config)
 {
     /// <summary>
     ///     Parse options from command line arguments
     /// </summary>
-    /// <param name="args">Command line arguments</param>
-    /// <returns>Options</returns>
+    /// <remarks>
+    ///     Combines the configuration file path stored in <paramref name="args"/> with the parsed
+    ///     YAML content to produce a fully resolved <see cref="Options"/> value. The absolute path
+    ///     resolution via <c>Path.GetFullPath</c> ensures that <see cref="WorkingDirectory"/> is
+    ///     always an absolute path regardless of the current working directory at call time, so
+    ///     downstream units can resolve relative VHDL file paths correctly without depending on
+    ///     ambient CWD state. This method is stateless and thread-safe; it does not modify any
+    ///     shared state and may be called concurrently on different <paramref name="args"/>
+    ///     instances.
+    /// </remarks>
+    /// <param name="args">
+    ///     A fully initialized <see cref="Context"/> from which <see cref="Context.ConfigFile"/>
+    ///     is read. Must not be null.
+    /// </param>
+    /// <returns>A non-null <see cref="Options"/> record with <see cref="WorkingDirectory"/> set to the absolute directory of the configuration file and <see cref="Config"/> populated from the YAML content.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="args"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when <paramref name="args"/> specifies no configuration file (null or empty string), or when the configuration file path cannot be resolved to a containing directory.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the specified configuration file does not exist on disk.</exception>
     public static Options Parse(Context args)
     {
+        // Validate args before dereferencing
+        ArgumentNullException.ThrowIfNull(args);
+
         // Verify a configuration file was specified
-        if (args.ConfigFile == null)
+        if (string.IsNullOrEmpty(args.ConfigFile))
         {
             throw new InvalidOperationException("Configuration file not specified");
         }
@@ -45,13 +70,33 @@ public record Options(string WorkingDirectory,
         var config = ConfigDocument.ReadFile(args.ConfigFile);
 
         // Get the working directory
-        var absConfigFile = Path.GetFullPath(args.ConfigFile);
-        var workingDir = Path.GetDirectoryName(absConfigFile)
-                         ?? throw new InvalidOperationException($"Invalid configuration file {absConfigFile}");
+        var workingDir = ResolveWorkingDirectory(args.ConfigFile);
 
         // Return the new options object
         return new Options(
             workingDir,
             config);
+    }
+
+    /// <summary>
+    ///     Resolves the absolute path of the directory containing the specified configuration file.
+    /// </summary>
+    /// <remarks>
+    ///     This internal helper is extracted from <see cref="Parse"/> to allow direct unit testing
+    ///     of the defensive null guard. <c>Path.GetDirectoryName</c> returns null for root paths
+    ///     such as <c>/</c> or <c>C:\</c>; throwing <see cref="InvalidOperationException"/> in that
+    ///     case ensures <see cref="WorkingDirectory"/> is always a valid, absolute path.
+    /// </remarks>
+    /// <param name="configFile">Path to the configuration file. Must not be null.</param>
+    /// <returns>The absolute directory path containing <paramref name="configFile"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown when the fully-resolved path of <paramref name="configFile"/> has no parent directory
+    ///     (i.e., it is a file-system root such as <c>/</c> or <c>C:\</c>).
+    /// </exception>
+    internal static string ResolveWorkingDirectory(string configFile)
+    {
+        var absConfigFile = Path.GetFullPath(configFile);
+        return Path.GetDirectoryName(absConfigFile)
+               ?? throw new InvalidOperationException($"Invalid configuration file {absConfigFile}");
     }
 }

@@ -2,7 +2,7 @@
 sections:
   - title: OTS Software Requirements
     sections:
-      - title: SarifMark
+      - title: SarifMark Requirements
         requirements:
           - id: VHDLTest-OTS-SarifMark
             title: SarifMark shall convert CodeQL SARIF results into a markdown report.

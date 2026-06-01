@@ -19,7 +19,9 @@
 // SOFTWARE.
 
 using System.Collections.ObjectModel;
+using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
+using DEMAConsulting.VHDLTest.Simulators;
 using VHDLTestResult = DEMAConsulting.VHDLTest.Results.TestResult;
 using VHDLTestResults = DEMAConsulting.VHDLTest.Results.TestResults;
 
@@ -30,18 +32,13 @@ namespace DEMAConsulting.VHDLTest.Tests.Results;
 /// These tests verify that <see cref="VHDLTestResult"/> and <see cref="VHDLTestResults"/>
 /// work together to collect, summarize, and persist test results.
 /// </summary>
-[TestClass]
 public class ResultsSubsystemTests
 {
     /// <summary>
-    /// Test that TestResult and TestResults work together to correctly track
-    /// pass and fail counts across a collection of test outcomes.
+    ///     Creates a passing <see cref="RunResults"/> instance for use in test arrangements.
     /// </summary>
-    [TestMethod]
-    public void ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts()
-    {
-        // Arrange - create passing and failing RunResults objects
-        var passRunResults = new RunResults(
+    private static RunResults CreatePassRunResults() =>
+        new(
             RunLineType.Info,
             new DateTime(2024, 8, 10, 0, 0, 0, DateTimeKind.Utc),
             1.0,
@@ -49,7 +46,11 @@ public class ResultsSubsystemTests
             "Passed",
             new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Info, "Passed")]));
 
-        var failRunResults = new RunResults(
+    /// <summary>
+    ///     Creates a failing <see cref="RunResults"/> instance for use in test arrangements.
+    /// </summary>
+    private static RunResults CreateFailRunResults() =>
+        new(
             RunLineType.Error,
             new DateTime(2024, 8, 10, 0, 0, 1, DateTimeKind.Utc),
             1.0,
@@ -57,63 +58,140 @@ public class ResultsSubsystemTests
             "Error: assertion failed",
             new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Error, "Error: assertion failed")]));
 
-        // Act - wrap each RunResults in a TestResult and add to TestResults
+    /// <summary>
+    ///     Verifies that TestResult and TestResults work together to correctly track
+    ///     pass and fail counts across a collection of test outcomes.
+    /// </summary>
+    [Fact]
+    public void ResultsSubsystem_CollectAndSummarize_WithMixedResults_ReportsCorrectPassFailCounts()
+    {
+        // Arrange: create passing and failing RunResults objects
+        var passRunResults = CreatePassRunResults();
+        var failRunResults = CreateFailRunResults();
+
+        // Act: wrap each RunResults in a TestResult and add to TestResults
         var testResults = new VHDLTestResults("SubsystemTestRun", "VHDLTest");
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test1", passRunResults));
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test2", passRunResults));
         testResults.Tests.Add(new VHDLTestResult("Suite", "Test3", failRunResults));
 
-        // Assert - TestResults correctly aggregates pass and fail counts
-        Assert.AreEqual(3, testResults.Tests.Count);
-        Assert.AreEqual(2, testResults.Passes.Count());
-        Assert.AreEqual(1, testResults.Fails.Count());
+        // Assert: TestResults correctly aggregates pass and fail counts
+        Assert.Equal(3, testResults.Tests.Count);
+        Assert.Equal(2, testResults.Passes.Count());
+        Assert.Single(testResults.Fails);
     }
 
     /// <summary>
-    /// Test that TestResults correctly saves a combined pass/fail result set to
-    /// a TRX file, verifying that TestResult and TestResults integrate through
-    /// the serialization pipeline.
+    ///     Verifies that TestResults correctly saves a combined pass/fail result set to
+    ///     a TRX file, verifying that TestResult and TestResults integrate through
+    ///     the serialization pipeline including pass/fail outcome encoding.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void ResultsSubsystem_SaveMixedResults_ToTrxFile_CreatesTrxFileWithCorrectCounts()
     {
-        const string resultsFile = "results-subsystem-test.trx";
+        var resultsFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".trx");
 
         try
         {
-            // Arrange - build a mixed result set
-            var passRunResults = new RunResults(
-                RunLineType.Info,
-                new DateTime(2024, 8, 10, 0, 0, 0, DateTimeKind.Utc),
-                1.0,
-                0,
-                "Passed",
-                new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Info, "Passed")]));
-
-            var failRunResults = new RunResults(
-                RunLineType.Error,
-                new DateTime(2024, 8, 10, 0, 0, 1, DateTimeKind.Utc),
-                1.0,
-                1,
-                "Error: assertion failed",
-                new ReadOnlyCollection<RunLine>([new RunLine(RunLineType.Error, "Error: assertion failed")]));
+            // Arrange: build a mixed result set
+            var passRunResults = CreatePassRunResults();
+            var failRunResults = CreateFailRunResults();
 
             var testResults = new VHDLTestResults("SubsystemTestRun", "VHDLTest");
             testResults.Tests.Add(new VHDLTestResult("Suite", "Test1", passRunResults));
             testResults.Tests.Add(new VHDLTestResult("Suite", "Test2", failRunResults));
 
-            // Act - save the combined results to a TRX file
+            // Act: save the combined results to a TRX file
             testResults.SaveResults(resultsFile);
 
-            // Assert - file was created and contains both test results
-            Assert.IsTrue(File.Exists(resultsFile));
+            // Assert: file was created and encodes pass/fail outcomes correctly
+            Assert.True(File.Exists(resultsFile));
             var content = File.ReadAllText(resultsFile);
-            Assert.IsTrue(content.Contains("Test1"));
-            Assert.IsTrue(content.Contains("Test2"));
+            Assert.Contains("Test1", content);
+            Assert.Contains("Test2", content);
+            Assert.Contains("outcome=\"Passed\"", content);
+            Assert.Contains("outcome=\"Failed\"", content);
         }
         finally
         {
             File.Delete(resultsFile);
         }
+    }
+
+    /// <summary>
+    ///     Verifies that TestResults.Execute compiles VHDL sources and collects build and test
+    ///     outcomes when using the MockSimulator, confirming the subsystem-level integration
+    ///     of the compile-then-test workflow.
+    /// </summary>
+    [Fact]
+    public void ResultsSubsystem_Execute_WithMockSimulator_CollectsBuildAndTestOutcomes()
+    {
+        // Arrange: configure options with known test bench names via MockSimulator
+        var config = new ConfigDocument { Files = ["test.vhd"], Tests = ["my_passing_test"] };
+        var options = new Options(Path.GetTempPath(), config);
+        using var context = Context.Create(["--silent"]);
+
+        // Act: execute the full compile-and-test workflow with MockSimulator
+        var results = VHDLTestResults.Execute(context, options, MockSimulator.Instance);
+
+        // Assert: build results are populated and tests collection has one outcome
+        Assert.NotNull(results.BuildResults);
+        Assert.Single(results.Tests);
+        Assert.Equal("my_passing_test", results.Tests[0].TestName);
+    }
+
+    /// <summary>
+    ///     Verifies that TestResults.PrintSummary writes a formatted summary including per-test
+    ///     outcome lines and aggregate pass/fail counts to the context output.
+    /// </summary>
+    [Fact]
+    public void ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput()
+    {
+        // Arrange: build a mixed result set and a log path for capturing output
+        var logPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var testResults = new VHDLTestResults("SubsystemTestRun", "VHDLTest");
+        testResults.Tests.Add(new VHDLTestResult("Suite", "PassingTest", CreatePassRunResults()));
+        testResults.Tests.Add(new VHDLTestResult("Suite", "FailingTest", CreateFailRunResults()));
+
+        try
+        {
+            string output;
+            using (var context = Context.Create(["--log", logPath, "--silent"]))
+            {
+                // Act: call PrintSummary on the mixed result set
+                testResults.PrintSummary(context);
+            }
+
+            // Assert: output contains per-test names and aggregate pass/fail indicators with numeric counts
+            output = File.ReadAllText(logPath);
+            Assert.Contains("PassingTest", output);
+            Assert.Contains("FailingTest", output);
+            Assert.Contains("Passed 1", output);
+            Assert.Contains("Failed 1", output);
+        }
+        finally
+        {
+            File.Delete(logPath);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that TestResults.Execute throws InvalidOperationException when the MockSimulator
+    ///     produces an Error-severity build result, confirming that the Results subsystem aborts
+    ///     execution with a clear error when compilation fails.
+    /// </summary>
+    [Fact]
+    public void ResultsSubsystem_Execute_WithBuildFailure_ThrowsInvalidOperationException()
+    {
+        // Arrange: configure options with a file name that triggers a build error in MockSimulator
+        // (MockSimulator produces Error output for any file containing "_error_" in its name)
+        var config = new ConfigDocument { Files = ["_error_file.vhd"], Tests = [] };
+        var options = new Options(Path.GetTempPath(), config);
+        using var context = Context.Create(["--silent"]);
+
+        // Act / Assert: Execute must throw InvalidOperationException with message "Build Failed"
+        var ex = Assert.Throws<InvalidOperationException>(
+            () => VHDLTestResults.Execute(context, options, MockSimulator.Instance));
+        Assert.Equal("Build Failed", ex.Message);
     }
 }

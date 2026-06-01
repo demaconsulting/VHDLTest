@@ -2,40 +2,70 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: NvcSimulator Unit
-        requirements:
-          - id: VHDLTest-Sim-NVC
-            title: VHDLTest shall support the NVC simulator.
-            justification: |
-              NVC is a modern, fast open-source VHDL simulator with good standards compliance.
-              Supporting NVC provides users with an alternative open-source option that offers
-              better performance than GHDL in certain scenarios and supports newer VHDL standards.
-            tests:
-              - SimulatorFactory_Get_NVCSimulator_ReturnsNVCSimulator
-              - NvcSimulator_SimulatorName_ReturnsNVC
-              - nvc@VHDLTest_TestPasses
-              - nvc@VHDLTest_TestFails
+      - title: Simulators Requirements
+        sections:
+          - title: NvcSimulator Requirements
+            requirements:
+              - id: VHDLTest-Simulators-NvcSimulator-Support
+                title: VHDLTest shall support the NVC simulator.
+                justification: |
+                  NVC is a modern, fast open-source VHDL simulator with good standards compliance.
+                  Supporting NVC provides users with an alternative open-source option that offers
+                  better performance than GHDL in certain scenarios and supports newer VHDL standards.
+                  NVC support is verified by unit tests confirming factory registration and
+                  simulator name. End-to-end integration is verified by CI integration tests
+                  requiring a live NVC installation (nvc@VHDLTest_TestPasses,
+                  nvc@VHDLTest_TestFails); these are not listed here as they are system-level
+                  tests, not unit tests.
+                tests:
+                  - NvcSimulator_SimulatorName_ReturnsNVC
 
-          - id: VHDLTest-Sim-NVC-Compile
-            title: NvcSimulator shall classify NVC compilation output lines by severity.
-            justification: |
-              Accurate classification of compilation output enables VHDLTest to detect
-              warnings and errors during the analysis phase and report them clearly to
-              the user.
-            tests:
-              - NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
-              - NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult
-              - NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
-              - NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+              - id: VHDLTest-Simulators-NvcSimulator-Unavailable
+                title: The NvcSimulator shall throw InvalidOperationException when Compile or Test is invoked and the NVC simulator is not available.
+                justification: |
+                  Failing fast with a descriptive exception when the simulator is unavailable
+                  prevents silent incorrect behavior and gives callers a clear signal that the
+                  NVC installation is missing. Callers are expected to check Available() before
+                  invoking Compile or Test.
+                tests:
+                  - NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException
+                  - NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException
 
-          - id: VHDLTest-Sim-NVC-Test
-            title: NvcSimulator shall classify NVC simulation output lines by severity.
-            justification: |
-              Accurate classification of simulation output enables VHDLTest to detect pass,
-              warning, and error conditions during test bench execution and reflect them
-              in the test report.
-            tests:
-              - NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult
-              - NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
-              - NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
-              - NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+              - id: VHDLTest-Simulators-NvcSimulator-Compile
+                title: NvcSimulator shall classify NVC compilation output lines by severity.
+                justification: |
+                  Accurate classification of compilation output enables VHDLTest to detect
+                  warnings and errors during the analysis phase and report them clearly to
+                  the user.
+                tests:
+                  - NvcSimulator_CompileProcessor_CleanOutput_ReturnsTextResult
+                  - NvcSimulator_CompileProcessor_InfoOutput_ReturnsInfoResult
+                  - NvcSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult
+                  - NvcSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult
+                  - NvcSimulator_CompileProcessor_FailureOutput_ReturnsErrorResult
+                  - NvcSimulator_CompileProcessor_FatalOutput_ReturnsErrorResult
+
+              - id: VHDLTest-Simulators-NvcSimulator-Test
+                title: NvcSimulator shall classify NVC simulation output lines by severity.
+                justification: |
+                  Accurate classification of simulation output enables VHDLTest to detect pass,
+                  warning, and error conditions during test bench execution and reflect them
+                  in the test report.
+                tests:
+                  - NvcSimulator_TestProcessor_CleanOutput_ReturnsTextResult
+                  - NvcSimulator_TestProcessor_InfoOutput_ReturnsInfoResult
+                  - NvcSimulator_TestProcessor_WarningOutput_ReturnsWarningResult
+                  - NvcSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult
+                  - NvcSimulator_TestProcessor_FailureOutput_ReturnsErrorResult
+                  - NvcSimulator_TestProcessor_FatalOutput_ReturnsErrorResult
+
+              - id: VHDLTest-Simulators-NvcSimulator-FindPath
+                title: NvcSimulator shall locate the NVC installation directory, respecting the VHDLTEST_NVC_PATH environment variable override when set.
+                justification: |
+                  Reliable path discovery ensures VHDLTest can locate NVC across different
+                  installation layouts and environments. The VHDLTEST_NVC_PATH environment
+                  variable override enables CI pipelines and non-standard installations to
+                  specify the NVC path explicitly without modifying PATH.
+                tests:
+                  - NvcSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
+                  - NvcSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath

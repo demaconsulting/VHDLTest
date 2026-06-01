@@ -21,8 +21,24 @@
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-///     Line of text from a run
+///     Immutable positional record that encapsulates a single simulator output line together
+///     with its classification, as a strongly typed value passed between
+///     <see cref="RunProcessor"/> and <see cref="RunResults"/>.
 /// </summary>
-/// <param name="Type">Line Type</param>
-/// <param name="Text">Line Text</param>
+/// <remarks>
+///     RunLine instances are created by <see cref="RunProcessor.Parse"/> for every line of
+///     captured simulator output. Using a dedicated record rather than a raw string avoids
+///     repeated pattern matching in downstream logic; the classification is applied once and
+///     carried forward throughout the processing pipeline. This type is immutable and
+///     thread-safe; instances may be shared freely across threads.
+/// </remarks>
+/// <param name="Type">
+///     Classification assigned to this line by <see cref="RunProcessor.Parse"/> through
+///     <see cref="RunLineRule"/> pattern matching. Lines that match no rule receive
+///     <see cref="RunLineType.Text"/>.
+/// </param>
+/// <param name="Text">
+///     The unmodified raw text of the simulator output line, as captured from the combined
+///     stdout and stderr stream.
+/// </param>
 public record RunLine(RunLineType Type, string Text);

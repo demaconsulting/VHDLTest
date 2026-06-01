@@ -2,7 +2,7 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Program Unit
+      - title: Program Requirements
         requirements:
           - id: VHDLTest-Program-NoArgs
             title: Program shall display usage information when no configuration file argument is provided.
@@ -13,8 +13,8 @@ sections:
             tests:
               - Program_Run_WithNoConfigFileArgument_DisplaysUsage
 
-          - id: VHDLTest-Program-Usage
-            title: Program shall return a non-zero exit code when no configuration file is found.
+          - id: VHDLTest-Program-NoConfig
+            title: Program shall return a non-zero exit code when no configuration file argument is provided.
             justification: |
               When the tool is invoked without a valid configuration file, Program.Run must
               signal failure via a non-zero exit code so that callers (CI pipelines, scripts)
@@ -28,8 +28,9 @@ sections:
               Enables users to confirm the installed version for troubleshooting and
               compatibility verification.
             tests:
-              - Program_Version_IsNotEmpty
+              - Program_Version_WhenAssemblyBuilt_IsNotEmpty
               - Program_Run_WithVersionFlag_ReturnsZeroExitCode
+              - Program_Run_WithVersionFlag_DisplaysVersion
 
           - id: VHDLTest-Program-Help
             title: Program shall display help information when a help flag is given.
@@ -38,3 +39,64 @@ sections:
               and supports multiple conventional help flag forms.
             tests:
               - Program_Run_WithHelpFlag_ReturnsZeroExitCode
+              - Program_Run_WithHelpFlag_DisplaysHelp
+
+          - id: VHDLTest-Program-Validate
+            title: Program shall execute self-validation and report results when the `--validate` flag is given.
+            justification: |
+              When the user passes --validate, Program.Run must call Validation.Run to execute the
+              built-in self-validation suite, verifying that the tool is correctly installed and the
+              simulator integration is functional. Delegating to Validation.Run keeps the dispatch
+              logic in Program separate from the validation logic, following single-responsibility
+              principles.
+            tests:
+              - Program_Run_WithValidateFlag_DispatchesToValidation
+
+          - id: VHDLTest-Program-RunTests
+            title: Program shall execute the test suite when a valid configuration file and simulator are provided.
+            justification: |
+              The primary purpose of VHDLTest is to execute VHDL test benches via a configured
+              simulator. When a valid configuration file is supplied and the simulator is available,
+              Program.Run must delegate to TestResults.Execute and complete without error.
+            tests:
+              - Program_Run_RunTests_WithMockSimulator_RunsSuccessfully
+              - Program_Run_WithInvalidSimulator_WritesErrorAndExits
+
+          - id: VHDLTest-Program-FailureExitCode
+            title: Program shall return a non-zero exit code when tests fail and the exit-zero flag is not set.
+            justification: |
+              CI pipelines depend on a non-zero exit code to detect test failures. When any test
+              reports a failure and --exit-0 is not given, Program.Run must signal failure via the
+              context error channel so that the exit code is non-zero.
+            tests:
+              - Program_Run_FailureExitCode_WithFailingTests_ReturnsNonZeroExitCode
+
+          - id: VHDLTest-Program-ExitZero
+            title: Program shall return a zero exit code when tests fail but the exit-zero flag is set.
+            justification: |
+              Some CI environments require the tool to exit 0 regardless of test outcomes so that
+              downstream steps always execute. The --exit-0 flag provides this behavior without
+              suppressing test failure reporting.
+            tests:
+              - Program_Run_ExitZero_WithFailingTestsAndExitZeroFlag_ReturnsZeroExitCode
+
+          - id: VHDLTest-Program-SaveResults
+            title: Program shall save test results to the specified file when the results flag is given.
+            justification: |
+              Saving results to a TRX file enables integration with external test reporting tools
+              and CI dashboards. When --results is specified, Program.Run must create the results
+              file so that downstream consumers can read the test outcome data.
+            tests:
+              - Program_Run_SaveResults_WithResultsFile_CreatesResultsFile
+
+          - id: VHDLTest-Program-TestFilter
+            title: >-
+              Program shall filter the executed test benches to only those whose names appear in the
+              [tests] argument list when one or more test names are provided.
+            justification: |
+              Allowing users to specify which tests to run enables faster feedback cycles during
+              development -- developers can target a single failing test without waiting for the
+              full suite to complete. When no test names are provided, all tests configured in
+              the configuration file are executed.
+            tests:
+              - Program_Run_WithTestFilter_RunsOnlyMatchingTests

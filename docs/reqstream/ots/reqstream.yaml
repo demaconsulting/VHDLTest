@@ -2,7 +2,7 @@
 sections:
   - title: OTS Software Requirements
     sections:
-      - title: ReqStream
+      - title: ReqStream Requirements
         requirements:
           - id: VHDLTest-OTS-ReqStream
             title: ReqStream shall enforce that every requirement is linked to passing test evidence.
@@ -14,3 +14,14 @@ sections:
             tags: [ots]
             tests:
               - ReqStream_EnforcementMode
+
+          - id: VHDLTest-OTS-ReqStream-Lint
+            title: ReqStream shall validate requirements file syntax and cross-references.
+            justification: |
+              dotnet reqstream --lint --requirements requirements.yaml validates that all
+              requirement files are syntactically correct and that cross-references between
+              requirement files resolve correctly. This is used in lint.ps1 and lint.sh as
+              a development-time quality gate to catch malformed requirements before CI.
+            tags: [ots]
+            tests:
+              - ReqStream_Lint

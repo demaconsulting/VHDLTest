@@ -1,0 +1,42 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Run Requirements
+        sections:
+          - title: ProcessInvoker Requirements
+            requirements:
+              - id: VHDLTest-Run-ProcessInvoker-Abstraction
+                title: >-
+                  IProcessInvoker shall define the contract for launching an external process and
+                  returning its exit code and combined output.
+                justification: |
+                  Abstracting process execution behind an interface allows simulator classes to be
+                  tested without launching real simulator processes. Unit tests inject a
+                  FakeProcessInvoker to verify that the correct executable and arguments are
+                  assembled, without requiring a simulator installation on the build machine.
+                tests:
+                  - GhdlSimulator_Compile_WithValidConfig_InvokesGhdlWithAnalysisArguments
+                  - GhdlSimulator_Test_WithValidConfig_InvokesGhdlWithRunArguments
+                  - NvcSimulator_Compile_WithValidConfig_InvokesNvcWithAnalysisArguments
+                  - NvcSimulator_Test_WithValidConfig_InvokesNvcWithRunArguments
+                  - ModelSimSimulator_Compile_WithValidConfig_InvokesVsimWithDoScript
+                  - ModelSimSimulator_Test_WithValidConfig_ScriptContainsExitCode
+                  - QuestaSimSimulator_Compile_WithValidConfig_InvokesVsimWithDoScript
+                  - QuestaSimSimulator_Test_WithValidConfig_ScriptContainsExitCode
+                  - VivadoSimulator_Compile_WithValidConfig_InvokesXvhdlWithArgumentFile
+                  - VivadoSimulator_Test_WithValidConfig_ScriptContainsTestName
+                  - ActiveHdlSimulator_Compile_WithValidConfig_InvokesVsimsaWithDoScript
+                  - ActiveHdlSimulator_Test_WithCleanConfig_AppendsTclExitCode
+
+              - id: VHDLTest-Run-ProcessInvoker-DefaultInstance
+                title: >-
+                  ProcessInvoker shall provide a singleton instance that delegates process execution
+                  to RunProgram.
+                justification: |
+                  Providing a pre-built singleton means simulator classes that do not require test
+                  injection use the same production implementation without any additional setup,
+                  keeping the default construction path simple and free of boilerplate.
+                tests:
+                  - RunProcessor_Execute_ProgramWithSuccess_ReturnsInfoResult
+                  - RunProcessor_Execute_ProgramWithError_ReturnsErrorResult

@@ -27,7 +27,6 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// These tests verify that <see cref="Context"/>, <see cref="ConfigDocument"/>, and
 /// <see cref="Options"/> work together as a complete command-line configuration pipeline.
 /// </summary>
-[TestClass]
 public class CliSubsystemTests
 {
     /// <summary>
@@ -52,7 +51,7 @@ public class CliSubsystemTests
     /// Test that command-line arguments, config file loading, and options parsing
     /// work together to produce a correctly configured Options object.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void CliSubsystem_ParseArgsAndLoadConfig_WithValidConfig_ProducesCorrectOptions()
     {
         try
@@ -61,19 +60,19 @@ public class CliSubsystemTests
             File.WriteAllText(ConfigFile, ConfigContent);
 
             // Act - run the full Cli pipeline: args -> Context -> Options
-            var context = Context.Create(["-c", ConfigFile, "--verbose"]);
+            using var context = Context.Create(["-c", ConfigFile, "--verbose"]);
             var options = Options.Parse(context);
 
             // Assert - verify the subsystem produced the correct options
-            Assert.IsNotNull(context);
-            Assert.IsTrue(context.Verbose);
-            Assert.AreEqual(ConfigFile, context.ConfigFile);
-            Assert.IsNotNull(options);
-            Assert.HasCount(2, options.Config.Files);
-            Assert.AreEqual("src/design.vhd", options.Config.Files[0]);
-            Assert.AreEqual("src/testbench.vhd", options.Config.Files[1]);
-            Assert.HasCount(1, options.Config.Tests);
-            Assert.AreEqual("test_entity", options.Config.Tests[0]);
+            Assert.True(context.Verbose);
+            Assert.Equal(ConfigFile, context.ConfigFile);
+            Assert.NotNull(options);
+            Assert.Equal(2, options.Config.Files.Length);
+            Assert.Equal("src/design.vhd", options.Config.Files[0]);
+            Assert.Equal("src/testbench.vhd", options.Config.Files[1]);
+            Assert.Single(options.Config.Tests);
+            Assert.Equal("test_entity", options.Config.Tests[0]);
+            Assert.Equal(Path.GetDirectoryName(Path.GetFullPath(ConfigFile)), options.WorkingDirectory);
         }
         finally
         {
@@ -85,13 +84,40 @@ public class CliSubsystemTests
     /// Test that the Cli subsystem correctly propagates a missing config file error
     /// through the Context and Options pipeline.
     /// </summary>
-    [TestMethod]
+    [Fact]
     public void CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException()
     {
         // Arrange - create context specifying a non-existent config file
-        var context = Context.Create(["-c", "missing-config.yaml"]);
+        using var context = Context.Create(["-c", "missing-config.yaml"]);
 
         // Act & Assert - verify the subsystem surfaces the missing file error from Options.Parse
-        Assert.ThrowsExactly<FileNotFoundException>(() => Options.Parse(context));
+        Assert.Throws<FileNotFoundException>(() => Options.Parse(context));
+    }
+
+    /// <summary>
+    /// Test that the Cli subsystem throws InvalidOperationException when an unrecognized
+    /// flag is passed to Context.Create.
+    /// </summary>
+    [Fact]
+    public void CliSubsystem_InvalidFlag_ThrowsInvalidOperationException()
+    {
+        // Arrange - no setup required; the unrecognized flag is passed directly to the act step
+
+        // Act & Assert - verify the subsystem throws for an unrecognized flag
+        Assert.Throws<InvalidOperationException>(() => Context.Create(["--unrecognized-flag"]));
+    }
+
+    /// <summary>
+    /// Test that the Cli subsystem throws InvalidOperationException when no config
+    /// file path is specified and Options.Parse is called.
+    /// </summary>
+    [Fact]
+    public void CliSubsystem_NullConfig_ThrowsInvalidOperationException()
+    {
+        // Arrange - create context without specifying any config file
+        using var context = Context.Create([]);
+
+        // Act & Assert - verify Options.Parse throws when no config file is specified
+        Assert.Throws<InvalidOperationException>(() => Options.Parse(context));
     }
 }

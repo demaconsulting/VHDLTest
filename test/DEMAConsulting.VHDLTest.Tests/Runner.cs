@@ -18,6 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace DEMAConsulting.VHDLTest.Tests;
@@ -37,6 +38,24 @@ internal static class Runner
     /// <exception cref="InvalidOperationException">On program start error</exception>
     public static int Run(out string output, string program, params string[] arguments)
     {
+        return Run(out output, program, environmentVariables: null, arguments);
+    }
+
+    /// <summary>
+    /// Run the specified program with additional environment variables
+    /// </summary>
+    /// <param name="output">Program output</param>
+    /// <param name="program">Program name</param>
+    /// <param name="environmentVariables">Environment variables to apply to the child process</param>
+    /// <param name="arguments">Program arguments</param>
+    /// <returns>Program exit code</returns>
+    /// <exception cref="InvalidOperationException">On program start error</exception>
+    public static int Run(
+        out string output,
+        string program,
+        IReadOnlyDictionary<string, string>? environmentVariables,
+        params string[] arguments)
+    {
         // Construct the start information
         var startInfo = new ProcessStartInfo(program)
         {
@@ -45,6 +64,15 @@ internal static class Runner
             UseShellExecute = false,
             CreateNoWindow = true
         };
+
+        // Apply any requested environment overrides
+        if (environmentVariables is not null)
+        {
+            foreach (var environmentVariable in environmentVariables)
+            {
+                startInfo.Environment[environmentVariable.Key] = environmentVariable.Value;
+            }
+        }
 
         // Add the arguments
         foreach (var argument in arguments)

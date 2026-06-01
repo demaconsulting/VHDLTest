@@ -23,18 +23,53 @@ using System.Diagnostics;
 namespace DEMAConsulting.VHDLTest.Run;
 
 /// <summary>
-/// Class to run a program
+///     Isolates all <see cref="System.Diagnostics.Process"/> interactions for launching external
+///     programs, so that callers depend only on the simple <see cref="Run"/> method signature
+///     and are shielded from process-lifecycle and stream-redirection details.
 /// </summary>
 public static class RunProgram
 {
     /// <summary>
-    ///     Run a Program
+    ///     Launches <paramref name="application"/> as an external process with the given
+    ///     <paramref name="arguments"/>, captures its combined stdout and stderr, waits for it
+    ///     to exit, and returns its exit code.
     /// </summary>
-    /// <param name="output">Output text</param>
-    /// <param name="application">Program name</param>
-    /// <param name="workingDirectory">Working directory</param>
-    /// <param name="arguments">Program arguments</param>
-    /// <returns>Program exit code</returns>
+    /// <remarks>
+    ///     Stdout and stderr are read concurrently on background tasks before
+    ///     <c>WaitForExit()</c> is called. This prevents a
+    ///     deadlock that would occur if either output buffer filled while the process was still
+    ///     running and no consumer was draining it. Each element of
+    ///     <paramref name="arguments"/> is added to <c>ArgumentList</c> individually;
+    ///     <c>ArgumentList</c> handles quoting values that contain spaces, so callers must not
+    ///     pre-quote arguments.
+    ///     This method is not thread-safe with respect to shared process state; callers must
+    ///     not invoke it concurrently on the same process instance (each call creates a new
+    ///     process, so concurrent calls across different invocations are safe).
+    /// </remarks>
+    /// <param name="output">
+    ///     Receives the combined text from the program's standard output and standard error
+    ///     streams, with stdout content followed by stderr content.
+    /// </param>
+    /// <param name="application">
+    ///     Path or name of the executable to launch. Must not be pre-quoted even if it contains
+    ///     spaces; the CLR passes the path directly to the OS, which handles spaces natively
+    ///     without shell quoting.
+    /// </param>
+    /// <param name="workingDirectory">
+    ///     Working directory for the launched process. Pass an empty string (the default) to
+    ///     inherit the caller's current working directory.
+    /// </param>
+    /// <param name="arguments">
+    ///     Arguments to pass to the process. Each element is added individually to
+    ///     <c>ArgumentList</c>; do not pre-quote values that contain spaces.
+    /// </param>
+    /// <returns>The exit code returned by the process.</returns>
+    /// <exception cref="System.ComponentModel.Win32Exception">
+    ///     Thrown on Windows when the executable is not found or cannot be started.
+    /// </exception>
+    /// <exception cref="System.IO.FileNotFoundException">
+    ///     Thrown on non-Windows platforms when the executable path does not exist.
+    /// </exception>
     public static int Run(
         out string output,
         string application,
@@ -67,7 +102,7 @@ public static class RunProgram
         // Collect all output
         output = stdoutTask.GetAwaiter().GetResult() + stderrTask.GetAwaiter().GetResult();
 
-        // Return the output
+        // Return the exit code
         return p.ExitCode;
     }
 }

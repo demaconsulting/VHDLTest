@@ -1,0 +1,28 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: ReviewMark Requirements
+        requirements:
+          - id: VHDLTest-OTS-ReviewMark
+            title: ReviewMark shall be integrated in the CI pipeline to report review coverage of all required source files.
+            justification: |
+              DemaConsulting.ReviewMark processes .reviewmark.yaml to verify that each
+              file listed in a review-set has an associated review record in the evidence store.
+              Current CI usage reports coverage without enforcing it; enforcement mode
+              (--enforce flag) requires a populated reviews branch with PDF evidence.
+            tags: [ots]
+            tests:
+              - ReviewMark_ReviewPlanGeneration
+              - ReviewMark_ReviewReportGeneration
+
+          - id: VHDLTest-OTS-ReviewMark-Lint
+            title: ReviewMark shall validate .reviewmark.yaml syntax and structure when invoked with --lint.
+            justification: |
+              dotnet reviewmark --lint validates the .reviewmark.yaml definition file for
+              syntactic correctness and structural integrity. This is used in lint.ps1 as a
+              development-time quality gate to catch malformed review definitions before CI,
+              preventing CI failures caused by invalid review configuration.
+            tags: [ots]
+            tests:
+              - ReviewMark_Lint

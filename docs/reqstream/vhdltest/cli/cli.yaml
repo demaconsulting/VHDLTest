@@ -2,24 +2,32 @@
 sections:
   - title: VHDLTest Requirements
     sections:
-      - title: Cli Subsystem
+      - title: Cli Requirements
         requirements:
           - id: VHDLTest-Cli-Pipeline
             title: >-
-              VHDLTest shall parse command-line arguments, load the configuration file,
-              and produce a combined Options object.
+              VHDLTest shall execute the complete command-line configuration pipeline, producing a fully resolved run configuration from raw arguments and a configuration file.
             justification: |
-              The end-to-end CLI pipeline — argument parsing, configuration loading, and option
-              combination — must function correctly as an integrated whole. Verifying this
+              The end-to-end CLI pipeline -- argument parsing, configuration loading, and option
+              combination -- must function correctly as an integrated whole. Verifying this
               integration catches issues that cannot be found by testing each unit in isolation.
             tests:
               - CliSubsystem_ParseArgsAndLoadConfig_WithValidConfig_ProducesCorrectOptions
               - CliSubsystem_ParseArgsAndLoadConfig_WithMissingConfig_ThrowsFileNotFoundException
+              - CliSubsystem_InvalidFlag_ThrowsInvalidOperationException
+              - CliSubsystem_NullConfig_ThrowsInvalidOperationException
             children:
-              - VHDLTest-Context-Parse
-              - VHDLTest-Context-Error
-              - VHDLTest-ConfigDoc-Read
-              - VHDLTest-ConfigDoc-Missing
-              - VHDLTest-Options-Parse
-              - VHDLTest-Options-NoConfig
-              - VHDLTest-Options-MissingConfig
+              - VHDLTest-Cli-Context-Parse
+              - VHDLTest-Cli-Context-Error
+              - VHDLTest-Cli-ConfigDoc-Read
+              - VHDLTest-Cli-ConfigDoc-Missing
+              - VHDLTest-Cli-ConfigDoc-Null
+              - VHDLTest-Cli-ConfigDoc-Malformed
+              - VHDLTest-Cli-ConfigDoc-DefaultFiles
+              - VHDLTest-Cli-ConfigDoc-DefaultTests
+              - VHDLTest-Cli-ConfigDoc-ExplicitNullFiles
+              - VHDLTest-Cli-ConfigDoc-ExplicitNullTests
+              - VHDLTest-Cli-Options-Parse
+              - VHDLTest-Cli-Options-NoConfig
+              - VHDLTest-Cli-Options-MissingConfig
+              - VHDLTest-Cli-Options-InvalidPath
