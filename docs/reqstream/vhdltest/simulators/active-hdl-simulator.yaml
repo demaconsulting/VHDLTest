@@ -89,4 +89,3 @@ sections:
                 tests:
                   - ActiveHdlSimulator_Compile_SimulatorNotAvailable_ThrowsInvalidOperationException
                   - ActiveHdlSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException
-

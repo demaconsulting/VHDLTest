@@ -46,4 +46,3 @@ sections:
                 children:
                   - VHDLTest-Simulators-Simulator-Where
                   - VHDLTest-Simulators-Simulator-Where-NotFound
-

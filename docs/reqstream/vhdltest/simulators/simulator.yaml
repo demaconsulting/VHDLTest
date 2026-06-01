@@ -42,4 +42,3 @@ sections:
                   installation problem instead of proceeding with an invalid path.
                 tests:
                   - Simulator_Where_UnknownExecutable_ReturnsNull
-

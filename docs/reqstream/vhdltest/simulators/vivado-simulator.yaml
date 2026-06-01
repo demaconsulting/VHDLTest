@@ -63,4 +63,3 @@ sections:
                 tests:
                   - VivadoSimulator_FindPath_WithEnvVar_ReturnsEnvVarValue
                   - VivadoSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPath
-

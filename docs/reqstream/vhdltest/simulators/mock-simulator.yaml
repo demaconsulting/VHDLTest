@@ -55,4 +55,3 @@ sections:
                   - MockSimulator_Test_WithWarningPattern_ReturnsWarningResult
                   - MockSimulator_Test_WithInfoPattern_ReturnsInfoResult
                   - MockSimulator_Test_WithCleanName_ReturnsSuccessResult
-
