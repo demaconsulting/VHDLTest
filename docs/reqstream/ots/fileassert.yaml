@@ -23,7 +23,7 @@ sections:
               are run, catching missing outputs as a build-breaking condition.
             tags: [ots]
             tests:
-              - FileAssert_Exists
+              - FileAssert_File
 
           - id: VHDLTest-OTS-FileAssert-Contains
             title: FileAssert shall verify that generated output files contain expected content during CI pipeline execution.
@@ -33,7 +33,7 @@ sections:
               generated documentation are present without requiring exact baseline matching.
             tags: [ots]
             tests:
-              - FileAssert_Contains
+              - FileAssert_Text
 
           - id: VHDLTest-OTS-FileAssert-Validate
             title: FileAssert shall provide a self-validation mode that exercises its built-in test suite and writes TRX results.
@@ -45,5 +45,5 @@ sections:
             tags: [ots]
             tests:
               - FileAssert_Results
-              - FileAssert_Exists
-              - FileAssert_Contains
+              - FileAssert_File
+              - FileAssert_Text
