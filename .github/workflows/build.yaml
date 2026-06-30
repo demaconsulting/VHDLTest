@@ -326,7 +326,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        # macOS 26 is not currently supported by GHDL
+        os: [windows-latest, ubuntu-latest]
         dotnet-version: ['8.x', '9.x', '10.x']
 
     steps:
