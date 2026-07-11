@@ -33,7 +33,7 @@ in the collected TRX files.
 - **Self-validation TRX output**: `dotnet reqstream --validate --results artifacts/reqstream-self-validation.trx`
   executes ReqStream's internal test suite and writes TRX results consumed by ReqStream to verify the
   requirements `VHDLTest-OTS-ReqStream` and `VHDLTest-OTS-ReqStream-Lint` are satisfied. The
-  self-validation TRX includes the `ReqStream_LintPasses` test, which provides the passing evidence
+  self-validation TRX includes the `ReqStream_Lint` test, which provides the passing evidence
   for `VHDLTest-OTS-ReqStream-Lint`.
 - **Lint mode**: `dotnet reqstream --lint --requirements requirements.yaml` is invoked in the
   `quality-checks` CI job via `lint.ps1` and `lint.sh` to verify that all requirements YAML files

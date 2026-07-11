@@ -305,6 +305,36 @@ reviews:
       - src/DEMAConsulting.VHDLTest/Simulators/MockSimulator.cs  # source
       - test/**/Simulators/MockSimulatorTests.cs  # unit tests
 
+  # TclText unit review
+  - id: VHDLTest-Simulators-TclText
+    title: Review that VHDLTest Simulators TclText Implementation is Correct
+    context:
+      - docs/design/vhdltest.md
+      - docs/reqstream/vhdltest/vhdltest.yaml
+      - docs/design/vhdltest/simulators.md
+      - docs/reqstream/vhdltest/simulators.yaml
+    paths:
+      - docs/reqstream/vhdltest/simulators/tcl-text.yaml  # requirements
+      - docs/design/vhdltest/simulators/tcl-text.md  # design
+      - docs/verification/vhdltest/simulators/tcl-text.md  # verification document
+      - src/DEMAConsulting.VHDLTest/Simulators/TclText.cs  # source
+      - test/**/Simulators/TclTextTests.cs  # unit tests
+
+  # XilinxArgText unit review
+  - id: VHDLTest-Simulators-XilinxArgText
+    title: Review that VHDLTest Simulators XilinxArgText Implementation is Correct
+    context:
+      - docs/design/vhdltest.md
+      - docs/reqstream/vhdltest/vhdltest.yaml
+      - docs/design/vhdltest/simulators.md
+      - docs/reqstream/vhdltest/simulators.yaml
+    paths:
+      - docs/reqstream/vhdltest/simulators/xilinx-arg-text.yaml  # requirements
+      - docs/design/vhdltest/simulators/xilinx-arg-text.md  # design
+      - docs/verification/vhdltest/simulators/xilinx-arg-text.md  # verification document
+      - src/DEMAConsulting.VHDLTest/Simulators/XilinxArgText.cs  # source
+      - test/**/Simulators/XilinxArgTextTests.cs  # unit tests
+
   # Run subsystem review
   - id: VHDLTest-Run
     title: Review that VHDLTest Run Subsystem Satisfies Subsystem Requirements

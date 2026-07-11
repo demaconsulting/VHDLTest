@@ -193,20 +193,39 @@ public class ProgramTests
     }
 
     /// <summary>
-    ///     Verifies that Run dispatches to the self-validation runner when the validate flag is given.
+    ///     Verifies that Run dispatches to the self-validation runner when the validate flag is given,
+    ///     and that self-validation actually executed and reported its results (not merely that the
+    ///     process exited with code zero, which would also be true for a no-op dispatch).
     /// </summary>
     [Fact]
     public void Program_Run_WithValidateFlag_DispatchesToValidation()
     {
-        // Arrange: create a silent context with the validate flag and the mock simulator so that
-        // no external simulator binary is required during the unit test
-        using var context = Context.Create(["--validate", "--simulator", "mock", "--silent"]);
+        // Arrange: create a log file to capture output; pass the validate flag and the mock
+        // simulator so that no external simulator binary is required during the unit test
+        var logFile = Path.GetTempFileName();
+        try
+        {
+            using (var context = Context.Create(["--validate", "--simulator", "mock", "--log", logFile, "--silent"]))
+            {
+                // Act: run the program with the validate flag — must not throw an unhandled exception
+                Program.Run(context);
 
-        // Act: run the program with the validate flag — must not throw an unhandled exception
-        Program.Run(context);
+                // Assert: the validate dispatch path completed; exit code is zero for the mock simulator
+                Assert.Equal(0, context.ExitCode);
+            }
 
-        // Assert: the validate dispatch path completed; exit code is zero for the mock simulator
-        Assert.Equal(0, context.ExitCode);
+            // Assert: the self-validation run actually executed and reported its results, proving
+            // Validation.Run was dispatched to (rather than a no-op that happens to exit zero)
+            var output = File.ReadAllText(logFile);
+            Assert.True(output.Contains("Total Tests:"), $"Expected 'Total Tests:' in output:\n{output}");
+            Assert.True(output.Contains("VHDLTest_TestPasses - Passed"), $"Expected 'VHDLTest_TestPasses - Passed' in output:\n{output}");
+            Assert.True(output.Contains("VHDLTest_TestFails - Passed"), $"Expected 'VHDLTest_TestFails - Passed' in output:\n{output}");
+            Assert.True(output.Contains("Validation Passed"), $"Expected 'Validation Passed' in output:\n{output}");
+        }
+        finally
+        {
+            File.Delete(logFile);
+        }
     }
 
     /// <summary>
@@ -365,23 +384,42 @@ public class ProgramTests
             - test_fail_1
             """;
         var configFile = Path.GetTempFileName();
+        var logFile = Path.Combine(Path.GetTempPath(), $"program_filter_test_{Guid.NewGuid():N}.log");
         try
         {
             File.WriteAllText(configFile, mixedConfigContent);
 
-            // Arrange: pass only "test1" as the filter so "test_fail_1" is not executed
-            using var context = Context.Create(
-                ["-c", configFile, "--simulator", "mock", "--silent", "test1"]);
-
-            // Act: run the program with the test filter
-            Program.Run(context);
+            // Arrange: pass only "test1" as the filter so "test_fail_1" is not executed; also
+            // capture the run log so we can prove which tests actually ran, not merely that the
+            // exit code was zero (a completely broken filter that runs zero tests would also
+            // produce ExitCode == 0, since no failures would have occurred)
+            int exitCode;
+            using (var context = Context.Create(
+                ["-c", configFile, "--simulator", "mock", "--log", logFile, "--silent", "test1"]))
+            {
+                // Act: run the program with the test filter
+                Program.Run(context);
+                exitCode = context.ExitCode;
+            }
 
             // Assert: exit code is zero because only the passing test ran
-            Assert.Equal(0, context.ExitCode);
+            Assert.Equal(0, exitCode);
+
+            // Assert: the log proves test1 actually ran and passed, and test_fail_1 was not
+            // executed at all — closing the "zero tests ran" false-positive gap that a bare
+            // ExitCode == 0 assertion alone would not catch
+            var logContent = File.ReadAllText(logFile);
+            Assert.Multiple(
+                () => Assert.Contains("Passed test1", logContent),
+                () => Assert.DoesNotContain("test_fail_1", logContent));
         }
         finally
         {
             File.Delete(configFile);
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
         }
     }
 }

@@ -45,6 +45,206 @@ public class RunProcessorTests
     }
 
     /// <summary>
+    ///     Verifies that <c>Execute(Context, ...)</c> on Windows throws a <see cref="System.ComponentModel.Win32Exception"/>
+    ///     for a missing program, matching the already-verified behavior of the direct
+    ///     <see cref="RunProcessor.Execute(string, string, string[])"/> overload
+    ///     (<see cref="RunProcessor_Execute_MissingProgram_ThrowsException"/>). Before this fix,
+    ///     the Windows <c>cmd /c</c> wrapping silently swallowed a missing program into a
+    ///     non-throwing, non-zero-exit <see cref="RunResults"/> instead of throwing.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently()
+    {
+        // Skip this test on non-Windows platforms — the non-Windows path already throws
+        // directly and is already covered by RunProcessor_Execute_MissingProgram_ThrowsException
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange
+        var processor = new RunProcessor(
+        [
+            RunLineRule.Create(RunLineType.Error, "Error")
+        ]);
+        using var context = Context.Create(["--silent"]);
+
+        // Act / Assert: a missing program must throw Win32Exception, not swallow the failure
+        // into a non-zero-exit RunResults
+        Assert.Throws<System.ComponentModel.Win32Exception>(
+            () => processor.Execute(context, "definitely-not-a-real-program-xyz"));
+    }
+
+    /// <summary>
+    ///     Verifies that a valid Windows application (e.g. <c>dotnet</c>) is unaffected by the
+    ///     new pre-flight executable resolution step added to <c>Execute(Context, ...)</c> —
+    ///     regression guard proving the resolution step does not break the existing working path.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_ValidProgram_StillInvokesSuccessfully()
+    {
+        // Skip this test on non-Windows platforms — the resolution step only runs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: use a unique per-test temp log file to capture verbose context output
+        var logFile = Path.Combine(Path.GetTempPath(), $"rp_valid_test_{Guid.NewGuid():N}.log");
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            RunResults results;
+            using (var context = Context.Create(["--verbose", "--log", logFile, "--silent"]))
+            {
+                // Act
+                results = processor.Execute(context, "dotnet", "", "help");
+            }
+
+            // Assert: the valid program still runs successfully and is still wrapped with cmd /c
+            Assert.Equal(0, results.ExitCode);
+            var logContent = File.ReadAllText(logFile);
+            Assert.Contains("cmd /c", logContent);
+        }
+        finally
+        {
+            if (File.Exists(logFile))
+            {
+                File.Delete(logFile);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that the Windows pre-flight executable resolution step searches the
+    ///     <c>workingDirectory</c> supplied to <c>Execute(Context, ...)</c> rather
+    ///     than the current process's working directory — regression guard for a bug where
+    ///     resolution used <c>Directory.GetCurrentDirectory()</c> even when a different
+    ///     <c>workingDirectory</c> was supplied, causing a valid bare-named executable that only
+    ///     exists in that directory to be misreported as missing.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_BareNameOnlyInWorkingDirectory_ResolvesSuccessfully()
+    {
+        // Skip this test on non-Windows platforms — the resolution step only runs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: create a scratch directory (distinct from the current process directory)
+        // containing a batch file with a unique bare name, so resolution only succeeds when the
+        // supplied workingDirectory (not the current directory) is searched
+        var scratchDir = Path.Combine(Path.GetTempPath(), $"rp_workdir_test_{Guid.NewGuid():N}");
+        var programName = $"rp-test-{Guid.NewGuid():N}";
+        Directory.CreateDirectory(scratchDir);
+        var scriptPath = Path.Combine(scratchDir, $"{programName}.cmd");
+        File.WriteAllText(scriptPath, "@echo Usage: test-ok" + Environment.NewLine + "@exit /b 0" + Environment.NewLine);
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using var context = Context.Create(["--silent"]);
+
+            // Act: execute the bare program name with the scratch directory as workingDirectory
+            var results = processor.Execute(context, programName, scratchDir);
+
+            // Assert: resolution succeeded against workingDirectory (no Win32Exception thrown)
+            // and the process actually ran
+            Assert.Equal(0, results.ExitCode);
+        }
+        finally
+        {
+            Directory.Delete(scratchDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that the Windows pre-flight executable resolution step resolves a relative
+    ///     path containing a directory component (e.g. <c>subdir\tool.cmd</c>) against the
+    ///     supplied <c>workingDirectory</c> rather than the current process's working directory
+    ///     — regression guard for a bug where the directory-component branch of
+    ///     <c>TryResolveWindowsExecutable</c> always tested the relative path against the current
+    ///     process directory, causing a valid relative path (resolvable when <c>cmd /c</c> later
+    ///     launches from <c>workingDirectory</c>) to be misreported as missing.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_RelativeSubdirectoryPathInWorkingDirectory_ResolvesSuccessfully()
+    {
+        // Skip this test on non-Windows platforms — the resolution step only runs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: create a scratch directory (distinct from the current process directory)
+        // with a subdirectory containing a batch file, referenced by a relative path with a
+        // directory component, so resolution only succeeds when the supplied workingDirectory
+        // (not the current directory) is used as the base for the relative path
+        var scratchDir = Path.Combine(Path.GetTempPath(), $"rp_workdir_subdir_test_{Guid.NewGuid():N}");
+        var subDir = Path.Combine(scratchDir, "sub");
+        var programName = $"rp-test-{Guid.NewGuid():N}";
+        Directory.CreateDirectory(subDir);
+        var scriptPath = Path.Combine(subDir, $"{programName}.cmd");
+        File.WriteAllText(scriptPath, "@echo Usage: test-ok" + Environment.NewLine + "@exit /b 0" + Environment.NewLine);
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using var context = Context.Create(["--silent"]);
+            var relativeApplication = Path.Combine("sub", $"{programName}.cmd");
+
+            // Act: execute the relative directory-qualified path with the scratch directory as
+            // workingDirectory
+            var results = processor.Execute(context, relativeApplication, scratchDir);
+
+            // Assert: resolution succeeded against workingDirectory (no Win32Exception thrown)
+            // and the process actually ran
+            Assert.Equal(0, results.ExitCode);
+        }
+        finally
+        {
+            Directory.Delete(scratchDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that mutating the caller's original rules array after constructing a
+    ///     <see cref="RunProcessor"/> does not affect the instance's classification behavior,
+    ///     proving <see cref="RunProcessor"/> holds a defensive copy rather than the caller's
+    ///     array reference.
+    /// </summary>
+    [Fact]
+    public void RunProcessor_Constructor_MutatingOriginalRulesArrayAfterConstruction_DoesNotAffectClassification()
+    {
+        // Arrange: build a rules array with one rule matching "Error", construct the processor,
+        // then mutate the original array element to a rule that would never match "Error"
+        var rules = new[] { RunLineRule.Create(RunLineType.Error, "Error") };
+        var processor = new RunProcessor(rules);
+        rules[0] = RunLineRule.Create(RunLineType.Warning, "NeverMatches");
+
+        // Act: parse output that would only match the original ("Error") rule
+        var result = processor.Parse(DateTime.Now, DateTime.Now, "** Error: something went wrong", 0);
+
+        // Assert: the original classification still applies — the instance is unaffected by
+        // post-construction mutation of the caller's array
+        Assert.Multiple(
+            () => Assert.Equal(RunLineType.Error, result.Summary),
+            () => Assert.Contains(result.Lines, l => l.Type == RunLineType.Error));
+    }
+
+    /// <summary>
     ///     Verifies that an output line matching an error rule is classified as Error
     ///     when the exit code is zero, isolating pattern-classification from exit-code escalation.
     /// </summary>

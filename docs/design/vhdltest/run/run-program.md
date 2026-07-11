@@ -49,4 +49,5 @@ executable path does not exist.
 
 #### Callers
 
-Called exclusively by `RunProcessor.Execute(string, string, string[])`.
+Called by `ProcessInvoker.Execute`, the default `IProcessInvoker` implementation (see
+`process-invoker.md`); `RunProcessor` no longer calls `RunProgram.Run` directly.

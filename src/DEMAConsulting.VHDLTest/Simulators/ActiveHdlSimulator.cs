@@ -154,8 +154,9 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </summary>
     /// <remarks>
     ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, an <c>alib</c> library
-    ///     initialization command, <c>set worklib work</c>, and one <c>acom -2008 -dbg {file}</c>
-    ///     line per source file. The script is written to
+    ///     initialization command, <c>set worklib work</c>, and one <c>acom -2008 -dbg</c> command
+    ///     per source file (using the TCL-quoted form of each file path produced by
+    ///     <see cref="TclText.Quote"/>). The script is written to
     ///     <c>VHDLTest.out/ActiveHDL/compile.do</c> and executed via
     ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/compile.do</c> from the working directory.
     ///     Creates the <c>VHDLTest.out/ActiveHDL/</c> output directory when it does not already exist.
@@ -191,7 +192,7 @@ public sealed class ActiveHdlSimulator : Simulator
         writer.AppendLine("set worklib work");
         foreach (var file in options.Config.Files)
         {
-            writer.AppendLine($"acom -2008 -dbg {file}");
+            writer.AppendLine($"acom -2008 -dbg {TclText.Quote(file)}");
         }
 
         // Write the batch file
@@ -214,7 +215,8 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </summary>
     /// <remarks>
     ///     Builds a TCL do-script containing <c>onerror {exit -code 1}</c>, <c>set worklib work</c>,
-    ///     <c>asim {test}</c>, <c>run -all</c>, <c>endsim</c>, and <c>exit -code 0</c>. The script
+    ///     <c>asim</c> command (using the TCL-quoted form of <paramref name="test"/> produced by
+    ///     <see cref="TclText.Quote"/>), <c>run -all</c>, <c>endsim</c>, and <c>exit -code 0</c>. The script
     ///     is written to <c>VHDLTest.out/ActiveHDL/test.do</c> and executed via
     ///     <c>vsimsa -do VHDLTest.out/ActiveHDL/test.do</c> from the working directory. The
     ///     trailing <c>exit -code 0</c> is required because <c>vsimsa</c> does not emit a success
@@ -222,9 +224,9 @@ public sealed class ActiveHdlSimulator : Simulator
     /// </remarks>
     /// <param name="context">Execution context used for verbose logging. Must not be null.</param>
     /// <param name="options">Parsed options providing the working directory. Must not be null.</param>
-    /// <param name="test">Test bench entity name to simulate. Must not be null or empty, and must not
-    ///     contain whitespace or TCL metacharacters because it is interpolated directly into the TCL
-    ///     script without escaping.</param>
+    /// <param name="test">Test bench entity name to simulate. Must not be null or empty. TCL-quoted
+    ///     via <see cref="TclText.Quote"/> before interpolation, so it may safely contain whitespace
+    ///     or TCL metacharacters.</param>
     /// <returns>Simulation outcome as a <see cref="TestResult"/>.</returns>
     /// <exception cref="InvalidOperationException">
     ///     Thrown when <see cref="Simulator.SimulatorPath"/> is null (Active-HDL not installed).
@@ -251,7 +253,7 @@ public sealed class ActiveHdlSimulator : Simulator
         var writer = new StringBuilder();
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("set worklib work");
-        writer.AppendLine($"asim {test}");
+        writer.AppendLine($"asim {TclText.Quote(test)}");
         writer.AppendLine("run -all");
         writer.AppendLine("endsim");
         writer.AppendLine("exit -code 0");

@@ -21,6 +21,10 @@ N/A - standard test environment. `dotnet` must be available on PATH.
 - `RunProcessor.Execute` classifies output lines using the provided `RunLineRule` patterns.
 - A non-zero exit code from the process elevates the summary to `RunLineType.Error`.
 - Executing an unknown program raises an exception that propagates to the caller.
+- On Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program,
+  consistent with the non-Windows path and the `Execute(string, ...)` overload.
+- Mutating the caller's original rules array after construction does not affect a
+  `RunProcessor` instance's classification behavior.
 - Verbose logging writes the working directory and run command when `context.Verbose` is set.
 - On Windows, the command is wrapped with `cmd /c` before being launched.
 
@@ -82,3 +86,25 @@ the `Execute(Context, ...)` overload wraps the application command with `cmd /c`
 launching the process, confirming the Windows cmd-wrapping requirement. This test only
 runs on Windows (`[SupportedOSPlatform("windows")]`).
 This scenario is tested by `RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC`.
+
+**Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently**: Verifies that on
+Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program — proving the
+`Execute(Context, ...)` overload's pre-flight resolution step now matches the already-verified
+missing-program behavior of the direct `Execute(string, ...)` overload, closing the prior
+inconsistency where `cmd /c` silently swallowed a missing program into a non-throwing,
+non-zero-exit `RunResults`. This test only runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently`.
+
+**Execute_WithContext_ValidProgram_StillInvokesSuccessfully**: Verifies that a valid Windows
+application (`dotnet`) is unaffected by the new pre-flight executable resolution step — a
+regression guard proving the resolution logic does not break the existing working path. This
+test only runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by `RunProcessor_Execute_WithContext_ValidProgram_StillInvokesSuccessfully`.
+
+**Constructor_MutatingOriginalRulesArrayAfterConstruction_DoesNotAffectClassification**:
+Verifies that mutating the caller's original `RunLineRule[]` array after constructing a
+`RunProcessor` does not affect the instance's classification behavior, confirming the
+constructor takes a defensive copy rather than capturing the caller's array reference.
+This scenario is tested by
+`RunProcessor_Constructor_MutatingOriginalRulesArrayAfterConstruction_DoesNotAffectClassification`.

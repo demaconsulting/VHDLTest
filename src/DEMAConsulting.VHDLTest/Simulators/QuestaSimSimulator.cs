@@ -32,7 +32,8 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// <remarks>
 ///     Structurally identical to <see cref="ModelSimSimulator"/>: drives <c>vsim</c> via TCL
 ///     do-scripts using <c>vcom</c> for VHDL-2008 compilation and <c>vsim</c>/<c>run</c> for
-///     test bench simulation. Distinguished from <see cref="ModelSimSimulator"/> by its registered
+///     test bench simulation, quoting file paths and test names via <see cref="TclText.Quote"/>
+///     before interpolation. Distinguished from <see cref="ModelSimSimulator"/> by its registered
 ///     name ("QuestaSim"), its path environment variable (<c>VHDLTEST_QUESTASIM_PATH</c>), and its
 ///     working directory path. Implemented as a singleton (<see cref="Instance"/>) initialized at
 ///     class load time; stateless after construction and therefore thread-safe.
@@ -118,8 +119,10 @@ public sealed class QuestaSimSimulator : Simulator
     /// <remarks>
     ///     Creates the <c>VHDLTest.out/QuestaSim/</c> output directory if it does not already exist,
     ///     writes <c>compile.do</c> to that directory, and invokes <c>vsim -c -do compile.do</c> to
-    ///     compile all source files. Throws <see cref="InvalidOperationException"/> when
-    ///     <see cref="Simulator.SimulatorPath"/> is null (QuestaSim not installed).
+    ///     compile all source files. Each file path is TCL-quoted via <see cref="TclText.Quote"/>
+    ///     before interpolation, so paths may safely contain spaces or TCL metacharacters. Throws
+    ///     <see cref="InvalidOperationException"/> when <see cref="Simulator.SimulatorPath"/> is
+    ///     null (QuestaSim not installed).
     /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
@@ -144,9 +147,11 @@ public sealed class QuestaSimSimulator : Simulator
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("vlib work");
         writer.AppendLine("set worklib work");
+
+        // Each file path is TCL-quoted to safely support spaces and TCL metacharacters
         foreach (var file in options.Config.Files)
         {
-            writer.AppendLine($"vcom -2008 ../../{file}");
+            writer.AppendLine($"vcom -2008 {TclText.Quote($"../../{file}")}");
         }
 
         writer.AppendLine("exit -code 0");
@@ -170,7 +175,9 @@ public sealed class QuestaSimSimulator : Simulator
     /// <inheritdoc />
     /// <remarks>
     ///     Writes <c>test.do</c> to <c>VHDLTest.out/QuestaSim/</c> and invokes <c>vsim</c> to run
-    ///     the specified test bench. Throws <see cref="InvalidOperationException"/> when
+    ///     the specified test bench. The <paramref name="test"/> argument is TCL-quoted via
+    ///     <see cref="TclText.Quote"/> before interpolation, so it may safely contain spaces or
+    ///     TCL metacharacters. Throws <see cref="InvalidOperationException"/> when
     ///     <see cref="Simulator.SimulatorPath"/> is null (QuestaSim not installed).
     /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
@@ -191,7 +198,7 @@ public sealed class QuestaSimSimulator : Simulator
         var writer = new StringBuilder();
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("set worklib work");
-        writer.AppendLine($"vsim -quiet {test}");
+        writer.AppendLine($"vsim -quiet {TclText.Quote(test)}");
         writer.AppendLine("run -all");
         writer.AppendLine("endsim");
         writer.AppendLine("exit -code 0");

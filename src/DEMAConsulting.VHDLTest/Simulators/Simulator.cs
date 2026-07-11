@@ -105,9 +105,15 @@ public abstract class Simulator(string simulatorName, string? simulatorPath)
     /// </param>
     /// <param name="test">
     ///     VHDL entity name to simulate. May be a simple name (e.g., <c>"my_tb"</c>) or a
-    ///     library-qualified name (e.g., <c>"lib.my_tb"</c>). Must not be null, empty, or contain
-    ///     whitespace or TCL metacharacters, because the name is interpolated directly into a TCL
-    ///     script without escaping.
+    ///     library-qualified name (e.g., <c>"lib.my_tb"</c>). Must not be null or empty. How the
+    ///     name is passed to the underlying simulator varies by implementation: <see cref="ModelSimSimulator"/>,
+    ///     <see cref="ActiveHdlSimulator"/>, and <see cref="QuestaSimSimulator"/> quote the name via
+    ///     <see cref="TclText.Quote"/> before interpolating it into a TCL script, so it may safely
+    ///     contain whitespace or TCL metacharacters; <see cref="GhdlSimulator"/> and
+    ///     <see cref="NvcSimulator"/> pass the name as a separate process argument;
+    ///     <see cref="VivadoSimulator"/> quotes the name via <see cref="XilinxArgText.Quote"/>
+    ///     before interpolating it into a Xilinx argument file (not a TCL script), so it may
+    ///     safely contain whitespace or characters requiring escaping.
     /// </param>
     /// <returns>
     ///     The ordered list of parsed output lines produced by the test execution, each classified

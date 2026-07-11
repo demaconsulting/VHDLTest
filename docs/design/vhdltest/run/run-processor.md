@@ -13,26 +13,36 @@ implementations and the output-processing pipeline.
 
 #### Data Model
 
-| Field      | Type              | Description                                                                  |
-| ---------- | ----------------- | ---------------------------------------------------------------------------- |
-| `_rules`   | `RunLineRule[]`   | Ordered rules injected at construction; immutable for the instance lifetime. |
-| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null.           |
+| Field      | Type              | Description                                                                                                                                                                            |
+| ---------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `_rules`   | `RunLineRule[]`   | Defensive copy (`[.. rules]`) of the constructor's array, taken at construction time; immutable for the instance lifetime regardless of later mutation of the caller's original array. |
+| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null.                                                                                                                     |
 
 #### Key Methods
 
 **`Execute(Context context, string application, string workingDirectory, string[] arguments) → RunResults`**
 
-Logs the run directory and command through `context.WriteVerboseLine`. On Windows the
-executable is wrapped in `cmd /c` to support `.bat` and `.cmd` invocation; the
-application path is passed directly to `ArgumentList` so paths containing spaces are
-quoted automatically. The verbose log uses a display form with quotes for readability
-only. Delegates to the core `Execute(string, string, string[])` overload and
-returns its result.
+Logs the run directory and command through `context.WriteVerboseLine`. On Windows,
+`application` is first resolved to an existing executable path via a private
+`TryResolveWindowsExecutable` helper — a `PATHEXT`-aware search mirroring `cmd.exe`'s own
+resolution order (current directory or the supplied directory, then each `PATH` entry;
+the bare name and each `PATHEXT`-qualified variant are tried). If resolution fails, a
+`Win32Exception` is thrown immediately, before any process is launched. When resolution
+succeeds, the *resolved* (extension-qualified) path is wrapped in `cmd /c` to support
+`.bat` and `.cmd` invocation; the resolved path is passed directly to `ArgumentList` so
+paths containing spaces are quoted automatically. The verbose log uses a display form
+with quotes for readability only. Delegates to the core `Execute(string, string, string[])`
+overload and returns its result.
 
 - *Preconditions*: `context` is not null; `application` identifies a reachable
   executable or batch file; individual arguments must not contain `cmd.exe` shell
   metacharacters.
-- *Postconditions*: Returns a `RunResults` with all fields populated.
+- *Postconditions*: Returns a `RunResults` with all fields populated on success. On
+  Windows, throws `Win32Exception` immediately (without launching any process) when
+  `application` cannot be resolved to an existing executable — this now matches the
+  non-Windows path's behavior for a missing program, closing a prior inconsistency where
+  `cmd /c` silently swallowed a missing program into a non-throwing, non-zero-exit
+  `RunResults` instead of throwing.
 
 **`Execute(string application, string workingDirectory, string[] arguments) → RunResults`**
 
@@ -58,10 +68,13 @@ non-zero `exitCode` forces the summary to at least `RunLineType.Error`.
 
 #### Error Handling
 
-No exceptions are caught within `RunProcessor`. If `RunProgram.Run` cannot launch the
-process (for example, the executable is not found), the exception propagates to the
-caller. `RegexMatchTimeoutException` from rule pattern matching also propagates to the
-caller unchanged.
+No exceptions are caught within `RunProcessor`. On Windows, `Execute(Context, ...)` throws
+`Win32Exception` immediately when `application` cannot be resolved to an existing executable
+by the pre-flight `TryResolveWindowsExecutable` search — this is now consistent with the
+non-Windows path and with the `Execute(string, ...)` overload, both of which already throw for
+a missing program. If `RunProgram.Run` cannot launch an already-resolved process (for example,
+a permissions failure), the exception propagates to the caller. `RegexMatchTimeoutException`
+from rule pattern matching also propagates to the caller unchanged.
 
 #### Dependencies
 

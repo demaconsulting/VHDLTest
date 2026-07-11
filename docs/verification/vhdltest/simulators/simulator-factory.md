@@ -58,6 +58,10 @@ for test and validation purposes.
 This scenario is tested by `SimulatorFactory_Get_MockSimulator_ReturnsMockSimulator`.
 
 **Get_WithNullName_ReturnsFirstAvailableOrNull**: Verifies that passing null to
-`SimulatorFactory.Get` performs auto-discovery: returns either the first installed simulator
-instance (a real `Simulator`, not `MockSimulator`) or null when no simulator is installed.
+`SimulatorFactory.Get` performs auto-discovery: the test independently recomputes the expected
+result by building a local `Simulator[]` in the exact declared order documented in
+`SimulatorFactory.cs` and finding the first entry whose `Available()` returns true, then
+asserts `SimulatorFactory.Get(null)` returns that exact singleton instance
+(`Assert.Same`) — proving *first*, *available*, and *ordering*, not merely "not
+`MockSimulator`". Passes identically whether 0 or more simulators are actually installed.
 This scenario is tested by `SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull`.

@@ -146,3 +146,20 @@ throws `InvalidOperationException` with message containing `"ActiveHDL Simulator
 when `SimulatorPath` is null. This test is skipped in environments where Active-HDL is installed.
 This scenario is tested by `ActiveHdlSimulator_Test_SimulatorNotAvailable_ThrowsInvalidOperationException`
 in `ActiveHdlSimulatorTests.cs`.
+
+**Compile_WithFileNameContainingSpaceAndMetacharacter_QuotesFileNameInScript**: Verifies that a
+file path containing a space and a TCL metacharacter (`my file [1].vhd`) round-trips correctly
+through `Compile()`: it appears verbatim inside the brace-quoted form produced by
+`TclText.Quote` in the generated `compile.do`, and the invocation's captured arguments still
+resolve correctly, proving the quoting does not break the surrounding invocation.
+This scenario is tested by
+`ActiveHdlSimulator_Compile_WithFileNameContainingSpaceAndMetacharacter_QuotesFileNameInScript`
+in `ActiveHdlSimulatorTests.cs`.
+
+**Test_WithTestNameContainingSpaceAndMetacharacter_QuotesTestNameInScript**: Verifies that a
+test bench name containing a space and a TCL metacharacter (`lib.my tb`) round-trips correctly
+through `Test()`: it appears verbatim inside the brace-quoted form produced by `TclText.Quote`
+in the generated `test.do`, and the invocation's captured arguments still resolve correctly.
+This scenario is tested by
+`ActiveHdlSimulator_Test_WithTestNameContainingSpaceAndMetacharacter_QuotesTestNameInScript`
+in `ActiveHdlSimulatorTests.cs`.

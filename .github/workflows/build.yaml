@@ -326,8 +326,7 @@ jobs:
 
     strategy:
       matrix:
-        # macOS 26 is not currently supported by GHDL
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
         dotnet-version: ['8.x', '9.x', '10.x']
 
     steps:
@@ -362,7 +361,6 @@ jobs:
 
       - uses: ghdl/setup-ghdl@v1
         with:
-          version: 5.1.1
           backend: ${{ matrix.os == 'macos-latest' && 'llvm' || 'mcode' }}
 
       - name: Restore Tools

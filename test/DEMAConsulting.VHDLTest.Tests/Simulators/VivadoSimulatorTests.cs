@@ -480,7 +480,88 @@ public class VivadoSimulatorTests
             var content = File.ReadAllText(scriptPath);
             Assert.Contains("-nolog", content);
             Assert.Contains("-standalone", content);
-            Assert.Contains("my_tb", content);
+            Assert.Contains("\"my_tb\"", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that a file path containing a space and an embedded double quote round-trips
+    ///     correctly through Compile: it is written into compile.do inside a double-quoted,
+    ///     backslash-escaped form, and the compile invocation still succeeds (proving the
+    ///     quoting does not break the surrounding invocation arguments).
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Compile_WithFileNameContainingSpaceAndQuote_QuotesFileNameInScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = VivadoSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var config = new ConfigDocument { Files = ["my file \"1\".vhd"] };
+            var options = new Options(tempDir, config);
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: the generated compile script contains the file name verbatim,
+            // double-quoted with the embedded quote escaped
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "Vivado", "compile.do");
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("\"../../my file \\\"1\\\".vhd\"", content);
+
+            // Assert: the invocation's arguments still resolve correctly (round-trip proof)
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("compile.do", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that a test bench name containing a space and an embedded double quote
+    ///     round-trips correctly through Test: it is written into test.do inside a double-quoted,
+    ///     backslash-escaped form, and the test invocation still succeeds (proving the quoting
+    ///     does not break the surrounding invocation arguments).
+    /// </summary>
+    [Fact]
+    public void VivadoSimulator_Test_WithTestNameContainingSpaceAndQuote_QuotesTestNameInScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "Vivado"));
+
+            var sim = VivadoSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "lib.my \"tb\"");
+
+            // Assert: the generated test script contains the test name verbatim,
+            // double-quoted with the embedded quotes escaped
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "Vivado", "test.do");
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("\"lib.my \\\"tb\\\"\"", content);
+
+            // Assert: the invocation's arguments still resolve correctly (round-trip proof)
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("test.do", allArgs);
         }
         finally
         {

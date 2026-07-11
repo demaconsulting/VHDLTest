@@ -83,8 +83,13 @@ Unrecognized tokens starting with `-` throw `InvalidOperationException`.
 to the next token and returns it verbatim. If a value-argument flag such as `--depth` is
 immediately followed by another flag token (for example, `--depth --verbose`), `GetArgument()`
 returns `"--verbose"` as the depth value, causing the subsequent integer-parse validation to
-throw `InvalidOperationException`. This behavior is intentional: no lookahead heuristic is
-applied because any such input is unambiguously malformed.
+throw `InvalidOperationException`. This behavior is intentional for `--depth` specifically: no
+lookahead heuristic is applied because the resulting non-integer value is unambiguously
+malformed once passed to `int.TryParse`. The other value-argument flags — `--log`, `--config`,
+`--result`/`--results`, and `--simulator` — perform no value validation at all: a flag-like
+token immediately following one of these is accepted verbatim as the value with no error (for
+example, `--config --verbose` silently sets `ConfigFile` to `"--verbose"`). This is a real,
+documented asymmetry between `--depth` and the other value flags, not a defect.
 
 **Dispose**: Releases the log-file writer.
 
@@ -151,3 +156,20 @@ in `Errors` is used by `Program.Main` to set `Environment.ExitCode` via `Context
 
 - **Program** — calls `Context.Create(args)` in `Main` and consumes all Context properties and
   I/O methods in `Run`.
+- **Simulators** — each of the six concrete production simulators (`GhdlSimulator`,
+  `ModelSimSimulator`, `QuestaSimSimulator`, `VivadoSimulator`, `ActiveHdlSimulator`, and
+  `NvcSimulator`) calls `context.WriteVerboseLine` during `Compile`/`Test` to report the
+  simulator path, library/output directory, and generated script file when `--verbose` is set.
+  The seventh concrete simulator, `MockSimulator`, is a test double that also calls
+  `context.WriteVerboseLine`, but only to report the start of the compile/test operation — it
+  does not report simulator path, library/output directory, or script details.
+- **Run** — `RunProcessor` calls `context.WriteVerboseLine` to report the working directory and
+  launched command line before executing an external process.
+- **Results** — `TestResult` calls `context.Write`/`context.WriteLine` to report a single test
+  outcome; `TestResults` calls `context.Write`/`context.WriteLine` to report build progress and
+  the overall passed/failed summary; `RunResults` calls `context.Write`/`context.WriteLine` to
+  echo classified output lines in their severity color.
+- **SelfTest** — `Validation` calls `Context.Create(args)` in `RunVhdlTest(string[] args)` to
+  construct a fresh, independent `Context` for each in-process self-validation invocation, and
+  calls `context.WriteLine`/`WriteError` on the caller-supplied outer `Context` to report the
+  system-information table, per-check pass/fail lines, and the total/passed/failed summary.

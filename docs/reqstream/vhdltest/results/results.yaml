@@ -49,24 +49,30 @@ sections:
 
           - id: VHDLTest-Results-PrintSummary
             title: >-
-              TestResults shall print individual test outcome lines and aggregate pass and fail
-              counts to the context output when summarizing results.
+              The Results subsystem shall print an individual outcome line for each collected
+              test result when summarizing results.
             justification: |
               Printing a per-test outcome line for every collected result lets developers
               and CI/CD pipelines identify which specific test benches passed or failed.
+            tests:
+              - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
+            children:
+              - VHDLTest-Results-TestResult-PrintSummary-Label
+              - VHDLTest-Results-TestResult-PrintSummary-Name
+              - VHDLTest-Results-TestResult-PrintSummary-Duration
+
+          - id: VHDLTest-Results-PrintSummaryCounts
+            title: >-
+              The Results subsystem shall print the aggregate counts of passed and failed tests
+              when summarizing results.
+            justification: |
               Providing numeric totals for passed and failed tests gives an at-a-glance view
-              of overall test run health without counting individual result lines. The per-test
-              output and aggregate count behaviors are intentionally kept under one requirement
-              because they are both produced by a single PrintSummary call and are inseparable
-              from the caller's perspective; the child requirement provides the unit-level
-              breakdown. This compound form is accepted per the project's risk acceptance process.
+              of overall test run health without counting individual result lines.
             tests:
               - ResultsSubsystem_PrintSummary_WithMixedResults_WritesFormattedSummaryToOutput
             children:
               - VHDLTest-Results-TestResults-PrintSummary
-              - VHDLTest-Results-TestResult-PrintSummary-Label
-              - VHDLTest-Results-TestResult-PrintSummary-Name
-              - VHDLTest-Results-TestResult-PrintSummary-Duration
+              - VHDLTest-Results-TestResults-PrintSummary-SuppressZero
 
           - id: VHDLTest-Results-Save
             title: The Results subsystem shall save a collection of test results to a results file.

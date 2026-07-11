@@ -18,6 +18,16 @@ The BuildMark step in the `build-docs` CI job completes with exit code 0. A pass
 step constitutes evidence that BuildMark correctly queried GitHub Actions metadata and
 rendered the build notes markdown document.
 
+`dotnet buildmark --validate --results artifacts/buildmark-self-validation.trx` must exit
+with code 0, and the written TRX file must contain all 5 self-test entries, each reported
+as passed:
+
+- `BuildMark_MarkdownReportGeneration`, satisfying `VHDLTest-OTS-BuildMark`.
+- `BuildMark_GitIntegration`, satisfying `VHDLTest-OTS-BuildMark-GitIntegration`.
+- `BuildMark_IssueTracking`, satisfying `VHDLTest-OTS-BuildMark-IssueTracking`.
+- `BuildMark_KnownIssuesReporting`, satisfying `VHDLTest-OTS-BuildMark-KnownIssuesReporting`.
+- `BuildMark_RulesRouting`, satisfying `VHDLTest-OTS-BuildMark-RulesRouting`.
+
 ### Test Scenarios
 
 - **Build notes markdown generation**: `dotnet buildmark --build-version ... --report docs/build_notes.md`
@@ -26,4 +36,9 @@ rendered the build notes markdown document.
   a successful downstream PDF conversion confirms the output is well-formed markdown.
 - **Self-validation TRX output**: `dotnet buildmark --validate --results artifacts/buildmark-self-validation.trx`
   executes BuildMark's internal test suite and writes TRX results consumed by ReqStream
-  to verify the requirement `VHDLTest-OTS-BuildMark` is satisfied.
+  to verify all five requirements are satisfied: `VHDLTest-OTS-BuildMark` (via
+  `BuildMark_MarkdownReportGeneration`), `VHDLTest-OTS-BuildMark-GitIntegration` (via
+  `BuildMark_GitIntegration`), `VHDLTest-OTS-BuildMark-IssueTracking` (via
+  `BuildMark_IssueTracking`), `VHDLTest-OTS-BuildMark-KnownIssuesReporting` (via
+  `BuildMark_KnownIssuesReporting`), and `VHDLTest-OTS-BuildMark-RulesRouting` (via
+  `BuildMark_RulesRouting`).

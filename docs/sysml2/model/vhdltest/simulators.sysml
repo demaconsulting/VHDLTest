@@ -16,5 +16,7 @@ package VHDLTest {
         part activeHdlSimulator : ActiveHdlSimulator;
         part nvcSimulator : NvcSimulator;
         part mockSimulator : MockSimulator;
+        part tclText : TclText;
+        part xilinxArgText : XilinxArgText;
     }
 }

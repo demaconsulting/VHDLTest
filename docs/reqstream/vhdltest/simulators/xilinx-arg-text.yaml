@@ -1,0 +1,23 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Simulators Requirements
+        sections:
+          - title: XilinxArgText Requirements
+            requirements:
+              - id: VHDLTest-Simulators-XilinxArgText-Quote
+                title: XilinxArgText shall double-quote values for interpolation into Xilinx
+                  argument files, escaping embedded double-quote and backslash characters.
+                justification: |
+                  Xilinx argument files (per UG900) use standard shell-style tokenization, so a
+                  value containing whitespace or other special characters must be wrapped in
+                  double quotes with any embedded double-quote or backslash characters
+                  backslash-escaped to be interpolated as literal text rather than split into
+                  multiple tokens or misinterpreted by the argument-file parser.
+                tests:
+                  - XilinxArgText_Quote_PlainValue_ReturnsQuotedLiteral
+                  - XilinxArgText_Quote_ValueWithSpace_ReturnsQuotedLiteral
+                  - XilinxArgText_Quote_ValueWithDoubleQuote_EscapesDoubleQuote
+                  - XilinxArgText_Quote_ValueWithBackslash_EscapesBackslash
+                  - XilinxArgText_Quote_ValueWithBackslashAndDoubleQuote_EscapesBoth

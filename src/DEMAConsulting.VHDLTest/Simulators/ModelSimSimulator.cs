@@ -123,8 +123,8 @@ public sealed class ModelSimSimulator : Simulator
     /// <remarks>
     ///     Creates the <c>VHDLTest.out/ModelSim/</c> output directory if it does not already exist,
     ///     writes <c>compile.do</c> to that directory, and invokes <c>vcom</c> via <c>vsim</c> to
-    ///     compile all source files. File paths must be free of TCL metacharacters because they are
-    ///     interpolated directly into the TCL script without escaping.
+    ///     compile all source files. Each file path is TCL-quoted via <see cref="TclText.Quote"/>
+    ///     before interpolation, so paths may safely contain spaces or TCL metacharacters.
     /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
@@ -150,11 +150,10 @@ public sealed class ModelSimSimulator : Simulator
         writer.AppendLine("vlib work");
         writer.AppendLine("set worklib work");
 
-        // Precondition: each file path must not contain TCL metacharacters — this is a documented
-        // precondition, not a runtime guard (see design documentation and Key Methods / Compile)
+        // Each file path is TCL-quoted to safely support spaces and TCL metacharacters
         foreach (var file in options.Config.Files)
         {
-            writer.AppendLine($"vcom -2008 ../../{file}");
+            writer.AppendLine($"vcom -2008 {TclText.Quote($"../../{file}")}");
         }
 
         writer.AppendLine("exit -code 0");
@@ -178,8 +177,9 @@ public sealed class ModelSimSimulator : Simulator
     /// <inheritdoc />
     /// <remarks>
     ///     Writes <c>test.do</c> to <c>VHDLTest.out/ModelSim/</c> and invokes <c>vsim</c> to run
-    ///     the specified test bench. The <paramref name="test"/> argument must be free of TCL
-    ///     metacharacters because it is interpolated directly into the TCL script without escaping.
+    ///     the specified test bench. The <paramref name="test"/> argument is TCL-quoted via
+    ///     <see cref="TclText.Quote"/> before interpolation, so it may safely contain spaces or
+    ///     TCL metacharacters.
     /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
@@ -200,9 +200,8 @@ public sealed class ModelSimSimulator : Simulator
         writer.AppendLine("onerror {exit -code 1}");
         writer.AppendLine("set worklib work");
 
-        // Precondition: test must not contain whitespace or TCL metacharacters — this is a
-        // documented precondition, not a runtime guard (see design documentation and Key Methods / Test)
-        writer.AppendLine($"vsim -quiet {test}");
+        // The test bench name is TCL-quoted to safely support spaces and TCL metacharacters
+        writer.AppendLine($"vsim -quiet {TclText.Quote(test)}");
         writer.AppendLine("run -all");
         writer.AppendLine("endsim");
         writer.AppendLine("exit -code 0");
