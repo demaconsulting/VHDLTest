@@ -52,8 +52,11 @@ internal static class TclText
     /// </remarks>
     /// <param name="value">The value to quote. Must not be null.</param>
     /// <returns>A TCL-quoted representation of <paramref name="value"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is null.</exception>
     public static string Quote(string value)
     {
+        ArgumentNullException.ThrowIfNull(value);
+
         // Prefer brace-quoting: braces suppress all TCL substitution, so the value passes
         // through completely unchanged. Only valid when the value contains no literal braces.
         if (!value.Contains('{') && !value.Contains('}'))

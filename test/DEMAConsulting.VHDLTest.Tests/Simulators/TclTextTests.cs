@@ -141,4 +141,15 @@ public class TclTextTests
         // Assert
         Assert.Equal("\"a\\{b\\}c\\\\d\\\"e\\$f\\[g\\]h\"", result);
     }
+
+    /// <summary>
+    ///     Verifies that passing a null value throws <see cref="ArgumentNullException"/> rather
+    ///     than a less-clear <see cref="NullReferenceException"/> from dereferencing the value.
+    /// </summary>
+    [Fact]
+    public void TclText_Quote_NullValue_ThrowsArgumentNullException()
+    {
+        // Act / Assert
+        Assert.Throws<ArgumentNullException>(() => TclText.Quote(null!));
+    }
 }

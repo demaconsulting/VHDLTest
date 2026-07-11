@@ -20,6 +20,7 @@ N/A - standard test environment.
 - `TclText.Quote` falls back to a double-quoted form with every metacharacter (`\`, `"`,
   `$`, `[`, `]`, `{`, `}`) individually backslash-escaped when the value contains literal
   braces.
+- `TclText.Quote` throws `ArgumentNullException` when `value` is null.
 
 #### Test Scenarios
 
@@ -62,3 +63,8 @@ brackets, and braces) when a brace forces the fallback, and escapes the backslas
 escaping backslashes are not themselves re-escaped.
 This scenario is tested by
 `TclText_Quote_ValueWithBracesAndOtherMetacharacters_EscapesAllMetacharacters`.
+
+**Quote_NullValue_ThrowsArgumentNullException**: Verifies that passing a null value throws
+`ArgumentNullException` rather than a less-clear `NullReferenceException` from dereferencing
+the value.
+This scenario is tested by `TclText_Quote_NullValue_ThrowsArgumentNullException`.

@@ -100,4 +100,15 @@ public class XilinxArgTextTests
         // Assert
         Assert.Equal("\"a\\\\b\\\"c\"", result);
     }
+
+    /// <summary>
+    ///     Verifies that passing a null value throws <see cref="ArgumentNullException"/> rather
+    ///     than a less-clear <see cref="NullReferenceException"/> from iterating the value.
+    /// </summary>
+    [Fact]
+    public void XilinxArgText_Quote_NullValue_ThrowsArgumentNullException()
+    {
+        // Act / Assert
+        Assert.Throws<ArgumentNullException>(() => XilinxArgText.Quote(null!));
+    }
 }

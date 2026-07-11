@@ -28,7 +28,7 @@ No instance or static state; `TclText` is a stateless static class exposing a si
 
 #### Error Handling
 
-`Quote` is a pure function that never throws; it has no failure modes to handle.
+`Quote` throws `ArgumentNullException` when `value` is null; it has no other failure modes.
 
 #### Dependencies
 

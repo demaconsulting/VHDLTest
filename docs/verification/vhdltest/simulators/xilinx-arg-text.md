@@ -19,6 +19,7 @@ N/A - standard test environment.
   contains whitespace or special characters.
 - `XilinxArgText.Quote` backslash-escapes embedded `\` and `"` characters, escaping the backslash
   first so escaping backslashes are not themselves re-escaped.
+- `XilinxArgText.Quote` throws `ArgumentNullException` when `value` is null.
 
 #### Test Scenarios
 
@@ -42,3 +43,8 @@ This scenario is tested by `XilinxArgText_Quote_ValueWithBackslash_EscapesBacksl
 embedded backslash and an embedded double quote escapes both characters, escaping the backslash
 first so the escaping backslashes themselves are not re-escaped.
 This scenario is tested by `XilinxArgText_Quote_ValueWithBackslashAndDoubleQuote_EscapesBoth`.
+
+**Quote_NullValue_ThrowsArgumentNullException**: Verifies that passing a null value throws
+`ArgumentNullException` rather than a less-clear `NullReferenceException` from iterating the
+value.
+This scenario is tested by `XilinxArgText_Quote_NullValue_ThrowsArgumentNullException`.

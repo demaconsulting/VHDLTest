@@ -61,8 +61,11 @@ public class RunProcessor
     ///     Process invoker used to launch external processes. When null, defaults to
     ///     <see cref="ProcessInvoker.Instance"/> for production use.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="rules"/> is null.</exception>
     public RunProcessor(RunLineRule[] rules, IProcessInvoker? invoker = null)
     {
+        ArgumentNullException.ThrowIfNull(rules);
+
         // Defensively copy the rules array so the documented "immutable after construction"
         // thread-safety invariant holds regardless of whether the caller later mutates the
         // array it passed in.
@@ -113,11 +116,11 @@ public class RunProcessor
     ///     Thrown on Windows when <paramref name="application"/> cannot be resolved to an
     ///     existing executable (see <see cref="TryResolveWindowsExecutable"/>), or when the
     ///     simulator executable cannot be started. On non-Windows platforms, propagated from
-    ///     <see cref="RunProgram.Run"/> instead.
+    ///     <see cref="IProcessInvoker.Execute"/> instead.
     /// </exception>
     /// <exception cref="System.IO.FileNotFoundException">
     ///     Thrown on non-Windows platforms when the simulator executable path does not exist.
-    ///     Propagated from <see cref="RunProgram.Run"/>.
+    ///     Propagated from <see cref="IProcessInvoker.Execute"/>.
     /// </exception>
     public RunResults Execute(
         Context context,

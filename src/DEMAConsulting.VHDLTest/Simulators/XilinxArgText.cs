@@ -49,8 +49,11 @@ internal static class XilinxArgText
     /// </remarks>
     /// <param name="value">The value to quote. Must not be null.</param>
     /// <returns>A double-quoted representation of <paramref name="value"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is null.</exception>
     public static string Quote(string value)
     {
+        ArgumentNullException.ThrowIfNull(value);
+
         var builder = new StringBuilder();
         builder.Append('"');
         foreach (var c in value)

@@ -295,6 +295,18 @@ public class RunProcessorTests
     }
 
     /// <summary>
+    ///     Verifies that constructing a <see cref="RunProcessor"/> with a null rules array
+    ///     throws <see cref="ArgumentNullException"/> rather than a less-clear exception from
+    ///     the defensive-copy collection expression.
+    /// </summary>
+    [Fact]
+    public void RunProcessor_Constructor_NullRules_ThrowsArgumentNullException()
+    {
+        // Act / Assert
+        Assert.Throws<ArgumentNullException>(() => new RunProcessor(null!));
+    }
+
+    /// <summary>
     ///     Verifies that an output line matching an error rule is classified as Error
     ///     when the exit code is zero, isolating pattern-classification from exit-code escalation.
     /// </summary>

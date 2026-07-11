@@ -27,7 +27,7 @@ No instance or static state; `XilinxArgText` is a stateless static class exposin
 
 #### Error Handling
 
-`Quote` is a pure function that never throws; it has no failure modes to handle.
+`Quote` throws `ArgumentNullException` when `value` is null; it has no other failure modes.
 
 #### Dependencies
 

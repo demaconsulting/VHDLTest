@@ -13,10 +13,10 @@ implementations and the output-processing pipeline.
 
 #### Data Model
 
-| Field      | Type              | Description                                                                                                                                                                            |
-| ---------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `_rules`   | `RunLineRule[]`   | Defensive copy (`[.. rules]`) of the constructor's array, taken at construction time; immutable for the instance lifetime regardless of later mutation of the caller's original array. |
-| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null.                                                                                                                     |
+| Field      | Type              | Description                                                                                                                                                                                                 |
+| ---------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `_rules`   | `RunLineRule[]`   | Defensive copy (`[.. rules]`) of the constructor's array, taken at construction time (after a null check); immutable for the instance lifetime regardless of later mutation of the caller's original array. |
+| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null.                                                                                                                                          |
 
 #### Key Methods
 
@@ -74,13 +74,15 @@ non-zero `exitCode` forces the summary to at least `RunLineType.Error`.
 
 #### Error Handling
 
-No exceptions are caught within `RunProcessor`. On Windows, `Execute(Context, ...)` throws
-`Win32Exception` immediately when `application` cannot be resolved to an existing executable
-by the pre-flight `TryResolveWindowsExecutable` search — this is now consistent with the
-non-Windows path and with the `Execute(string, ...)` overload, both of which already throw for
-a missing program. If `RunProgram.Run` cannot launch an already-resolved process (for example,
-a permissions failure), the exception propagates to the caller. `RegexMatchTimeoutException`
-from rule pattern matching also propagates to the caller unchanged.
+`RunProcessor`'s constructor throws `ArgumentNullException` when `rules` is null, before
+attempting the defensive copy. No exceptions are otherwise caught within `RunProcessor`. On
+Windows, `Execute(Context, ...)` throws `Win32Exception` immediately when `application` cannot
+be resolved to an existing executable by the pre-flight `TryResolveWindowsExecutable` search —
+this is now consistent with the non-Windows path and with the `Execute(string, ...)` overload,
+both of which already throw for a missing program. If `IProcessInvoker.Execute` cannot launch
+an already-resolved process (for example, a permissions failure), the exception propagates to
+the caller. `RegexMatchTimeoutException` from rule pattern matching also propagates to the
+caller unchanged.
 
 #### Dependencies
 

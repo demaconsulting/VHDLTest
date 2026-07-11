@@ -121,3 +121,8 @@ Verifies that mutating the caller's original `RunLineRule[]` array after constru
 constructor takes a defensive copy rather than capturing the caller's array reference.
 This scenario is tested by
 `RunProcessor_Constructor_MutatingOriginalRulesArrayAfterConstruction_DoesNotAffectClassification`.
+
+**Constructor_NullRules_ThrowsArgumentNullException**: Verifies that constructing a
+`RunProcessor` with a null `rules` array throws `ArgumentNullException` rather than a
+less-clear exception surfacing later from the defensive-copy collection expression.
+This scenario is tested by `RunProcessor_Constructor_NullRules_ThrowsArgumentNullException`.
