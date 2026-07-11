@@ -94,6 +94,7 @@ words:
   - spdx
   - sysml
   - sysml2tools
+  - syspath
   - testbench
   - testbenches
   - testresults

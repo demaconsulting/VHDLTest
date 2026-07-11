@@ -26,6 +26,11 @@ N/A - standard test environment. `dotnet` must be available on PATH.
   thrown exception's `NativeErrorCode` is set to `ERROR_FILE_NOT_FOUND` (2).
 - On Windows, an application name that already carries its own extension (e.g. `tool.exe`)
   never resolves to an unrelated `PATHEXT`-qualified file (e.g. `tool.exe.cmd`).
+- On Windows, an application name resolvable only via the Windows system directory
+  (`%SystemRoot%\System32`) resolves successfully even when `PATH` does not include that
+  directory, matching the always-implicit system-directory search performed by
+  `CreateProcess`/`cmd.exe`. The Windows directory (`%SystemRoot%`) is searched by the same
+  code path but is not separately covered by a dedicated test.
 - Mutating the caller's original rules array after construction does not affect a
   `RunProcessor` instance's classification behavior.
 - Verbose logging writes the working directory and run command when `context.Verbose` is set.
@@ -108,6 +113,16 @@ extension-qualified names rather than over-appending further extensions. This te
 runs on Windows (`[SupportedOSPlatform("windows")]`).
 This scenario is tested by
 `RunProcessor_Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile`.
+
+**Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully**: Verifies that a
+bare-named executable (`cmd`) resolvable only via the Windows system directory
+(`%SystemRoot%\System32`) resolves successfully even when `PATH` is temporarily replaced with
+a directory that does not contain it, confirming resolution mirrors the always-implicit
+system-directory search performed by `CreateProcess`/`cmd.exe` regardless of `PATH` contents —
+regression guard for a bug where resolution only searched the starting directory and `PATH`.
+This test only runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully`.
 
 **Execute_WithContext_ValidProgram_StillInvokesSuccessfully**: Verifies that a valid Windows
 application (`dotnet`) is unaffected by the new pre-flight executable resolution step — a

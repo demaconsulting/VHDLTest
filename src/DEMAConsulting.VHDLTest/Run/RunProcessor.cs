@@ -51,6 +51,24 @@ public class RunProcessor
     private readonly IProcessInvoker _invoker;
 
     /// <summary>
+    ///     Windows system directories that <c>CreateProcess</c>/<c>cmd.exe</c> always implicitly
+    ///     search when resolving an unqualified executable name, regardless of what the
+    ///     <c>PATH</c> environment variable contains: the system directory
+    ///     (<c>%SystemRoot%\System32</c>, from <see cref="Environment.SystemDirectory"/>) and the
+    ///     Windows directory (<c>%SystemRoot%</c>, from
+    ///     <see cref="Environment.SpecialFolder.Windows"/>). Evaluated lazily (not at type-load
+    ///     time) so tests running on non-Windows platforms never touch these Windows-only APIs.
+    /// </summary>
+    private static IEnumerable<string> WindowsSystemDirectories
+    {
+        get
+        {
+            yield return Environment.SystemDirectory;
+            yield return Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        }
+    }
+
+    /// <summary>
     ///     Initializes a new instance of <see cref="RunProcessor"/> with the specified rules and an optional invoker.
     /// </summary>
     /// <param name="rules">
@@ -219,12 +237,15 @@ public class RunProcessor
 
     /// <summary>
     ///     Resolves <paramref name="application"/> to an existing executable path using the same
-    ///     search order <c>cmd.exe</c> uses: when <paramref name="application"/> contains a
-    ///     directory component, only that directory is searched; otherwise the process's actual
-    ///     starting directory (<paramref name="workingDirectory"/>, or the current directory when
-    ///     empty) is searched first, followed by each entry in the <c>PATH</c> environment
-    ///     variable. Within each candidate directory, the bare name and each <c>PATHEXT</c>-qualified
-    ///     variant (default <c>.COM;.EXE;.BAT;.CMD</c> when <c>PATHEXT</c> is not set) are tried.
+    ///     search order <c>CreateProcess</c>/<c>cmd.exe</c> uses: when <paramref name="application"/>
+    ///     contains a directory component, only that directory is searched; otherwise the process's
+    ///     actual starting directory (<paramref name="workingDirectory"/>, or the current directory
+    ///     when empty) is searched first, then the Windows system directory
+    ///     (<c>%SystemRoot%\System32</c>) and the Windows directory (<c>%SystemRoot%</c>) — these
+    ///     are always implicitly searched by <c>CreateProcess</c>/<c>cmd.exe</c> regardless of
+    ///     <c>PATH</c> contents — then each entry in the <c>PATH</c> environment variable. Within
+    ///     each candidate directory, the bare name and each <c>PATHEXT</c>-qualified variant
+    ///     (default <c>.COM;.EXE;.BAT;.CMD</c> when <c>PATHEXT</c> is not set) are tried.
     /// </summary>
     /// <param name="application">Application name or path to resolve. Must not be null.</param>
     /// <param name="workingDirectory">
@@ -257,11 +278,23 @@ public class RunProcessor
             return TryResolveCandidates(candidatePath, extensions, out resolved);
         }
 
-        // No directory component: search the process's actual starting directory, then each
-        // PATH entry, mirroring cmd.exe's own resolution order.
+        // No directory component: search the process's actual starting directory first (matching
+        // CreateProcess's documented search order, where the current directory is checked before
+        // the system directories), then the Windows system directories — these are always
+        // implicitly searched by CreateProcess/cmd.exe regardless of what PATH contains, so a
+        // tool like "cmd" or "notepad" resolves even in an environment whose PATH omits System32
+        // — then each PATH entry.
         if (TryResolveCandidates(Path.Combine(startDirectory, application), extensions, out resolved))
         {
             return true;
+        }
+
+        foreach (var systemDirectory in WindowsSystemDirectories)
+        {
+            if (TryResolveCandidates(Path.Combine(systemDirectory, application), extensions, out resolved))
+            {
+                return true;
+            }
         }
 
         var pathEntries = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty)

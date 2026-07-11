@@ -127,6 +127,55 @@ public class RunProcessorTests
     }
 
     /// <summary>
+    ///     Verifies that the Windows pre-flight executable resolution step finds a bare-named
+    ///     executable that lives in a Windows system directory (<c>%SystemRoot%\System32</c> or
+    ///     <c>%SystemRoot%</c>) even when the <c>PATH</c> environment variable does not include
+    ///     that directory — regression guard for a bug where resolution only searched the
+    ///     starting directory and <c>PATH</c>, so a tool resolvable by real <c>cmd.exe</c> via its
+    ///     always-implicit system-directory search (independent of <c>PATH</c> contents) could be
+    ///     misreported as missing.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully()
+    {
+        // Skip this test on non-Windows platforms — the resolution step only runs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: temporarily replace PATH with a directory that certainly does not contain
+        // "cmd", proving resolution succeeds solely via the explicit system-directory search
+        // rather than falling through to PATH. Restored in finally regardless of outcome.
+        var originalPath = Environment.GetEnvironmentVariable("PATH");
+        var emptyPathDir = Path.Combine(Path.GetTempPath(), $"rp_syspath_test_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(emptyPathDir);
+        try
+        {
+            Environment.SetEnvironmentVariable("PATH", emptyPathDir);
+
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using var context = Context.Create(["--silent"]);
+
+            // Act: "cmd" itself lives in %SystemRoot%\System32 and is never on a deliberately
+            // emptied PATH, so successful resolution proves the system-directory search works
+            var results = processor.Execute(context, "cmd", "", "/c", "exit", "0");
+
+            // Assert
+            Assert.Equal(0, results.ExitCode);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("PATH", originalPath);
+            Directory.Delete(emptyPathDir, true);
+        }
+    }
+
+    /// <summary>
     ///     Verifies that a valid Windows application (e.g. <c>dotnet</c>) is unaffected by the
     ///     new pre-flight executable resolution step added to <c>Execute(Context, ...)</c> —
     ///     regression guard proving the resolution step does not break the existing working path.

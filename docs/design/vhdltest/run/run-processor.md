@@ -25,15 +25,17 @@ implementations and the output-processing pipeline.
 Logs the run directory and command through `context.WriteVerboseLine`. On Windows, when this
 instance uses the production `ProcessInvoker.Instance` (i.e. a real process will actually be
 launched), `application` is first resolved to an existing executable path via a private
-`TryResolveWindowsExecutable` helper — a `PATHEXT`-aware search mirroring `cmd.exe`'s own
-resolution order (current directory or the supplied directory, then each `PATH` entry;
-the bare name and each `PATHEXT`-qualified variant are tried). An application name that
-already carries its own extension (e.g. `tool.exe`) is only matched against the literal
-path — no further `PATHEXT` variants are appended — so it cannot resolve to an unrelated
-file such as `tool.exe.cmd`, matching `cmd.exe`'s own resolution semantics for an
-extension-qualified name. If resolution fails, a `Win32Exception` is thrown immediately,
-with `NativeErrorCode` set to the standard `ERROR_FILE_NOT_FOUND` (2) so callers relying
-on the Win32 error code observe a semantically correct value, before any process is
+`TryResolveWindowsExecutable` helper — a `PATHEXT`-aware search mirroring `CreateProcess`'s and
+`cmd.exe`'s own resolution order (the current directory or the supplied directory first, then
+the Windows system directory `%SystemRoot%\System32` and the Windows directory `%SystemRoot%`
+— always implicitly searched by `CreateProcess`/`cmd.exe` regardless of `PATH` contents — then
+each `PATH` entry; the bare name and each `PATHEXT`-qualified variant are tried in every
+directory). An application name that already carries its own extension (e.g. `tool.exe`) is
+only matched against the literal path — no further `PATHEXT` variants are appended — so it
+cannot resolve to an unrelated file such as `tool.exe.cmd`, matching `cmd.exe`'s own resolution
+semantics for an extension-qualified name. If resolution fails, a `Win32Exception` is thrown
+immediately, with `NativeErrorCode` set to the standard `ERROR_FILE_NOT_FOUND` (2) so callers
+relying on the Win32 error code observe a semantically correct value, before any process is
 launched. Resolution — and this pre-flight throw — is skipped when a test double
 `IProcessInvoker` is supplied, since no real process is spawned in that case and unit tests
 are not required to reference an executable that actually exists on disk; missing-program

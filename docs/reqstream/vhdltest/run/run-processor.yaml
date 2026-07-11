@@ -99,3 +99,20 @@ sections:
                 tests:
                   - GhdlSimulator_Compile_WithValidConfig_InvokesGhdlWithAnalysisArguments
                   - GhdlSimulator_Test_WithValidConfig_InvokesGhdlWithRunArguments
+
+              - id: VHDLTest-Run-RunProcessor-SystemDirectoryResolution
+                title: >-
+                  On Windows, RunProcessor's pre-flight executable resolution shall consider the
+                  Windows system directory (%SystemRoot%\System32) and the Windows directory
+                  (%SystemRoot%) so that a simulator executable resolvable via those
+                  always-implicitly-searched directories is not misreported as missing solely
+                  because PATH does not include them.
+                justification: |
+                  CreateProcess and cmd.exe always search the Windows system directory and the
+                  Windows directory when resolving an unqualified executable name, regardless of
+                  PATH contents. Without considering these directories, the pre-flight resolution
+                  check could throw a Win32Exception for a program that cmd /c would actually
+                  launch successfully, producing a false failure that does not match real Windows
+                  process-launch semantics.
+                tests:
+                  - windows@RunProcessor_Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully
