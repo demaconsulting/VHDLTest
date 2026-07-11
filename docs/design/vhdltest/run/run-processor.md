@@ -26,8 +26,14 @@ Logs the run directory and command through `context.WriteVerboseLine`. On Window
 `application` is first resolved to an existing executable path via a private
 `TryResolveWindowsExecutable` helper — a `PATHEXT`-aware search mirroring `cmd.exe`'s own
 resolution order (current directory or the supplied directory, then each `PATH` entry;
-the bare name and each `PATHEXT`-qualified variant are tried). If resolution fails, a
-`Win32Exception` is thrown immediately, before any process is launched. When resolution
+the bare name and each `PATHEXT`-qualified variant are tried). An application name that
+already carries its own extension (e.g. `tool.exe`) is only matched against the literal
+path — no further `PATHEXT` variants are appended — so it cannot resolve to an unrelated
+file such as `tool.exe.cmd`, matching `cmd.exe`'s own resolution semantics for an
+extension-qualified name. If resolution fails, a `Win32Exception` is thrown immediately,
+with `NativeErrorCode` set to the standard `ERROR_FILE_NOT_FOUND` (2) so callers relying
+on the Win32 error code observe a semantically correct value, before any process is
+launched. When resolution
 succeeds, the *resolved* (extension-qualified) path is wrapped in `cmd /c` to support
 `.bat` and `.cmd` invocation; the resolved path is passed directly to `ArgumentList` so
 paths containing spaces are quoted automatically. The verbose log uses a display form

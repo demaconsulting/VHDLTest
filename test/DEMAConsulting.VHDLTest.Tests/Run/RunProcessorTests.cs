@@ -71,9 +71,59 @@ public class RunProcessorTests
         using var context = Context.Create(["--silent"]);
 
         // Act / Assert: a missing program must throw Win32Exception, not swallow the failure
-        // into a non-zero-exit RunResults
-        Assert.Throws<System.ComponentModel.Win32Exception>(
+        // into a non-zero-exit RunResults. NativeErrorCode must be set to the standard
+        // ERROR_FILE_NOT_FOUND (2) rather than left at its default 0, so callers/logging that
+        // rely on the error code see a semantically correct value.
+        var exception = Assert.Throws<System.ComponentModel.Win32Exception>(
             () => processor.Execute(context, "definitely-not-a-real-program-xyz"));
+        Assert.Equal(2, exception.NativeErrorCode);
+    }
+
+    /// <summary>
+    ///     Verifies that the Windows pre-flight executable resolution step does not append
+    ///     further <c>PATHEXT</c> extensions to an application name that already has an
+    ///     extension of its own — regression guard for a bug where an explicitly
+    ///     extension-qualified name (e.g. <c>tool.exe</c>) could incorrectly resolve to an
+    ///     unrelated file such as <c>tool.exe.cmd</c>, which does not match <c>cmd.exe</c>
+    ///     resolution semantics for an extension-qualified name.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile()
+    {
+        // Skip this test on non-Windows platforms — the resolution step only runs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: create a scratch directory containing only a "<program>.exe.cmd" file (never
+        // a "<program>.exe" file), then request execution of the extension-qualified
+        // "<program>.exe" name. Real cmd.exe resolution would never match "<program>.exe.cmd"
+        // for a request of "<program>.exe", so resolution must fail and throw Win32Exception.
+        var scratchDir = Path.Combine(Path.GetTempPath(), $"rp_ext_test_{Guid.NewGuid():N}");
+        var programName = $"rp-test-{Guid.NewGuid():N}";
+        Directory.CreateDirectory(scratchDir);
+        var decoyPath = Path.Combine(scratchDir, $"{programName}.exe.cmd");
+        File.WriteAllText(decoyPath, "@echo Usage: test-ok" + Environment.NewLine + "@exit /b 0" + Environment.NewLine);
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using var context = Context.Create(["--silent"]);
+
+            // Act / Assert: requesting "<program>.exe" must not resolve to the decoy
+            // "<program>.exe.cmd" file, so a Win32Exception is thrown
+            var exception = Assert.Throws<System.ComponentModel.Win32Exception>(
+                () => processor.Execute(context, $"{programName}.exe", scratchDir));
+            Assert.Equal(2, exception.NativeErrorCode);
+        }
+        finally
+        {
+            Directory.Delete(scratchDir, true);
+        }
     }
 
     /// <summary>

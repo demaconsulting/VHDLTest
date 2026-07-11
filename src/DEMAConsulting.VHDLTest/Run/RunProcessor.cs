@@ -40,6 +40,13 @@ namespace DEMAConsulting.VHDLTest.Run;
 /// </remarks>
 public class RunProcessor
 {
+    /// <summary>
+    ///     Win32 error code for <c>ERROR_FILE_NOT_FOUND</c>, used as the <c>NativeErrorCode</c>
+    ///     of the <see cref="System.ComponentModel.Win32Exception"/> thrown when the Windows
+    ///     executable resolution pre-flight cannot find the requested application.
+    /// </summary>
+    private const int NativeErrorFileNotFound = 2;
+
     private readonly RunLineRule[] _rules;
     private readonly IProcessInvoker _invoker;
 
@@ -139,6 +146,7 @@ public class RunProcessor
                 !TryResolveWindowsExecutable(application, workingDirectory, out resolvedApplication))
             {
                 throw new System.ComponentModel.Win32Exception(
+                    NativeErrorFileNotFound,
                     $"The system cannot find the file specified: '{application}'");
             }
 
@@ -281,6 +289,15 @@ public class RunProcessor
         {
             resolved = basePath;
             return true;
+        }
+
+        // Mirror cmd.exe: PATHEXT variants are only tried when basePath has no extension of its
+        // own. An already-extension-qualified name (e.g. "tool.exe") must not be further
+        // qualified into an unintended file such as "tool.exe.cmd".
+        if (!string.IsNullOrEmpty(Path.GetExtension(basePath)))
+        {
+            resolved = basePath;
+            return false;
         }
 
         foreach (var ext in extensions)

@@ -22,7 +22,10 @@ N/A - standard test environment. `dotnet` must be available on PATH.
 - A non-zero exit code from the process elevates the summary to `RunLineType.Error`.
 - Executing an unknown program raises an exception that propagates to the caller.
 - On Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program,
-  consistent with the non-Windows path and the `Execute(string, ...)` overload.
+  consistent with the non-Windows path and the `Execute(string, ...)` overload, and the
+  thrown exception's `NativeErrorCode` is set to `ERROR_FILE_NOT_FOUND` (2).
+- On Windows, an application name that already carries its own extension (e.g. `tool.exe`)
+  never resolves to an unrelated `PATHEXT`-qualified file (e.g. `tool.exe.cmd`).
 - Mutating the caller's original rules array after construction does not affect a
   `RunProcessor` instance's classification behavior.
 - Verbose logging writes the working directory and run command when `context.Verbose` is set.
@@ -88,13 +91,23 @@ runs on Windows (`[SupportedOSPlatform("windows")]`).
 This scenario is tested by `RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC`.
 
 **Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently**: Verifies that on
-Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program — proving the
-`Execute(Context, ...)` overload's pre-flight resolution step now matches the already-verified
-missing-program behavior of the direct `Execute(string, ...)` overload, closing the prior
-inconsistency where `cmd /c` silently swallowed a missing program into a non-throwing,
+Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program, with
+`NativeErrorCode` set to `ERROR_FILE_NOT_FOUND` (2) — proving the `Execute(Context, ...)`
+overload's pre-flight resolution step now matches the already-verified missing-program
+behavior of the direct `Execute(string, ...)` overload, closing the prior inconsistency
+where `cmd /c` silently swallowed a missing program into a non-throwing,
 non-zero-exit `RunResults`. This test only runs on Windows (`[SupportedOSPlatform("windows")]`).
 This scenario is tested by
 `RunProcessor_Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently`.
+
+**Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile**:
+Verifies that requesting an already extension-qualified application name (e.g. `tool.exe`)
+does not resolve to an unrelated `PATHEXT`-qualified file (e.g. `tool.exe.cmd`) present in
+the working directory, confirming resolution matches `cmd.exe`'s own semantics for
+extension-qualified names rather than over-appending further extensions. This test only
+runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile`.
 
 **Execute_WithContext_ValidProgram_StillInvokesSuccessfully**: Verifies that a valid Windows
 application (`dotnet`) is unaffected by the new pre-flight executable resolution step — a
