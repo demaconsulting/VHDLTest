@@ -22,8 +22,9 @@ implementations and the output-processing pipeline.
 
 **`Execute(Context context, string application, string workingDirectory, string[] arguments) → RunResults`**
 
-Logs the run directory and command through `context.WriteVerboseLine`. On Windows,
-`application` is first resolved to an existing executable path via a private
+Logs the run directory and command through `context.WriteVerboseLine`. On Windows, when this
+instance uses the production `ProcessInvoker.Instance` (i.e. a real process will actually be
+launched), `application` is first resolved to an existing executable path via a private
 `TryResolveWindowsExecutable` helper — a `PATHEXT`-aware search mirroring `cmd.exe`'s own
 resolution order (current directory or the supplied directory, then each `PATH` entry;
 the bare name and each `PATHEXT`-qualified variant are tried). An application name that
@@ -33,9 +34,12 @@ file such as `tool.exe.cmd`, matching `cmd.exe`'s own resolution semantics for a
 extension-qualified name. If resolution fails, a `Win32Exception` is thrown immediately,
 with `NativeErrorCode` set to the standard `ERROR_FILE_NOT_FOUND` (2) so callers relying
 on the Win32 error code observe a semantically correct value, before any process is
-launched. When resolution
-succeeds, the *resolved* (extension-qualified) path is wrapped in `cmd /c` to support
-`.bat` and `.cmd` invocation; the resolved path is passed directly to `ArgumentList` so
+launched. Resolution — and this pre-flight throw — is skipped when a test double
+`IProcessInvoker` is supplied, since no real process is spawned in that case and unit tests
+are not required to reference an executable that actually exists on disk; missing-program
+behavior in that case is delegated entirely to the supplied invoker. When resolution
+succeeds (or is skipped), the (possibly resolved) path is wrapped in `cmd /c` to support
+`.bat` and `.cmd` invocation; the path is passed directly to `ArgumentList` so
 paths containing spaces are quoted automatically. The verbose log uses a display form
 with quotes for readability only. Delegates to the core `Execute(string, string, string[])`
 overload and returns its result.
@@ -44,11 +48,13 @@ overload and returns its result.
   executable or batch file; individual arguments must not contain `cmd.exe` shell
   metacharacters.
 - *Postconditions*: Returns a `RunResults` with all fields populated on success. On
-  Windows, throws `Win32Exception` immediately (without launching any process) when
-  `application` cannot be resolved to an existing executable — this now matches the
-  non-Windows path's behavior for a missing program, closing a prior inconsistency where
-  `cmd /c` silently swallowed a missing program into a non-throwing, non-zero-exit
-  `RunResults` instead of throwing.
+  Windows, when this instance uses the production `ProcessInvoker.Instance`, throws
+  `Win32Exception` immediately (without launching any process) when `application` cannot
+  be resolved to an existing executable — this now matches the non-Windows path's behavior
+  for a missing program, closing a prior inconsistency where `cmd /c` silently swallowed a
+  missing program into a non-throwing, non-zero-exit `RunResults` instead of throwing. When
+  a test double `IProcessInvoker` is supplied, this pre-flight resolution and throw are
+  skipped, and missing-program behavior is delegated to the supplied invoker.
 
 **`Execute(string application, string workingDirectory, string[] arguments) → RunResults`**
 
@@ -76,13 +82,15 @@ non-zero `exitCode` forces the summary to at least `RunLineType.Error`.
 
 `RunProcessor`'s constructor throws `ArgumentNullException` when `rules` is null, before
 attempting the defensive copy. No exceptions are otherwise caught within `RunProcessor`. On
-Windows, `Execute(Context, ...)` throws `Win32Exception` immediately when `application` cannot
-be resolved to an existing executable by the pre-flight `TryResolveWindowsExecutable` search —
-this is now consistent with the non-Windows path and with the `Execute(string, ...)` overload,
-both of which already throw for a missing program. If `IProcessInvoker.Execute` cannot launch
-an already-resolved process (for example, a permissions failure), the exception propagates to
-the caller. `RegexMatchTimeoutException` from rule pattern matching also propagates to the
-caller unchanged.
+Windows, when this instance uses the production `ProcessInvoker.Instance`, `Execute(Context,
+...)` throws `Win32Exception` immediately when `application` cannot be resolved to an existing
+executable by the pre-flight `TryResolveWindowsExecutable` search — this is now consistent with
+the non-Windows path and with the `Execute(string, ...)` overload, both of which already throw
+for a missing program. When a test double `IProcessInvoker` is supplied, this pre-flight
+resolution and throw are skipped, and missing-program behavior is delegated entirely to the
+supplied invoker. If `IProcessInvoker.Execute` cannot launch an already-resolved process (for
+example, a permissions failure), the exception propagates to the caller. `RegexMatchTimeoutException`
+from rule pattern matching also propagates to the caller unchanged.
 
 #### Dependencies
 
