@@ -1,5 +1,7 @@
 ### NvcSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the NVC open-source VHDL simulator. Drives the `nvc` command-line

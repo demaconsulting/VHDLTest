@@ -31,7 +31,7 @@ The following OTS tools are used in the build pipeline and are not deployed with
 
 | Item | Purpose |
 | ---- | ------- |
-| xUnit v3 | Unit test execution framework |
+| xUnit | Unit test execution framework |
 | dotnet-sonarscanner | Static analysis and SonarCloud publishing |
 | DemaConsulting.ReqStream | Requirements traceability enforcement |
 | DemaConsulting.BuildMark | Build notes generation |
@@ -42,6 +42,8 @@ The following OTS tools are used in the build pipeline and are not deployed with
 | DemaConsulting.FileAssert | File comparison in CI |
 | DemaConsulting.SarifMark | SARIF report processing |
 | DemaConsulting.SonarMark | SonarCloud quality gate check |
+| DemaConsulting.SysML2Tools | Architecture model validation and diagram rendering |
 
 Detailed integration design for each build and analysis tool that requires formal OTS coverage
-is in its own document under `docs/design/ots/`.
+is in its own document under `docs/design/ots/`. See _SysML2Tools OTS Design_ for the
+architecture model validation and diagram rendering tool.

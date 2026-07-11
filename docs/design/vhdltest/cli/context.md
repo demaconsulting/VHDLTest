@@ -1,5 +1,7 @@
 ### Context
 
+![Cli Structure](CliView.svg)
+
 #### Purpose
 
 `Context` is responsible for parsing the raw command-line argument array, exposing typed

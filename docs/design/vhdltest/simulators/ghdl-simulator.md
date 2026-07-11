@@ -1,5 +1,7 @@
 ### GhdlSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the GHDL open-source VHDL simulator. Drives the `ghdl` command-line

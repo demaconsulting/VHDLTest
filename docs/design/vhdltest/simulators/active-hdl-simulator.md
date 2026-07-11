@@ -1,5 +1,7 @@
 ### ActiveHdlSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the Active-HDL simulator from Aldec. Drives the `vsimsa`

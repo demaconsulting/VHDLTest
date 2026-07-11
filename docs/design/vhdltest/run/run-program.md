@@ -1,5 +1,7 @@
 ### RunProgram
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `RunProgram` is a static utility class that launches an external process, captures its

@@ -1,5 +1,7 @@
 ## Simulators
 
+![Simulators Structure](SimulatorsView.svg)
+
 ### Overview
 
 The Simulators subsystem provides VHDL simulator integration for the VHDLTest system. It encapsulates all

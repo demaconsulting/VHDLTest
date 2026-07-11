@@ -1,5 +1,7 @@
 ### Validation
 
+![SelfTest Structure](SelfTestView.svg)
+
 #### Purpose
 
 `Validation.cs` implements the self-validation test runner for VHDLTest. It extracts embedded VHDL

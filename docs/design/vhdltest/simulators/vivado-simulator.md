@@ -1,5 +1,7 @@
 ### VivadoSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the Vivado simulator from Xilinx/AMD. Drives `xvhdl` for VHDL-2008

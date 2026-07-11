@@ -1,5 +1,7 @@
 ## Cli
 
+![Cli Structure](CliView.svg)
+
 ### Overview
 
 The Cli subsystem implements command-line interface handling for VHDLTest. It encompasses

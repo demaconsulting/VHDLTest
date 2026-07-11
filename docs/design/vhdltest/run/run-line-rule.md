@@ -1,5 +1,7 @@
 ### RunLineRule
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `RunLineRule` is an immutable record pairing a compiled regular expression with the

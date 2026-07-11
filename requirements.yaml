@@ -42,3 +42,4 @@ includes:
   - docs/reqstream/ots/weasyprinttool.yaml
   - docs/reqstream/ots/fileassert.yaml
   - docs/reqstream/ots/sonarscanner.yaml
+  - docs/reqstream/ots/sysml2tools.yaml

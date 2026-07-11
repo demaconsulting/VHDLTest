@@ -1,13 +1,15 @@
 ## Run
 
+![Run Structure](RunView.svg)
+
 ### Overview
 
 The Run subsystem handles the execution of external VHDL simulation programs and the
 processing of their output to determine test outcomes. It is bounded to launching
 simulator processes, capturing their combined stdout and stderr output, classifying
 each output line against a configurable set of regex rules, and returning a structured
-result. It contains the following units: RunProcessor, RunProgram, RunResults, RunLine,
-RunLineRule, and RunLineType.
+result. It contains the following units: IProcessInvoker, ProcessInvoker, RunProcessor,
+RunProgram, RunResults, RunLine, RunLineRule, and RunLineType.
 
 ### Interfaces
 

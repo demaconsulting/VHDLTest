@@ -1,5 +1,7 @@
 ### TestResult
 
+![Results Structure](ResultsView.svg)
+
 #### Purpose
 
 `TestResult.cs` is an immutable record that captures the outcome of a single VHDL test bench

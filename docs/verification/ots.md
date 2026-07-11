@@ -32,6 +32,7 @@ VHDLTest verifies OTS software items through two complementary approaches:
 | DemaConsulting.WeasyprintTool | Build | CI pipeline execution |
 | DemaConsulting.FileAssert | Build | CI pipeline execution |
 | dotnet-sonarscanner | Build | CI pipeline execution |
+| DemaConsulting.SysML2Tools | Build | CI pipeline execution and self-validation |
 
 Detailed verification evidence for each OTS item is in its own document under
 `docs/verification/ots/`.

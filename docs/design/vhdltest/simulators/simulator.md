@@ -1,5 +1,7 @@
 ### Simulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Abstract base class that defines the compile and test contract all VHDL simulator integrations must

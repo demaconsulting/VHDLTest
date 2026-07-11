@@ -1,5 +1,7 @@
 ### Options
 
+![Cli Structure](CliView.svg)
+
 #### Purpose
 
 `Options` is a record that holds the fully resolved configuration for a VHDLTest run. It

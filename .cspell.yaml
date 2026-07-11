@@ -91,6 +91,8 @@ words:
   - SonarQube
   - sonarscanner
   - spdx
+  - sysml
+  - sysml2tools
   - testbench
   - testbenches
   - testresults

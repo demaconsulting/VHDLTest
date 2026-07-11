@@ -1,5 +1,7 @@
 # VHDLTest
 
+![VHDLTest System Structure](VHDLTestView.svg)
+
 VHDLTest is a .NET command-line tool that accepts command-line arguments, loads a YAML configuration file,
 invokes a VHDL simulator, processes the simulation output, and reports test pass/fail results.
 

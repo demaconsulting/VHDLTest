@@ -1,5 +1,7 @@
 ### ModelSimSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the ModelSim commercial VHDL simulator by Mentor/Siemens. Drives the

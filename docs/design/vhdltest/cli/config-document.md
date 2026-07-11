@@ -1,5 +1,7 @@
 ### ConfigDocument
 
+![Cli Structure](CliView.svg)
+
 #### Purpose
 
 `ConfigDocument` is responsible for deserializing the YAML configuration file that specifies

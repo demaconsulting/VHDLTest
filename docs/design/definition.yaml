@@ -48,6 +48,7 @@ input-files:
   - docs/design/ots/sarifmark.md
   - docs/design/ots/sonarmark.md
   - docs/design/ots/reviewmark.md
+  - docs/design/ots/sysml2tools.md
   - docs/design/ots/pandoctool.md
   - docs/design/ots/weasyprinttool.md
   - docs/design/ots/fileassert.md

@@ -1,5 +1,7 @@
 ### QuestaSimSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the QuestaSim commercial VHDL simulator by Mentor/Siemens.

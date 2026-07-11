@@ -1,5 +1,7 @@
 ### RunProcessor
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `RunProcessor` coordinates the execution of external simulator programs and the

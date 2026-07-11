@@ -1,5 +1,7 @@
 ### SimulatorFactory
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Static factory class that maps simulator name strings to singleton `Simulator` instances and provides

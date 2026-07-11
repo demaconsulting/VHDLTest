@@ -1,5 +1,7 @@
 ### RunLineType
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `RunLineType` is an enumeration classifying simulator output lines and the overall

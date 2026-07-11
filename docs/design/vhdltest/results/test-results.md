@@ -1,5 +1,7 @@
 ### TestResults
 
+![Results Structure](ResultsView.svg)
+
 #### Purpose
 
 `TestResults.cs` is the aggregate container for a VHDLTest run. It drives the build and test
