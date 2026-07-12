@@ -127,6 +127,56 @@ public class RunProcessorTests
     }
 
     /// <summary>
+    ///     Verifies that the Windows pre-flight executable resolution step does not treat an
+    ///     extensionless file that happens to be named exactly like the requested bare
+    ///     application name as a match — regression guard for a bug where <c>TryResolveCandidates</c>
+    ///     checked <c>File.Exists(basePath)</c> for a bare name before trying any <c>PATHEXT</c>
+    ///     variant, so a stray extensionless file (e.g. a non-executable data file named
+    ///     <c>cmd</c>) in the search directory could be misreported as a resolved executable, even
+    ///     though real <c>cmd.exe</c> resolution for a bare (extensionless) name only ever matches
+    ///     a <c>PATHEXT</c>-qualified variant, never the literal extensionless name.
+    /// </summary>
+    [Fact]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public void RunProcessor_Execute_WithContext_BareNameOnlyExtensionlessFileNotFound_DoesNotMatchExtensionlessFile()
+    {
+        // Skip this test on non-Windows platforms — the resolution step only runs on Windows
+        if (!OperatingSystem.IsWindows())
+        {
+            Assert.Skip("This test only applies to Windows");
+        }
+
+        // Arrange: create a scratch directory containing only an extensionless file exactly
+        // named "<program>" (never a "<program>.cmd"/".exe"/etc. variant), then request execution
+        // of the bare "<program>" name. Real cmd.exe resolution would never match the
+        // extensionless file for a bare-name request, so resolution must fail and throw
+        // Win32Exception.
+        var scratchDir = Path.Combine(Path.GetTempPath(), $"rp_bare_ext_test_{Guid.NewGuid():N}");
+        var programName = $"rp-test-{Guid.NewGuid():N}";
+        Directory.CreateDirectory(scratchDir);
+        var decoyPath = Path.Combine(scratchDir, programName);
+        File.WriteAllText(decoyPath, "not an executable");
+        try
+        {
+            var processor = new RunProcessor(
+            [
+                RunLineRule.Create(RunLineType.Info, "Usage")
+            ]);
+            using var context = Context.Create(["--silent"]);
+
+            // Act / Assert: requesting the bare "<program>" name must not resolve to the
+            // extensionless decoy file, so a Win32Exception is thrown
+            var exception = Assert.Throws<System.ComponentModel.Win32Exception>(
+                () => processor.Execute(context, programName, scratchDir));
+            Assert.Equal(2, exception.NativeErrorCode);
+        }
+        finally
+        {
+            Directory.Delete(scratchDir, true);
+        }
+    }
+
+    /// <summary>
     ///     Verifies that the Windows pre-flight executable resolution step finds a bare-named
     ///     executable that lives in a Windows system directory (<c>%SystemRoot%\System32</c> or
     ///     <c>%SystemRoot%</c>) even when the <c>PATH</c> environment variable does not include

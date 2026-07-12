@@ -312,8 +312,9 @@ public class RunProcessor
     }
 
     /// <summary>
-    ///     Checks whether <paramref name="basePath"/> or any <paramref name="extensions"/>-qualified
-    ///     variant of it exists as a file.
+    ///     Checks whether <paramref name="basePath"/> (when it already carries an extension) or a
+    ///     <paramref name="extensions"/>-qualified variant of it (when it does not) exists as a
+    ///     file.
     /// </summary>
     /// <param name="basePath">Candidate path without an extension qualifier applied.</param>
     /// <param name="extensions">Ordered <c>PATHEXT</c>-style extensions (each including the leading dot) to try.</param>
@@ -321,21 +322,20 @@ public class RunProcessor
     /// <returns>True when a matching file was found; otherwise false.</returns>
     private static bool TryResolveCandidates(string basePath, string[] extensions, out string resolved)
     {
-        if (File.Exists(basePath))
-        {
-            resolved = basePath;
-            return true;
-        }
-
-        // Mirror cmd.exe: PATHEXT variants are only tried when basePath has no extension of its
-        // own. An already-extension-qualified name (e.g. "tool.exe") must not be further
-        // qualified into an unintended file such as "tool.exe.cmd".
+        // Mirror cmd.exe: when basePath already carries its own extension (e.g. "tool.exe"), it
+        // is checked literally and PATHEXT variants are never appended — an already
+        // extension-qualified name must not be further qualified into an unintended file such as
+        // "tool.exe.cmd".
         if (!string.IsNullOrEmpty(Path.GetExtension(basePath)))
         {
             resolved = basePath;
-            return false;
+            return File.Exists(basePath);
         }
 
+        // basePath has no extension of its own: cmd.exe only resolves such bare names via a
+        // PATHEXT-qualified variant (default .COM;.EXE;.BAT;.CMD when PATHEXT is not set) — an
+        // extensionless file literally named basePath is never treated as an executable match by
+        // cmd.exe, even if one happens to exist on disk, so it must not be accepted here either.
         foreach (var ext in extensions)
         {
             var candidate = basePath + ext;

@@ -26,6 +26,9 @@ N/A - standard test environment. `dotnet` must be available on PATH.
   thrown exception's `NativeErrorCode` is set to `ERROR_FILE_NOT_FOUND` (2).
 - On Windows, an application name that already carries its own extension (e.g. `tool.exe`)
   never resolves to an unrelated `PATHEXT`-qualified file (e.g. `tool.exe.cmd`).
+- On Windows, a bare (extensionless) application name never resolves to an extensionless file
+  literally named `application`, even when one exists on disk — only a `PATHEXT`-qualified
+  variant is accepted, matching `cmd.exe`'s own resolution semantics for an unqualified name.
 - On Windows, an application name resolvable only via the Windows system directory
   (`%SystemRoot%\System32`) resolves successfully even when `PATH` does not include that
   directory, matching the always-implicit system-directory search performed by
@@ -113,6 +116,17 @@ extension-qualified names rather than over-appending further extensions. This te
 runs on Windows (`[SupportedOSPlatform("windows")]`).
 This scenario is tested by
 `RunProcessor_Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile`.
+
+**Execute_WithContext_BareNameOnlyExtensionlessFileNotFound_DoesNotMatchExtensionlessFile**:
+Verifies that requesting a bare (extensionless) application name does not resolve to an
+extensionless file literally named `application` present in the working directory, confirming
+resolution matches `cmd.exe`'s own semantics for unqualified names — only a
+`PATHEXT`-qualified variant is ever accepted, never the literal extensionless name — regression
+guard for a bug where an extensionless file happening to share the requested bare name could be
+misreported as a resolved executable. This test only runs on Windows
+(`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_BareNameOnlyExtensionlessFileNotFound_DoesNotMatchExtensionlessFile`.
 
 **Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully**: Verifies that a
 bare-named executable (`cmd`) resolvable only via the Windows system directory

@@ -116,3 +116,18 @@ sections:
                   process-launch semantics.
                 tests:
                   - windows@RunProcessor_Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully
+
+              - id: VHDLTest-Run-RunProcessor-BareNameExtensionlessFileExcluded
+                title: >-
+                  On Windows, RunProcessor's pre-flight executable resolution shall not treat an
+                  extensionless file literally named after a bare (extensionless) requested
+                  application name as a resolved match.
+                justification: |
+                  CreateProcess and cmd.exe only ever resolve a bare, extensionless application
+                  name via a PATHEXT-qualified variant (e.g. .exe, .cmd); an extensionless file
+                  literally sharing the requested name is never treated as an executable match.
+                  Without this exclusion, a stray non-executable file in the search directory
+                  could be misreported as a resolved executable and passed to cmd /c, diverging
+                  from real cmd.exe resolution semantics.
+                tests:
+                  - windows@RunProcessor_Execute_WithContext_BareNameOnlyExtensionlessFileNotFound_DoesNotMatchExtensionlessFile

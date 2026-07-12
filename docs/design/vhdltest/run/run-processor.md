@@ -29,11 +29,15 @@ launched), `application` is first resolved to an existing executable path via a 
 `cmd.exe`'s own resolution order (the current directory or the supplied directory first, then
 the Windows system directory `%SystemRoot%\System32` and the Windows directory `%SystemRoot%`
 — always implicitly searched by `CreateProcess`/`cmd.exe` regardless of `PATH` contents — then
-each `PATH` entry; the bare name and each `PATHEXT`-qualified variant are tried in every
-directory). An application name that already carries its own extension (e.g. `tool.exe`) is
-only matched against the literal path — no further `PATHEXT` variants are appended — so it
-cannot resolve to an unrelated file such as `tool.exe.cmd`, matching `cmd.exe`'s own resolution
-semantics for an extension-qualified name. If resolution fails, a `Win32Exception` is thrown
+each `PATH` entry; in every directory, an application name that already carries its own
+extension is matched literally, while a bare, extensionless name is matched only against each
+`PATHEXT`-qualified variant — an extensionless file literally named `application` is never
+treated as a match, mirroring `cmd.exe`'s own resolution, which only ever launches a
+`PATHEXT`-recognized file for an unqualified command). An application name that already
+carries its own extension (e.g. `tool.exe`) is only matched against the literal path — no
+further `PATHEXT` variants are appended — so it cannot resolve to an unrelated file such as
+`tool.exe.cmd`, matching `cmd.exe`'s own resolution semantics for an extension-qualified name.
+If resolution fails, a `Win32Exception` is thrown
 immediately, with `NativeErrorCode` set to the standard `ERROR_FILE_NOT_FOUND` (2) so callers
 relying on the Win32 error code observe a semantically correct value, before any process is
 launched. Resolution — and this pre-flight throw — is skipped when a test double
