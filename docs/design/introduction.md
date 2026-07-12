@@ -56,10 +56,11 @@ diagram or hand-maintained prose.
 
 Within the Simulators subsystem, the simulator units are exposed in auto-discovery priority order
 (the order in which `SimulatorFactory` tests for an available simulator when no `--simulator`
-option is supplied): `Simulator`, `SimulatorFactory`, `GhdlSimulator`, `ModelSimSimulator`,
-`QuestaSimSimulator`, `VivadoSimulator`, `ActiveHdlSimulator`, `NvcSimulator`, `MockSimulator`.
-`MockSimulator` is excluded from auto-discovery and is only accessible via the explicit name
-`mock`.
+option is supplied): `GhdlSimulator`, `ModelSimSimulator`, `QuestaSimSimulator`,
+`VivadoSimulator`, `ActiveHdlSimulator`, `NvcSimulator`. `Simulator` (the abstract base class)
+and `SimulatorFactory` (the discovery/lookup helper) are not themselves simulators and take no
+part in this ordering. `MockSimulator` is excluded from auto-discovery and is only accessible
+via the explicit name `mock`.
 
 ## Folder Layout
 
