@@ -1,5 +1,7 @@
 ### MockSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Deterministic in-process VHDL simulator test double for self-validation testing of VHDLTest itself.

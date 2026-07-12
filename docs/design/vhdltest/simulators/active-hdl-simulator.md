@@ -1,5 +1,7 @@
 ### ActiveHdlSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the Active-HDL simulator from Aldec. Drives the `vsimsa`
@@ -36,21 +38,21 @@ Text (not Warning). Classifies `KERNEL:\s*Warning:` and `KERNEL:\s*WARNING:` as 
 - *Preconditions*: SimulatorPath must be non-null.
 - *Postconditions*: Creates `VHDLTest.out/ActiveHDL/` if absent. Writes `compile.do` containing
   `onerror {exit -code 1}`, `alib work VHDLTest.out/ActiveHDL`, `set worklib work`, and
-  `acom -2008 -dbg {file}` for each source file. Runs
-  `vsimsa -do VHDLTest.out/ActiveHDL/compile.do` from the working directory.
+  `acom -2008 -dbg` followed by the TCL-quoted (via `TclText.Quote`) file path for each source
+  file. Runs `vsimsa -do VHDLTest.out/ActiveHDL/compile.do` from the working directory.
   Source files are passed to the compiler in the order they appear in `options.Config.Files`.
 
 **Test**: Simulates a single test bench using Active-HDL's asim utility via a TCL do-script.
 
 - *Parameters*: `Context context` — verbose logging. `Options options` — working directory.
   `string test` — VHDL entity name or library-qualified entity name (e.g., `my_tb` or `lib.my_tb`);
-  must not contain whitespace or TCL metacharacters because the name is interpolated directly
-  into the TCL script without escaping.
+  TCL-quoted via `TclText.Quote` before interpolation, so it may safely contain whitespace or
+  TCL metacharacters.
 - *Returns*: `TestResult` — simulation outcome.
 - *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
 - *Postconditions*: Writes `test.do` containing `onerror {exit -code 1}`, `set worklib work`,
-  `asim {test}`, `run -all`, `endsim`, and `exit -code 0`. Runs `vsimsa -do VHDLTest.out/ActiveHDL/test.do` from the
-  working directory.
+  `asim` followed by the TCL-quoted (via `TclText.Quote`) test name, `run -all`, `endsim`, and
+  `exit -code 0`. Runs `vsimsa -do VHDLTest.out/ActiveHDL/test.do` from the working directory.
 
 **FindPath** (public static): Resolves the path to the Active-HDL installation directory.
 
@@ -74,6 +76,7 @@ to prevent them from being promoted to Warning severity and causing false positi
 #### Dependencies
 
 - **Simulator** — base class providing `SimulatorName`, `SimulatorPath`, `Available()`, and `Where()`.
+- **TclText** — quotes file paths and test names before interpolation into generated TCL do-scripts.
 - **Context** — verbose logging during compile and test.
 - **Options** — VHDL file list and working directory.
 - **RunProcessor** — process execution and output classification.

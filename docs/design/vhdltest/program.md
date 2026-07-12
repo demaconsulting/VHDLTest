@@ -1,5 +1,7 @@
 ## Program
 
+![VHDLTest System Structure](VHDLTestView.svg)
+
 ### Purpose
 
 `Program.cs` is the application entry point for VHDLTest. It creates a `Context` from the raw

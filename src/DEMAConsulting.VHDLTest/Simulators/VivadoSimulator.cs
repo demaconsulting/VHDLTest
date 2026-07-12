@@ -32,10 +32,13 @@ namespace DEMAConsulting.VHDLTest.Simulators;
 /// </summary>
 /// <remarks>
 ///     Uses argument-file (`.do`) scripts to pass options and file lists to the Vivado tools,
-///     avoiding command-line length limits. Implemented as a singleton (<see cref="Instance"/>)
-///     initialized at class load time; stateless after construction and therefore thread-safe.
-///     When Vivado is not installed, <see cref="Simulator.SimulatorPath"/> is null and
-///     <see cref="Simulator.Available"/> returns false.
+///     avoiding command-line length limits. These argument files are Xilinx `-file`/`-f` input
+///     files (per UG900), not TCL scripts: each file path and the test entity name are quoted via
+///     <see cref="XilinxArgText.Quote"/> before interpolation, so values may safely contain
+///     whitespace or characters requiring escaping. Implemented as a singleton
+///     (<see cref="Instance"/>) initialized at class load time; stateless after construction and
+///     therefore thread-safe. When Vivado is not installed, <see cref="Simulator.SimulatorPath"/>
+///     is null and <see cref="Simulator.Available"/> returns false.
 /// </remarks>
 public sealed class VivadoSimulator : Simulator
 {
@@ -129,6 +132,13 @@ public sealed class VivadoSimulator : Simulator
         => new(simulatorPath, invoker);
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Creates the <c>VHDLTest.out/Vivado/</c> output directory if it does not already exist,
+    ///     writes <c>compile.do</c> to that directory, and invokes <c>xvhdl -file compile.do</c> to
+    ///     analyze all source files. Each file path is quoted via <see cref="XilinxArgText.Quote"/>
+    ///     before interpolation into the Xilinx argument file, so paths may safely contain
+    ///     whitespace or characters requiring escaping.
+    /// </remarks>
     public override RunResults Compile(Context context, Options options)
     {
         // Log the start of the compile command
@@ -154,7 +164,7 @@ public sealed class VivadoSimulator : Simulator
         writer.AppendLine("-work work");
         foreach (var file in options.Config.Files)
         {
-            writer.AppendLine($"../../{file}");
+            writer.AppendLine(XilinxArgText.Quote($"../../{file}"));
         }
 
         // Write the batch file
@@ -168,6 +178,13 @@ public sealed class VivadoSimulator : Simulator
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    ///     Writes <c>test.do</c> to <c>VHDLTest.out/Vivado/</c> and invokes
+    ///     <c>xelab -file test.do</c> to elaborate and simulate the specified test bench. The
+    ///     <paramref name="test"/> argument is quoted via <see cref="XilinxArgText.Quote"/> before
+    ///     interpolation into the Xilinx argument file, so it may safely contain whitespace or
+    ///     characters requiring escaping.
+    /// </remarks>
     public override TestResult Test(Context context, Options options, string test)
     {
         // Log the start of the test command
@@ -187,7 +204,7 @@ public sealed class VivadoSimulator : Simulator
         writer.AppendLine("-nolog");
         writer.AppendLine("-standalone");
         writer.AppendLine("-runall");
-        writer.AppendLine(test);
+        writer.AppendLine(XilinxArgText.Quote(test));
 
         // Write the batch file
         var script = Path.Combine(libDir, "test.do");

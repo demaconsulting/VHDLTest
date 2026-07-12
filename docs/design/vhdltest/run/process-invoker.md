@@ -1,5 +1,7 @@
 ### IProcessInvoker / ProcessInvoker
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `IProcessInvoker` abstracts low-level process execution to decouple `RunProcessor`

@@ -1,5 +1,7 @@
 ### RunLine
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `RunLine` is an immutable positional record pairing a single line of simulator output

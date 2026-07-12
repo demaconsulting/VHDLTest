@@ -4,17 +4,21 @@
 
 The abstract `Simulator` base class is verified indirectly through its concrete subclasses.
 There are no direct unit tests for the abstract class itself; instead `SimulatorTests.cs`
-verifies the `Available()` method and the `Where()` PATH-search utility through the concrete
-subclasses that inherit them. Each concrete simulator's unit tests exercise
-`SimulatorName` and `Available()` properties, confirming that the base class contract
-is correctly implemented.
+defines a private `TestableSimulator` test double (not a production concrete simulator) whose
+`Compile`/`Test` overrides both unconditionally throw `InvalidOperationException`, and uses
+that test double solely to exercise `Where()` and `Available()` in isolation from any
+production simulator's compile/test logic. Each concrete production simulator's own unit tests
+separately exercise the `SimulatorName` and `Available()` properties, confirming that the base
+class contract is correctly implemented.
 
 `MockSimulator` is a test fixture (not a production software unit) whose sole purpose is to
 exercise the `Simulator` abstract base class in isolation. `MockSimulatorTests` collectively
 verify the base-class interface contract — name, availability, compile, and test-execution
-behavior — covering 20 test cases. No separate verification document is required for
-`MockSimulator` itself; its tests form part of the verification evidence for the
-`Simulator` abstract base class.
+behavior — covering 20 test cases. `MockSimulator` has its own verification document,
+`mock-simulator.md`, covering its classifier and pattern-matching behavior in detail; its
+tests are the exclusive source of happy-path coverage for the `Simulator` abstract base
+class's `Compile`/`Test` contract, exercised below — `SimulatorTests.cs`'s `TestableSimulator`
+does not contribute to Compile/Test coverage since both of its overrides always throw.
 
 #### Test Environment
 
@@ -26,6 +30,7 @@ N/A - standard test environment.
 - All relevant tests in `MockSimulatorTests.cs` pass with zero failures.
 - `Available()` returns false when `SimulatorPath` is null.
 - `SimulatorName` returns the value supplied at construction.
+- The abstract `Compile`/`Test` contract's success path returns a clean-text `RunResults`/`TestResult`.
 
 #### Test Scenarios
 
@@ -54,3 +59,13 @@ This scenario is tested by `Simulator_Where_UnknownExecutable_ReturnsNull` in `S
 `SimulatorPath` is non-null, confirming the availability check correctly reflects the
 constructed path.
 This scenario is tested by `Simulator_Available_WithNonNullPath_ReturnsTrue` in `SimulatorTests.cs`.
+
+**Compile_Test_HappyPath_ReturnsCleanTextResult**: Verifies that the abstract base class's
+`Compile`/`Test` contract's success path returns a clean `RunLineType.Text` result when the
+compile/test operation completes with no diagnostic output, exercised through `MockSimulator`
+(the base class's own test double). No new test is required — this is already covered by the
+existing `MockSimulator_Compile_WithCleanFile_ReturnsSuccessResult` and
+`MockSimulator_Test_WithCleanName_ReturnsSuccessResult` tests documented in full in
+`mock-simulator.md`.
+This scenario is tested by `MockSimulator_Compile_WithCleanFile_ReturnsSuccessResult` and
+`MockSimulator_Test_WithCleanName_ReturnsSuccessResult` in `MockSimulatorTests.cs`.

@@ -1,5 +1,7 @@
 ### ModelSimSimulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Concrete Simulator implementation for the ModelSim commercial VHDL simulator by Mentor/Siemens. Drives the
@@ -32,21 +34,22 @@ identifiers ending with the keyword).
 - *Returns*: `RunResults` — classified compile output.
 - *Preconditions*: SimulatorPath must be non-null.
 - *Postconditions*: Creates `VHDLTest.out/ModelSim/` if absent. Writes `compile.do` containing
-  `onerror {exit -code 1}`, `vlib work`, `set worklib work`, and `vcom -2008 ../../{file}` for each
-  source file, followed by `exit -code 0`. Runs `vsim -c -do compile.do` from the library directory.
-  Source files are passed to the compiler in the order they appear in `options.Config.Files`.
+  `onerror {exit -code 1}`, `vlib work`, `set worklib work`, and `vcom -2008` followed by the
+  TCL-quoted (via `TclText.Quote`) relative path for each source file, followed by `exit -code 0`.
+  Runs `vsim -c -do compile.do` from the library directory. Source files are passed to the
+  compiler in the order they appear in `options.Config.Files`.
 
 **Test**: Simulates a single test bench using ModelSim's vsim utility via a TCL do-script.
 
 - *Parameters*: `Context context` — verbose logging. `Options options` — working directory.
   `string test` — VHDL entity name or library-qualified entity name (e.g., `my_tb` or `lib.my_tb`);
-  must not contain whitespace or TCL metacharacters because the name is interpolated directly
-  into the TCL script without escaping.
+  TCL-quoted via `TclText.Quote` before interpolation, so it may safely contain whitespace or
+  TCL metacharacters.
 - *Returns*: `TestResult` — simulation outcome.
 - *Preconditions*: SimulatorPath must be non-null; Compile must have completed successfully.
 - *Postconditions*: Writes `test.do` containing `onerror {exit -code 1}`, `set worklib work`,
-  `vsim -quiet {test}`, `run -all`, `endsim`, and `exit -code 0`. Runs `vsim -c -do test.do` from the
-  library directory.
+  `vsim -quiet` followed by the TCL-quoted (via `TclText.Quote`) test name, `run -all`, `endsim`,
+  and `exit -code 0`. Runs `vsim -c -do test.do` from the library directory.
 
 **FindPath** (public static): Resolves the path to the ModelSim installation directory.
 
@@ -67,6 +70,7 @@ produce a non-zero exit code, which CompileProcessor and TestProcessor detect an
 #### Dependencies
 
 - **Simulator** — base class providing `SimulatorName`, `SimulatorPath`, `Available()`, and `Where()`.
+- **TclText** — quotes file paths and test names before interpolation into generated TCL do-scripts.
 - **Context** — verbose logging during compile and test.
 - **Options** — VHDL file list and working directory.
 - **RunProcessor** — process execution and output classification.

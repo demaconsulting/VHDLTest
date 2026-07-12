@@ -102,3 +102,20 @@ and `Test()` write the argument-file scripts to the expected paths in the workin
 Uses `CreateForTesting` with a `FakeProcessInvoker`.
 This scenario is tested by `VivadoSimulator_CompileAndTest_WithValidConfig_WritesDoScript`
 in `VivadoSimulatorTests.cs`.
+
+**Compile_WithFileNameContainingSpaceAndQuote_QuotesFileNameInScript**: Verifies that a file
+path containing a space and an embedded double quote (`my file "1".vhd`) round-trips correctly
+through `Compile()`: it appears inside the double-quoted, backslash-escaped form produced by
+`XilinxArgText.Quote` in the generated `compile.do`, and the invocation's captured arguments
+still resolve correctly, proving the quoting does not break the surrounding invocation.
+This scenario is tested by
+`VivadoSimulator_Compile_WithFileNameContainingSpaceAndQuote_QuotesFileNameInScript`
+in `VivadoSimulatorTests.cs`.
+
+**Test_WithTestNameContainingSpaceAndQuote_QuotesTestNameInScript**: Verifies that a test bench
+name containing a space and an embedded double quote round-trips correctly through `Test()`: it
+appears inside the double-quoted, backslash-escaped form produced by `XilinxArgText.Quote` in
+the generated `test.do`, and the invocation's captured arguments still resolve correctly.
+This scenario is tested by
+`VivadoSimulator_Test_WithTestNameContainingSpaceAndQuote_QuotesTestNameInScript`
+in `VivadoSimulatorTests.cs`.

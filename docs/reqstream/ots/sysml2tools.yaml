@@ -1,0 +1,29 @@
+---
+sections:
+  - title: OTS Software Requirements
+    sections:
+      - title: SysML2Tools Requirements
+        requirements:
+          - id: VHDLTest-OTS-SysML2Tools
+            title: >-
+              SysML2Tools shall render each view declared in design-views.sysml to an SVG
+              diagram consumed by the design documentation.
+            justification: |
+              dotnet sysml2tools render --output docs/design/generated --format svg is run in
+              the build-docs CI job before Pandoc compiles the Design document, producing one
+              SVG file per declared view (for example SoftwareStructureView.svg).
+            tags: [ots]
+            tests:
+              - SysML2Tools_RenderSvgSelfTest
+
+          - id: VHDLTest-OTS-SysML2Tools-Lint
+            title: >-
+              SysML2Tools shall validate the SysML2 architecture model for syntax and
+              reference errors when invoked with lint.
+            justification: |
+              dotnet sysml2tools lint 'docs/sysml2/**/*.sysml' is run in lint.ps1 as a
+              development-time and CI quality gate, failing the build if the model contains
+              syntax errors or unresolved references.
+            tags: [ots]
+            tests:
+              - SysML2Tools_LintSelfTest

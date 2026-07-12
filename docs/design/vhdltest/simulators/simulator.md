@@ -1,5 +1,7 @@
 ### Simulator
 
+![Simulators Structure](SimulatorsView.svg)
+
 #### Purpose
 
 Abstract base class that defines the compile and test contract all VHDL simulator integrations must
@@ -41,22 +43,31 @@ read-only via `SimulatorPath`.
 - *Parameters*: `Context context` — provides verbose logging. `Options options` — carries the file list
   and working directory.
 - *Returns*: `RunResults` — classified compiler output including severity summary.
-- *Preconditions*: SimulatorPath must be non-null.
+- *Preconditions*: SimulatorPath must be non-null for the production simulators.
 - *Postconditions*: Returns structured results; concrete implementations must throw
-  `InvalidOperationException` if `SimulatorPath` is null. Source files are written to the
+  `InvalidOperationException` if `SimulatorPath` is null, with one documented exception:
+  `MockSimulator` is always constructed with a null `SimulatorPath` and intentionally does not
+  perform this check, since it must remain callable regardless of availability for
+  self-validation use (see `MockSimulator`). Source files are written to the
   compiler in the order they appear in `options.Config.Files`.
 
 **Test** (abstract): Executes a single named VHDL test bench.
 
 - *Parameters*: `Context context` — provides verbose logging. `Options options` — carries configuration.
-  `string test` — name of the test bench entity.
+  `string test` — name of the test bench entity. How the name is safely carried into the underlying
+  simulator invocation varies by implementation: `ModelSimSimulator`, `QuestaSimSimulator`, and
+  `ActiveHdlSimulator` quote the name via `TclText.Quote` before interpolating it into a TCL script;
+  `VivadoSimulator` quotes the name via `XilinxArgText.Quote` before interpolating it into a Xilinx
+  argument file (not a TCL script); `GhdlSimulator` and `NvcSimulator` pass the name as a separate
+  process argument. In every case the concrete implementation is responsible for ensuring the value
+  is safely carried through to the underlying tool; the base class imposes no quoting or sanitization
+  itself.
 - *Returns*: `TestResult` — pass/fail status and diagnostic output for the test.
-- *Preconditions*: SimulatorPath must be non-null. The `test` parameter is interpolated directly into
-  a TCL script by some simulator implementations without sanitization; callers must ensure the value
-  contains no TCL metacharacters (e.g., `[`, `]`, `$`, `;`, `\`). The base class does not sanitize the
-  input; preventing injection is the responsibility of the caller.
+- *Preconditions*: SimulatorPath must be non-null for the production simulators.
 - *Postconditions*: Returns structured results; concrete implementations must throw
-  `InvalidOperationException` if `SimulatorPath` is null.
+  `InvalidOperationException` if `SimulatorPath` is null, with one documented exception:
+  `MockSimulator` is always constructed with a null `SimulatorPath` and intentionally does not
+  perform this check (see `MockSimulator`).
 
 **Where** (protected static): Searches the system PATH for an executable and returns its full path.
 
@@ -82,8 +93,11 @@ simulator's `FindPath()` method.
 #### Error Handling
 
 `Available()` returns false when the simulator is not installed; the factory and callers use this to avoid
-calling `Compile` or `Test` on an unavailable simulator. Concrete subclasses throw `InvalidOperationException`
-with a descriptive message if `Compile` or `Test` is called when `SimulatorPath` is null. `Where()` returns
+calling `Compile` or `Test` on an unavailable simulator. Concrete production-simulator subclasses throw
+`InvalidOperationException` with a descriptive message if `Compile` or `Test` is called when `SimulatorPath`
+is null; `MockSimulator` is a documented exception to this rule — it is always constructed with a null
+`SimulatorPath` and its `Compile`/`Test` overrides intentionally omit the null check so it remains callable
+regardless of availability (see `MockSimulator`). `Where()` returns
 null on failure; concrete subclasses' `FindPath()` methods interpret null as "simulator not found" and supply
 null for `SimulatorPath`.
 

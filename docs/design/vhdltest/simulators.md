@@ -1,5 +1,7 @@
 ## Simulators
 
+![Simulators Structure](SimulatorsView.svg)
+
 ### Overview
 
 The Simulators subsystem provides VHDL simulator integration for the VHDLTest system. It encapsulates all
@@ -11,7 +13,7 @@ Active-HDL, and NVC. A `MockSimulator` provides a deterministic in-process test 
 subsystem boundary is the `Simulator` public API; no other subsystem invokes simulator tools directly.
 
 Contained units: Simulator, SimulatorFactory, GhdlSimulator, ModelSimSimulator, QuestaSimSimulator,
-VivadoSimulator, ActiveHdlSimulator, NvcSimulator, MockSimulator.
+VivadoSimulator, ActiveHdlSimulator, NvcSimulator, MockSimulator, TclText, XilinxArgText.
 
 ### Interfaces
 

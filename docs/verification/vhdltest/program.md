@@ -7,9 +7,10 @@ The `Program.Run` method is called directly with a `Context` constructed from a 
 argument array. Early-dispatch tests (version flag and help flag) exercise only the dispatch
 logic and do not invoke a simulator. The no-config test exercises the usage-print and error-code
 path. Tests for validation dispatch, run-tests, failure-exit-code, exit-zero, and save-results
-use a mock `ISimulator` implementation that returns controlled `RunResults` without launching
-any external process. No external mocking framework is used; the `Context` class and the mock
-simulator are the real implementations configured through their own factories and interfaces.
+use the `MockSimulator` test double (obtained via `--simulator mock`) that returns controlled
+`RunResults` without launching any external process. No external mocking framework is used;
+the `Context` class and the mock simulator are the real implementations configured through
+their own factories and interfaces.
 
 ### Test Environment
 
@@ -93,5 +94,9 @@ This scenario is tested by `Program_Run_SaveResults_WithResultsFile_CreatesResul
 **Run_WithTestFilter_RunsOnlyMatchingTests**: Verifies that calling `Program.Run` with a
 configuration file containing multiple tests and a test name filter argument runs only the
 named test, confirming that `context.CustomTests` overrides the full test list from the
-configuration file.
+configuration file. In addition to `context.ExitCode == 0`, the test captures the run log
+(via `--log`) and asserts the log contains `"Passed test1"` (proving the filtered-in test
+actually ran and passed) and does not contain `"test_fail_1"` (proving the filtered-out test
+was not executed at all) — closing the false-positive gap where a completely broken filter
+that runs zero tests would also produce `ExitCode == 0`.
 This scenario is tested by `Program_Run_WithTestFilter_RunsOnlyMatchingTests`.

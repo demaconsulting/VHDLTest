@@ -431,8 +431,87 @@ public class QuestaSimSimulatorTests
             var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "QuestaSim", "test.do");
             Assert.True(File.Exists(scriptPath));
             var content = File.ReadAllText(scriptPath);
-            Assert.Contains("vsim -quiet my_tb", content);
+            Assert.Contains("vsim -quiet {my_tb}", content);
             Assert.Contains("exit -code 0", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that a file path containing a space and a TCL metacharacter round-trips
+    ///     correctly through Compile: it is written into compile.do inside a brace-quoted form,
+    ///     and the compile invocation still succeeds (proving the quoting does not break the
+    ///     surrounding invocation arguments).
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Compile_WithFileNameContainingSpaceAndMetacharacter_QuotesFileNameInScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            var sim = QuestaSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var config = new ConfigDocument { Files = ["my file [1].vhd"] };
+            var options = new Options(tempDir, config);
+
+            // Act
+            sim.Compile(context, options);
+
+            // Assert: the generated compile script contains the file name verbatim, brace-quoted
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "QuestaSim", "compile.do");
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("vcom -2008 {../../my file [1].vhd}", content);
+
+            // Assert: the invocation's arguments still resolve correctly (round-trip proof)
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("compile.do", allArgs);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    /// <summary>
+    ///     Verifies that a test bench name containing a space and a TCL metacharacter round-trips
+    ///     correctly through Test: it is written into test.do inside a brace-quoted form, and the
+    ///     test invocation still succeeds (proving the quoting does not break the surrounding
+    ///     invocation arguments).
+    /// </summary>
+    [Fact]
+    public void QuestaSimSimulator_Test_WithTestNameContainingSpaceAndMetacharacter_QuotesTestNameInScript()
+    {
+        // Arrange
+        var invoker = new FakeProcessInvoker();
+        var tempDir = Path.Combine(Path.GetTempPath(), $"vhdltest_{Path.GetRandomFileName()}");
+        Directory.CreateDirectory(tempDir);
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(tempDir, "VHDLTest.out", "QuestaSim"));
+
+            var sim = QuestaSimSimulator.CreateForTesting(tempDir, invoker);
+            using var context = Context.Create(["--silent"]);
+            var options = new Options(tempDir, new ConfigDocument());
+
+            // Act
+            sim.Test(context, options, "lib.my tb");
+
+            // Assert: the generated test script contains the test name verbatim, brace-quoted
+            var scriptPath = Path.Combine(tempDir, "VHDLTest.out", "QuestaSim", "test.do");
+            var content = File.ReadAllText(scriptPath);
+            Assert.Contains("vsim -quiet {lib.my tb}", content);
+
+            // Assert: the invocation's arguments still resolve correctly (round-trip proof)
+            Assert.True(invoker.AllCalls.Count > 0);
+            var allArgs = invoker.AllCalls.SelectMany(c => c.Arguments).ToList();
+            Assert.Contains("test.do", allArgs);
         }
         finally
         {

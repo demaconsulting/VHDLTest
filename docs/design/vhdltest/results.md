@@ -1,5 +1,7 @@
 ## Results
 
+![Results Structure](ResultsView.svg)
+
 ### Overview
 
 The Results subsystem provides the data model for storing VHDL test run outcomes and serializing

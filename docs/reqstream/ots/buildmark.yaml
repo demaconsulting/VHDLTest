@@ -12,3 +12,44 @@ sections:
             tags: [ots]
             tests:
               - BuildMark_MarkdownReportGeneration
+
+          - id: VHDLTest-OTS-BuildMark-GitIntegration
+            title: BuildMark shall read commit and branch metadata from the local git repository.
+            justification: |
+              DemaConsulting.BuildMark's Git integration capability reads commit and branch
+              metadata from the local git repository to enrich the generated build notes, as
+              described in docs/design/ots/buildmark.md's "Git integration" feature.
+            tags: [ots]
+            tests:
+              - BuildMark_GitIntegration
+
+          - id: VHDLTest-OTS-BuildMark-IssueTracking
+            title: BuildMark shall query the GitHub API for issues referenced by the build run and include them in the build notes.
+            justification: |
+              DemaConsulting.BuildMark's issue tracking capability queries the GitHub API for
+              issues referenced by the build run and includes them in the generated build
+              notes document, as described in docs/design/ots/buildmark.md's "Issue tracking"
+              feature.
+            tags: [ots]
+            tests:
+              - BuildMark_IssueTracking
+
+          - id: VHDLTest-OTS-BuildMark-KnownIssuesReporting
+            title: BuildMark shall include a known-issues section in the report when requested.
+            justification: |
+              dotnet buildmark --include-known-issues includes a known-issues section in the
+              generated report, as described in docs/design/ots/buildmark.md's "Known-issues
+              reporting" feature.
+            tags: [ots]
+            tests:
+              - BuildMark_KnownIssuesReporting
+
+          - id: VHDLTest-OTS-BuildMark-RulesRouting
+            title: BuildMark shall route report content according to configured rules.
+            justification: |
+              DemaConsulting.BuildMark's rules routing capability determines which report
+              sections are included for a given build context, as described in
+              docs/design/ots/buildmark.md's "Rules routing" feature.
+            tags: [ots]
+            tests:
+              - BuildMark_RulesRouting

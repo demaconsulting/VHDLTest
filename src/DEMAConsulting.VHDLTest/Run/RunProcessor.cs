@@ -40,8 +40,33 @@ namespace DEMAConsulting.VHDLTest.Run;
 /// </remarks>
 public class RunProcessor
 {
+    /// <summary>
+    ///     Win32 error code for <c>ERROR_FILE_NOT_FOUND</c>, used as the <c>NativeErrorCode</c>
+    ///     of the <see cref="System.ComponentModel.Win32Exception"/> thrown when the Windows
+    ///     executable resolution pre-flight cannot find the requested application.
+    /// </summary>
+    private const int NativeErrorFileNotFound = 2;
+
     private readonly RunLineRule[] _rules;
     private readonly IProcessInvoker _invoker;
+
+    /// <summary>
+    ///     Windows system directories that <c>CreateProcess</c>/<c>cmd.exe</c> always implicitly
+    ///     search when resolving an unqualified executable name, regardless of what the
+    ///     <c>PATH</c> environment variable contains: the system directory
+    ///     (<c>%SystemRoot%\System32</c>, from <see cref="Environment.SystemDirectory"/>) and the
+    ///     Windows directory (<c>%SystemRoot%</c>, from
+    ///     <see cref="Environment.SpecialFolder.Windows"/>). Evaluated lazily (not at type-load
+    ///     time) so tests running on non-Windows platforms never touch these Windows-only APIs.
+    /// </summary>
+    private static IEnumerable<string> WindowsSystemDirectories
+    {
+        get
+        {
+            yield return Environment.SystemDirectory;
+            yield return Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        }
+    }
 
     /// <summary>
     ///     Initializes a new instance of <see cref="RunProcessor"/> with the specified rules and an optional invoker.
@@ -54,9 +79,15 @@ public class RunProcessor
     ///     Process invoker used to launch external processes. When null, defaults to
     ///     <see cref="ProcessInvoker.Instance"/> for production use.
     /// </param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="rules"/> is null.</exception>
     public RunProcessor(RunLineRule[] rules, IProcessInvoker? invoker = null)
     {
-        _rules = rules;
+        ArgumentNullException.ThrowIfNull(rules);
+
+        // Defensively copy the rules array so the documented "immutable after construction"
+        // thread-safety invariant holds regardless of whether the caller later mutates the
+        // array it passed in.
+        _rules = [.. rules];
         _invoker = invoker ?? ProcessInvoker.Instance;
     }
     /// <summary>
@@ -64,12 +95,20 @@ public class RunProcessor
     ///     <paramref name="application"/> and classifies its output.
     /// </summary>
     /// <remarks>
-    ///     On Windows the executable is wrapped in <c>cmd /c</c> so that batch files
-    ///     (.bat/.cmd) are resolved correctly by the command interpreter; the application path is
-    ///     passed directly to <c>ArgumentList</c> rather than being shell-quoted by the caller.
-    ///     A display form with quotes is written to the verbose log so the log shows a
-    ///     shell-reproducible command. Callers are responsible for ensuring that individual
-    ///     arguments do not contain <c>cmd.exe</c> shell metacharacters.
+    ///     On Windows, when this instance uses the production <see cref="ProcessInvoker.Instance"/>
+    ///     (i.e. a real process will actually be launched), the executable is first resolved via
+    ///     <see cref="TryResolveWindowsExecutable"/> (a <c>PATHEXT</c>-aware search mirroring
+    ///     <c>cmd.exe</c>'s own resolution order); if resolution fails, a
+    ///     <see cref="System.ComponentModel.Win32Exception"/> is thrown immediately, before any
+    ///     process is launched. Resolution is skipped when a test double <see cref="IProcessInvoker"/>
+    ///     is supplied, since no real process is spawned in that case and unit tests are not
+    ///     required to reference an executable that actually exists on disk. When resolution
+    ///     succeeds (or is skipped), the application is wrapped in <c>cmd /c</c> so that batch
+    ///     files (.bat/.cmd) are resolved correctly by the command interpreter; the (possibly
+    ///     resolved) path is passed directly to <c>ArgumentList</c> rather than being
+    ///     shell-quoted by the caller. A display form with quotes is written to the verbose log
+    ///     so the log shows a shell-reproducible command. Callers are responsible for ensuring
+    ///     that individual arguments do not contain <c>cmd.exe</c> shell metacharacters.
     /// </remarks>
     /// <param name="context">
     ///     Program context used for verbose logging. Must not be null. Verbose lines are written
@@ -78,7 +117,8 @@ public class RunProcessor
     /// <param name="application">
     ///     Path or name of the executable or batch file to launch. Must not be pre-quoted; the
     ///     CLR passes the path directly to the OS, which handles spaces natively without shell
-    ///     quoting. On Windows the path is forwarded to <c>cmd /c</c> as an argument.
+    ///     quoting. On Windows the path is resolved (see remarks) then forwarded to <c>cmd /c</c>
+    ///     as an argument.
     /// </param>
     /// <param name="workingDirectory">
     ///     Working directory for the launched process. Pass an empty string to inherit the
@@ -91,12 +131,14 @@ public class RunProcessor
     /// <returns>Run results with all fields populated.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="context"/> is null.</exception>
     /// <exception cref="System.ComponentModel.Win32Exception">
-    ///     Thrown on Windows when the simulator executable cannot be found or cannot be started.
-    ///     Propagated from <see cref="RunProgram.Run"/>.
+    ///     Thrown on Windows when <paramref name="application"/> cannot be resolved to an
+    ///     existing executable (see <see cref="TryResolveWindowsExecutable"/>), or when the
+    ///     simulator executable cannot be started. On non-Windows platforms, propagated from
+    ///     <see cref="IProcessInvoker.Execute"/> instead.
     /// </exception>
     /// <exception cref="System.IO.FileNotFoundException">
     ///     Thrown on non-Windows platforms when the simulator executable path does not exist.
-    ///     Propagated from <see cref="RunProgram.Run"/>.
+    ///     Propagated from <see cref="IProcessInvoker.Execute"/>.
     /// </exception>
     public RunResults Execute(
         Context context,
@@ -111,13 +153,31 @@ public class RunProcessor
         context.WriteVerboseLine($"  Run Directory: {workingDirectory}");
         if (OperatingSystem.IsWindows())
         {
-            // On Windows, batch files (.bat/.cmd) cannot be launched directly; use cmd /c.
-            // Pass application directly to ArgumentList (no manual quoting); ArgumentList
-            // handles quoting paths with spaces automatically. Use a display form with quotes
-            // only for the verbose log so the log shows a valid shell-reproducible command.
-            var displayApplication = application.Contains(' ') ? $"\"{application}\"" : application;
+            // Resolve the executable up front only when a real OS process will actually be
+            // launched (the production ProcessInvoker). cmd /c does not throw when the wrapped
+            // program cannot be found — it merely reports the failure via a non-zero exit code
+            // and stderr text — so a missing/misconfigured simulator executable would otherwise
+            // be silently swallowed into an ordinary non-zero-exit RunResults instead of
+            // throwing, unlike the non-Windows path. Resolving up front and throwing here keeps
+            // both platforms consistent. Test doubles (see IProcessInvoker) never spawn a real
+            // process, so skipping resolution for them preserves existing unit-test behavior
+            // that exercises argument construction without requiring a real executable on disk.
+            var resolvedApplication = application;
+            if (ReferenceEquals(_invoker, ProcessInvoker.Instance) &&
+                !TryResolveWindowsExecutable(application, workingDirectory, out resolvedApplication))
+            {
+                throw new System.ComponentModel.Win32Exception(
+                    NativeErrorFileNotFound,
+                    $"The system cannot find the file specified: '{application}'");
+            }
+
+            // Batch files (.bat/.cmd) cannot be launched directly; use cmd /c. Pass the resolved
+            // application directly to ArgumentList (no manual quoting) — ArgumentList handles
+            // quoting paths with spaces automatically. Use a display form with quotes only for
+            // the verbose log so the log shows a valid shell-reproducible command.
+            var displayApplication = resolvedApplication.Contains(' ') ? $"\"{resolvedApplication}\"" : resolvedApplication;
             context.WriteVerboseLine($"  Run Command: cmd /c {displayApplication} {string.Join(" ", arguments)}");
-            var windowsArgs = new[] { "/c", application }.Concat(arguments).ToArray();
+            var windowsArgs = new[] { "/c", resolvedApplication }.Concat(arguments).ToArray();
             return Execute("cmd", workingDirectory, windowsArgs);
         }
 
@@ -173,6 +233,121 @@ public class RunProcessor
 
         // Parse the output
         return Parse(start, end, output, exitCode);
+    }
+
+    /// <summary>
+    ///     Resolves <paramref name="application"/> to an existing executable path using the same
+    ///     search order <c>CreateProcess</c>/<c>cmd.exe</c> uses: when <paramref name="application"/>
+    ///     contains a directory component, only that directory is searched; otherwise the process's
+    ///     actual starting directory (<paramref name="workingDirectory"/>, or the current directory
+    ///     when empty) is searched first, then the Windows system directory
+    ///     (<c>%SystemRoot%\System32</c>) and the Windows directory (<c>%SystemRoot%</c>) — these
+    ///     are always implicitly searched by <c>CreateProcess</c>/<c>cmd.exe</c> regardless of
+    ///     <c>PATH</c> contents — then each entry in the <c>PATH</c> environment variable. Within
+    ///     each candidate directory, the bare name and each <c>PATHEXT</c>-qualified variant
+    ///     (default <c>.COM;.EXE;.BAT;.CMD</c> when <c>PATHEXT</c> is not set) are tried.
+    /// </summary>
+    /// <param name="application">Application name or path to resolve. Must not be null.</param>
+    /// <param name="workingDirectory">
+    ///     Working directory the process will actually be started from. Searched in place of the
+    ///     current directory so resolution matches the child process's real search context. Pass
+    ///     an empty string to search the current process working directory instead.
+    /// </param>
+    /// <param name="resolved">
+    ///     When this method returns true, the resolved, extension-qualified path to the
+    ///     executable. When this method returns false, set to <paramref name="application"/>.
+    /// </param>
+    /// <returns>True when an existing executable was found; otherwise false.</returns>
+    private static bool TryResolveWindowsExecutable(string application, string workingDirectory, out string resolved)
+    {
+        var extensions = (Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD")
+            .Split(';', StringSplitOptions.RemoveEmptyEntries);
+        var startDirectory = string.IsNullOrEmpty(workingDirectory)
+            ? Directory.GetCurrentDirectory()
+            : workingDirectory;
+
+        // When application already contains a directory component, search only that directory —
+        // resolved against workingDirectory when the path is relative, since that is the
+        // directory the child process will actually be started from.
+        var directory = Path.GetDirectoryName(application);
+        if (!string.IsNullOrEmpty(directory))
+        {
+            var candidatePath = Path.IsPathRooted(application)
+                ? application
+                : Path.Combine(startDirectory, application);
+            return TryResolveCandidates(candidatePath, extensions, out resolved);
+        }
+
+        // No directory component: search the process's actual starting directory first (matching
+        // CreateProcess's documented search order, where the current directory is checked before
+        // the system directories), then the Windows system directories — these are always
+        // implicitly searched by CreateProcess/cmd.exe regardless of what PATH contains, so a
+        // tool like "cmd" or "notepad" resolves even in an environment whose PATH omits System32
+        // — then each PATH entry.
+        if (TryResolveCandidates(Path.Combine(startDirectory, application), extensions, out resolved))
+        {
+            return true;
+        }
+
+        foreach (var systemDirectory in WindowsSystemDirectories)
+        {
+            if (TryResolveCandidates(Path.Combine(systemDirectory, application), extensions, out resolved))
+            {
+                return true;
+            }
+        }
+
+        var pathEntries = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty)
+            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var dir in pathEntries)
+        {
+            if (TryResolveCandidates(Path.Combine(dir, application), extensions, out resolved))
+            {
+                return true;
+            }
+        }
+
+        resolved = application;
+        return false;
+    }
+
+    /// <summary>
+    ///     Checks whether <paramref name="basePath"/> (when it already carries an extension) or a
+    ///     <paramref name="extensions"/>-qualified variant of it (when it does not) exists as a
+    ///     file.
+    /// </summary>
+    /// <param name="basePath">Candidate path without an extension qualifier applied.</param>
+    /// <param name="extensions">Ordered <c>PATHEXT</c>-style extensions (each including the leading dot) to try.</param>
+    /// <param name="resolved">The matching path when found; otherwise <paramref name="basePath"/>.</param>
+    /// <returns>True when a matching file was found; otherwise false.</returns>
+    private static bool TryResolveCandidates(string basePath, string[] extensions, out string resolved)
+    {
+        // Mirror cmd.exe: when basePath already carries its own extension (e.g. "tool.exe"), it
+        // is checked literally and PATHEXT variants are never appended — an already
+        // extension-qualified name must not be further qualified into an unintended file such as
+        // "tool.exe.cmd".
+        if (!string.IsNullOrEmpty(Path.GetExtension(basePath)))
+        {
+            resolved = basePath;
+            return File.Exists(basePath);
+        }
+
+        // basePath has no extension of its own: cmd.exe only resolves such bare names via a
+        // PATHEXT-qualified variant (default .COM;.EXE;.BAT;.CMD when PATHEXT is not set) — an
+        // extensionless file literally named basePath is never treated as an executable match by
+        // cmd.exe, even if one happens to exist on disk, so it must not be accepted here either.
+        foreach (var ext in extensions)
+        {
+            var candidate = basePath + ext;
+            if (File.Exists(candidate))
+            {
+                resolved = candidate;
+                return true;
+            }
+        }
+
+        resolved = basePath;
+        return false;
     }
 
     /// <summary>

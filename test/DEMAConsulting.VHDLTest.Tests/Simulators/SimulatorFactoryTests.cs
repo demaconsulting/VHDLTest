@@ -160,17 +160,35 @@ public class SimulatorFactoryTests
     ///     a non-null Simulator instance (when at least one simulator is installed in the current
     ///     environment) or null (when no simulator is installed, as is typical in CI).
     ///     MockSimulator is excluded from auto-discovery results regardless of environment.
+    ///     The expected result is independently recomputed from the exact declared order in
+    ///     <see cref="SimulatorFactory"/> and compared by reference (singletons make reference
+    ///     equality meaningful), so this test actually checks *first*, *available*, and
+    ///     *ordering* rather than merely "not MockSimulator".
     /// </remarks>
     [Fact]
     public void SimulatorFactory_Get_WithNullName_ReturnsFirstAvailableOrNull()
     {
-        // Arrange: N/A - static factory requires no setup
+        // Arrange: independently recompute the expected result using the exact declared
+        // order documented in SimulatorFactory.cs, so the assertion is environment-agnostic
+        // (passes identically whether 0 or more simulators are actually installed) and
+        // actually checks *first*, *available*, and *ordering* per the
+        // VHDLTest-Simulators-SimulatorFactory-AutoSelect requirement.
+        Simulator[] expectedOrder =
+        [
+            GhdlSimulator.Instance,
+            ModelSimSimulator.Instance,
+            QuestaSimSimulator.Instance,
+            VivadoSimulator.Instance,
+            ActiveHdlSimulator.Instance,
+            NvcSimulator.Instance
+        ];
+        var expected = Array.Find(expectedOrder, s => s.Available());
 
         // Act: request auto-discovery by passing null
         var result = SimulatorFactory.Get(null);
 
-        // Assert: result is null (no simulator installed) or a non-MockSimulator Simulator instance
-        // (MockSimulator.Available() always returns false and is excluded from auto-discovery)
-        Assert.True(result is null || ((result != null) && result is not MockSimulator));
+        // Assert: result is the same singleton instance as the first available simulator in
+        // declared order (reference equality is meaningful because simulators are singletons)
+        Assert.Same(expected, result);
     }
 }

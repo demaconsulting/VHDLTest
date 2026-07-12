@@ -1,5 +1,7 @@
 ### Validation
 
+![SelfTest Structure](SelfTestView.svg)
+
 #### Purpose
 
 `Validation.cs` implements the self-validation test runner for VHDLTest. It extracts embedded VHDL
@@ -47,8 +49,9 @@ Because `RunValidation` always passes `--exit-0` to the inner VHDLTest invocatio
 `RunValidation`), an exit code of 0 confirms there was no tool-level error; pass/fail
 determination is made solely from the log output.
 Each call to `ValidateTestPasses` and `ValidateTestFails` invokes `RunValidation` independently,
-performing a separate subprocess run so that each validation scenario is fully isolated from the
-other.
+performing a separate in-process re-entrant `RunVhdlTest` invocation (a fresh `Context` and a
+nested `Program.Run` call, not a subprocess) so that each validation scenario is fully isolated
+from the other.
 
 **ValidateTestFails** (public static): Checks that VHDLTest correctly reports failing tests as
 failed.

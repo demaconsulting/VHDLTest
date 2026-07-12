@@ -25,3 +25,46 @@ sections:
             tags: [ots]
             tests:
               - ReqStream_Lint
+
+          - id: VHDLTest-OTS-ReqStream-RequirementsProcessing
+            title: ReqStream shall read requirements.yaml and all referenced requirement files into a structured requirements model.
+            justification: |
+              DemaConsulting.ReqStream's requirements processing capability reads
+              requirements.yaml and every file listed in its includes: list, producing the
+              structured requirements model consumed by the report, justifications, matrix,
+              and enforcement features described in docs/design/ots/reqstream.md.
+            tags: [ots]
+            tests:
+              - ReqStream_RequirementsProcessing
+
+          - id: VHDLTest-OTS-ReqStream-TraceMatrix
+            title: ReqStream shall produce a traceability matrix mapping requirements to tests.
+            justification: |
+              dotnet reqstream --matrix docs/requirements_report/trace_matrix.md produces a
+              markdown matrix mapping each requirement to its linked tests, used in the
+              build-docs CI job to publish requirements traceability evidence.
+            tags: [ots]
+            tests:
+              - ReqStream_TraceMatrix
+
+          - id: VHDLTest-OTS-ReqStream-ReportExport
+            title: ReqStream shall export the requirements and justifications documents to markdown files.
+            justification: |
+              dotnet reqstream --report docs/requirements_doc/requirements.md
+              --justifications docs/requirements_doc/justifications.md exports the
+              requirements and justifications documents used in the build-docs CI job's
+              generated documentation set.
+            tags: [ots]
+            tests:
+              - ReqStream_ReportExport
+
+          - id: VHDLTest-OTS-ReqStream-TagsFiltering
+            title: ReqStream shall restrict requirements processing to requirements matching a given tag filter.
+            justification: |
+              dotnet reqstream --filter <tags> restricts requirements export and enforcement
+              to requirements whose tags: list intersects the given comma-separated tag set,
+              documented as the tag-based filtering feature in reqstream-usage.md and used
+              for selective per-tag requirements/justifications export.
+            tags: [ots]
+            tests:
+              - ReqStream_TagsFiltering

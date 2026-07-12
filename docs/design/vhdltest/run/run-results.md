@@ -1,5 +1,7 @@
 ### RunResults
 
+![Run Structure](RunView.svg)
+
 #### Purpose
 
 `RunResults` is an immutable record that holds the complete outcome of a single

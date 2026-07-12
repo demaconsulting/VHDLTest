@@ -44,11 +44,9 @@ sections:
           - id: VHDLTest-Program-Validate
             title: Program shall execute self-validation and report results when the `--validate` flag is given.
             justification: |
-              When the user passes --validate, Program.Run must call Validation.Run to execute the
-              built-in self-validation suite, verifying that the tool is correctly installed and the
-              simulator integration is functional. Delegating to Validation.Run keeps the dispatch
-              logic in Program separate from the validation logic, following single-responsibility
-              principles.
+              When the user passes --validate, the tool must run its built-in self-validation
+              suite and report the outcome, verifying that the tool is correctly installed and
+              the simulator integration is functional.
             tests:
               - Program_Run_WithValidateFlag_DispatchesToValidation
 
@@ -56,8 +54,9 @@ sections:
             title: Program shall execute the test suite when a valid configuration file and simulator are provided.
             justification: |
               The primary purpose of VHDLTest is to execute VHDL test benches via a configured
-              simulator. When a valid configuration file is supplied and the simulator is available,
-              Program.Run must delegate to TestResults.Execute and complete without error.
+              simulator. When a valid configuration file is supplied and the simulator is
+              available, the tool must compile the sources, run the configured test benches, and
+              complete without error.
             tests:
               - Program_Run_RunTests_WithMockSimulator_RunsSuccessfully
               - Program_Run_WithInvalidSimulator_WritesErrorAndExits
@@ -84,7 +83,7 @@ sections:
             title: Program shall save test results to the specified file when the results flag is given.
             justification: |
               Saving results to a TRX file enables integration with external test reporting tools
-              and CI dashboards. When --results is specified, Program.Run must create the results
+              and CI dashboards. When --results is specified, the tool must write the results
               file so that downstream consumers can read the test outcome data.
             tests:
               - Program_Run_SaveResults_WithResultsFile_CreatesResultsFile

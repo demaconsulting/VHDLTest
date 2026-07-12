@@ -11,6 +11,8 @@ as part of the CI documentation pipeline. ReqStream is not deployed with VHDLTes
 
 - **Requirements processing**: reads `requirements.yaml` and all referenced requirement
   files to produce a structured requirements document.
+- **Report export**: `reqstream --report ... --justifications ...` exports the requirements
+  and justifications documents to markdown files.
 - **Test result reading**: reads TRX test result files (from `artifacts/**/*.trx`) to
   determine which tests passed.
 - **Traceability matrix generation**: produces a matrix mapping requirements to tests.
@@ -18,6 +20,10 @@ as part of the CI documentation pipeline. ReqStream is not deployed with VHDLTes
   requirement has no linked passing test, making unproven requirements build-breaking.
 - **Lint**: `reqstream --lint --requirements requirements.yaml` validates requirement
   file syntax and cross-references.
+- **Tag-based filtering**: `reqstream --filter <tags>` restricts requirements processing,
+  export, and enforcement to requirements whose `tags:` list intersects the given
+  comma-separated tag set, enabling selective per-tag requirements/justifications export
+  (see `reqstream-usage.md`).
 - **Self-validation**: `reqstream --validate --results ...` writes internal test TRX results.
 
 ### Integration Pattern

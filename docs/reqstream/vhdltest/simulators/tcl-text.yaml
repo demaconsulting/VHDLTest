@@ -1,0 +1,36 @@
+---
+sections:
+  - title: VHDLTest Requirements
+    sections:
+      - title: Simulators Requirements
+        sections:
+          - title: TclText Requirements
+            requirements:
+              - id: VHDLTest-Simulators-TclText-BraceQuote
+                title: TclText shall brace-quote values that contain no literal braces, preserving
+                  the value unchanged.
+                justification: |
+                  TCL brace-quoting suppresses all variable, command, and backslash substitution
+                  for the enclosed text, so values containing spaces or TCL metacharacters ($, [,
+                  ], ") can be interpolated into generated do-scripts without any escaping,
+                  provided the value itself contains no literal braces.
+                tests:
+                  - TclText_Quote_PlainValue_ReturnsBracedLiteral
+                  - TclText_Quote_ValueWithSpace_ReturnsBracedLiteral
+                  - TclText_Quote_ValueWithSquareBrackets_ReturnsBracedLiteral
+                  - TclText_Quote_ValueWithDollarSign_ReturnsBracedLiteral
+                  - TclText_Quote_ValueWithDoubleQuote_ReturnsBracedLiteral
+                  - TclText_Quote_ValueWithBackslash_ReturnsBracedLiteral
+
+              - id: VHDLTest-Simulators-TclText-EscapedFallback
+                title: TclText shall fall back to backslash-escaped double-quoting when the value
+                  contains literal braces.
+                justification: |
+                  TCL brace-quoting requires the braces within a braced word to be balanced and
+                  unescaped, so a value containing literal braces cannot be brace-quoted safely.
+                  Falling back to a double-quoted form with every metacharacter individually
+                  backslash-escaped ensures such values are still interpolated into generated
+                  do-scripts as literal text.
+                tests:
+                  - TclText_Quote_ValueWithBalancedBraces_ReturnsEscapedDoubleQuotedFallback
+                  - TclText_Quote_ValueWithBracesAndOtherMetacharacters_EscapesAllMetacharacters

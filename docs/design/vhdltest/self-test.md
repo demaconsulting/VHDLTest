@@ -1,5 +1,7 @@
 ## SelfTest
 
+![SelfTest Structure](SelfTestView.svg)
+
 The SelfTest subsystem implements VHDLTest's self-validation capability, allowing users to verify
 that the tool is correctly installed and functioning in their environment.
 

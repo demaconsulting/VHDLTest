@@ -40,6 +40,7 @@ words:
   - endsim
   - esac
   - errorlevel
+  - extensionless
   - fileassert
   - hotspot
   - hotspots
@@ -49,6 +50,7 @@ words:
   - lifecycles
   - LINQ
   - markdownlint
+  - metacharacter
   - metacharacters
   - mingw
   - mcode
@@ -91,6 +93,9 @@ words:
   - SonarQube
   - sonarscanner
   - spdx
+  - sysml
+  - sysml2tools
+  - syspath
   - testbench
   - testbenches
   - testresults

@@ -103,3 +103,20 @@ and `Test()` write the TCL do-scripts to the expected paths in the working direc
 Uses `CreateForTesting` with a `FakeProcessInvoker`.
 This scenario is tested by `QuestaSimSimulator_CompileAndTest_WithValidConfig_WritesDoScript`
 in `QuestaSimSimulatorTests.cs`.
+
+**Compile_WithFileNameContainingSpaceAndMetacharacter_QuotesFileNameInScript**: Verifies that a
+file path containing a space and a TCL metacharacter (`my file [1].vhd`) round-trips correctly
+through `Compile()`: it appears verbatim inside the brace-quoted form produced by
+`TclText.Quote` in the generated `compile.do`, and the invocation's captured arguments still
+resolve correctly, proving the quoting does not break the surrounding invocation.
+This scenario is tested by
+`QuestaSimSimulator_Compile_WithFileNameContainingSpaceAndMetacharacter_QuotesFileNameInScript`
+in `QuestaSimSimulatorTests.cs`.
+
+**Test_WithTestNameContainingSpaceAndMetacharacter_QuotesTestNameInScript**: Verifies that a
+test bench name containing a space and a TCL metacharacter (`lib.my tb`) round-trips correctly
+through `Test()`: it appears verbatim inside the brace-quoted form produced by `TclText.Quote`
+in the generated `test.do`, and the invocation's captured arguments still resolve correctly.
+This scenario is tested by
+`QuestaSimSimulator_Test_WithTestNameContainingSpaceAndMetacharacter_QuotesTestNameInScript`
+in `QuestaSimSimulatorTests.cs`.

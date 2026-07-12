@@ -34,3 +34,16 @@ sections:
             tags: [ots]
             tests:
               - VersionMark_LintPassesForValidConfig
+
+          - id: VHDLTest-OTS-VersionMark-LintDetectsErrors
+            title: VersionMark shall report a lint failure when captured tool versions are inconsistent with the local tool manifest.
+            justification: |
+              The existing VHDLTest-OTS-VersionMark-Lint requirement only proves the pass
+              case (a valid, consistent configuration lints cleanly). This requirement
+              proves the complementary failure case — dotnet versionmark --lint reports a
+              non-zero exit and lint errors when the captured tool versions do not match the
+              local dotnet tool manifest — confirming manifest drift is actually detectable,
+              not merely that a clean configuration silently passes.
+            tags: [ots]
+            tests:
+              - VersionMark_LintReportsErrorsForInvalidConfig

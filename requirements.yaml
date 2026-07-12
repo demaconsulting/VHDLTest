@@ -17,7 +17,10 @@ includes:
   - docs/reqstream/vhdltest/simulators/vivado-simulator.yaml
   - docs/reqstream/vhdltest/simulators/active-hdl-simulator.yaml
   - docs/reqstream/vhdltest/simulators/mock-simulator.yaml
+  - docs/reqstream/vhdltest/simulators/tcl-text.yaml
+  - docs/reqstream/vhdltest/simulators/xilinx-arg-text.yaml
   - docs/reqstream/vhdltest/run/run.yaml
+  - docs/reqstream/vhdltest/run/process-invoker.yaml
   - docs/reqstream/vhdltest/run/run-processor.yaml
   - docs/reqstream/vhdltest/run/run-program.yaml
   - docs/reqstream/vhdltest/run/run-results.yaml
@@ -42,3 +45,4 @@ includes:
   - docs/reqstream/ots/weasyprinttool.yaml
   - docs/reqstream/ots/fileassert.yaml
   - docs/reqstream/ots/sonarscanner.yaml
+  - docs/reqstream/ots/sysml2tools.yaml

@@ -26,3 +26,73 @@ sections:
             tags: [ots]
             tests:
               - ReviewMark_Lint
+
+          - id: VHDLTest-OTS-ReviewMark-VersionDisplay
+            title: ReviewMark shall display its installed version when invoked with --version.
+            justification: |
+              dotnet reviewmark --version prints the installed ReviewMark version, used to
+              confirm which tool version produced a given review plan/report during
+              troubleshooting.
+            tags: [ots]
+            tests:
+              - ReviewMark_VersionDisplay
+
+          - id: VHDLTest-OTS-ReviewMark-HelpDisplay
+            title: ReviewMark shall display command usage and available options when invoked with --help.
+            justification: |
+              dotnet reviewmark --help prints the command usage and available options,
+              documented as the "Help display" feature in docs/design/ots/reviewmark.md.
+            tags: [ots]
+            tests:
+              - ReviewMark_HelpDisplay
+
+          - id: VHDLTest-OTS-ReviewMark-IndexScan
+            title: ReviewMark shall index PDF evidence files matching a glob path into the evidence store.
+            justification: |
+              dotnet reviewmark --index <glob-path> indexes PDF evidence files matching the
+              given glob path into the evidence store, documented as the "Index scan"
+              feature in docs/design/ots/reviewmark.md.
+            tags: [ots]
+            tests:
+              - ReviewMark_IndexScan
+
+          - id: VHDLTest-OTS-ReviewMark-WorkingDirectoryOverride
+            title: ReviewMark shall use an explicitly specified working directory for default paths and glob scanning.
+            justification: |
+              dotnet reviewmark --dir <directory> sets the working directory used for
+              default paths and glob scanning, documented as the "Working-directory
+              override" feature in docs/design/ots/reviewmark.md.
+            tags: [ots]
+            tests:
+              - ReviewMark_WorkingDirectoryOverride
+
+          - id: VHDLTest-OTS-ReviewMark-Enforce
+            title: ReviewMark shall exit with a non-zero code when a review-set file lacks current review evidence and --enforce is specified.
+            justification: |
+              dotnet reviewmark --enforce exits with a non-zero code if any file in a
+              review-set lacks current review evidence, documented as the "Enforce" feature
+              in docs/design/ots/reviewmark.md.
+            tags: [ots]
+            tests:
+              - ReviewMark_Enforce
+
+          - id: VHDLTest-OTS-ReviewMark-Elaborate
+            title: ReviewMark shall print a markdown elaboration of a specified review set when invoked with --elaborate.
+            justification: |
+              dotnet reviewmark --elaborate <id> prints a markdown elaboration of the
+              specified review set, documented as the "Elaborate" feature in
+              docs/design/ots/reviewmark.md.
+            tags: [ots]
+            tests:
+              - ReviewMark_Elaborate
+
+          - id: VHDLTest-OTS-ReviewMark-DepthFlag
+            title: ReviewMark shall apply the --depth value as the default markdown heading depth for all generated documents.
+            justification: |
+              dotnet reviewmark --depth <#> sets the default markdown heading depth applied
+              to all generated documents (plan, report, and elaboration) when no per-document
+              depth override is supplied, documented as the "Depth flag" feature in
+              docs/design/ots/reviewmark.md.
+            tags: [ots]
+            tests:
+              - ReviewMark_DepthFlag

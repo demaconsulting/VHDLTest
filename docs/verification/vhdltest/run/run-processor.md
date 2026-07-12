@@ -21,6 +21,21 @@ N/A - standard test environment. `dotnet` must be available on PATH.
 - `RunProcessor.Execute` classifies output lines using the provided `RunLineRule` patterns.
 - A non-zero exit code from the process elevates the summary to `RunLineType.Error`.
 - Executing an unknown program raises an exception that propagates to the caller.
+- On Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program,
+  consistent with the non-Windows path and the `Execute(string, ...)` overload, and the
+  thrown exception's `NativeErrorCode` is set to `ERROR_FILE_NOT_FOUND` (2).
+- On Windows, an application name that already carries its own extension (e.g. `tool.exe`)
+  never resolves to an unrelated `PATHEXT`-qualified file (e.g. `tool.exe.cmd`).
+- On Windows, a bare (extensionless) application name never resolves to an extensionless file
+  literally named `application`, even when one exists on disk — only a `PATHEXT`-qualified
+  variant is accepted, matching `cmd.exe`'s own resolution semantics for an unqualified name.
+- On Windows, an application name resolvable only via the Windows system directory
+  (`%SystemRoot%\System32`) resolves successfully even when `PATH` does not include that
+  directory, matching the always-implicit system-directory search performed by
+  `CreateProcess`/`cmd.exe`. The Windows directory (`%SystemRoot%`) is searched by the same
+  code path but is not separately covered by a dedicated test.
+- Mutating the caller's original rules array after construction does not affect a
+  `RunProcessor` instance's classification behavior.
 - Verbose logging writes the working directory and run command when `context.Verbose` is set.
 - On Windows, the command is wrapped with `cmd /c` before being launched.
 
@@ -82,3 +97,61 @@ the `Execute(Context, ...)` overload wraps the application command with `cmd /c`
 launching the process, confirming the Windows cmd-wrapping requirement. This test only
 runs on Windows (`[SupportedOSPlatform("windows")]`).
 This scenario is tested by `RunProcessor_Execute_WithContext_OnWindows_WrapsCommandWithCmdSlashC`.
+
+**Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently**: Verifies that on
+Windows, `Execute(Context, ...)` throws `Win32Exception` for a missing program, with
+`NativeErrorCode` set to `ERROR_FILE_NOT_FOUND` (2) — proving the `Execute(Context, ...)`
+overload's pre-flight resolution step now matches the already-verified missing-program
+behavior of the direct `Execute(string, ...)` overload, closing the prior inconsistency
+where `cmd /c` silently swallowed a missing program into a non-throwing,
+non-zero-exit `RunResults`. This test only runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_MissingProgram_ThrowsWin32ExceptionConsistently`.
+
+**Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile**:
+Verifies that requesting an already extension-qualified application name (e.g. `tool.exe`)
+does not resolve to an unrelated `PATHEXT`-qualified file (e.g. `tool.exe.cmd`) present in
+the working directory, confirming resolution matches `cmd.exe`'s own semantics for
+extension-qualified names rather than over-appending further extensions. This test only
+runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_ExtensionQualifiedNameNotFound_DoesNotMatchDoubleExtensionFile`.
+
+**Execute_WithContext_BareNameOnlyExtensionlessFileNotFound_DoesNotMatchExtensionlessFile**:
+Verifies that requesting a bare (extensionless) application name does not resolve to an
+extensionless file literally named `application` present in the working directory, confirming
+resolution matches `cmd.exe`'s own semantics for unqualified names — only a
+`PATHEXT`-qualified variant is ever accepted, never the literal extensionless name — regression
+guard for a bug where an extensionless file happening to share the requested bare name could be
+misreported as a resolved executable. This test only runs on Windows
+(`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_BareNameOnlyExtensionlessFileNotFound_DoesNotMatchExtensionlessFile`.
+
+**Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully**: Verifies that a
+bare-named executable (`cmd`) resolvable only via the Windows system directory
+(`%SystemRoot%\System32`) resolves successfully even when `PATH` is temporarily replaced with
+a directory that does not contain it, confirming resolution mirrors the always-implicit
+system-directory search performed by `CreateProcess`/`cmd.exe` regardless of `PATH` contents —
+regression guard for a bug where resolution only searched the starting directory and `PATH`.
+This test only runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by
+`RunProcessor_Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully`.
+
+**Execute_WithContext_ValidProgram_StillInvokesSuccessfully**: Verifies that a valid Windows
+application (`dotnet`) is unaffected by the new pre-flight executable resolution step — a
+regression guard proving the resolution logic does not break the existing working path. This
+test only runs on Windows (`[SupportedOSPlatform("windows")]`).
+This scenario is tested by `RunProcessor_Execute_WithContext_ValidProgram_StillInvokesSuccessfully`.
+
+**Constructor_MutatingOriginalRulesArrayAfterConstruction_DoesNotAffectClassification**:
+Verifies that mutating the caller's original `RunLineRule[]` array after constructing a
+`RunProcessor` does not affect the instance's classification behavior, confirming the
+constructor takes a defensive copy rather than capturing the caller's array reference.
+This scenario is tested by
+`RunProcessor_Constructor_MutatingOriginalRulesArrayAfterConstruction_DoesNotAffectClassification`.
+
+**Constructor_NullRules_ThrowsArgumentNullException**: Verifies that constructing a
+`RunProcessor` with a null `rules` array throws `ArgumentNullException` rather than a
+less-clear exception surfacing later from the defensive-copy collection expression.
+This scenario is tested by `RunProcessor_Constructor_NullRules_ThrowsArgumentNullException`.

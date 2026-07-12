@@ -25,8 +25,18 @@ OTS items:
 
 - **YamlDotNet**: integration and usage design.
 - **DemaConsulting.TestResults**: integration and usage design.
-- Build and analysis tool OTS items (PandocTool, WeasyprintTool, FileAssert, SonarScanner, and
-  others): see *OTS Software Design*.
+- **xUnit**: integration and usage design.
+- **DemaConsulting.ReqStream**: integration and usage design.
+- **DemaConsulting.BuildMark**: integration and usage design.
+- **DemaConsulting.VersionMark**: integration and usage design.
+- **DemaConsulting.ReviewMark**: integration and usage design.
+- **DemaConsulting.SysML2Tools**: integration and usage design.
+- **DemaConsulting.PandocTool**: integration and usage design.
+- **DemaConsulting.WeasyprintTool**: integration and usage design.
+- **DemaConsulting.FileAssert**: integration and usage design.
+- **DemaConsulting.SarifMark**: integration and usage design.
+- **DemaConsulting.SonarMark**: integration and usage design.
+- **dotnet-sonarscanner**: integration and usage design.
 
 The following topics are out of scope:
 
@@ -37,50 +47,20 @@ The following topics are out of scope:
 
 ## Software Structure
 
-The following tree shows how the VHDLTest software items are organized across the system, subsystem, and unit
-levels:
+The software structure is modeled in SysML2 under `docs/sysml2/` and rendered to the
+diagram below by SysML2Tools as part of the build pipeline. AI agents should query the
+SysML2 model directly (see the `sysml2tools-query` skill) rather than parsing this
+diagram or hand-maintained prose.
 
-```text
-VHDLTest (System)
-├── Program (Unit)
-├── Cli (Subsystem)
-│   ├── Context (Unit)
-│   ├── ConfigDocument (Unit)
-│   └── Options (Unit)
-├── Simulators (Subsystem)
-│   ├── Simulator (Unit)
-│   ├── SimulatorFactory (Unit)
-│   ├── GhdlSimulator (Unit)
-│   ├── ModelSimSimulator (Unit)
-│   ├── QuestaSimSimulator (Unit)
-│   ├── VivadoSimulator (Unit)
-│   ├── ActiveHdlSimulator (Unit)
-│   ├── NvcSimulator (Unit)
-│   └── MockSimulator (Unit)
-├── Run (Subsystem)
-│   ├── IProcessInvoker (Unit)
-│   ├── ProcessInvoker (Unit)
-│   ├── RunProcessor (Unit)
-│   ├── RunProgram (Unit)
-│   ├── RunResults (Unit)
-│   ├── RunLine (Unit)
-│   ├── RunLineRule (Unit)
-│   └── RunLineType (Unit)
-├── Results (Subsystem)
-│   ├── TestResult (Unit)
-│   └── TestResults (Unit)
-└── SelfTest (Subsystem)
-    └── Validation (Unit)
+![Software Structure](SoftwareStructureView.svg)
 
-OTS Dependencies:
-├── YamlDotNet (OTS)
-└── DemaConsulting.TestResults (OTS)
-```
-
-Each unit is described in detail in its own chapter within this document. Within the Simulators
-subsystem, the simulator units are listed in auto-discovery priority order (the order in which
-`SimulatorFactory` tests for an available simulator when no `--simulator` option is supplied);
-`MockSimulator` is excluded from auto-discovery and is only accessible via the explicit name `mock`.
+Within the Simulators subsystem, the simulator units are exposed in auto-discovery priority order
+(the order in which `SimulatorFactory` tests for an available simulator when no `--simulator`
+option is supplied): `GhdlSimulator`, `ModelSimSimulator`, `QuestaSimSimulator`,
+`VivadoSimulator`, `ActiveHdlSimulator`, `NvcSimulator`. `Simulator` (the abstract base class)
+and `SimulatorFactory` (the discovery/lookup helper) are not themselves simulators and take no
+part in this ordering. `MockSimulator` is excluded from auto-discovery and is only accessible
+via the explicit name `mock`.
 
 ## Folder Layout
 
@@ -118,43 +98,11 @@ src/DEMAConsulting.VHDLTest/
 │   └── TestResults.cs          — collection of test results
 └── SelfTest/
     └── Validation.cs           — self-validation test runner
-
-test/DEMAConsulting.VHDLTest.Tests/
-├── IntegrationTests.cs         — system-level integration tests
-├── Cli/
-│   ├── ContextTests.cs         — Context unit tests
-│   ├── ConfigDocumentTests.cs  — ConfigDocument unit tests
-│   ├── OptionsTests.cs         — Options unit tests
-│   └── CliSubsystemTests.cs    — Cli subsystem integration tests
-├── Simulators/
-│   ├── SimulatorTests.cs           — Simulator unit tests
-│   ├── SimulatorFactoryTests.cs    — SimulatorFactory unit tests
-│   ├── GhdlSimulatorTests.cs       — GhdlSimulator unit tests
-│   ├── ModelSimSimulatorTests.cs   — ModelSimSimulator unit tests
-│   ├── QuestaSimSimulatorTests.cs  — QuestaSimSimulator unit tests
-│   ├── VivadoSimulatorTests.cs     — VivadoSimulator unit tests
-│   ├── ActiveHdlSimulatorTests.cs  — ActiveHdlSimulator unit tests
-│   ├── NvcSimulatorTests.cs        — NvcSimulator unit tests
-│   ├── MockSimulatorTests.cs       — MockSimulator unit tests
-│   └── SimulatorsSubsystemTests.cs — Simulators subsystem integration tests
-├── Run/
-│   ├── FakeProcessInvoker.cs   — FakeProcessInvoker test double
-│   ├── RunProcessorTests.cs    — RunProcessor unit tests
-│   ├── RunProgramTests.cs      — RunProgram unit tests
-│   ├── RunLineTests.cs         — RunLine unit tests
-│   ├── RunLineRuleTests.cs     — RunLineRule unit tests
-│   ├── RunLineTypeTests.cs     — RunLineType unit tests
-│   ├── RunResultsTests.cs      — RunResults unit tests
-│   └── RunSubsystemTests.cs    — Run subsystem integration tests
-├── Results/
-│   ├── TestResultTests.cs      — TestResult unit tests
-│   └── TestResultsTests.cs     — TestResults unit tests
-└── SelfTest/
-    └── ValidationTests.cs      — Validation unit and SelfTest subsystem integration tests
 ```
 
-The design documentation mirrors this under `docs/design/vhdltest/` and the test project mirrors the same layout
-under `test/DEMAConsulting.VHDLTest.Tests/`.
+The design documentation mirrors this under `docs/design/vhdltest/`. The test project,
+`test/DEMAConsulting.VHDLTest.Tests/`, mirrors the same subsystem/unit layout but is outside the
+design documentation scope of this document; see the Companion Artifact Structure section below.
 
 ## Companion Artifact Structure
 

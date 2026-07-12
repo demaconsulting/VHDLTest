@@ -16,6 +16,19 @@ current review evidence. ReviewMark is not deployed with VHDLTest.
   showing the review status of each file against the evidence store.
 - **Lint**: `reviewmark --lint` validates `.reviewmark.yaml` syntax.
 - **Self-validation**: `reviewmark --validate --results ...` writes internal test TRX results.
+- **Version display**: `reviewmark --version` prints the installed ReviewMark version.
+- **Help display**: `reviewmark --help` prints the command usage and available options.
+- **Index scan**: `reviewmark --index <glob-path>` indexes PDF evidence files matching the
+  given glob path into the evidence store.
+- **Working-directory override**: `reviewmark --dir <directory>` sets the working directory
+  used for default paths and glob scanning.
+- **Enforce**: `reviewmark --enforce` exits with a non-zero code if any file in a
+  review-set lacks current review evidence.
+- **Elaborate**: `reviewmark --elaborate <id>` prints a markdown elaboration of the
+  specified review set.
+- **Depth flag**: `reviewmark --depth <#>` sets the default markdown heading depth applied
+  to all generated documents (plan, report, and elaboration) when no per-document depth
+  override is supplied.
 
 ### Integration Pattern
 
