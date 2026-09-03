@@ -58,3 +58,6 @@ sections:
               - VHDLTest-Simulators-ActiveHdlSimulator-Test
               - VHDLTest-Simulators-MockSimulator-Compile
               - VHDLTest-Simulators-MockSimulator-Test
+              - VHDLTest-Simulators-TclText-BraceQuote
+              - VHDLTest-Simulators-TclText-EscapedFallback
+              - VHDLTest-Simulators-XilinxArgText-Quote

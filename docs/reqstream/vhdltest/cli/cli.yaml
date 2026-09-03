@@ -19,10 +19,12 @@ sections:
             children:
               - VHDLTest-Cli-Context-Parse
               - VHDLTest-Cli-Context-Error
+              - VHDLTest-Cli-Context-NullArgs
               - VHDLTest-Cli-ConfigDoc-Read
               - VHDLTest-Cli-ConfigDoc-Missing
               - VHDLTest-Cli-ConfigDoc-Null
               - VHDLTest-Cli-ConfigDoc-Malformed
+              - VHDLTest-Cli-ConfigDoc-NullFilename
               - VHDLTest-Cli-ConfigDoc-DefaultFiles
               - VHDLTest-Cli-ConfigDoc-DefaultTests
               - VHDLTest-Cli-ConfigDoc-ExplicitNullFiles

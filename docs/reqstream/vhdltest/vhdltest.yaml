@@ -6,6 +6,7 @@ sections:
         requirements:
           - id: VHDLTest-Cmd-Usage
             title: VHDLTest shall display usage information when run without arguments.
+            tags: [system]
             justification: |
               Provides immediate guidance to users who are unfamiliar with the tool or have
               forgotten the command syntax. This improves user experience by making the tool
@@ -18,6 +19,7 @@ sections:
 
           - id: VHDLTest-Cmd-Version
             title: VHDLTest shall display version information when requested.
+            tags: [system]
             justification: |
               Enables users to verify which version of VHDLTest is installed, which is critical
               for troubleshooting, compatibility checks, and ensuring reproducible builds. This
@@ -30,6 +32,7 @@ sections:
 
           - id: VHDLTest-Cmd-Help
             title: VHDLTest shall display help information when requested.
+            tags: [system]
             justification: |
               Provides comprehensive command-line documentation directly within the tool,
               allowing users to quickly reference available options and syntax without
@@ -43,6 +46,7 @@ sections:
 
           - id: VHDLTest-Cmd-Verbose
             title: VHDLTest shall support a --verbose option that enables detailed output.
+            tags: [system]
             justification: |
               Detailed output is essential for debugging failed test runs and understanding
               simulator behavior. Verbose mode gives developers the full simulator output
@@ -56,6 +60,7 @@ sections:
 
           - id: VHDLTest-Cmd-Silent
             title: VHDLTest shall support a --silent option that suppresses non-essential output.
+            tags: [system]
             justification: |
               Silent mode keeps CI/CD pipeline logs clean by suppressing informational messages
               while retaining error output. This is important for large pipelines where noise
@@ -70,6 +75,7 @@ sections:
 
           - id: VHDLTest-Cmd-Log
             title: VHDLTest shall support a --log option that writes output to the specified log file.
+            tags: [system]
             justification: |
               Persisting output to a log file allows post-run analysis, archiving, and audit
               trails for compliance workflows. It decouples diagnostic information from the
@@ -84,6 +90,7 @@ sections:
         requirements:
           - id: VHDLTest-Test-Success
             title: VHDLTest shall execute all VHDL test benches named in the configuration file.
+            tags: [system]
             justification: |
               Enables integration with CI/CD pipelines and build systems that need a
               tool to systematically run every test bench declared in the configuration
@@ -100,9 +107,11 @@ sections:
               - VHDLTest-Results-Compile
               - VHDLTest-Results-Execute
               - VHDLTest-Results-PrintSummary
+              - VHDLTest-Results-PrintSummaryCounts
 
           - id: VHDLTest-Test-Exit0-Success
             title: VHDLTest shall return exit code 0 when all test benches pass.
+            tags: [system]
             justification: |
               A zero exit code on success is the standard convention for successful
               command execution in Unix-like systems. CI/CD pipelines and build systems
@@ -115,6 +124,7 @@ sections:
 
           - id: VHDLTest-Test-CompileError
             title: VHDLTest shall return non-zero exit code when compilation fails.
+            tags: [system]
             justification: |
               Allows CI/CD systems and automated workflows to detect compilation errors and
               halt the build process appropriately. This prevents invalid or incomplete designs
@@ -128,6 +138,7 @@ sections:
 
           - id: VHDLTest-Test-TestError
             title: VHDLTest shall return non-zero exit code when tests fail.
+            tags: [system]
             justification: |
               Enables automated test environments to detect test failures and take appropriate
               action (e.g., failing the build, sending notifications). This is essential for
@@ -144,6 +155,7 @@ sections:
 
           - id: VHDLTest-Test-Exit0
             title: VHDLTest shall support exit-0 mode to always return zero exit code.
+            tags: [system]
             justification: |
               Provides flexibility for scenarios where test results need to be collected and
               analyzed without failing the build process. Useful for generating test reports
@@ -155,6 +167,7 @@ sections:
 
           - id: VHDLTest-Config-Load
             title: VHDLTest shall load test configuration from the YAML file specified by the --config (-c) option.
+            tags: [system]
             justification: |
               A YAML configuration file is the primary mechanism for specifying which tests to run
               and how the simulator should be configured. Requiring the path via a named option
@@ -168,6 +181,7 @@ sections:
 
           - id: VHDLTest-Config-Schema-Files
             title: VHDLTest shall read VHDL source file paths from the files field of the YAML configuration file.
+            tags: [system]
             justification: |
               The files field is the mechanism by which users specify which VHDL source files
               are passed to the simulator for compilation. Reading this field correctly is a
@@ -179,6 +193,7 @@ sections:
 
           - id: VHDLTest-Config-Schema-Tests
             title: VHDLTest shall read test bench entity names from the tests field of the YAML configuration file.
+            tags: [system]
             justification: |
               The tests field names the VHDL entities to simulate as test benches. Reading this
               field correctly is a precondition for test execution and determines which entities
@@ -190,6 +205,7 @@ sections:
 
           - id: VHDLTest-Config-Schema-CompileOrder
             title: VHDLTest shall compile VHDL source files in the order they are listed in the files field.
+            tags: [system]
             justification: |
               VHDL requires entities to be compiled before their dependents. Preserving the
               declared order ensures that the simulator receives files in a dependency-safe
@@ -201,6 +217,7 @@ sections:
 
           - id: VHDLTest-Config-Schema-TestScope
             title: VHDLTest shall execute only the test bench entities named in the tests field of the configuration file.
+            tags: [system]
             justification: |
               Restricting execution to the named test benches ensures that no unintended entities
               are simulated and that the test scope matches the declared configuration, which is
@@ -212,6 +229,7 @@ sections:
 
           - id: VHDLTest-Results-TRX
             title: VHDLTest shall write test results in TRX format to the file specified by `-r`/`--result`/`--results` when the option is provided with a `.trx` extension.
+            tags: [system]
             justification: |
               TRX files are the standard test result format consumed by CI/CD platforms, coverage
               tools, and requirements traceability tools. Writing results to a file decouples
@@ -225,6 +243,7 @@ sections:
 
           - id: VHDLTest-Results-JUnit
             title: VHDLTest shall write test results in JUnit XML format to the file specified by `-r`/`--result`/`--results` when the option is provided with a `.xml` extension.
+            tags: [system]
             justification: |
               JUnit XML is widely consumed by CI/CD platforms and test-reporting dashboards outside
               the .NET ecosystem. Supporting JUnit XML output allows VHDLTest to integrate with
@@ -237,6 +256,7 @@ sections:
 
           - id: VHDLTest-Simulator-Select
             title: VHDLTest shall support selection of the VHDL simulator via the --simulator (-s) option, accepting values ghdl, nvc, modelsim, questasim, vivado, activehdl, and mock.
+            tags: [system]
             justification: |
               Supporting multiple simulators allows VHDLTest to be used across diverse development
               environments and organizations that have standardized on different VHDL simulators.
@@ -249,6 +269,7 @@ sections:
 
           - id: VHDLTest-Simulator-EnvPath
             title: VHDLTest shall support overriding the simulator executable path via environment variables (e.g., VHDLTEST_GHDL_PATH).
+            tags: [system]
             justification: |
               Environment variable path overrides allow system administrators and CI environments
               to point VHDLTest at non-standard simulator installation locations without modifying
@@ -266,6 +287,7 @@ sections:
 
           - id: VHDLTest-Simulator-Path
             title: VHDLTest shall locate a simulator executable on the system PATH.
+            tags: [system]
             justification: |
               Runtime PATH-based discovery lets VHDLTest locate simulator installations without
               requiring users to hard-code absolute paths in configuration or environment variables.
@@ -282,6 +304,7 @@ sections:
               When --simulator is not specified, VHDLTest shall automatically select an available
               simulator in the order: GHDL, ModelSim, QuestaSim, Vivado, Active-HDL, NVC. The
               mock simulator is never auto-selected.
+            tags: [system]
             justification: |
               When a developer has only one simulator installed, requiring an explicit --simulator
               option is unnecessary friction. Auto-discovery enables zero-configuration usage: the
@@ -296,6 +319,7 @@ sections:
 
           - id: VHDLTest-Test-Filter
             title: VHDLTest shall support filtering test execution to named test bench(es).
+            tags: [system]
             justification: |
               Users need to run a specific subset of test benches from a configuration file
               without modifying it. Positional arguments after options (or after `--`) are
@@ -311,6 +335,7 @@ sections:
         requirements:
           - id: VHDLTest-Validate
             title: VHDLTest shall support a --validate option that verifies correct installation and reports results.
+            tags: [system]
             justification: |
               A built-in self-validation mode allows users to confirm that VHDLTest is correctly
               installed and functioning after deployment, reducing support burden and enabling
@@ -323,6 +348,7 @@ sections:
 
           - id: VHDLTest-Validate-Depth
             title: VHDLTest shall support a --depth <n> option that controls the Markdown heading level in validation reports.
+            tags: [system]
             justification: |
               Allowing users to configure the heading depth makes it easier to embed validation
               reports within larger compliance documents that use different heading hierarchies.
@@ -337,6 +363,7 @@ sections:
 
           - id: VHDLTest-Validate-Results
             title: VHDLTest shall save validation results to file when the --results option is specified during self-validation.
+            tags: [system]
             justification: |
               Persisting validation results to a file enables documentation, compliance, and
               historical comparison. Saved reports can be shared with team members or included
@@ -349,6 +376,7 @@ sections:
 
           - id: VHDLTest-Validate-SystemInfo
             title: VHDLTest shall include system information (VHDLTest Version, Machine Name, OS Version, DotNet Runtime, and Time Stamp) in validation reports.
+            tags: [system]
             justification: |
               Providing full environment context -- VHDLTest Version, Machine Name, OS Version,
               DotNet Runtime, and Time Stamp -- in validation reports is essential for
@@ -363,6 +391,7 @@ sections:
 
           - id: VHDLTest-Validate-InvalidSimulator
             title: VHDLTest shall exit with a non-zero code when an unrecognized simulator name is specified during self-validation.
+            tags: [system]
             justification: |
               When an unrecognized simulator name is provided, VHDLTest must fail gracefully
               with a descriptive error rather than throwing an unhandled exception, ensuring

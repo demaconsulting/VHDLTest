@@ -6,6 +6,7 @@ sections:
         requirements:
           - id: VHDLTest-Plt-Linux
             title: VHDLTest shall run on Linux operating systems.
+            tags: [system]
             justification: |
               Linux is the dominant platform for FPGA/ASIC development and continuous integration
               environments. Supporting Linux ensures VHDLTest can be used in CI/CD pipelines and
@@ -16,6 +17,7 @@ sections:
 
           - id: VHDLTest-Plt-Windows
             title: VHDLTest shall run on Windows operating systems.
+            tags: [system]
             justification: |
               Windows is widely used in corporate environments and for desktop-based FPGA
               development. Supporting Windows ensures VHDLTest is accessible to the broadest
@@ -25,9 +27,12 @@ sections:
               - windows@VHDLTest_TestFails
             children:
               - VHDLTest-Run-RunProcessor-WindowsWrapping
+              - VHDLTest-Run-RunProcessor-SystemDirectoryResolution
+              - VHDLTest-Run-RunProcessor-BareNameExtensionlessFileExcluded
 
           - id: VHDLTest-Plt-MacOS
             title: VHDLTest shall run on macOS operating systems.
+            tags: [system]
             justification: |
               macOS is widely used by developers working in Apple ecosystems and for desktop-based
               FPGA development. Supporting macOS ensures VHDLTest is accessible to the broadest
@@ -39,6 +44,7 @@ sections:
 
           - id: VHDLTest-Plt-Net8
             title: VHDLTest shall support .NET 8.0 runtime.
+            tags: [system]
             justification: |
               .NET 8.0 is a Long-Term Support (LTS) release supported until November 2026.
               Supporting this LTS version ensures stability and long-term usability for users
@@ -49,6 +55,7 @@ sections:
 
           - id: VHDLTest-Plt-Net9
             title: VHDLTest shall support .NET 9.0 runtime.
+            tags: [system]
             justification: |
               .NET 9.0 is a Standard Term Support (STS) release that provides access to the
               latest .NET features and performance improvements. Supporting .NET 9.0 enables
@@ -59,6 +66,7 @@ sections:
 
           - id: VHDLTest-Plt-Net10
             title: VHDLTest shall support .NET 10.0 runtime.
+            tags: [system]
             justification: |
               .NET 10.0 is a Long-Term Support (LTS) release. Supporting .NET 10.0 ensures VHDLTest
               remains compatible with the latest long-term supported runtime and benefits from the
