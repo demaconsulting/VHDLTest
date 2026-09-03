@@ -1,0 +1,105 @@
+---
+# Quality/process requirements grouping VHDLTest's use of off-the-shelf (OTS) build,
+# test, and documentation tooling. These requirements exist so that OTS-derived
+# requirements (which describe capabilities VHDLTest relies on from third-party or
+# sibling-repository tools, not user-visible VHDLTest functionality) are not reported
+# as orphans by `dotnet reqstream --requirements requirements.yaml --enforce`.
+sections:
+  - title: Quality Requirements
+    requirements:
+      - id: VHDLTest-Quality-TestInfrastructure
+        title: The repository shall rely on xUnit and DemaConsulting.TestResults to execute tests and produce standard test-result files.
+        tags: [quality]
+        justification: |
+          Automated testing depends on xUnit's execution/reporting capabilities, and
+          persisting results in TRX/JUnit formats depends on the DemaConsulting.TestResults
+          library. This grouping requirement links those OTS requirements to the quality
+          root so they participate in orphan detection without being falsely reported as
+          disconnected from VHDLTest functionality.
+        children:
+          - VHDLTest-OTS-xUnit-Execute
+          - VHDLTest-OTS-xUnit-Report
+          - VHDLTest-OTS-TestResults
+          - VHDLTest-OTS-TestResults-JUnit
+
+      - id: VHDLTest-Quality-RequirementsTraceability
+        title: The repository shall rely on ReqStream and ReviewMark to enforce requirements traceability and file-review compliance.
+        tags: [quality]
+        justification: |
+          Requirements coverage enforcement, linting, and report/matrix export depend on
+          ReqStream, and mandatory-file-review compliance depends on ReviewMark. This
+          grouping requirement links those OTS requirements to the quality root so they
+          participate in orphan detection without being falsely reported as disconnected
+          from VHDLTest functionality.
+        children:
+          - VHDLTest-OTS-ReqStream
+          - VHDLTest-OTS-ReqStream-Lint
+          - VHDLTest-OTS-ReqStream-RequirementsProcessing
+          - VHDLTest-OTS-ReqStream-TraceMatrix
+          - VHDLTest-OTS-ReqStream-ReportExport
+          - VHDLTest-OTS-ReqStream-TagsFiltering
+          - VHDLTest-OTS-ReviewMark
+          - VHDLTest-OTS-ReviewMark-Lint
+          - VHDLTest-OTS-ReviewMark-VersionDisplay
+          - VHDLTest-OTS-ReviewMark-HelpDisplay
+          - VHDLTest-OTS-ReviewMark-IndexScan
+          - VHDLTest-OTS-ReviewMark-WorkingDirectoryOverride
+          - VHDLTest-OTS-ReviewMark-Enforce
+          - VHDLTest-OTS-ReviewMark-Elaborate
+          - VHDLTest-OTS-ReviewMark-DepthFlag
+
+      - id: VHDLTest-Quality-BuildAndVersionTooling
+        title: The repository shall rely on BuildMark, VersionMark, SarifMark, and SonarMark to enforce build-rule compliance and publish version/analysis metadata.
+        tags: [quality]
+        justification: |
+          Build-rule enforcement (git integration, issue tracking, known-issues reporting)
+          depends on BuildMark; version capture/publishing depends on VersionMark; SARIF
+          transformation depends on SarifMark; and SonarQube properties generation depends
+          on SonarMark. This grouping requirement links those OTS requirements to the
+          quality root so they participate in orphan detection without being falsely
+          reported as disconnected from VHDLTest functionality.
+        children:
+          - VHDLTest-OTS-BuildMark
+          - VHDLTest-OTS-BuildMark-GitIntegration
+          - VHDLTest-OTS-BuildMark-IssueTracking
+          - VHDLTest-OTS-BuildMark-KnownIssuesReporting
+          - VHDLTest-OTS-BuildMark-RulesRouting
+          - VHDLTest-OTS-VersionMark-Capture
+          - VHDLTest-OTS-VersionMark-Publish
+          - VHDLTest-OTS-VersionMark-Lint
+          - VHDLTest-OTS-VersionMark-LintDetectsErrors
+          - VHDLTest-OTS-SarifMark
+          - VHDLTest-OTS-SonarMark
+          - VHDLTest-OTS-SonarScanner-Analyze
+          - VHDLTest-OTS-SonarScanner-Publish
+
+      - id: VHDLTest-Quality-DocumentationTooling
+        title: The repository shall rely on PandocTool and WeasyprintTool to render compliance documents to PDF.
+        tags: [quality]
+        justification: |
+          Converting generated markdown documentation into distributable PDF compliance
+          evidence depends on PandocTool and WeasyprintTool. This grouping requirement
+          links those OTS requirements to the quality root so they participate in orphan
+          detection without being falsely reported as disconnected from VHDLTest
+          functionality.
+        children:
+          - VHDLTest-OTS-PandocTool
+          - VHDLTest-OTS-WeasyprintTool
+
+      - id: VHDLTest-Quality-TestAndModelingUtilities
+        title: The repository shall rely on FileAssert, SysML2Tools, and YamlDotNet to verify generated artifacts, maintain the architecture model, and parse requirements YAML.
+        tags: [quality]
+        justification: |
+          Post-build artifact verification depends on FileAssert; the SysML2 architecture
+          model is linted and rendered via SysML2Tools; and requirements YAML parsing
+          depends on YamlDotNet. This grouping requirement links those OTS requirements to
+          the quality root so they participate in orphan detection without being falsely
+          reported as disconnected from VHDLTest functionality.
+        children:
+          - VHDLTest-OTS-FileAssert
+          - VHDLTest-OTS-FileAssert-Exists
+          - VHDLTest-OTS-FileAssert-Contains
+          - VHDLTest-OTS-FileAssert-Validate
+          - VHDLTest-OTS-SysML2Tools
+          - VHDLTest-OTS-SysML2Tools-Lint
+          - VHDLTest-OTS-YamlDotNet

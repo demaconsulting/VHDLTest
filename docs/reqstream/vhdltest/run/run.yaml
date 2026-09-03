@@ -16,6 +16,9 @@ sections:
               - VHDLTest-Run-RunProgram-Execute
               - VHDLTest-Run-RunProgram-Output
               - VHDLTest-Run-RunProgram-WorkingDirectory
+              - VHDLTest-Run-ProcessInvoker-Abstraction
+              - VHDLTest-Run-ProcessInvoker-DefaultInstance
+              - VHDLTest-Run-RunProcessor-InjectableInvoker
 
           - id: VHDLTest-Run-Execute-ExitCode
             title: VHDLTest shall use the simulator program's exit code to determine whether the test run succeeded or failed.

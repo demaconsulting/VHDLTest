@@ -1,6 +1,8 @@
 ---
+root-tags: [system, quality]
 includes:
   - docs/reqstream/vhdltest/vhdltest.yaml
+  - docs/reqstream/vhdltest/quality.yaml
   - docs/reqstream/vhdltest/program.yaml
   - docs/reqstream/vhdltest/platform-requirements.yaml
   - docs/reqstream/vhdltest/cli/cli.yaml
