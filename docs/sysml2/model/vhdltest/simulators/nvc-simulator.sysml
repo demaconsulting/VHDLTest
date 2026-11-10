@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def NvcSimulator {
         doc /* NVC simulator integration. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Simulators/NvcSimulator.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Simulators/NvcSimulatorTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/simulators/nvc-simulator.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/simulators/nvc-simulator.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/simulators/nvc-simulator.yaml */
+        metadata info : SoftwareInfo {
+            description = "NVC simulator integration.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/NvcSimulator.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/NvcSimulatorTests.cs");
+            designFiles = ("docs/design/vhdltest/simulators/nvc-simulator.md");
+            verificationFiles = ("docs/verification/vhdltest/simulators/nvc-simulator.md");
+            requirementFiles = ("docs/reqstream/vhdltest/simulators/nvc-simulator.yaml");
+        }
     }
 }

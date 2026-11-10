@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def ConfigDocument {
         doc /* YAML configuration document parser. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Cli/ConfigDocument.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Cli/ConfigDocumentTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/cli/config-document.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/cli/config-document.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/cli/config-document.yaml */
+        metadata info : SoftwareInfo {
+            description = "YAML configuration document parser.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Cli/ConfigDocument.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Cli/ConfigDocumentTests.cs");
+            designFiles = ("docs/design/vhdltest/cli/config-document.md");
+            verificationFiles = ("docs/verification/vhdltest/cli/config-document.md");
+            requirementFiles = ("docs/reqstream/vhdltest/cli/config-document.yaml");
+        }
     }
 }

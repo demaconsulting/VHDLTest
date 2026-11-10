@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def GhdlSimulator {
         doc /* GHDL simulator integration. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Simulators/GhdlSimulator.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Simulators/GhdlSimulatorTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/simulators/ghdl-simulator.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/simulators/ghdl-simulator.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml */
+        metadata info : SoftwareInfo {
+            description = "GHDL simulator integration.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/GhdlSimulator.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/GhdlSimulatorTests.cs");
+            designFiles = ("docs/design/vhdltest/simulators/ghdl-simulator.md");
+            verificationFiles = ("docs/verification/vhdltest/simulators/ghdl-simulator.md");
+            requirementFiles = ("docs/reqstream/vhdltest/simulators/ghdl-simulator.yaml");
+        }
     }
 }

@@ -17,7 +17,7 @@ simulator installation is required.
 
 - All integration tests in `ValidationTests.cs` pass with zero failures.
 - `--validate --simulator mock` exits with code 0 and output contains `"Validation Passed"`.
-- `--depth` is honoured in the validation output heading.
+- `--depth` is honored in the validation output heading.
 - The OS Version field appears in the system information table.
 - A results file is written when `--results` is specified and contains the expected test entries.
 - An unrecognized simulator name causes VHDLTest to exit with a non-zero code and a descriptive

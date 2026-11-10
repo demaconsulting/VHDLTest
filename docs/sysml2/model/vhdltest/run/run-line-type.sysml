@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def RunLineType {
         doc /* Classification of an output line (for example info, warning, error). */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Run/RunLineType.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Run/RunLineTypeTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/run/run-line-type.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/run/run-line-type.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/run/run-line-type.yaml */
+        metadata info : SoftwareInfo {
+            description = "Classification of an output line (for example info, warning, error).";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunLineType.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunLineTypeTests.cs");
+            designFiles = ("docs/design/vhdltest/run/run-line-type.md");
+            verificationFiles = ("docs/verification/vhdltest/run/run-line-type.md");
+            requirementFiles = ("docs/reqstream/vhdltest/run/run-line-type.yaml");
+        }
     }
 }

@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def RunResults {
         doc /* Aggregated results of a simulation run. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Run/RunResults.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Run/RunResultsTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/run/run-results.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/run/run-results.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/run/run-results.yaml */
+        metadata info : SoftwareInfo {
+            description = "Aggregated results of a simulation run.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunResults.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunResultsTests.cs");
+            designFiles = ("docs/design/vhdltest/run/run-results.md");
+            verificationFiles = ("docs/verification/vhdltest/run/run-results.md");
+            requirementFiles = ("docs/reqstream/vhdltest/run/run-results.yaml");
+        }
     }
 }

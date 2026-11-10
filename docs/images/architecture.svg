@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="870" viewBox="0 0 900 870" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <!-- Transparent canvas; a white rounded card keeps the diagram readable in light and dark themes -->
+  <rect x="14" y="16" width="875" height="840" rx="28" fill="#d5dce6"/>
+  <rect x="10" y="10" width="875" height="840" rx="28" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+
+  <g transform="translate(30,30)">
+    <!-- Caller -->
+    <rect x="250" y="0" width="340" height="60" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="420" y="26" font-size="16" font-weight="600" fill="#92400e" text-anchor="middle">Developer or CI pipeline</text>
+    <text x="420" y="46" font-size="13" fill="#92400e" text-anchor="middle">VHDL test benches and a YAML test configuration</text>
+    <line x1="300" y1="64" x2="300" y2="108" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <text x="312" y="84" font-size="12" fill="#334155">vhdltest --config</text>
+    <text x="312" y="98" font-size="12" fill="#334155">tests.yaml</text>
+    <line x1="540" y1="110" x2="540" y2="66" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <text x="552" y="84" font-size="12" fill="#334155">exit code and test</text>
+    <text x="552" y="98" font-size="12" fill="#334155">results files</text>
+
+    <!-- Tool frame -->
+    <rect x="0" y="112" width="835" height="594" rx="14" fill="#f8fafc" stroke="#2563eb" stroke-width="2" stroke-dasharray="8 5"/>
+    <text x="16" y="138" font-size="14" font-weight="600" fill="#2563eb">DemaConsulting.VHDLTest - one .NET tool: configure, run the simulator, report results</text>
+
+    <!-- Program -->
+    <rect x="20" y="156" width="795" height="46" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="417" y="177" font-size="14" font-family="Consolas, monospace" font-weight="600" fill="#92400e" text-anchor="middle">Program</text>
+    <text x="417" y="194" font-size="12" fill="#92400e" text-anchor="middle">entry point: orchestrates parsing, the simulator run and reporting</text>
+    <line x1="145" y1="202" x2="145" y2="234" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <line x1="562" y1="202" x2="562" y2="234" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+
+    <!-- Cli -->
+    <rect x="20" y="236" width="270" height="240" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="155" y="262" font-size="16" font-weight="600" fill="#166534" text-anchor="middle">Cli subsystem</text>
+    <rect x="34" y="276" width="242" height="44" rx="6" fill="#ffffff" stroke="#16a34a"/>
+    <text x="155" y="294" font-size="14" font-family="Consolas, monospace" fill="#14532d" text-anchor="middle">Context</text>
+    <text x="155" y="311" font-size="11.5" fill="#166534" text-anchor="middle">command-line parser and I/O owner</text>
+    <rect x="34" y="328" width="242" height="44" rx="6" fill="#ffffff" stroke="#16a34a"/>
+    <text x="155" y="346" font-size="14" font-family="Consolas, monospace" fill="#14532d" text-anchor="middle">ConfigDocument</text>
+    <text x="155" y="363" font-size="11.5" fill="#166534" text-anchor="middle">YAML test configuration parser</text>
+    <rect x="34" y="380" width="242" height="44" rx="6" fill="#ffffff" stroke="#16a34a"/>
+    <text x="155" y="398" font-size="14" font-family="Consolas, monospace" fill="#14532d" text-anchor="middle">Options</text>
+    <text x="155" y="415" font-size="11.5" fill="#166534" text-anchor="middle">parsed options holder</text>
+    <rect x="34" y="434" width="242" height="30" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-dasharray="6 4"/>
+    <text x="155" y="454" font-size="12" fill="#475569" text-anchor="middle">OTS: YamlDotNet reads the YAML</text>
+
+    <!-- Simulators -->
+    <rect x="310" y="236" width="505" height="240" rx="12" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="562" y="262" font-size="16" font-weight="600" fill="#1e3a8a" text-anchor="middle">Simulators subsystem</text>
+    <rect x="330" y="276" width="225" height="44" rx="6" fill="#ffffff" stroke="#2563eb"/>
+    <text x="442" y="294" font-size="14" font-family="Consolas, monospace" fill="#1e3a8a" text-anchor="middle">SimulatorFactory</text>
+    <text x="442" y="311" font-size="11.5" fill="#1e40af" text-anchor="middle">lookup and auto-discovery</text>
+    <rect x="575" y="276" width="220" height="44" rx="6" fill="#ffffff" stroke="#2563eb"/>
+    <text x="685" y="294" font-size="14" font-family="Consolas, monospace" fill="#1e3a8a" text-anchor="middle">Simulator</text>
+    <text x="685" y="311" font-size="11.5" fill="#1e40af" text-anchor="middle">abstract base for every tool</text>
+    <rect x="330" y="332" width="465" height="70" rx="6" fill="#ffffff" stroke="#2563eb"/>
+    <text x="562" y="350" font-size="11.5" fill="#1e40af" text-anchor="middle">per-tool integrations, in auto-discovery priority order</text>
+    <text x="562" y="371" font-size="13" font-family="Consolas, monospace" fill="#1e3a8a" text-anchor="middle">GhdlSimulator  ModelSimSimulator  QuestaSimSimulator</text>
+    <text x="562" y="390" font-size="13" font-family="Consolas, monospace" fill="#1e3a8a" text-anchor="middle">VivadoSimulator  ActiveHdlSimulator  NvcSimulator</text>
+    <rect x="330" y="414" width="225" height="48" rx="6" fill="#ffffff" stroke="#2563eb"/>
+    <text x="442" y="433" font-size="14" font-family="Consolas, monospace" fill="#1e3a8a" text-anchor="middle">MockSimulator</text>
+    <text x="442" y="451" font-size="11.5" fill="#1e40af" text-anchor="middle">self-validation only (mock)</text>
+    <rect x="575" y="414" width="220" height="48" rx="6" fill="#ffffff" stroke="#2563eb"/>
+    <text x="685" y="433" font-size="14" font-family="Consolas, monospace" fill="#1e3a8a" text-anchor="middle">TclText, XilinxArgText</text>
+    <text x="685" y="451" font-size="11.5" fill="#1e40af" text-anchor="middle">script and argument quoting</text>
+
+    <!-- Cli feeds the simulator selection -->
+    <line x1="290" y1="352" x2="308" y2="352" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+
+    <!-- Run -->
+    <rect x="20" y="506" width="380" height="176" rx="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="210" y="532" font-size="16" font-weight="600" fill="#4c1d95" text-anchor="middle">Run subsystem</text>
+    <rect x="34" y="546" width="112" height="54" rx="6" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="90" y="568" font-size="12" font-family="Consolas, monospace" fill="#4c1d95" text-anchor="middle">ProcessInvoker</text>
+    <text x="90" y="586" font-size="11" fill="#5b21b6" text-anchor="middle">starts the tool</text>
+    <rect x="154" y="546" width="112" height="54" rx="6" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="210" y="568" font-size="12" font-family="Consolas, monospace" fill="#4c1d95" text-anchor="middle">RunProcessor</text>
+    <text x="210" y="586" font-size="11" fill="#5b21b6" text-anchor="middle">applies line rules</text>
+    <rect x="274" y="546" width="112" height="54" rx="6" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="330" y="568" font-size="12" font-family="Consolas, monospace" fill="#4c1d95" text-anchor="middle">RunProgram</text>
+    <text x="330" y="586" font-size="11" fill="#5b21b6" text-anchor="middle">one invocation</text>
+    <rect x="34" y="610" width="112" height="54" rx="6" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="90" y="632" font-size="12" font-family="Consolas, monospace" fill="#4c1d95" text-anchor="middle">RunResults</text>
+    <text x="90" y="650" font-size="11" fill="#5b21b6" text-anchor="middle">collected output</text>
+    <rect x="154" y="610" width="112" height="54" rx="6" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="210" y="632" font-size="12" font-family="Consolas, monospace" fill="#4c1d95" text-anchor="middle">RunLine</text>
+    <text x="210" y="650" font-size="11" fill="#5b21b6" text-anchor="middle">one output line</text>
+    <rect x="274" y="610" width="112" height="54" rx="6" fill="#ffffff" stroke="#7c3aed"/>
+    <text x="330" y="632" font-size="12" font-family="Consolas, monospace" fill="#4c1d95" text-anchor="middle">RunLineRule</text>
+    <text x="330" y="650" font-size="11" fill="#5b21b6" text-anchor="middle">rule and type</text>
+
+    <!-- Simulators drive the Run subsystem -->
+    <line x1="355" y1="476" x2="355" y2="504" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <text x="367" y="494" font-size="11.5" fill="#334155">runs the tool</text>
+
+    <!-- Results -->
+    <rect x="420" y="506" width="200" height="176" rx="12" fill="#cffafe" stroke="#0891b2" stroke-width="2"/>
+    <text x="520" y="532" font-size="16" font-weight="600" fill="#164e63" text-anchor="middle">Results subsystem</text>
+    <rect x="434" y="546" width="172" height="54" rx="6" fill="#ffffff" stroke="#0891b2"/>
+    <text x="520" y="568" font-size="13" font-family="Consolas, monospace" fill="#164e63" text-anchor="middle">TestResult</text>
+    <text x="520" y="586" font-size="11" fill="#155e75" text-anchor="middle">one test outcome</text>
+    <rect x="434" y="610" width="172" height="40" rx="6" fill="#ffffff" stroke="#0891b2"/>
+    <text x="520" y="628" font-size="13" font-family="Consolas, monospace" fill="#164e63" text-anchor="middle">TestResults</text>
+    <text x="520" y="643" font-size="11" fill="#155e75" text-anchor="middle">collection, TRX and JUnit</text>
+    <rect x="434" y="654" width="172" height="22" rx="6" fill="#f1f5f9" stroke="#64748b" stroke-dasharray="6 4"/>
+    <text x="520" y="669" font-size="10" fill="#475569" text-anchor="middle">OTS: DemaConsulting.TestResults</text>
+    <line x1="400" y1="574" x2="418" y2="574" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+
+    <!-- SelfTest -->
+    <rect x="640" y="506" width="175" height="176" rx="12" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+    <text x="727" y="532" font-size="16" font-weight="600" fill="#831843" text-anchor="middle">SelfTest subsystem</text>
+    <rect x="654" y="546" width="147" height="54" rx="6" fill="#ffffff" stroke="#db2777"/>
+    <text x="727" y="568" font-size="13" font-family="Consolas, monospace" fill="#831843" text-anchor="middle">Validation</text>
+    <text x="727" y="586" font-size="11" fill="#9d174d" text-anchor="middle">--validate test runner</text>
+    <text x="727" y="626" font-size="11.5" fill="#9d174d" text-anchor="middle">Runs the mock simulator</text>
+    <text x="727" y="643" font-size="11.5" fill="#9d174d" text-anchor="middle">through the same path</text>
+    <text x="727" y="660" font-size="11.5" fill="#9d174d" text-anchor="middle">to prove the tool works</text>
+
+    <!-- External tools and outputs -->
+    <rect x="20" y="730" width="380" height="64" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="210" y="756" font-size="14" font-weight="600" fill="#334155" text-anchor="middle">Installed VHDL simulator</text>
+    <text x="210" y="776" font-size="12" fill="#475569" text-anchor="middle">GHDL, NVC, ModelSim, QuestaSim, Vivado or Active-HDL</text>
+    <line x1="210" y1="682" x2="210" y2="728" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <text x="222" y="722" font-size="11.5" fill="#334155">compile, elaborate, simulate</text>
+
+    <rect x="420" y="730" width="395" height="64" rx="10" fill="#f1f5f9" stroke="#64748b" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="617" y="756" font-size="14" font-weight="600" fill="#334155" text-anchor="middle">TRX or JUnit XML test results</text>
+    <text x="617" y="776" font-size="12" fill="#475569" text-anchor="middle">read by CI/CD systems</text>
+    <line x1="520" y1="682" x2="520" y2="728" stroke="#475569" stroke-width="2" marker-end="url(#a)"/>
+    <text x="532" y="722" font-size="11.5" fill="#334155">writes</text>
+  </g>
+</svg>

@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def Options {
         doc /* Parsed options holder. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Cli/Options.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Cli/OptionsTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/cli/options.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/cli/options.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/cli/options.yaml */
+        metadata info : SoftwareInfo {
+            description = "Parsed options holder.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Cli/Options.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Cli/OptionsTests.cs");
+            designFiles = ("docs/design/vhdltest/cli/options.md");
+            verificationFiles = ("docs/verification/vhdltest/cli/options.md");
+            requirementFiles = ("docs/reqstream/vhdltest/cli/options.yaml");
+        }
     }
 }

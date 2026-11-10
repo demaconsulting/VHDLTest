@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def RunLineRule {
         doc /* A rule matching an output line to classify it by RunLineType. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Run/RunLineRule.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Run/RunLineRuleTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/run/run-line-rule.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/run/run-line-rule.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/run/run-line-rule.yaml */
+        metadata info : SoftwareInfo {
+            description = "A rule matching an output line to classify it by RunLineType.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunLineRule.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunLineRuleTests.cs");
+            designFiles = ("docs/design/vhdltest/run/run-line-rule.md");
+            verificationFiles = ("docs/verification/vhdltest/run/run-line-rule.md");
+            requirementFiles = ("docs/reqstream/vhdltest/run/run-line-rule.yaml");
+        }
     }
 }

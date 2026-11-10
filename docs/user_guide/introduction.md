@@ -8,6 +8,12 @@ VHDLTest is a .NET tool for running VHDL test benches and generating standard te
 unit testing by providing a unified command-line interface for multiple VHDL simulators, generating TRX and JUnit XML
 test result files compatible with CI/CD systems, and supporting tool validation for regulated industries.
 
+The figure below shows how the pieces fit together: the command line is parsed into options and a test configuration, the
+configuration selects a simulator through the simulator factory, the simulator runs the test benches, and the run output is
+classified and written as TRX or JUnit XML test results.
+
+![Architecture: the command line selects a simulator, which runs the test benches and produces test results](architecture.svg)
+
 ## Scope
 
 This guide covers installation and prerequisites, supported VHDL simulators and their configuration, YAML-based test

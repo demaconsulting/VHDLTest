@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def SimulatorsSubsystem {
         doc /* VHDL simulator abstraction, discovery, and per-tool integrations. */
 
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Simulators/SimulatorsSubsystemTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/simulators.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/simulators.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/simulators.yaml */
+        metadata info : SoftwareInfo {
+            description = "VHDL simulator abstraction, discovery, and per-tool integrations.";
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/SimulatorsSubsystemTests.cs");
+            designFiles = ("docs/design/vhdltest/simulators.md");
+            verificationFiles = ("docs/verification/vhdltest/simulators.md");
+            requirementFiles = ("docs/reqstream/vhdltest/simulators.yaml");
+        }
 
         part simulator : Simulator;
         part simulatorFactory : SimulatorFactory;
