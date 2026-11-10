@@ -38,6 +38,7 @@ set "LINT_ERROR=1"
 REM === SPELLING SECTION ===
 
 REM Restore dotnet tools (required by TextLint and the compliance tools)
+set "SKIP_DOTNET_TOOLS="
 dotnet tool restore > nul
 if errorlevel 1 goto abort_spelling
 

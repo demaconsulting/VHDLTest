@@ -35,6 +35,7 @@ fi
 # === SPELLING SECTION ===
 
 # Restore dotnet tools (required by TextLint and the compliance tools)
+skip_dotnet_tools=0
 dotnet tool restore > /dev/null || { lint_error=1; skip_dotnet_tools=1; }
 
 # Run TextLint using the files configured in .textlint.yaml
