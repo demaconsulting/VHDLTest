@@ -1,0 +1,82 @@
+---
+# Spell-Checking with TextLint
+#
+# PURPOSE:
+# - Maintain professional documentation and code quality
+# - Catch spelling errors before publication
+# - Support consistent technical terminology usage
+# - Misspelled words should be fixed in the source
+# - NEVER add a misspelled word to the 'words' list
+# - NEVER add a British-English spelling - correct to US-English in the source
+# - PROPOSE only genuine technical terms/names as needed
+version: '0.2'
+language: en
+# The files to spell-check
+files:
+  - '**/*.{md,yaml,yml,json,cs,cpp,hpp,h,txt}'
+# Include hidden paths such as .github/ and .*.yaml
+enableGlobDot: true
+# Project-specific technical terms and tool names
+words:
+  - acom
+  - ACTIVEHDL
+  - activehdl
+  - Aldec
+  - alib
+  - ASIC
+  - asim
+  - buildnotes
+  - DEMA
+  - demaconsulting
+  - DEMACONSULTINGNUGETKEY
+  - dorny
+  - endsim
+  - esac
+  - extensionless
+  - mcode
+  - metacharacter
+  - msys
+  - msystem
+  - ncipollo
+  - nestings
+  - netstandard
+  - nickg
+  - nolog
+  - PATHEXT
+  - runall
+  - sarif
+  - Sarif
+  - SARIF
+  - shopt
+  - snupkg
+  - sonarscanner
+  - syspath
+  - testbench
+  - testresults
+  - thirdparty
+  - unidirectionality
+  - vcom
+  - venv
+  - vlib
+  - VSIM
+  - vsimsa
+  - worklib
+  - xelab
+  - xvhdl
+  - yamldotnet
+  - yamlfix
+# Exclude common build artifacts, dependencies, and vendored third-party code
+ignorePaths:
+  - '**/.git/**'
+  - '**/node_modules/**'
+  - '**/.venv/**'
+  - '**/thirdparty/**'
+  - '**/third-party/**'
+  - '**/3rd-party/**'
+  - '**/generated/**'
+  - '**/AGENT_REPORT_*.md'
+  - '**/.agent-logs/**'
+  - '**/bin/**'
+  - '**/obj/**'
+  - '**/artifacts/**'
+  - package-lock.json

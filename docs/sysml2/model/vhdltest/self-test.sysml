@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def SelfTestSubsystem {
         doc /* Self-validation test runner invoked via the --validate option. */
 
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/SelfTest/ValidationTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/self-test.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/self-test.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/self-test/self-test.yaml */
+        metadata info : SoftwareInfo {
+            description = "Self-validation test runner invoked via the --validate option.";
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/SelfTest/ValidationTests.cs");
+            designFiles = ("docs/design/vhdltest/self-test.md");
+            verificationFiles = ("docs/verification/vhdltest/self-test.md");
+            requirementFiles = ("docs/reqstream/vhdltest/self-test/self-test.yaml");
+        }
 
         part validation : Validation;
     }

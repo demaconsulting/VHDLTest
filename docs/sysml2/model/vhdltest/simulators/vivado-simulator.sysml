@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def VivadoSimulator {
         doc /* Vivado simulator integration. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Simulators/VivadoSimulator.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Simulators/VivadoSimulatorTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/simulators/vivado-simulator.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/simulators/vivado-simulator.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/simulators/vivado-simulator.yaml */
+        metadata info : SoftwareInfo {
+            description = "Vivado simulator integration.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/VivadoSimulator.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/VivadoSimulatorTests.cs");
+            designFiles = ("docs/design/vhdltest/simulators/vivado-simulator.md");
+            verificationFiles = ("docs/verification/vhdltest/simulators/vivado-simulator.md");
+            requirementFiles = ("docs/reqstream/vhdltest/simulators/vivado-simulator.yaml");
+        }
     }
 }

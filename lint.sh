@@ -32,16 +32,22 @@ if [ "$skip_python" != "1" ]; then
     yamllint . || lint_error=1
 fi
 
+# === SPELLING SECTION ===
+
+# Restore dotnet tools (required by TextLint and the compliance tools)
+skip_dotnet_tools=0
+dotnet tool restore > /dev/null || { lint_error=1; skip_dotnet_tools=1; }
+
+# Run TextLint using the files configured in .textlint.yaml
+if [ "$skip_dotnet_tools" != "1" ]; then
+    dotnet textlint || lint_error=1
+fi
+
 # === NPM SECTION ===
 
 # Install npm dependencies
 export PUPPETEER_SKIP_DOWNLOAD=true
 npm install --silent || { lint_error=1; skip_npm=1; }
-
-# Run cspell
-if [ "$skip_npm" != "1" ]; then
-    npx cspell --no-progress --no-color --quiet "**/*.{md,yaml,yml,json,cs,cpp,hpp,h,txt}" || lint_error=1
-fi
 
 # Run markdownlint-cli2
 if [ "$skip_npm" != "1" ]; then
@@ -49,9 +55,6 @@ if [ "$skip_npm" != "1" ]; then
 fi
 
 # === DOTNET LINTING SECTION ===
-
-# Restore dotnet tools
-dotnet tool restore > /dev/null || { lint_error=1; skip_dotnet_tools=1; }
 
 # Run reqstream lint
 if [ "$skip_dotnet_tools" != "1" ]; then

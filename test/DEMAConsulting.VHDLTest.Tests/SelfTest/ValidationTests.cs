@@ -131,7 +131,7 @@ public class ValidationTests
     }
 
     /// <summary>
-    /// Unit test: Validation.Run honours the depth parameter and renders headings at the specified level.
+    /// Unit test: Validation.Run honors the depth parameter and renders headings at the specified level.
     /// </summary>
     [Fact]
     public void Validation_Run_DepthParameter_RendersDepthHeadings()

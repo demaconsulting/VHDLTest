@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def Validation {
         doc /* Runs the embedded self-validation test scenarios via the Mock simulator. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/SelfTest/Validation.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/SelfTest/ValidationTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/self-test/validation.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/self-test/validation.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/self-test/validation.yaml */
+        metadata info : SoftwareInfo {
+            description = "Runs the embedded self-validation test scenarios via the Mock simulator.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/SelfTest/Validation.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/SelfTest/ValidationTests.cs");
+            designFiles = ("docs/design/vhdltest/self-test/validation.md");
+            verificationFiles = ("docs/verification/vhdltest/self-test/validation.md");
+            requirementFiles = ("docs/reqstream/vhdltest/self-test/validation.yaml");
+        }
     }
 }

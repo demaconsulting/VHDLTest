@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def TestResults {
         doc /* A collection of test results. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Results/TestResults.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Results/TestResultsTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/results/test-results.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/results/test-results.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/results/test-results.yaml */
+        metadata info : SoftwareInfo {
+            description = "A collection of test results.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Results/TestResults.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Results/TestResultsTests.cs");
+            designFiles = ("docs/design/vhdltest/results/test-results.md");
+            verificationFiles = ("docs/verification/vhdltest/results/test-results.md");
+            requirementFiles = ("docs/reqstream/vhdltest/results/test-results.yaml");
+        }
     }
 }

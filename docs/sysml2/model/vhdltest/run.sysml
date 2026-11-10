@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def RunSubsystem {
         doc /* Process execution abstraction and simulation output processing. */
 
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Run/RunSubsystemTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/run.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/run.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/run/run.yaml */
+        metadata info : SoftwareInfo {
+            description = "Process execution abstraction and simulation output processing.";
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunSubsystemTests.cs");
+            designFiles = ("docs/design/vhdltest/run.md");
+            verificationFiles = ("docs/verification/vhdltest/run.md");
+            requirementFiles = ("docs/reqstream/vhdltest/run/run.yaml");
+        }
 
         part iProcessInvoker : IProcessInvoker;
         part processInvoker : ProcessInvoker;

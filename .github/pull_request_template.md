@@ -43,7 +43,7 @@ Before submitting this pull request, ensure you have completed the following:
 
 Please run the following checks before submitting:
 
-- [ ] **Spell checker passes**: `cspell "**/*.{md,cs}"`
+- [ ] **Spell checker passes**: `dotnet textlint`
 - [ ] **Markdown linter passes**: `markdownlint "**/*.md"`
 - [ ] **YAML linter passes**: `yamllint .`
 

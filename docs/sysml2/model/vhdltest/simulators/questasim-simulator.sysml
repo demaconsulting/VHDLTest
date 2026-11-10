@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def QuestaSimSimulator {
         doc /* QuestaSim simulator integration. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Simulators/QuestaSimSimulator.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Simulators/QuestaSimSimulatorTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/simulators/questasim-simulator.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/simulators/questasim-simulator.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/simulators/questasim-simulator.yaml */
+        metadata info : SoftwareInfo {
+            description = "QuestaSim simulator integration.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/QuestaSimSimulator.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/QuestaSimSimulatorTests.cs");
+            designFiles = ("docs/design/vhdltest/simulators/questasim-simulator.md");
+            verificationFiles = ("docs/verification/vhdltest/simulators/questasim-simulator.md");
+            requirementFiles = ("docs/reqstream/vhdltest/simulators/questasim-simulator.yaml");
+        }
     }
 }

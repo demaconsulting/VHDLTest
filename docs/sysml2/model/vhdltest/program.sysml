@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def Program {
         doc /* Entry point and execution orchestrator for VHDLTest. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Program.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/ProgramTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/program.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/program.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/program.yaml */
+        metadata info : SoftwareInfo {
+            description = "Entry point and execution orchestrator for VHDLTest.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Program.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/ProgramTests.cs");
+            designFiles = ("docs/design/vhdltest/program.md");
+            verificationFiles = ("docs/verification/vhdltest/program.md");
+            requirementFiles = ("docs/reqstream/vhdltest/program.yaml");
+        }
     }
 }

@@ -1,4 +1,5 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     import OtsDependencies::*;
 
     doc
@@ -10,10 +11,13 @@ package VHDLTest {
     part def VHDLTestSystem {
         doc /* The VHDLTest system as a whole. */
 
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/IntegrationTests.cs */
-        comment designRef /* Design: docs/design/vhdltest.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/vhdltest.yaml */
+        metadata info : SoftwareInfo {
+            description = "The VHDLTest system as a whole.";
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/IntegrationTests.cs");
+            designFiles = ("docs/design/vhdltest.md");
+            verificationFiles = ("docs/verification/vhdltest.md");
+            requirementFiles = ("docs/reqstream/vhdltest/vhdltest.yaml");
+        }
 
         part program : Program;
         part cli : CliSubsystem;

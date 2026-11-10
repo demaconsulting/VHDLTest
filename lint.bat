@@ -35,16 +35,29 @@ goto npm_section
 set "LINT_ERROR=1"
 :npm_section
 
+REM === SPELLING SECTION ===
+
+REM Restore dotnet tools (required by TextLint and the compliance tools)
+set "SKIP_DOTNET_TOOLS="
+dotnet tool restore > nul
+if errorlevel 1 goto abort_spelling
+
+REM Run TextLint using the files configured in .textlint.yaml
+dotnet textlint
+if errorlevel 1 set "LINT_ERROR=1"
+
+goto npm_section_start
+:abort_spelling
+set "LINT_ERROR=1"
+set "SKIP_DOTNET_TOOLS=1"
+:npm_section_start
+
 REM === NPM SECTION ===
 
 REM Install npm dependencies
 set "PUPPETEER_SKIP_DOWNLOAD=true"
 call npm install --silent
 if errorlevel 1 goto abort_npm
-
-REM Run cspell
-call npx cspell --no-progress --no-color --quiet "**/*.{md,yaml,yml,json,cs,cpp,hpp,h,txt}"
-if errorlevel 1 set "LINT_ERROR=1"
 
 REM Run markdownlint-cli2
 call npx markdownlint-cli2 "**/*.md"
@@ -58,9 +71,7 @@ set "LINT_ERROR=1"
 
 REM === DOTNET LINTING SECTION ===
 
-REM Restore dotnet tools
-dotnet tool restore > nul
-if errorlevel 1 goto abort_dotnet_tools
+if defined SKIP_DOTNET_TOOLS goto dotnet_format_section
 
 REM Run reqstream lint
 dotnet reqstream --lint --requirements requirements.yaml

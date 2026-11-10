@@ -1,11 +1,15 @@
 package VHDLTest {
+    private import SoftwareItemMetadata::*;
     part def RunProgram {
         doc /* Executes simulation programs and captures their output. */
 
-        comment sourceRef /* Source: src/DEMAConsulting.VHDLTest/Run/RunProgram.cs */
-        comment testRef /* Test: test/DEMAConsulting.VHDLTest.Tests/Run/RunProgramTests.cs */
-        comment designRef /* Design: docs/design/vhdltest/run/run-program.md */
-        comment verificationRef /* Verification: docs/verification/vhdltest/run/run-program.md */
-        comment reqRef /* Requirements: docs/reqstream/vhdltest/run/run-program.yaml */
+        metadata info : SoftwareInfo {
+            description = "Executes simulation programs and captures their output.";
+            sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunProgram.cs");
+            testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunProgramTests.cs");
+            designFiles = ("docs/design/vhdltest/run/run-program.md");
+            verificationFiles = ("docs/verification/vhdltest/run/run-program.md");
+            requirementFiles = ("docs/reqstream/vhdltest/run/run-program.yaml");
+        }
     }
 }

@@ -171,7 +171,7 @@ sections:
                 title: Context shall flush and close any open log-file writer when the context is disposed.
                 justification: |
                   Deterministic resource release for the log-file writer ensures complete and
-                  unfragmented log output even when the caller exits early or in error, preventing
+                  unbroken log output even when the caller exits early or in error, preventing
                   data loss or file-locking issues in test and CI environments.
                 tests:
                   - Context_Create_WithLogOption_WritesToLogFile
