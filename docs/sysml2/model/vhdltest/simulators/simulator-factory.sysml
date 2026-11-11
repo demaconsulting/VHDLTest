@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Creates simulator instances by name or by auto-discovery. */
 
         metadata info : SoftwareInfo {
-            description = "Creates simulator instances by name or by auto-discovery.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/SimulatorFactory.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/SimulatorFactoryTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/simulator-factory.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Parsed options holder. */
 
         metadata info : SoftwareInfo {
-            description = "Parsed options holder.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Cli/Options.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Cli/OptionsTests.cs");
             designFiles = ("docs/design/vhdltest/cli/options.md");

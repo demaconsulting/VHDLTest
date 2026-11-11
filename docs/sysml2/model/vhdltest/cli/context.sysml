@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Command-line argument parser and I/O owner. */
 
         metadata info : SoftwareInfo {
-            description = "Command-line argument parser and I/O owner.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Cli/Context.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Cli/ContextTests.cs");
             designFiles = ("docs/design/vhdltest/cli/context.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* An individual test result. */
 
         metadata info : SoftwareInfo {
-            description = "An individual test result.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Results/TestResult.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Results/TestResultTests.cs");
             designFiles = ("docs/design/vhdltest/results/test-result.md");

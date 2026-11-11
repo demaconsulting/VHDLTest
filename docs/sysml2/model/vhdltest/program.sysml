@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Entry point and execution orchestrator for VHDLTest. */
 
         metadata info : SoftwareInfo {
-            description = "Entry point and execution orchestrator for VHDLTest.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Program.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/ProgramTests.cs");
             designFiles = ("docs/design/vhdltest/program.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* NVC simulator integration. */
 
         metadata info : SoftwareInfo {
-            description = "NVC simulator integration.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/NvcSimulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/NvcSimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/nvc-simulator.md");

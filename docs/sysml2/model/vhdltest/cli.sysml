@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Command-line argument parsing, configuration loading, and options holder. */
 
         metadata info : SoftwareInfo {
-            description = "Command-line argument parsing, configuration loading, and options holder.";
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Cli/CliSubsystemTests.cs");
             designFiles = ("docs/design/vhdltest/cli.md");
             verificationFiles = ("docs/verification/vhdltest/cli.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* GHDL simulator integration. */
 
         metadata info : SoftwareInfo {
-            description = "GHDL simulator integration.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/GhdlSimulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/GhdlSimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/ghdl-simulator.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* QuestaSim simulator integration. */
 
         metadata info : SoftwareInfo {
-            description = "QuestaSim simulator integration.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/QuestaSimSimulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/QuestaSimSimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/questasim-simulator.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Processes simulation run output against configured line rules. */
 
         metadata info : SoftwareInfo {
-            description = "Processes simulation run output against configured line rules.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunProcessor.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunProcessorTests.cs");
             designFiles = ("docs/design/vhdltest/run/run-processor.md");

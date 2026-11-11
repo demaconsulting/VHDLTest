@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Active-HDL simulator integration. */
 
         metadata info : SoftwareInfo {
-            description = "Active-HDL simulator integration.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/ActiveHdlSimulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/ActiveHdlSimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/active-hdl-simulator.md");
