@@ -5,7 +5,8 @@
 // 'render' - is what scopes the rendered diagram content.
 package VHDLTest {
     view SoftwareStructureView {
-        expose VHDLTest;
+        expose VHDLTest::**;
+        render asInterconnectionDiagram;
     }
 
     view VHDLTestView {
