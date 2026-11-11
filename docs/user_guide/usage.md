@@ -135,7 +135,7 @@ Example validation report:
 | VHDLTest Version    | 1.0.0                                              |
 | Machine Name        | BUILD-SERVER                                       |
 | OS Version          | Microsoft Windows NT 10.0.19045.0                  |
-| DotNet Runtime      | .NET 8.0.0                                         |
+| DotNet Runtime      | .NET 10.0.0                                        |
 | Time Stamp          | 2024-01-15 10:30:00 UTC                            |
 
 Tests:

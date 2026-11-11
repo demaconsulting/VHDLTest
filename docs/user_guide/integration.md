@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'
+          dotnet-version: '10.x'
 
       - name: Setup GHDL
         uses: ghdl/setup-ghdl@v1
@@ -54,7 +54,7 @@ pool:
 steps:
   - task: UseDotNet@2
     inputs:
-      version: '8.x'
+      version: '10.x'
 
   - script: |
       dotnet tool install --global DEMAConsulting.VHDLTest

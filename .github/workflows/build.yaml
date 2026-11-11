@@ -28,7 +28,9 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.x
+          dotnet-version: |
+            10.x
+            11.x
 
       - name: Restore Tools
         run: >
@@ -118,9 +120,8 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
-            8.x
-            9.x
             10.x
+            11.x
 
       - uses: msys2/setup-msys2@v2
         if: matrix.os == 'windows-latest'
@@ -276,9 +277,8 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
-            8.x
-            9.x
             10.x
+            11.x
 
       - name: Restore Tools
         run: >
@@ -330,7 +330,7 @@ jobs:
       matrix:
         # macOS is not currently supported by GHDL
         os: [windows-latest, ubuntu-latest]
-        dotnet-version: ['8.x', '9.x', '10.x']
+        dotnet-version: ['10.x', '11.x']
 
     steps:
       # === INSTALL DEPENDENCIES ===
@@ -457,7 +457,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        dotnet-version: ['8.x', '9.x', '10.x']
+        dotnet-version: ['10.x', '11.x']
 
     steps:
       # === INSTALL DEPENDENCIES ===
@@ -918,6 +918,10 @@ jobs:
           'docs/sysml2/common/**/*.sysml'
           'docs/sysml2/model/**/*.sysml'
           'docs/sysml2/views/design-views.sysml'
+
+      - name: Copy hand-drawn design diagrams
+        shell: bash
+        run: cp docs/images/architecture.svg docs/design/generated/
 
       - name: Generate Design HTML with Pandoc
         shell: bash

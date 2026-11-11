@@ -167,7 +167,7 @@ When `--validate` is specified, data flows through a re-entrant self-test path:
 
 ## Design Constraints
 
-- **Platform**: targets .NET 8, .NET 9, and .NET 10 on Linux, Windows, and macOS.
+- **Platform**: targets .NET 10 and .NET 11 on Linux, Windows, and macOS.
 - **Distribution**: packaged and distributed as a .NET global tool (`dotnet tool install`).
 - **Simulator coupling**: each simulator integration is self-contained in its own unit; adding a
   new simulator requires only a new subclass registered in `SimulatorFactory`.

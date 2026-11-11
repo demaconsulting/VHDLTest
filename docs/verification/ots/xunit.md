@@ -10,7 +10,7 @@ runs `dotnet test` on Ubuntu, Windows, and macOS to confirm cross-platform compa
 ### Test Environment
 
 CI/CD pipeline environment — GitHub Actions runner on Ubuntu, Windows, and macOS with
-.NET 8, 9, and 10 in a matrix strategy.
+.NET 10 and 11 in a matrix strategy.
 
 ### Acceptance Criteria
 

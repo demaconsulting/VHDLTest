@@ -7,7 +7,7 @@
   standard test results files. It supports multiple VHDL simulators including GHDL, ModelSim,
   QuestaSim, Active-HDL, NVC, and Vivado Simulator.
 - **languages**: `C#`
-- **technologies**: `.NET`, `YamlDotNet`
+- **technologies**: `.NET 10/11`, `YamlDotNet`
 
 # Project Structure
 

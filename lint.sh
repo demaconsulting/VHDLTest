@@ -58,7 +58,7 @@ fi
 
 # Run reqstream lint
 if [ "$skip_dotnet_tools" != "1" ]; then
-    dotnet reqstream --lint --requirements requirements.yaml || lint_error=1
+    dotnet reqstream --lint --enforce --requirements requirements.yaml || lint_error=1
 fi
 
 # Run versionmark lint

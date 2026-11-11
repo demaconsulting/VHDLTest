@@ -62,6 +62,17 @@ and `SimulatorFactory` (the discovery/lookup helper) are not themselves simulato
 part in this ordering. `MockSimulator` is excluded from auto-discovery and is only accessible
 via the explicit name `mock`.
 
+The diagram below complements the structure view by showing how data flows at run time:
+`Program` passes the command line to the Cli subsystem, which parses the options and the YAML test
+configuration; the Simulators subsystem selects the simulator and drives the Run subsystem, which invokes
+the installed VHDL simulator and classifies its output; the Results subsystem collects the test outcomes and
+writes the TRX or JUnit XML test results file; SelfTest runs the built-in checks through the same path.
+
+![VHDLTest architecture: the Program entry point passes the command line to the Cli subsystem, the Simulators
+subsystem selects a simulator and drives the Run subsystem to compile, elaborate, and simulate with the installed
+VHDL simulator, and the Results subsystem collects the outcomes and writes TRX or JUnit XML test results, with
+SelfTest running the mock simulator through the same path](architecture.svg)
+
 ## Folder Layout
 
 The source code folder structure mirrors the top-level subsystem breakdown above, giving reviewers an explicit
