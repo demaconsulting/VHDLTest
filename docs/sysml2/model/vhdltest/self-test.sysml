@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Self-validation test runner invoked via the --validate option. */
 
         metadata info : SoftwareInfo {
-            description = "Self-validation test runner invoked via the --validate option.";
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/SelfTest/ValidationTests.cs");
             designFiles = ("docs/design/vhdltest/self-test.md");
             verificationFiles = ("docs/verification/vhdltest/self-test.md");

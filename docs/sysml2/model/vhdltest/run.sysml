@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Process execution abstraction and simulation output processing. */
 
         metadata info : SoftwareInfo {
-            description = "Process execution abstraction and simulation output processing.";
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunSubsystemTests.cs");
             designFiles = ("docs/design/vhdltest/run.md");
             verificationFiles = ("docs/verification/vhdltest/run.md");

@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* VHDL simulator abstraction, discovery, and per-tool integrations. */
 
         metadata info : SoftwareInfo {
-            description = "VHDL simulator abstraction, discovery, and per-tool integrations.";
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/SimulatorsSubsystemTests.cs");
             designFiles = ("docs/design/vhdltest/simulators.md");
             verificationFiles = ("docs/verification/vhdltest/simulators.md");

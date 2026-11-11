@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Base class for all VHDL simulator integrations. */
 
         metadata info : SoftwareInfo {
-            description = "Base class for all VHDL simulator integrations.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/Simulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/SimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/simulator.md");

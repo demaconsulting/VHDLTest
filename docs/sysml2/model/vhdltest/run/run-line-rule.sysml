@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* A rule matching an output line to classify it by RunLineType. */
 
         metadata info : SoftwareInfo {
-            description = "A rule matching an output line to classify it by RunLineType.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunLineRule.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunLineRuleTests.cs");
             designFiles = ("docs/design/vhdltest/run/run-line-rule.md");

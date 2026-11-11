@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Runs the embedded self-validation test scenarios via the Mock simulator. */
 
         metadata info : SoftwareInfo {
-            description = "Runs the embedded self-validation test scenarios via the Mock simulator.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/SelfTest/Validation.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/SelfTest/ValidationTests.cs");
             designFiles = ("docs/design/vhdltest/self-test/validation.md");

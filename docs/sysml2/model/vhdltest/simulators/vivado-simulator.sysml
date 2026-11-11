@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Vivado simulator integration. */
 
         metadata info : SoftwareInfo {
-            description = "Vivado simulator integration.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/VivadoSimulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/VivadoSimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/vivado-simulator.md");

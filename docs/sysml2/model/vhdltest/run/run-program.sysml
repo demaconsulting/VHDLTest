@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* Executes simulation programs and captures their output. */
 
         metadata info : SoftwareInfo {
-            description = "Executes simulation programs and captures their output.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunProgram.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunProgramTests.cs");
             designFiles = ("docs/design/vhdltest/run/run-program.md");

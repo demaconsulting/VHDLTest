@@ -12,7 +12,6 @@ package VHDLTest {
         doc /* The VHDLTest system as a whole. */
 
         metadata info : SoftwareInfo {
-            description = "The VHDLTest system as a whole.";
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/IntegrationTests.cs");
             designFiles = ("docs/design/vhdltest.md");
             verificationFiles = ("docs/verification/vhdltest.md");

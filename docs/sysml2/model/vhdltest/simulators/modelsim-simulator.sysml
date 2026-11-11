@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* ModelSim simulator integration. */
 
         metadata info : SoftwareInfo {
-            description = "ModelSim simulator integration.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Simulators/ModelSimSimulator.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Simulators/ModelSimSimulatorTests.cs");
             designFiles = ("docs/design/vhdltest/simulators/modelsim-simulator.md");

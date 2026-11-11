@@ -4,7 +4,6 @@ package VHDLTest {
         doc /* An individual output line captured from a simulation run. */
 
         metadata info : SoftwareInfo {
-            description = "An individual output line captured from a simulation run.";
             sourceFiles = ("src/DEMAConsulting.VHDLTest/Run/RunLine.cs");
             testFiles = ("test/DEMAConsulting.VHDLTest.Tests/Run/RunLineTests.cs");
             designFiles = ("docs/design/vhdltest/run/run-line.md");
