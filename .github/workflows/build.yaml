@@ -919,10 +919,6 @@ jobs:
           'docs/sysml2/model/**/*.sysml'
           'docs/sysml2/views/design-views.sysml'
 
-      - name: Copy hand-drawn design diagrams
-        shell: bash
-        run: cp docs/images/architecture.svg docs/design/generated/
-
       - name: Generate Design HTML with Pandoc
         shell: bash
         run: >
