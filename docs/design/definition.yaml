@@ -4,7 +4,10 @@
 # Resource paths for finding files and templates
 resource-path:
   - docs/design
+  - docs/design/generated
+  - docs/images
   - docs/template
+embed-resources: true
 
 # Input files in order (relative to resource-path)
 input-files:

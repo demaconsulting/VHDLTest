@@ -18,7 +18,13 @@ VHDLTest is a .NET command-line tool that runs VHDL test benches and generates s
 It supports multiple VHDL simulators including GHDL, ModelSim, QuestaSim, Active-HDL, NVC, and Vivado Simulator.
 The tool is designed for use in regulated industries that require evidence of tool validation.
 
-![Architecture: the command line selects a simulator, which runs the test benches and produces test results][architecture]
+The workflow below shows how to use it: write VHDL test benches and a YAML test configuration, run VHDLTest with
+an installed simulator, and use the pass/fail results, test results files, and exit code as a CI gate and test evidence.
+
+![VHDLTest workflow: write VHDL design files, test benches, and a YAML test configuration, run vhdltest with the config,
+simulator, and optional test-name options to compile and simulate each test bench, get pass/fail results, TRX or JUnit XML
+test results files, and a pass/fail exit code, then use them as a CI gate, in CI test reports, as test evidence, and in pull
+request checks][workflow]
 
 ## Features
 
@@ -35,7 +41,7 @@ The tool is designed for use in regulated industries that require evidence of to
 
 ## Installation
 
-Requires .NET SDK 8.0 or later.
+Requires .NET SDK 10.0 or later.
 
 Add VHDLTest to a .NET tool manifest file:
 
@@ -147,7 +153,7 @@ If you discover a security vulnerability, please review our
 [Security Policy](https://github.com/demaconsulting/VHDLTest/blob/main/SECURITY.md) for responsible disclosure.
 
 <!-- Link References -->
-[architecture]: https://raw.githubusercontent.com/demaconsulting/VHDLTest/main/docs/images/architecture.png
+[workflow]: https://raw.githubusercontent.com/demaconsulting/VHDLTest/main/docs/images/workflow.png
 [nuget-badge]: https://img.shields.io/nuget/v/DemaConsulting.VHDLTest?style=plastic
 [nuget-url]: https://www.nuget.org/packages/DemaConsulting.VHDLTest
 [github-forks-badge]: https://img.shields.io/github/forks/demaconsulting/VHDLTest?style=plastic

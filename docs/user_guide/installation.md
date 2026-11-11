@@ -4,7 +4,7 @@
 
 Before installing VHDLTest, ensure you have:
 
-- **.NET SDK**: Version 8.0 or later
+- **.NET SDK**: Version 10.0 or later
 - **VHDL Simulator**: At least one of the supported simulators installed
 
 ## Installation Methods

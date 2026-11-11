@@ -16,7 +16,7 @@ considered verified when all associated test cases have been executed and passed
 
 This document covers all requirements defined in `docs/reqstream/` for VHDLTest and their test evidence, drawn from:
 
-- Unit tests executed on .NET runtime versions net8.0, net9.0, and net10.0
+- Unit tests executed on .NET runtime versions net10.0 and net11.0
 - GHDL integration tests on multiple platforms and .NET versions
 - NVC integration tests on multiple platforms and .NET versions
 

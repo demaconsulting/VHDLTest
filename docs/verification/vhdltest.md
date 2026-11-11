@@ -24,9 +24,9 @@ installed VHDL simulator tool.
 
 ## Test Environment
 
-Tests are executed with `dotnet test` on Linux and Windows, targeting .NET 8, .NET 9, and
-.NET 10. No external VHDL simulator installation is required for automated tests; only the
-.NET SDK is needed. CI runs on GitHub Actions.
+Tests are executed with `dotnet test` on Linux, Windows, and macOS, targeting .NET 10 and
+.NET 11 (both net10.0 and net11.0 are exercised in CI). No external VHDL simulator installation
+is required for automated tests; only the .NET SDK is needed. CI runs on GitHub Actions.
 
 ## Acceptance Criteria
 

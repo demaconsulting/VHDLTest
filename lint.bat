@@ -74,7 +74,7 @@ REM === DOTNET LINTING SECTION ===
 if defined SKIP_DOTNET_TOOLS goto dotnet_format_section
 
 REM Run reqstream lint
-dotnet reqstream --lint --requirements requirements.yaml
+dotnet reqstream --lint --enforce --requirements requirements.yaml
 if errorlevel 1 set "LINT_ERROR=1"
 
 REM Run versionmark lint

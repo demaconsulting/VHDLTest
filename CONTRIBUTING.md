@@ -15,7 +15,8 @@ contribute effectively.
 
 ### Prerequisites
 
-- .NET SDK 8.0, 9.0, or 10.0
+- .NET SDK 10.0 and 11.0 (both are required: the 11.0 SDK builds the `net11.0` target and
+  the .NET 10 runtime runs the `net10.0` tests)
 - A code editor (Visual Studio, VS Code, or Rider recommended)
 
 ### Building the Project

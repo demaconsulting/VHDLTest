@@ -8,11 +8,14 @@ VHDLTest is a .NET tool for running VHDL test benches and generating standard te
 unit testing by providing a unified command-line interface for multiple VHDL simulators, generating TRX and JUnit XML
 test result files compatible with CI/CD systems, and supporting tool validation for regulated industries.
 
-The figure below shows how the pieces fit together: the command line is parsed into options and a test configuration, the
-configuration selects a simulator through the simulator factory, the simulator runs the test benches, and the run output is
-classified and written as TRX or JUnit XML test results.
+The workflow below shows how VHDLTest is used: write VHDL test benches and a YAML test configuration, run the
+`vhdltest` command locally or in a CI pipeline with an installed simulator, and use the resulting pass/fail results,
+TRX or JUnit XML test results files, and exit code as a CI gate and test evidence.
 
-![Architecture: the command line selects a simulator, which runs the test benches and produces test results](architecture.svg)
+![VHDLTest workflow: write VHDL design files, test benches, and a YAML test configuration, run vhdltest with the config,
+simulator, and optional test-name options to compile and simulate each test bench, get pass/fail results, TRX or JUnit XML
+test results files, and a pass/fail exit code, then use them as a CI gate, in CI test reports, as test evidence, and in pull
+request checks](workflow.svg)
 
 ## Scope
 
@@ -20,7 +23,7 @@ This guide covers installation and prerequisites, supported VHDL simulators and 
 configuration, command-line options and usage examples, self-validation for regulated industries, CI/CD integration
 for GitHub Actions, Azure DevOps, and Jenkins, and troubleshooting common issues.
 
-The guide requires .NET SDK 8.0 or later and at least one supported VHDL simulator. It applies to Windows, Linux, and
+The guide requires .NET SDK 10.0 or later and at least one supported VHDL simulator. It applies to Windows, Linux, and
 macOS platforms.
 
 ## References

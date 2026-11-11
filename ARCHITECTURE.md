@@ -199,7 +199,7 @@ Extend `RunLineRule` with new patterns for simulator-specific output formats.
 
 ## Dependencies
 
-- **.NET 8/9/10**: Target frameworks
+- **.NET 10/11**: Target frameworks
 - **YamlDotNet**: YAML parsing
 - **MSTest**: Testing framework
 - **Coverlet**: Code coverage
