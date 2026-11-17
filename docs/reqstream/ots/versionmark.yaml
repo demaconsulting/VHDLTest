@@ -29,7 +29,7 @@ sections:
             justification: |
               dotnet versionmark --lint validates that the tool version captures recorded
               in CI jobs are consistent with the tools declared in the local dotnet tool
-              manifest. This is used in lint.ps1 and lint.sh as a development-time quality
+              manifest. This is used in lint.ps1 as a development-time quality
               gate to detect manifest drift before it reaches CI.
             tags: [ots]
             tests:

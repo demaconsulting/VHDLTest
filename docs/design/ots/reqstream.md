@@ -41,5 +41,5 @@ dotnet reqstream \
   --enforce
 ```
 
-In `lint.ps1` and `lint.sh`, `dotnet reqstream --lint --requirements requirements.yaml`
+In `lint.ps1`, `dotnet reqstream --lint --enforce --requirements requirements.yaml`
 validates requirements file consistency at development time.

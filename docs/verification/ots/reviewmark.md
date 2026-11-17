@@ -41,5 +41,5 @@ review plan and review report documents.
   test ID is written to the TRX result file and consumed by ReqStream to confirm that
   ReviewMark's lint-pass validation logic is operational. This is an internal self-validation
   test case that indirectly evidences the `--lint` capability; this indirect approach is
-  intentional because `--lint` is used only in development-time scripts (`lint.ps1`,
-  `lint.sh`) and is not invoked as a separate CI step.
+  intentional because `--lint` is used only in the development-time script (`lint.ps1`) and is
+  not invoked as a separate CI step.

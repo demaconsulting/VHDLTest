@@ -20,7 +20,7 @@ sections:
             justification: |
               dotnet reqstream --lint --requirements requirements.yaml validates that all
               requirement files are syntactically correct and that cross-references between
-              requirement files resolve correctly. This is used in lint.ps1 and lint.sh as
+              requirement files resolve correctly. This is used in lint.ps1 as
               a development-time quality gate to catch malformed requirements before CI.
             tags: [ots]
             tests:

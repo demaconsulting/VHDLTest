@@ -44,7 +44,7 @@ dotnet reviewmark \
   --report-depth 1
 ```
 
-In `lint.ps1` and `lint.sh`, `dotnet reviewmark --lint` validates the review definition
+In `lint.ps1`, `dotnet reviewmark --lint` validates the review definition
 file at development time. The evidence store is hosted on the `reviews` branch of the
 repository and accessed via GitHub raw content URLs.
 
