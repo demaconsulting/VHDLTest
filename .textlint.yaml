@@ -9,7 +9,6 @@
 # - NEVER add a misspelled word to the 'words' list
 # - NEVER add a British-English spelling - correct to US-English in the source
 # - PROPOSE only genuine technical terms/names as needed
-# - PROPOSE only genuine technical terms/names as needed
 #
 # Run from the repository root (the pinned tool is restored by 'dotnet tool restore'):
 #   dotnet textlint
