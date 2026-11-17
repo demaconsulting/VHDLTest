@@ -15,9 +15,9 @@ delegates directly to `RunProgram.Run`.
 
 **ProcessInvoker**: Sealed class implementing `IProcessInvoker`.
 
-| Field      | Type             | Description                                               |
-| ---------- | ---------------- | --------------------------------------------------------- |
-| `Instance` | `ProcessInvoker` | Public static readonly singleton for production use.      |
+| Field | Type | Description |
+| --- | --- | --- |
+| `Instance` | `ProcessInvoker` | Public static readonly singleton for production use. |
 
 #### Key Methods
 

@@ -38,9 +38,9 @@ PDF/A-3u format.
   carries the expected PDF metadata (Title, Author, Subject), has at least three pages, and
   includes the text "Design". A passing FileAssert check confirms WeasyprintTool correctly
   converted the design HTML to PDF/A-3u format.
-- **Design document PDF generation**: `dotnet weasyprint --pdf-variant pdf/a-3u docs/design/design.html "docs/VHDLTest Design.pdf"`
-  converts the design HTML to a PDF/A-3u file. A zero exit code and a non-empty output
-  file confirm successful conversion.
+- **Design document PDF generation**:
+  `dotnet weasyprint --pdf-variant pdf/a-3u docs/design/design.html "docs/VHDLTest Design.pdf"` converts the design HTML
+  to a PDF/A-3u file. A zero exit code and a non-empty output file confirm successful conversion.
 - **Multiple document collection conversions**: WeasyprintTool is invoked for the build
   notes, design, user guide, code quality, requirements, trace matrix, review plan, and
   review report HTML files. All conversions completing with exit code 0 confirms the tool

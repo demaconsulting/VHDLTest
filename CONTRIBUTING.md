@@ -73,7 +73,8 @@ Run `dotnet build` to see analyzer feedback.
 
 ### Requirements
 
-This project maintains formal requirements documentation to ensure quality, traceability, and regulatory compliance support.
+This project maintains formal requirements documentation to ensure quality, traceability, and regulatory compliance
+support.
 
 #### Requirements Structure
 

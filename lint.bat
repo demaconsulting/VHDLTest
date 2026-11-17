@@ -52,21 +52,13 @@ set "LINT_ERROR=1"
 set "SKIP_DOTNET_TOOLS=1"
 :npm_section_start
 
-REM === NPM SECTION ===
+REM === MARKDOWN SECTION ===
 
-REM Install npm dependencies
-set "PUPPETEER_SKIP_DOWNLOAD=true"
-call npm install --silent
-if errorlevel 1 goto abort_npm
-
-REM Run markdownlint-cli2
-call npx markdownlint-cli2 "**/*.md"
+REM Run LintMark
+if defined SKIP_DOTNET_TOOLS goto dotnet_linting_section
+dotnet lintmark
 if errorlevel 1 set "LINT_ERROR=1"
 
-REM Section error handling
-goto dotnet_linting_section
-:abort_npm
-set "LINT_ERROR=1"
 :dotnet_linting_section
 
 REM === DOTNET LINTING SECTION ===

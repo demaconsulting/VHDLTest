@@ -44,7 +44,7 @@ Before submitting this pull request, ensure you have completed the following:
 Please run the following checks before submitting:
 
 - [ ] **Spell checker passes**: `dotnet textlint`
-- [ ] **Markdown linter passes**: `markdownlint "**/*.md"`
+- [ ] **Markdown linter passes**: `dotnet lintmark`
 - [ ] **YAML linter passes**: `yamllint .`
 
 ### Testing

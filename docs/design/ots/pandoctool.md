@@ -13,8 +13,9 @@ and build notes documents. PandocTool is not deployed with VHDLTest.
   `definition.yaml` file and produces a single consolidated HTML output.
 - **Pandoc defaults**: each document collection has a `definition.yaml` that lists input
   files, template, and settings; PandocTool passes these as `--defaults`.
-- **Mermaid diagram support**: the `--filter mermaid-filter.cmd` option renders Mermaid
-  diagrams embedded in the Markdown source.
+- **Lua filter support**: each `definition.yaml` lists the CanvasNet Pandoc filter
+  (`docs/filters/canvasnet.lua`), which renders diagram sources, including the supported
+  Mermaid diagram types, embedded in the Markdown source.
 - **Metadata injection**: `--metadata version=...` and `--metadata date=...` stamp
   version and date into the document headers.
 
@@ -26,7 +27,6 @@ per document collection. For example, for the design document:
 ```bash
 dotnet pandoc \
   --defaults docs/design/definition.yaml \
-  --filter node_modules/.bin/mermaid-filter.cmd \
   --metadata version="${{ inputs.version }}" \
   --metadata date="$(date +'%Y-%m-%d')" \
   --output docs/design/design.html

@@ -4,10 +4,10 @@
 
 We release patches for security vulnerabilities. Currently, only the latest version is supported with security updates.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| Latest  | :white_check_mark: |
-| < Latest| :x:                |
+| Version | Supported |
+| --- | --- |
+| Latest | :white_check_mark: |
+| < Latest | :x: |
 
 We recommend always using the latest version to ensure you have all security patches and improvements.
 
@@ -197,7 +197,8 @@ We recognize and thank security researchers who have responsibly disclosed vulne
 For security-related questions that are not vulnerability reports:
 
 - Open a discussion in the [GitHub Discussions](https://github.com/demaconsulting/VHDLTest/discussions) area
-- For general questions, refer to our [Contributing Guidelines](https://github.com/demaconsulting/VHDLTest/blob/main/CONTRIBUTING.md)
+- For general questions, refer to our
+  [Contributing Guidelines](https://github.com/demaconsulting/VHDLTest/blob/main/CONTRIBUTING.md)
 
 For security vulnerabilities, always use the
 [GitHub Security Advisory](https://github.com/demaconsulting/VHDLTest/security) feature.

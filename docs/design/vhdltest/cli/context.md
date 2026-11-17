@@ -61,21 +61,21 @@ collected from positional arguments or after `--`. Null if no tests were specifi
 Iterates through `args` using an enumerator and switches on each token to set boolean flags or
 read the following token as a value argument. The following tokens are accepted:
 
-| Property set    | Accepted tokens                           | Notes                                    |
-|-----------------|-------------------------------------------|------------------------------------------|
-| `Version`       | `-v`, `--version`                         | Sets `Version = true`                    |
-| `Help`          | `-h`, `-?`, `--help`                      | Sets `Help = true`                       |
-| `Silent`        | `--silent`                                | Sets `Silent = true`                     |
-| `Verbose`       | `--verbose`                               | Sets `Verbose = true`                    |
-| `ExitZero`      | `-0`, `--exit-0`                          | Sets `ExitZero = true`                   |
-| `Validate`      | `--validate`                              | Sets `Validate = true`                   |
-| `Depth`         | `--depth <n>`                             | Integer ≥ 1; throws on invalid value     |
-| `_log`          | `-l`, `--log <file>`                      | Opens a `StreamWriter` for the log file  |
-| `ConfigFile`    | `-c`, `--config <file>`                   | Sets `ConfigFile` to the next token      |
-| `ResultsFile`   | `-r`, `--result`, `--results <file>`      | Sets `ResultsFile` to the next token     |
-| `Simulator`     | `-s`, `--simulator <name>`                | Sets `Simulator` to the next token       |
-| `CustomTests`   | `--` followed by remaining args           | Collects all remaining tokens            |
-| `CustomTests`   | Any positional arg not starting with `-`  | Appended to the custom tests list        |
+| Property set | Accepted tokens | Notes |
+| --- | --- | --- |
+| `Version` | `-v`, `--version` | Sets `Version = true` |
+| `Help` | `-h`, `-?`, `--help` | Sets `Help = true` |
+| `Silent` | `--silent` | Sets `Silent = true` |
+| `Verbose` | `--verbose` | Sets `Verbose = true` |
+| `ExitZero` | `-0`, `--exit-0` | Sets `ExitZero = true` |
+| `Validate` | `--validate` | Sets `Validate = true` |
+| `Depth` | `--depth <n>` | Integer ≥ 1; throws on invalid value |
+| `_log` | `-l`, `--log <file>` | Opens a `StreamWriter` for the log file |
+| `ConfigFile` | `-c`, `--config <file>` | Sets `ConfigFile` to the next token |
+| `ResultsFile` | `-r`, `--result`, `--results <file>` | Sets `ResultsFile` to the next token |
+| `Simulator` | `-s`, `--simulator <name>` | Sets `Simulator` to the next token |
+| `CustomTests` | `--` followed by remaining args | Collects all remaining tokens |
+| `CustomTests` | Any positional arg not starting with `-` | Appended to the custom tests list |
 
 Unrecognized tokens starting with `-` throw `InvalidOperationException`.
 

@@ -31,29 +31,29 @@ Live simulator integration: CI environment with QuestaSim installed on PATH.
 is `"QuestaSim"`, confirming the instance is registered with the correct name.
 This scenario is tested by `QuestaSimSimulator_SimulatorName_ReturnsQuestaSim` in `QuestaSimSimulatorTests.cs`.
 
-**CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean QuestaSim compilation
-output produces a `RunLineType.Text` summary.
-This scenario is tested by `QuestaSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `QuestaSimSimulatorTests.cs`.
+**CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean QuestaSim compilation output produces a
+`RunLineType.Text` summary. This scenario is tested by
+`QuestaSimSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `QuestaSimSimulatorTests.cs`.
 
-**CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a QuestaSim error line
-is classified as `RunLineType.Error`.
-This scenario is tested by `QuestaSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in `QuestaSimSimulatorTests.cs`.
+**CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a QuestaSim error line is classified as
+`RunLineType.Error`. This scenario is tested by `QuestaSimSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in
+`QuestaSimSimulatorTests.cs`.
 
-**TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean QuestaSim simulation
-output produces a `RunLineType.Text` summary.
-This scenario is tested by `QuestaSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult` in `QuestaSimSimulatorTests.cs`.
+**TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean QuestaSim simulation output produces a
+`RunLineType.Text` summary. This scenario is tested by `QuestaSimSimulator_TestProcessor_CleanOutput_ReturnsTextResult`
+in `QuestaSimSimulatorTests.cs`.
 
-**TestProcessor_InfoOutput_ReturnsInfoResult**: Verifies that a QuestaSim note in simulation
-output is classified as `RunLineType.Info`.
-This scenario is tested by `QuestaSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult` in `QuestaSimSimulatorTests.cs`.
+**TestProcessor_InfoOutput_ReturnsInfoResult**: Verifies that a QuestaSim note in simulation output is classified as
+`RunLineType.Info`. This scenario is tested by `QuestaSimSimulator_TestProcessor_InfoOutput_ReturnsInfoResult` in
+`QuestaSimSimulatorTests.cs`.
 
-**TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that a QuestaSim warning in
-simulation output is classified as `RunLineType.Warning`.
-This scenario is tested by `QuestaSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult` in `QuestaSimSimulatorTests.cs`.
+**TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that a QuestaSim warning in simulation output is
+classified as `RunLineType.Warning`. This scenario is tested by
+`QuestaSimSimulator_TestProcessor_WarningOutput_ReturnsWarningResult` in `QuestaSimSimulatorTests.cs`.
 
-**TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a QuestaSim error in
-simulation output is classified as `RunLineType.Error`.
-This scenario is tested by `QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult` in `QuestaSimSimulatorTests.cs`.
+**TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a QuestaSim error in simulation output is classified as
+`RunLineType.Error`. This scenario is tested by `QuestaSimSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult` in
+`QuestaSimSimulatorTests.cs`.
 
 **TestProcessor_FailureOutput_ReturnsErrorResult**: Verifies that a QuestaSim failure in
 simulation output is classified as `RunLineType.Error`, confirming that VHDL assertion
