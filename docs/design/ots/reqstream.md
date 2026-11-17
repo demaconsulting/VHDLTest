@@ -18,8 +18,8 @@ as part of the CI documentation pipeline. ReqStream is not deployed with VHDLTes
 - **Traceability matrix generation**: produces a matrix mapping requirements to tests.
 - **Enforcement mode**: `reqstream --enforce` exits with a non-zero code if any
   requirement has no linked passing test, making unproven requirements build-breaking.
-- **Lint**: `reqstream --lint --requirements requirements.yaml` validates requirement
-  file syntax and cross-references.
+- **Lint**: `reqstream --lint --enforce --requirements requirements.yaml` validates requirement
+  file syntax and cross-references; `--enforce` makes orphaned requirements an error.
 - **Tag-based filtering**: `reqstream --filter <tags>` restricts requirements processing,
   export, and enforcement to requirements whose `tags:` list intersects the given
   comma-separated tag set, enabling selective per-tag requirements/justifications export
@@ -41,5 +41,5 @@ dotnet reqstream \
   --enforce
 ```
 
-In `lint.ps1` and `lint.sh`, `dotnet reqstream --lint --requirements requirements.yaml`
+In `lint.ps1`, `dotnet reqstream --lint --enforce --requirements requirements.yaml`
 validates requirements file consistency at development time.

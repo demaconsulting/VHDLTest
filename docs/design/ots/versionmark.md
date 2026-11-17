@@ -24,7 +24,7 @@ deployed with VHDLTest.
 Every CI job in `.github/workflows/build.yaml` runs `dotnet versionmark --capture`
 immediately after installing tools. The `build-docs` job runs `dotnet versionmark --publish`
 to produce `docs/build_notes/versions.md`, which is then converted to HTML and PDF. In
-`lint.ps1` and `lint.sh`, `dotnet versionmark --lint` validates the captured version data.
+`lint.ps1`, `dotnet versionmark --lint` validates the captured version data.
 
 ```bash
 dotnet versionmark --capture --job-id "build-docs" \

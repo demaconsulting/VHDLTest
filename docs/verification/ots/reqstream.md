@@ -35,8 +35,8 @@ in the collected TRX files.
   requirements `VHDLTest-OTS-ReqStream` and `VHDLTest-OTS-ReqStream-Lint` are satisfied. The
   self-validation TRX includes the `ReqStream_Lint` test, which provides the passing evidence
   for `VHDLTest-OTS-ReqStream-Lint`.
-- **Lint mode**: `dotnet reqstream --lint --requirements requirements.yaml` is invoked in the
-  `quality-checks` CI job via `lint.ps1` and `lint.sh` to verify that all requirements YAML files
+- **Lint mode**: `dotnet reqstream --lint --enforce --requirements requirements.yaml` is invoked in the
+  `quality-checks` CI job via `lint.ps1` to verify that all requirements YAML files
   conform to the ReqStream schema and contain no structural errors. A zero exit code confirms that
   all requirement files are well-formed and pass lint validation, satisfying requirement
   `VHDLTest-OTS-ReqStream-Lint`.
