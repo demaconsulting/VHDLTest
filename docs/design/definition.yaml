@@ -29,7 +29,10 @@ input-files:
   - docs/design/vhdltest/simulators/vivado-simulator.md
   - docs/design/vhdltest/simulators/active-hdl-simulator.md
   - docs/design/vhdltest/simulators/mock-simulator.md
+  - docs/design/vhdltest/simulators/tcl-text.md
+  - docs/design/vhdltest/simulators/xilinx-arg-text.md
   - docs/design/vhdltest/run.md
+  - docs/design/vhdltest/run/process-invoker.md
   - docs/design/vhdltest/run/run-processor.md
   - docs/design/vhdltest/run/run-program.md
   - docs/design/vhdltest/run/run-results.md
