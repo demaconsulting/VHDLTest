@@ -17,9 +17,9 @@ for PandocTool.
 
 ### Test Environment
 
-CI/CD pipeline environment — GitHub Actions runner on Windows (build-docs job). Node.js
-must be installed and `npm install` must have been run to provide the `mermaid-filter.cmd`
-filter used by PandocTool.
+CI/CD pipeline environment — GitHub Actions runner on Windows (build-docs job). The local
+dotnet tools must have been restored with `dotnet tool restore` to provide PandocTool and
+the CanvasNet tool used by the `docs/filters/canvasnet.lua` filter.
 
 ### Acceptance Criteria
 
@@ -46,6 +46,7 @@ pipeline constitutes evidence that PandocTool correctly converted all document c
   design, user guide, code quality, requirements, trace matrix, review plan, and review
   report collections. All conversions completing with exit code 0 confirms the tool
   operates correctly across all document types.
-- **Mermaid diagram rendering**: the `--filter mermaid-filter.cmd` option is passed in
-  all invocations; successful HTML output containing rendered diagram elements confirms
-  the filter integration is functional.
+- **Diagram rendering**: every `definition.yaml` lists the CanvasNet filter
+  (`docs/filters/canvasnet.lua`), which renders diagram sources, including the supported
+  Mermaid diagram types; successful HTML output containing the rendered diagram images
+  confirms the filter integration is functional.

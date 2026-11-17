@@ -43,15 +43,11 @@ if [ "$skip_dotnet_tools" != "1" ]; then
     dotnet textlint || lint_error=1
 fi
 
-# === NPM SECTION ===
+# === MARKDOWN SECTION ===
 
-# Install npm dependencies
-export PUPPETEER_SKIP_DOWNLOAD=true
-npm install --silent || { lint_error=1; skip_npm=1; }
-
-# Run markdownlint-cli2
-if [ "$skip_npm" != "1" ]; then
-    npx markdownlint-cli2 "**/*.md" || lint_error=1
+# Run LintMark
+if [ "$skip_dotnet_tools" != "1" ]; then
+    dotnet lintmark || lint_error=1
 fi
 
 # === DOTNET LINTING SECTION ===
