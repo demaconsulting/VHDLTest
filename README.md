@@ -22,9 +22,9 @@ The workflow below shows how to use it: write VHDL test benches and a YAML test 
 an installed simulator, and use the pass/fail results, test results files, and exit code as a CI gate and test evidence.
 
 ![VHDLTest workflow: write VHDL design files, test benches, and a YAML test configuration, run vhdltest with the config,
-simulator, and optional test-name options to compile and simulate each test bench, get pass/fail results, TRX or JUnit XML
-test results files, and a pass/fail exit code, then use them as a CI gate, in CI test reports, as test evidence, and in pull
-request checks][workflow]
+simulator, and optional test-name options to compile and simulate each test bench, get pass/fail results, TRX or JUnit
+XML test results files, and a pass/fail exit code, then use them as a CI gate, in CI test reports, as test evidence, and
+in pull request checks][workflow]
 
 ## Features
 

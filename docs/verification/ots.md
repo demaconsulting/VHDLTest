@@ -18,7 +18,7 @@ VHDLTest verifies OTS software items through two complementary approaches:
 ## OTS Items
 
 | Item | Type | Verification Approach |
-| ---- | ---- | --------------------- |
+| --- | --- | --- |
 | YamlDotNet | Runtime | Integration tests via ConfigDocument |
 | DemaConsulting.TestResults | Runtime | Unit and integration tests via TestResults |
 | xUnit v3 | Build | Implicit — test suite execution |

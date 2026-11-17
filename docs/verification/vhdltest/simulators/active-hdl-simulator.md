@@ -32,39 +32,39 @@ is `"ActiveHdl"`, confirming the instance is registered with the correct name fo
 lookup.
 This scenario is tested by `ActiveHdlSimulator_SimulatorName_ReturnsActiveHdl` in `ActiveHdlSimulatorTests.cs`.
 
-**CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Active-HDL
-compilation output produces a `RunLineType.Text` summary.
-This scenario is tested by `ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `ActiveHdlSimulatorTests.cs`.
+**CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Active-HDL compilation output produces a
+`RunLineType.Text` summary. This scenario is tested by
+`ActiveHdlSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `ActiveHdlSimulatorTests.cs`.
 
-**CompileProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an Active-HDL warning
-line (`KERNEL: Warning:`) is classified as `RunLineType.Warning`.
-This scenario is tested by `ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult` in `ActiveHdlSimulatorTests.cs`.
+**CompileProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an Active-HDL warning line (`KERNEL: Warning:`)
+is classified as `RunLineType.Warning`. This scenario is tested by
+`ActiveHdlSimulator_CompileProcessor_WarningOutput_ReturnsWarningResult` in `ActiveHdlSimulatorTests.cs`.
 
-**CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an Active-HDL error line
-is classified as `RunLineType.Error`.
-This scenario is tested by `ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in `ActiveHdlSimulatorTests.cs`.
+**CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an Active-HDL error line is classified as
+`RunLineType.Error`. This scenario is tested by `ActiveHdlSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in
+`ActiveHdlSimulatorTests.cs`.
 
 **CompileProcessor_FatalRuntimeError_ReturnsErrorResult**: Verifies that a `RUNTIME: Fatal Error`
 line in compile output is classified as `RunLineType.Error`.
 This scenario is tested by `ActiveHdlSimulator_CompileProcessor_FatalRuntimeError_ReturnsErrorResult`
 in `ActiveHdlSimulatorTests.cs`.
 
-**TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Active-HDL simulation
-output produces a `RunLineType.Text` summary.
-This scenario is tested by `ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult` in `ActiveHdlSimulatorTests.cs`.
+**TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Active-HDL simulation output produces a
+`RunLineType.Text` summary. This scenario is tested by `ActiveHdlSimulator_TestProcessor_CleanOutput_ReturnsTextResult`
+in `ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_InfoOutput_ReturnsInfoResult**: Verifies that an `EXECUTION:: NOTE` line
 is classified as `RunLineType.Info`.
 This scenario is tested by `ActiveHdlSimulator_TestProcessor_InfoOutput_ReturnsInfoResult`
 in `ActiveHdlSimulatorTests.cs`.
 
-**TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an `EXECUTION:: WARNING`
-line is classified as `RunLineType.Warning`.
-This scenario is tested by `ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult` in `ActiveHdlSimulatorTests.cs`.
+**TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that an `EXECUTION:: WARNING` line is classified as
+`RunLineType.Warning`. This scenario is tested by `ActiveHdlSimulator_TestProcessor_WarningOutput_ReturnsWarningResult`
+in `ActiveHdlSimulatorTests.cs`.
 
-**TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an `EXECUTION:: ERROR` line
-is classified as `RunLineType.Error`.
-This scenario is tested by `ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult` in `ActiveHdlSimulatorTests.cs`.
+**TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that an `EXECUTION:: ERROR` line is classified as
+`RunLineType.Error`. This scenario is tested by `ActiveHdlSimulator_TestProcessor_ErrorOutput_ReturnsErrorResult` in
+`ActiveHdlSimulatorTests.cs`.
 
 **TestProcessor_LatticeSuppression1_ReturnsTextResult**: Verifies that the first Active-HDL
 Lattice Edition advisory (`KERNEL: Warning: You are using the Active-HDL Lattice Edition`)

@@ -18,7 +18,7 @@ are included only as `PrivateAssets` or as .NET global tools.
 The following OTS libraries are deployed with VHDLTest as runtime dependencies:
 
 | Item | Purpose |
-| ---- | ------- |
+| --- | --- |
 | YamlDotNet | YAML deserialization of configuration files |
 | DemaConsulting.TestResults | TRX and JUnit XML test results file generation |
 
@@ -30,7 +30,7 @@ Detailed integration design for each runtime dependency is in its own document u
 The following OTS tools are used in the build pipeline and are not deployed with VHDLTest:
 
 | Item | Purpose |
-| ---- | ------- |
+| --- | --- |
 | xUnit | Unit test execution framework |
 | dotnet-sonarscanner | Static analysis and SonarCloud publishing |
 | DemaConsulting.ReqStream | Requirements traceability enforcement |
@@ -45,5 +45,5 @@ The following OTS tools are used in the build pipeline and are not deployed with
 | DemaConsulting.SysML2Tools | Architecture model validation and diagram rendering |
 
 Detailed integration design for each build and analysis tool that requires formal OTS coverage
-is in its own document under `docs/design/ots/`. See _SysML2Tools OTS Design_ for the
+is in its own document under `docs/design/ots/`. See *SysML2Tools OTS Design* for the
 architecture model validation and diagram rendering tool.

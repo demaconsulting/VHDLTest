@@ -36,7 +36,7 @@ for all tested scenarios.
 - **JUnit XML file is created with correct content**: `TestResults_SaveResults_WithXmlExtension_CreatesJUnitFile`
   calls `TestResults.SaveResults` with a `.xml` path and verifies that the output file exists
   and contains valid JUnit XML, including the `testsuites` root element.
-- **JUnit XML file records failed tests correctly**: `TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure`
-  calls `TestResults.SaveResults` with a failed test result and a `.xml` path, and verifies that
-  the output JUnit XML file correctly records the failure, confirming that failure serialization
-  is functional.
+- **JUnit XML file records failed tests correctly**:
+  `TestResults_SaveResults_WithFailedTest_CreatesJUnitFileWithFailure` calls `TestResults.SaveResults` with a failed
+  test result and a `.xml` path, and verifies that the output JUnit XML file correctly records the failure, confirming
+  that failure serialization is functional.

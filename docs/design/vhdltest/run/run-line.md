@@ -10,10 +10,10 @@ text with its assigned classification type. It is the element type of the
 
 #### Data Model
 
-| Property | Type          | Description                                                   |
-| -------- | ------------- | ------------------------------------------------------------- |
-| `Type`   | `RunLineType` | Classification assigned to this line by `RunProcessor.Parse`. |
-| `Text`   | `string`      | The text content of the output line, unmodified.              |
+| Property | Type | Description |
+| --- | --- | --- |
+| `Type` | `RunLineType` | Classification assigned to this line by `RunProcessor.Parse`. |
+| `Text` | `string` | The text content of the output line, unmodified. |
 
 #### Key Methods
 

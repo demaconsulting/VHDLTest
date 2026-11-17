@@ -10,10 +10,10 @@ rule element that `RunProcessor` applies to classify each captured line.
 
 #### Data Model
 
-| Property  | Type          | Description                                                              |
-| --------- | ------------- | ------------------------------------------------------------------------ |
-| `Type`    | `RunLineType` | The classification assigned to a line when `Pattern` matches.            |
-| `Pattern` | `Regex`       | Compiled regular expression with a 100 ms evaluation timeout.            |
+| Property | Type | Description |
+| --- | --- | --- |
+| `Type` | `RunLineType` | The classification assigned to a line when `Pattern` matches. |
+| `Pattern` | `Regex` | Compiled regular expression with a 100 ms evaluation timeout. |
 
 #### Key Methods
 

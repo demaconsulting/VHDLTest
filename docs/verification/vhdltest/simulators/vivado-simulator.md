@@ -30,13 +30,13 @@ Live simulator integration: CI environment with Vivado installed on PATH.
 is `"Vivado"`, confirming the instance is registered with the correct name.
 This scenario is tested by `VivadoSimulator_SimulatorName_ReturnsVivado` in `VivadoSimulatorTests.cs`.
 
-**CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Vivado compilation
-output produces a `RunLineType.Text` summary.
-This scenario is tested by `VivadoSimulator_CompileProcessor_CleanOutput_ReturnsTextResult` in `VivadoSimulatorTests.cs`.
+**CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Vivado compilation output produces a
+`RunLineType.Text` summary. This scenario is tested by `VivadoSimulator_CompileProcessor_CleanOutput_ReturnsTextResult`
+in `VivadoSimulatorTests.cs`.
 
-**CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a Vivado error line is
-classified as `RunLineType.Error`.
-This scenario is tested by `VivadoSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in `VivadoSimulatorTests.cs`.
+**CompileProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a Vivado error line is classified as
+`RunLineType.Error`. This scenario is tested by `VivadoSimulator_CompileProcessor_ErrorOutput_ReturnsErrorResult` in
+`VivadoSimulatorTests.cs`.
 
 **TestProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean Vivado simulation
 output produces a `RunLineType.Text` summary.
@@ -46,9 +46,9 @@ This scenario is tested by `VivadoSimulator_TestProcessor_CleanOutput_ReturnsTex
 output is classified as `RunLineType.Info`.
 This scenario is tested by `VivadoSimulator_TestProcessor_InfoOutput_ReturnsInfoResult` in `VivadoSimulatorTests.cs`.
 
-**TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that a Vivado warning in
-simulation output is classified as `RunLineType.Warning`.
-This scenario is tested by `VivadoSimulator_TestProcessor_WarningOutput_ReturnsWarningResult` in `VivadoSimulatorTests.cs`.
+**TestProcessor_WarningOutput_ReturnsWarningResult**: Verifies that a Vivado warning in simulation output is classified
+as `RunLineType.Warning`. This scenario is tested by `VivadoSimulator_TestProcessor_WarningOutput_ReturnsWarningResult`
+in `VivadoSimulatorTests.cs`.
 
 **TestProcessor_ErrorOutput_ReturnsErrorResult**: Verifies that a Vivado error in
 simulation output is classified as `RunLineType.Error`.

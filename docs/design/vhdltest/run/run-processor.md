@@ -13,10 +13,15 @@ implementations and the output-processing pipeline.
 
 #### Data Model
 
-| Field      | Type              | Description                                                                                                                                                                                                 |
-| ---------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `_rules`   | `RunLineRule[]`   | Defensive copy (`[.. rules]`) of the constructor's array, taken at construction time (after a null check); immutable for the instance lifetime regardless of later mutation of the caller's original array. |
-| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null.                                                                                                                                          |
+| Field | Type | Description |
+| --- | --- | --- |
+| `_rules` | `RunLineRule[]` | Defensive copy of the constructor's rule array (see field details below). |
+| `_invoker` | `IProcessInvoker` | Injected invoker; defaults to `ProcessInvoker.Instance` when null. |
+
+Field details:
+
+- `_rules`: defensive copy (`[.. rules]`) of the constructor's array, taken at construction time (after a null check);
+  immutable for the instance lifetime regardless of later mutation of the caller's original array.
 
 #### Key Methods
 
