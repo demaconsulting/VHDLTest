@@ -55,7 +55,8 @@ Uses the same classification patterns as CompileProcessor.
   searches PATH for the `nvc` executable and returns its parent directory.
 
 **CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
-Used by unit tests to verify simulator invocations without launching real processes.
+Used by unit tests to verify simulator invocations without launching real processes; passing a
+`null` path creates an unavailable instance for exercising the not-available guard.
 
 #### Error Handling
 
