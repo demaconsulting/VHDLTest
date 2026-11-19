@@ -33,11 +33,15 @@ This scenario is tested by `NvcSimulator_SimulatorName_ReturnsNVC`.
 **Compile_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `NvcSimulator.Compile()`
 throws `InvalidOperationException` when the NVC simulator is not available (i.e., `SimulatorPath` is null),
 preventing silent incorrect behavior when the simulator is not installed.
+The instance is created with `CreateForTesting` using a `null` path and a `FakeProcessInvoker`, and the test
+also confirms that no process is launched.
 This scenario is tested by `NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException`.
 
 **Test_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `NvcSimulator.Test()`
 throws `InvalidOperationException` when the NVC simulator is not available (i.e., `SimulatorPath` is null),
 preventing silent incorrect behavior when the simulator is not installed.
+The instance is created with `CreateForTesting` using a `null` path and a `FakeProcessInvoker`, and the test
+also confirms that no process is launched.
 This scenario is tested by `NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`.
 
 **CompileProcessor_CleanOutput_ReturnsTextResult**: Verifies that clean NVC analysis output

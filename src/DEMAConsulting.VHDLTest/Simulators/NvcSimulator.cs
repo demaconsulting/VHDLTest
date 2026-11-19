@@ -118,10 +118,13 @@ public sealed class NvcSimulator : Simulator
     /// <summary>
     ///     Creates a non-singleton instance for testing, using the supplied invoker instead of real process execution.
     /// </summary>
-    /// <param name="simulatorPath">Path to use as the simulator installation directory.</param>
+    /// <param name="simulatorPath">
+    ///     Path to use as the simulator installation directory, or <c>null</c> to create an
+    ///     unavailable simulator.
+    /// </param>
     /// <param name="invoker">Process invoker to use for all simulator invocations.</param>
     /// <returns>A new <see cref="NvcSimulator"/> instance backed by <paramref name="invoker"/>.</returns>
-    internal static NvcSimulator CreateForTesting(string simulatorPath, IProcessInvoker invoker)
+    internal static NvcSimulator CreateForTesting(string? simulatorPath, IProcessInvoker invoker)
         => new(simulatorPath, invoker);
 
     /// <inheritdoc />

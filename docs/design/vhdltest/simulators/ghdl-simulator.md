@@ -64,7 +64,8 @@ Applies nine classification rules in order:
   Otherwise searches PATH for the `ghdl` executable and returns its parent directory.
 
 **CreateForTesting** (internal static): Creates a non-singleton instance backed by a supplied `IProcessInvoker`.
-Used by unit tests to verify simulator invocations without launching real processes.
+Used by unit tests to verify simulator invocations without launching real processes; passing a
+`null` path creates an unavailable instance for exercising the not-available guard.
 
 #### Error Handling
 

@@ -18,7 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Reflection;
 using DEMAConsulting.VHDLTest.Cli;
 using DEMAConsulting.VHDLTest.Run;
 using DEMAConsulting.VHDLTest.Simulators;
@@ -478,43 +477,17 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException()
     {
-        // Arrange: create a fresh NvcSimulator instance with a null SimulatorPath by
-        // temporarily clearing the NVC env var and using a PATH that contains no NVC
-        // executable, so FindPath() returns null during construction.
-        var previousNvcPath = Environment.GetEnvironmentVariable("VHDLTEST_NVC_PATH");
-        var previousPath = Environment.GetEnvironmentVariable("PATH");
-        Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", null);
-        Environment.SetEnvironmentVariable("PATH", Path.GetTempPath());
-
-        NvcSimulator simulator;
-        try
-        {
-            // Use reflection to invoke the private constructor so FindPath() returns null
-            var ctor = typeof(NvcSimulator)
-                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
-                .Single(c => c.GetParameters().Length == 0);
-            simulator = (NvcSimulator)ctor.Invoke([]);
-        }
-        finally
-        {
-            // Restore environment before running the actual assertion
-            Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", previousNvcPath);
-            Environment.SetEnvironmentVariable("PATH", previousPath);
-        }
-
-        // Verify the constructed instance has a null SimulatorPath (NVC not found)
-        if (simulator.SimulatorPath != null)
-        {
-            // Skip the assertion: NVC was found in the temp directory (unexpected but possible)
-            Assert.Skip("NVC was unexpectedly found in the test environment; skipping availability guard test.");
-        }
-
+        // Arrange: create a simulator with no installation path and a fake invoker that
+        // records any attempted process launch
+        var invoker = new FakeProcessInvoker();
+        var simulator = NvcSimulator.CreateForTesting(null, invoker);
         using var context = Context.Create(["--silent"]);
         var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
 
         // Act / Assert: Compile throws when NVC is not installed
         var ex = Assert.Throws<InvalidOperationException>(() => simulator.Compile(context, options));
         Assert.Equal("NVC Simulator not available", ex.Message);
+        Assert.Empty(invoker.AllCalls);
     }
 
     /// <summary>
@@ -525,37 +498,10 @@ public class NvcSimulatorTests
     [Fact]
     public void NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException()
     {
-        // Arrange: create a fresh NvcSimulator instance with a null SimulatorPath by
-        // temporarily clearing the NVC env var and using a PATH that contains no NVC
-        // executable, so FindPath() returns null during construction.
-        var previousNvcPath = Environment.GetEnvironmentVariable("VHDLTEST_NVC_PATH");
-        var previousPath = Environment.GetEnvironmentVariable("PATH");
-        Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", null);
-        Environment.SetEnvironmentVariable("PATH", Path.GetTempPath());
-
-        NvcSimulator simulator;
-        try
-        {
-            // Use reflection to invoke the private constructor so FindPath() returns null
-            var ctor = typeof(NvcSimulator)
-                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
-                .Single(c => c.GetParameters().Length == 0);
-            simulator = (NvcSimulator)ctor.Invoke([]);
-        }
-        finally
-        {
-            // Restore environment before running the actual assertion
-            Environment.SetEnvironmentVariable("VHDLTEST_NVC_PATH", previousNvcPath);
-            Environment.SetEnvironmentVariable("PATH", previousPath);
-        }
-
-        // Verify the constructed instance has a null SimulatorPath (NVC not found)
-        if (simulator.SimulatorPath != null)
-        {
-            // Skip the assertion: NVC was found in the temp directory (unexpected but possible)
-            Assert.Skip("NVC was unexpectedly found in the test environment; skipping availability guard test.");
-        }
-
+        // Arrange: create a simulator with no installation path and a fake invoker that
+        // records any attempted process launch
+        var invoker = new FakeProcessInvoker();
+        var simulator = NvcSimulator.CreateForTesting(null, invoker);
         using var context = Context.Create(["--silent"]);
         var options = new Options(Directory.GetCurrentDirectory(), new ConfigDocument());
 
@@ -563,6 +509,7 @@ public class NvcSimulatorTests
         var ex = Assert.Throws<InvalidOperationException>(() =>
             simulator.Test(context, options, "test_bench"));
         Assert.Equal("NVC Simulator not available", ex.Message);
+        Assert.Empty(invoker.AllCalls);
     }
 
     /// <summary>

@@ -107,11 +107,15 @@ This scenario is tested by `GhdlSimulator_FindPath_WithoutEnvVar_ReturnsNullOrPa
 **Compile_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `GhdlSimulator.Compile()`
 throws `InvalidOperationException` when the GHDL simulator is not available (i.e., `SimulatorPath`
 is null), preventing silent incorrect behavior when the simulator is not installed.
+The instance is created with `CreateForTesting` using a `null` path and a `FakeProcessInvoker`, and the test
+also confirms that no process is launched.
 This scenario is tested by `GhdlSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException`.
 
 **Test_WhenNotAvailable_ThrowsInvalidOperationException**: Verifies that `GhdlSimulator.Test()`
 throws `InvalidOperationException` when the GHDL simulator is not available (i.e., `SimulatorPath`
 is null), preventing silent incorrect behavior when the simulator is not installed.
+The instance is created with `CreateForTesting` using a `null` path and a `FakeProcessInvoker`, and the test
+also confirms that no process is launched.
 This scenario is tested by `GhdlSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`.
 
 **Compile_WithValidConfig_InvokesGhdl**: Verifies that `GhdlSimulator.Compile()` invokes the
