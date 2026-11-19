@@ -7,8 +7,7 @@ sections:
           - title: SimulatorFactory Requirements
             requirements:
               - id: VHDLTest-Simulators-SimulatorFactory-Get
-                title: SimulatorFactory shall return the correct simulator instance for a given name,
-                  using case-insensitive name matching.
+                title: SimulatorFactory shall return the correct simulator instance for a given name, using case-insensitive name matching.
                 justification: |
                   The factory pattern centralizes simulator selection, allowing the rest of the
                   application to remain independent of the specific simulator being used and
@@ -34,8 +33,7 @@ sections:
                   - SimulatorFactory_Get_UnknownSimulator_ReturnsNull
 
               - id: VHDLTest-Simulators-SimulatorFactory-AutoSelect
-                title: SimulatorFactory shall return the first available installed simulator when no simulator
-                  name is specified.
+                title: SimulatorFactory shall return the first available installed simulator when no simulator name is specified.
                 justification: |
                   When a developer has only one simulator installed, requiring an explicit simulator name
                   in the configuration is unnecessary friction. Auto-discovery enables zero-configuration
