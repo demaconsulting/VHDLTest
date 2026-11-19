@@ -26,6 +26,13 @@ namespace DEMAConsulting.VHDLTest.Tests.Run;
 /// <summary>
 ///     Tests for <see cref="RunProcessor"/> class.
 /// </summary>
+/// <remarks>
+///     <c>[Collection("ProcessPathTests")]</c> serialization is required because
+///     <see cref="RunProcessor_Execute_WithContext_ProgramOnlyInSystemDirectory_ResolvesSuccessfully"/>
+///     temporarily replaces the process-level <c>PATH</c> environment variable, which would
+///     otherwise break concurrently running tests that launch programs by bare name.
+/// </remarks>
+[Collection("ProcessPathTests")]
 public class RunProcessorTests
 {
     /// <summary>
