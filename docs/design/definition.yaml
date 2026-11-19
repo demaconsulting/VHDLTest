@@ -59,7 +59,6 @@ input-files:
   - docs/design/ots/weasyprinttool.md
   - docs/design/ots/fileassert.md
   - docs/design/ots/sonarscanner.md
-
 # Template configuration
 template: template.html
 

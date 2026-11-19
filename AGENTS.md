@@ -84,6 +84,7 @@ from `.github/standards/`. Use this matrix to determine which to load:
 - **Software structure**: `sysml2-modeling.md`
 - **Any documentation**: `technical-documentation.md`
 - **Diagrams in documentation**: `diagram-documentation.md` (and the `canvasnet` skill for tooling)
+- **Reading PDF or Office documents**: the `docdown` skill
 
 Load only the standards relevant to your specific task scope.
 
@@ -166,3 +167,20 @@ requires it and the modification preserves the documented design intent:
 This repository follows the [Continuous Compliance](https://github.com/demaconsulting/ContinuousCompliance)
 approach. Tools: **ReqStream** (requirements traceability), **ReviewMark** (file review enforcement),
 **BuildMark** (tool versions), **VersionMark** (version tracking).
+
+# Repository-Specific Standards Exceptions
+
+The files in `.github/standards/` are shared verbatim across repositories. This repository
+applies these accepted exceptions on top of them:
+
+## Reflection-Constructed Unavailable Simulators (`testing-principles.md`)
+
+The "Assert Observable Behavior" rule forbids reflection on private state. The requirement-linked
+tests `GhdlSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException`,
+`GhdlSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException`,
+`NvcSimulator_Compile_WhenNotAvailable_ThrowsInvalidOperationException`, and
+`NvcSimulator_Test_WhenNotAvailable_ThrowsInvalidOperationException` use reflection to invoke the
+private parameterless simulator constructor so that a fresh instance is created while no simulator
+is on the `PATH`. They assert only observable behavior (the thrown exception and its message), and
+are retained unchanged until the simulators expose a supported way to construct an unavailable
+instance.

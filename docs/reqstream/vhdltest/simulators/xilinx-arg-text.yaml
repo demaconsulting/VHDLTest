@@ -7,8 +7,7 @@ sections:
           - title: XilinxArgText Requirements
             requirements:
               - id: VHDLTest-Simulators-XilinxArgText-Quote
-                title: XilinxArgText shall double-quote values for interpolation into Xilinx
-                  argument files, escaping embedded double-quote and backslash characters.
+                title: XilinxArgText shall double-quote values for interpolation into Xilinx argument files, escaping embedded double-quote and backslash characters.
                 justification: |
                   Xilinx argument files (per UG900) use standard shell-style tokenization, so a
                   value containing whitespace or other special characters must be wrapped in

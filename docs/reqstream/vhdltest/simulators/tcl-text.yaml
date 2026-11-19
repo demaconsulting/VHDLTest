@@ -7,8 +7,7 @@ sections:
           - title: TclText Requirements
             requirements:
               - id: VHDLTest-Simulators-TclText-BraceQuote
-                title: TclText shall brace-quote values that contain no literal braces, preserving
-                  the value unchanged.
+                title: TclText shall brace-quote values that contain no literal braces, preserving the value unchanged.
                 justification: |
                   TCL brace-quoting suppresses all variable, command, and backslash substitution
                   for the enclosed text, so values containing spaces or TCL metacharacters ($, [,
@@ -23,8 +22,7 @@ sections:
                   - TclText_Quote_ValueWithBackslash_ReturnsBracedLiteral
 
               - id: VHDLTest-Simulators-TclText-EscapedFallback
-                title: TclText shall fall back to backslash-escaped double-quoting when the value
-                  contains literal braces.
+                title: TclText shall fall back to backslash-escaped double-quoting when the value contains literal braces.
                 justification: |
                   TCL brace-quoting requires the braces within a braced word to be balanced and
                   unescaped, so a value containing literal braces cannot be brace-quoted safely.

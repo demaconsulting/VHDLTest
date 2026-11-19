@@ -12,6 +12,12 @@
 ![GitHub contributors][github-contributors-badge]
 ![GitHub][github-license-badge]
 
+![VHDLTest banner: the VHDLTest name with the tagline 'Every test bench, run. Every result, recorded.' and the
+command 'vhdltest --config tests.yaml --results results.trx'. VHDL design files, test benches, the YAML test
+configuration, and an installed simulator (GHDL, NVC, and four more) flow on curved arrows into the vhdltest .NET
+tool, and arrows lead out to the pass/fail result of each test bench, a TRX test results file, a JUnit XML test
+results file, and a pass/fail exit code (exit 0 or exit 1)][hero]
+
 ## Overview
 
 VHDLTest is a .NET command-line tool that runs VHDL test benches and generates standard test results files.
@@ -153,6 +159,7 @@ If you discover a security vulnerability, please review our
 [Security Policy](https://github.com/demaconsulting/VHDLTest/blob/main/SECURITY.md) for responsible disclosure.
 
 <!-- Link References -->
+[hero]: https://raw.githubusercontent.com/demaconsulting/VHDLTest/main/docs/images/hero.png
 [workflow]: https://raw.githubusercontent.com/demaconsulting/VHDLTest/main/docs/images/workflow.png
 [nuget-badge]: https://img.shields.io/nuget/v/DemaConsulting.VHDLTest?style=plastic
 [nuget-url]: https://www.nuget.org/packages/DemaConsulting.VHDLTest
