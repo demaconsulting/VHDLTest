@@ -15,6 +15,7 @@ needs-review:
   - docs/verification/**/*.md  # All verification documents
   - '!**/obj/**'  # Exclude build output
   - '!**/bin/**'  # Exclude build output
+  - '!**/generated/**'  # Exclude generated documentation
 # Evidence source: review data and index.json are located in the 'reviews' branch
 # of this repository, accessed through the GitHub public HTTPS raw content access.
 # Note: The 'reviews' branch must be created and populated with review evidence PDFs
