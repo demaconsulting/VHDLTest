@@ -1,7 +1,4 @@
-# VHDLTest
-
-<!-- IMPORTANT: All links in this file must be absolute URLs.
-     This file is distributed in packages and relative links will not resolve. -->
+# ![VHDLTest: VHDL test bench runner with TRX or JUnit results][hero]
 
 [![CI][github-build-badge]](https://github.com/demaconsulting/VHDLTest/actions/workflows/build_on_push.yaml)
 [![Quality Gate Status][sonarcloud-quality-badge]][sonarcloud-quality-url]
@@ -12,11 +9,8 @@
 ![GitHub contributors][github-contributors-badge]
 ![GitHub][github-license-badge]
 
-![VHDLTest banner: the VHDLTest name with the tagline 'Every test bench, run. Every result, recorded.' and the
-command 'vhdltest --config tests.yaml --results results.trx'. VHDL design files, test benches, the YAML test
-configuration, and an installed simulator (GHDL, NVC, and four more) flow on curved arrows into the vhdltest .NET
-tool, and arrows lead out to the pass/fail result of each test bench, a TRX test results file, a JUnit XML test
-results file, and a pass/fail exit code (exit 0 or exit 1)][hero]
+<!-- IMPORTANT: All links in this file must be absolute URLs.
+     This file is distributed in packages and relative links will not resolve. -->
 
 ## Overview
 
