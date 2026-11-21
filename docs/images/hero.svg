@@ -9,7 +9,7 @@
     <style>
       .word { font: bold 92px sans-serif; fill: #ffffff; }
       .eyebrow { font: bold 25px sans-serif; fill: #a5b4fc; }
-      .tag { font: bold 40px sans-serif; fill: #f8fafc; }
+      .tag { font: bold 36px sans-serif; fill: #f8fafc; }
       .body { font: 25px sans-serif; fill: #cbd5e1; }
       .cmd { font: 25px monospace; fill: #e2e8f0; }
       .prompt { fill: #5eead4; }
@@ -117,18 +117,18 @@
   <text class="word" x="52" y="176">VHDL</text>
   <text class="word brandText" x="302.4" y="176">Test</text>
   <rect x="58" y="200" width="132" height="6" rx="3" fill="url(#brand)"/>
-  <text class="tag" x="56" y="266">Every test bench, run.</text>
-  <text class="tag brandText" x="56" y="316">Every result, recorded.</text>
-  <text class="body" x="58" y="368">Runs VHDL test benches on GHDL, NVC,</text>
-  <text class="body" x="58" y="402">ModelSim, QuestaSim, Active-HDL, or</text>
-  <text class="body" x="58" y="436">Vivado and writes TRX or JUnit results.</text>
+  <text class="tag" x="56" y="266">VHDL test bench runner</text>
+  <text class="tag" x="56" y="314" style="fill: #a5b4fc">with TRX or JUnit results.</text>
+  <text class="body" x="58" y="368">Compiles and runs test benches from a</text>
+  <text class="body" x="58" y="402">YAML config on GHDL, NVC, ModelSim,</text>
+  <text class="body" x="58" y="436">QuestaSim, Active-HDL or Vivado.</text>
   <rect x="56" y="468" width="480" height="90" rx="12" fill="#0a1022" fill-opacity="0.8" stroke="#a78bfa" stroke-opacity="0.45" stroke-width="1.5"/>
   <text class="cmd prompt" x="78" y="503">$</text>
   <text class="cmd" x="108" y="503">vhdltest --config</text>
   <text class="cmd file" x="378" y="503">tests.yaml</text>
   <text class="cmd" x="138" y="539">--results</text>
   <text class="cmd file" x="288" y="539">results.trx</text>
-  <text class="note" x="58" y="604">With built-in self-validation.</text>
+  <text class="note" x="58" y="604">.NET 10 and 11 &#183; Windows, Linux, macOS</text>
 
   <!-- Input cards -->
   <g>
