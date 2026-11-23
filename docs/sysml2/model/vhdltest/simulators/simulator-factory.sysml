@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_SimulatorFactory {
     private import SoftwareItemMetadata::*;
     part def SimulatorFactory {
         doc /* Creates simulator instances by name or by auto-discovery. */

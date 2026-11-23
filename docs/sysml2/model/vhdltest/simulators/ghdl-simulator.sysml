@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_GhdlSimulator {
     private import SoftwareItemMetadata::*;
     part def GhdlSimulator {
         doc /* GHDL simulator integration. */

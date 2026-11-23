@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_Validation {
     private import SoftwareItemMetadata::*;
     part def Validation {
         doc /* Runs the embedded self-validation test scenarios via the Mock simulator. */

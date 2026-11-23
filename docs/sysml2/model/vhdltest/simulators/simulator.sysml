@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_Simulator {
     private import SoftwareItemMetadata::*;
     part def Simulator {
         doc /* Base class for all VHDL simulator integrations. */

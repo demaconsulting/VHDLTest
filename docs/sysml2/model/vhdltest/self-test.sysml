@@ -1,4 +1,5 @@
-package VHDLTest {
+package VHDLTest_SelfTestSubsystem {
+    public import VHDLTest_Validation::*;
     private import SoftwareItemMetadata::*;
     part def SelfTestSubsystem {
         doc /* Self-validation test runner invoked via the --validate option. */

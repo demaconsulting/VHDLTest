@@ -1,4 +1,6 @@
-package VHDLTest {
+package VHDLTest_ResultsSubsystem {
+    public import VHDLTest_TestResult::*;
+    public import VHDLTest_TestResults::*;
     private import SoftwareItemMetadata::*;
     part def ResultsSubsystem {
         doc /* Test result modeling and collection. */

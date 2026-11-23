@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_XilinxArgText {
     private import SoftwareItemMetadata::*;
     part def XilinxArgText {
         doc /* Quotes string values for safe interpolation into generated Xilinx argument files. */

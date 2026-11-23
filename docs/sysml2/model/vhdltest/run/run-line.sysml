@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_RunLine {
     private import SoftwareItemMetadata::*;
     part def RunLine {
         doc /* An individual output line captured from a simulation run. */

@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_QuestaSimSimulator {
     private import SoftwareItemMetadata::*;
     part def QuestaSimSimulator {
         doc /* QuestaSim simulator integration. */

@@ -1,4 +1,15 @@
-package VHDLTest {
+package VHDLTest_SimulatorsSubsystem {
+    public import VHDLTest_ActiveHdlSimulator::*;
+    public import VHDLTest_GhdlSimulator::*;
+    public import VHDLTest_MockSimulator::*;
+    public import VHDLTest_ModelSimSimulator::*;
+    public import VHDLTest_NvcSimulator::*;
+    public import VHDLTest_QuestaSimSimulator::*;
+    public import VHDLTest_SimulatorFactory::*;
+    public import VHDLTest_Simulator::*;
+    public import VHDLTest_TclText::*;
+    public import VHDLTest_VivadoSimulator::*;
+    public import VHDLTest_XilinxArgText::*;
     private import SoftwareItemMetadata::*;
     part def SimulatorsSubsystem {
         doc /* VHDL simulator abstraction, discovery, and per-tool integrations. */

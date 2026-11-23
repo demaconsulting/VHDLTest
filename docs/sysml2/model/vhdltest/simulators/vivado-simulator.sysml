@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_VivadoSimulator {
     private import SoftwareItemMetadata::*;
     part def VivadoSimulator {
         doc /* Vivado simulator integration. */

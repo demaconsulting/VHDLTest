@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_NvcSimulator {
     private import SoftwareItemMetadata::*;
     part def NvcSimulator {
         doc /* NVC simulator integration. */

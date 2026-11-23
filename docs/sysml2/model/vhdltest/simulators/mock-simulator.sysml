@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_MockSimulator {
     private import SoftwareItemMetadata::*;
     part def MockSimulator {
         doc /* Mock simulator used for self-validation; excluded from auto-discovery. */

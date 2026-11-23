@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_Options {
     private import SoftwareItemMetadata::*;
     part def Options {
         doc /* Parsed options holder. */

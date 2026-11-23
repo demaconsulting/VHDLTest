@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_ConfigDocument {
     private import SoftwareItemMetadata::*;
     part def ConfigDocument {
         doc /* YAML configuration document parser. */
