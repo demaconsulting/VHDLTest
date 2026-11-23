@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_RunLineRule {
     private import SoftwareItemMetadata::*;
     part def RunLineRule {
         doc /* A rule matching an output line to classify it by RunLineType. */

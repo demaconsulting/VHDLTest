@@ -51,6 +51,7 @@ words:
   - buildnotes
   - DEMA
   - demaconsulting
+  - distinguishability
   - dorny
   - endsim
   - esac
@@ -73,6 +74,8 @@ words:
   - shopt
   - snupkg
   - sonarscanner
+  - Sensmetry
+  - Syside
   - syspath
   - testbench
   - testresults

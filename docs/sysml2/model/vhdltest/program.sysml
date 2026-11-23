@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_Program {
     private import SoftwareItemMetadata::*;
     part def Program {
         doc /* Entry point and execution orchestrator for VHDLTest. */

@@ -1,6 +1,12 @@
 package VHDLTest {
+    public import VHDLTest_CliSubsystem::*;
+    public import VHDLTest_Program::*;
+    public import VHDLTest_ResultsSubsystem::*;
+    public import VHDLTest_RunSubsystem::*;
+    public import VHDLTest_SelfTestSubsystem::*;
+    public import VHDLTest_SimulatorsSubsystem::*;
     private import SoftwareItemMetadata::*;
-    import OtsDependencies::*;
+    private import OtsDependencies::*;
 
     doc
     /*

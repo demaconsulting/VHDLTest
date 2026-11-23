@@ -1,4 +1,7 @@
-package VHDLTest {
+package VHDLTest_CliSubsystem {
+    public import VHDLTest_ConfigDocument::*;
+    public import VHDLTest_Context::*;
+    public import VHDLTest_Options::*;
     private import SoftwareItemMetadata::*;
     part def CliSubsystem {
         doc /* Command-line argument parsing, configuration loading, and options holder. */

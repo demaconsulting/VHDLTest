@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_RunProgram {
     private import SoftwareItemMetadata::*;
     part def RunProgram {
         doc /* Executes simulation programs and captures their output. */

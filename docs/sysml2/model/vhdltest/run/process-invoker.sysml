@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_ProcessInvoker {
     private import SoftwareItemMetadata::*;
     part def IProcessInvoker {
         doc /* Contract for launching an external process and returning its exit code and output. */

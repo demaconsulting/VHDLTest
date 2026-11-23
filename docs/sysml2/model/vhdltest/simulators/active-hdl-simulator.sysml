@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_ActiveHdlSimulator {
     private import SoftwareItemMetadata::*;
     part def ActiveHdlSimulator {
         doc /* Active-HDL simulator integration. */

@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_Context {
     private import SoftwareItemMetadata::*;
     part def Context {
         doc /* Command-line argument parser and I/O owner. */

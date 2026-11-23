@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_ModelSimSimulator {
     private import SoftwareItemMetadata::*;
     part def ModelSimSimulator {
         doc /* ModelSim simulator integration. */

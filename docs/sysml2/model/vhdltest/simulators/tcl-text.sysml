@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_TclText {
     private import SoftwareItemMetadata::*;
     part def TclText {
         doc /* Quotes string values for safe interpolation into generated TCL do-scripts. */

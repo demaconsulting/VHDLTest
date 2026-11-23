@@ -1,13 +1,13 @@
 // Views rendered into docs/design/generated/ for the Design document.
-// Reopens the VHDLTest package so each 'expose' statement can reference
-// its target part def directly. Per SysML2Tools syntax, 'expose' is only valid
-// inside a named 'view' usage (not a 'view def' definition), and it - not
-// 'render' - is what scopes the rendered diagram content.
-package VHDLTest {
+// Per SysML2Tools syntax, 'expose' is only valid inside a named 'view' usage
+// (not a 'view def' definition), and it - not 'render' - is what scopes the
+// rendered diagram content.
+package VHDLTestDesignViews {
     private import StandardViewDefinitions::*;
+    private import VHDLTest::*;
 
     view SoftwareStructureView : InterconnectionView {
-        expose VHDLTest::**;
+        expose VHDLTest::VHDLTestSystem;
     }
 
     view VHDLTestView {

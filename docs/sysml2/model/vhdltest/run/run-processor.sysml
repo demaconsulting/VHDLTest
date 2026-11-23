@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_RunProcessor {
     private import SoftwareItemMetadata::*;
     part def RunProcessor {
         doc /* Processes simulation run output against configured line rules. */

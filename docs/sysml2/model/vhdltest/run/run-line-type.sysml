@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_RunLineType {
     private import SoftwareItemMetadata::*;
     part def RunLineType {
         doc /* Classification of an output line (for example info, warning, error). */

@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_TestResults {
     private import SoftwareItemMetadata::*;
     part def TestResults {
         doc /* A collection of test results. */

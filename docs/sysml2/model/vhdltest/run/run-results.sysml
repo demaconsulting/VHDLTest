@@ -1,4 +1,4 @@
-package VHDLTest {
+package VHDLTest_RunResults {
     private import SoftwareItemMetadata::*;
     part def RunResults {
         doc /* Aggregated results of a simulation run. */
