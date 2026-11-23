@@ -21,7 +21,7 @@ sections:
               SysML2Tools shall validate the SysML2 architecture model for syntax and
               reference errors when invoked with lint.
             justification: |
-              dotnet sysml2tools lint 'docs/sysml2/**/*.sysml' is run in lint.ps1 as a
+              dotnet sysml2tools lint --strict-unresolved 'docs/sysml2/**/*.sysml' is run in lint.ps1 as a
               development-time and CI quality gate, failing the build if the model contains
               syntax errors or unresolved references.
             tags: [ots]
