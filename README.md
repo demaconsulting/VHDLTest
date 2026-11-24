@@ -123,8 +123,11 @@ Before running tests, configure simulator paths via environment variables if nee
 ## Building
 
 ```pwsh
-pwsh ./build.ps1
+pwsh ./build.ps1 -All
 ```
+
+The build, lint, and fix scripts require a scope: `-All` runs everything, `-Changed` runs only what the changes
+affect, and `-Help` prints the usage. With no arguments they print the usage and exit 1.
 
 ## User Guide
 
