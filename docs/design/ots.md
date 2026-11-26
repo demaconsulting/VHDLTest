@@ -21,6 +21,7 @@ The following OTS libraries are deployed with VHDLTest as runtime dependencies:
 | --- | --- |
 | YamlDotNet | YAML deserialization of configuration files |
 | DemaConsulting.TestResults | TRX and JUnit XML test results file generation |
+| DemaConsulting.HelpCards | Built-in help cards and the `help` command |
 
 Detailed integration design for each runtime dependency is in its own document under
 `docs/design/ots/`.

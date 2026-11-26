@@ -8,7 +8,9 @@ units in isolation, exercising normal paths, boundary conditions, and error path
 integration test class (`CliSubsystemTests.cs`) exercises the full Cli pipeline — from raw
 command-line arguments through `Context`, `ConfigDocument`, and `Options` — to verify that
 the three units work together correctly. A real YAML configuration file is written to disk
-and cleaned up after the happy-path test; no mocking is used.
+and cleaned up after the happy-path test; no mocking is used. `HelpCommandTests.cs` tests the
+`HelpCommand` unit, and the subsystem integration tests also verify that `HelpCommand` answers
+the built-in help command from the real help cards.
 
 ### Test Environment
 
@@ -16,8 +18,8 @@ N/A - standard test environment.
 
 ### Acceptance Criteria
 
-- All unit tests in `ContextTests.cs`, `ConfigDocumentTests.cs`, and `OptionsTests.cs` pass
-  with zero failures.
+- All unit tests in `ContextTests.cs`, `ConfigDocumentTests.cs`, `OptionsTests.cs`, and
+  `HelpCommandTests.cs` pass with zero failures.
 - All integration tests in `CliSubsystemTests.cs` pass with zero failures.
 - Error paths throw the expected exception types (`InvalidOperationException`,
   `FileNotFoundException`).
@@ -45,3 +47,8 @@ This scenario is tested by `CliSubsystem_InvalidFlag_ThrowsInvalidOperationExcep
 no configuration file has been specified in the context throws `InvalidOperationException`,
 confirming that the Cli subsystem requires a configuration file before proceeding.
 This scenario is tested by `CliSubsystem_NullConfig_ThrowsInvalidOperationException`.
+
+**HelpCommand_TopicRequested_PrintsTopic**: Verifies that `HelpCommand.TryRun` with
+`help command-line` answers with exit code 0 and prints the `Command-line options` card,
+confirming that the Cli subsystem serves the built-in help topics.
+This scenario is tested by `CliSubsystem_HelpCommand_TopicRequested_PrintsTopic`.

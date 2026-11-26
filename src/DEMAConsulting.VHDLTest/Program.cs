@@ -60,7 +60,11 @@ public static class Program
     ///     <see cref="Run"/>, and propagates the resulting exit code to the process.
     /// </summary>
     /// <remarks>
-    ///     The primary output channel is <see cref="System.Environment.ExitCode"/>, set from
+    ///     The <c>help</c> command is answered first, by <see cref="HelpCommand"/>, before the
+    ///     command-line options are parsed: <c>help</c> is a command and not an option, so
+    ///     <see cref="Context.Create"/> would treat it as a test-bench name. Its exit code is set as
+    ///     <see cref="System.Environment.ExitCode"/> as is, and no <see cref="Context"/> is created.
+    ///     Otherwise the primary output channel is <see cref="System.Environment.ExitCode"/>, set from
     ///     <see cref="Context.ExitCode"/> after <see cref="Run"/> completes. Two exception
     ///     layers are present: <see cref="InvalidOperationException"/> is caught and reported
     ///     as a formatted error message with exit code 1; all other exceptions are reported
@@ -73,6 +77,13 @@ public static class Program
     {
         try
         {
+            // Answer the help command before the options are parsed
+            if (HelpCommand.Default.TryRun(args, out var helpExitCode))
+            {
+                Environment.ExitCode = helpExitCode;
+                return;
+            }
+
             using var context = Context.Create(args);
             Run(context);
             Environment.ExitCode = context.ExitCode;
@@ -188,11 +199,12 @@ public static class Program
     }
 
     /// <summary>
-    ///     Writes the usage and help text to the context output channel.
+    ///     Writes the usage and help text to the context output channel, ending with a pointer to
+    ///     the built-in help topics.
     /// </summary>
     /// <remarks>
     ///     Writes the usage/help text to the context output channel. The method is stateless —
-    ///     it only reads from the constant usage string and writes to <paramref name="context"/>;
+    ///     it only reads the usage text and <see cref="HelpCommand.Footer"/> and writes to <paramref name="context"/>;
     ///     it has no side effects beyond writing to the context. It is not responsible for setting
     ///     an error condition; callers must call <see cref="Context.WriteError"/> separately if a
     ///     non-zero exit code is required. Stateless and thread-safe provided the caller does not
@@ -202,8 +214,9 @@ public static class Program
     private static void PrintUsage(Context context)
     {
         context.WriteLine(
-            """
-            Usage: VHDLTest [options] [tests]
+            $"""
+            Usage: {HelpCommand.ToolName} [options] [tests]
+                   {HelpCommand.ToolName} help [topic]
             
             Options:
               -h, -?, --help               Display help
@@ -214,13 +227,16 @@ public static class Program
               --depth <n>                  Validation report depth (default: 1)
               -l, --log <log.txt>          Log output to file
               -c, --config <config.yaml>   Specify configuration
-              -r, --results <out.trx>      Specify test results file
+              -r, --result, --results <file>
+                                           Specify test results file (.trx or .xml)
               -s, --simulator <name>       Specify simulator
-              -0, --exit-0                 Exit with code 0 if test fail
+              -0, --exit-0                 Exit with code 0 if tests fail
               --                           End of options
 
             Arguments:
               [tests]                      Optional test bench names to filter which tests to run
             """);
+        context.WriteLine("");
+        context.WriteLine(HelpCommand.Default.Footer);
     }
 }

@@ -62,4 +62,9 @@
     <ProjectReference Include="..\..\src\DEMAConsulting.VHDLTest\DEMAConsulting.VHDLTest.csproj" />
   </ItemGroup>
 
+  <!-- Test Data -->
+  <ItemGroup>
+    <None Update="TestData\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

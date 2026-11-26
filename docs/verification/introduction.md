@@ -19,6 +19,7 @@ OTS items:
 
 - **YamlDotNet**: integration and usage verification.
 - **DemaConsulting.TestResults**: integration and usage verification.
+- **DemaConsulting.HelpCards**: integration and usage verification.
 - **xUnit**: integration and usage verification.
 - **DemaConsulting.ReqStream**: integration and usage verification.
 - **DemaConsulting.BuildMark**: integration and usage verification.

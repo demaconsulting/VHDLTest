@@ -13,6 +13,7 @@ needs-review:
   - docs/user_guide/**/*.md  # User guide documents
   - docs/design/**/*.md  # All design documents
   - docs/verification/**/*.md  # All verification documents
+  - src/**/Help/**  # Built-in help cards
   - '!**/obj/**'  # Exclude build output
   - '!**/bin/**'  # Exclude build output
   - '!**/generated/**'  # Exclude generated documentation
@@ -145,6 +146,22 @@ reviews:
       - docs/verification/vhdltest/cli/options.md
       - src/DEMAConsulting.VHDLTest/Cli/Options.cs
       - test/**/Cli/OptionsTests.cs
+
+  # HelpCommand unit review
+  - id: VHDLTest-Cli-HelpCommand
+    title: Review that VHDLTest Cli HelpCommand Implementation is Correct
+    context:
+      - docs/design/vhdltest.md
+      - docs/reqstream/vhdltest/vhdltest.yaml
+      - docs/design/vhdltest/cli.md
+      - docs/reqstream/vhdltest/cli/cli.yaml
+    paths:
+      - docs/reqstream/vhdltest/cli/help-command.yaml
+      - docs/design/vhdltest/cli/help-command.md
+      - docs/verification/vhdltest/cli/help-command.md
+      - src/DEMAConsulting.VHDLTest/Cli/HelpCommand.cs
+      - src/**/Help/**  # help cards
+      - test/**/Cli/HelpCommandTests.cs
 
   # Program unit review (direct system unit, no subsystem)
   - id: VHDLTest-Program
@@ -520,6 +537,12 @@ reviews:
       - docs/reqstream/ots/demaconsulting-testresults.yaml
       - docs/design/ots/demaconsulting-testresults.md
       - docs/verification/ots/demaconsulting-testresults.md
+  - id: OTS-HelpCards
+    title: Review that HelpCards Provides Required Functionality
+    paths:
+      - docs/reqstream/ots/help-cards.yaml
+      - docs/design/ots/help-cards.md
+      - docs/verification/ots/help-cards.md
   - id: OTS-XUnit
     title: Review that xUnit Provides Required Functionality
     paths:

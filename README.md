@@ -38,6 +38,8 @@ in pull request checks][workflow]
   simulator for self-validation
 - Configurable simulator paths via environment variables
 - Built-in self-validation mode for tool qualification evidence in regulated industries
+- Built-in help: `vhdltest help` serves help topics with runnable examples, search, and JSON output
+  for AI agents
 
 ## Installation
 
@@ -94,7 +96,8 @@ dotnet vhdltest --config test_suite.yaml --results test_results.xml
 Full command-line options:
 
 ```text
-Usage: VHDLTest [options] [tests]
+Usage: vhdltest [options] [tests]
+       vhdltest help [topic]
 
 Options:
   -h, -?, --help               Display help
@@ -105,11 +108,20 @@ Options:
   --depth <n>                  Validation report depth (default: 1)
   -l, --log <log.txt>          Log output to file
   -c, --config <config.yaml>   Specify configuration
-  -r, --result, --results <out.trx|out.xml>  Specify test results file (.trx or JUnit XML)
+  -r, --result, --results <file>
+                               Specify test results file (.trx or .xml)
   -s, --simulator <name>       Specify simulator
   -0, --exit-0                 Exit with code 0 if tests fail
   --                           End of options
+
+Arguments:
+  [tests]                      Optional test bench names to filter which tests to run
+
+Run 'vhdltest help' for topics and examples.
 ```
+
+Run `dotnet vhdltest help` to list the built-in help topics, and `dotnet vhdltest help getting-started`
+for a walk-through with runnable examples.
 
 Before running tests, configure simulator paths via environment variables if needed:
 

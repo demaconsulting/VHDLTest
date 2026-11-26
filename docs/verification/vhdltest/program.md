@@ -22,7 +22,7 @@ N/A - standard test environment.
 - `context.ExitCode` reflects 0 on version, help, and successful run paths.
 - `context.ExitCode` reflects non-zero on missing config and failing test paths.
 - `context.ExitCode` reflects 0 when `--exit-zero` is specified even if tests fail.
-- The usage text `"Usage: VHDLTest"` appears in the log output when no config is given.
+- The usage text `"Usage: vhdltest"` appears in the log output when no config is given.
 - The `--validate` flag dispatches to the validation path without running tests.
 - The `--results` flag produces a results file on disk.
 
@@ -43,7 +43,7 @@ terminates cleanly.
 This scenario is tested by `Program_Run_WithHelpFlag_ReturnsZeroExitCode`.
 
 **Run_WithNoConfigFileArgument_DisplaysUsage**: Verifies that calling `Program.Run`
-without a config file argument writes `"Usage: VHDLTest"` to the log output, confirming
+without a config file argument writes `"Usage: vhdltest"` to the log output, confirming
 usage guidance is provided when the configuration argument is missing.
 This scenario is tested by `Program_Run_WithNoConfigFileArgument_DisplaysUsage`.
 
@@ -58,8 +58,15 @@ dispatch path produces visible output.
 This scenario is tested by `Program_Run_WithVersionFlag_DisplaysVersion`.
 
 **Run_WithHelpFlag_DisplaysHelp**: Verifies that calling `Program.Run` with `--help --silent`
-writes help text to the log output, confirming the help dispatch path produces visible output.
+writes help text to the log output, including the `vhdltest help [topic]` usage line, and that the
+text ends with the footer that points to the help command, confirming the help dispatch path
+produces visible output.
 This scenario is tested by `Program_Run_WithHelpFlag_DisplaysHelp`.
+
+**Main_WithHelpVerb_PrintsHelpIndex**: Verifies that calling `Program.Main` with `help` prints
+the help topic index to the console without the banner and sets `Environment.ExitCode` to 0,
+confirming that the help command is answered before the options are parsed.
+This scenario is tested by `Program_Main_WithHelpVerb_PrintsHelpIndex`.
 
 **Run_WithValidateFlag_DispatchesToValidation**: Verifies that calling `Program.Run`
 without a config file argument and with the `--validate` flag completes with
