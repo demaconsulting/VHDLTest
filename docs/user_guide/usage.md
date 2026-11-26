@@ -18,6 +18,7 @@ dotnet vhdltest --config test_suite.yaml --simulator ghdl
 
 VHDLTest supports the following command line options:
 
+- `help [topic]` - Print the built-in help topics, or one topic (see *Built-in Help*)
 - `-h, -?, --help` - Display help information
 - `-v, --version` - Display version information
 - `--silent` - Suppress console output
@@ -30,6 +31,30 @@ VHDLTest supports the following command line options:
 - `-s, --simulator <name>` - Specify simulator (activehdl, ghdl, mock, modelsim, nvc, questasim, vivado)
 - `-0, --exit-0` - Exit with code 0 even if tests fail
 - `--` - End of options marker
+
+Errors in the arguments, such as an unknown option or an option without its value, print
+`Error: ...` and exit with code 1. They are found before `--silent` and `--log` take effect, so
+they are always printed and never written to the log file.
+
+## Built-in Help
+
+The `help` command prints help topics that explain each task with worked examples, for people and
+for AI agents that have only the installed tool. List the topics, then print one with its examples:
+
+```bash
+dotnet vhdltest help
+dotnet vhdltest help getting-started
+```
+
+The topics are `getting-started`, `command-line`, `configuration`, `simulators` (with one topic
+per simulator, such as `dotnet vhdltest help simulators ghdl`), `test-results`, `self-validation`,
+and `troubleshooting`. Add `--search <words>` to find a topic, `--example <name>` to print one
+example of a topic, and `--json` to get any help answer as JSON.
+
+`help` is a command, not an option: it must be the first argument, and `--silent` and `--log` do
+not apply to it. Anywhere else, `help` is a test bench name, so a test bench named `help` can still
+be run as `dotnet vhdltest --config test_suite.yaml help` or after `--`. An unknown topic or a
+wrong help argument prints a hint and exits with code 2 (see *Exit Codes*).
 
 ## Filtering Tests
 
@@ -81,9 +106,13 @@ The TRX file format is compatible with most CI/CD systems and can be displayed i
 
 VHDLTest returns the following exit codes:
 
-- `0` - All tests passed (or `--exit-0` was used)
-- `Non-zero` — Any error condition, including compilation failure, test failure,
-  invalid configuration, or unknown simulator.
+| Code | Meaning |
+| --- | --- |
+| `0` | Success: all tests passed, or tests failed and `--exit-0` was used |
+| `1` | Error — invalid arguments or configuration, a build error, a failing test, or a failed self-test |
+| `2` | Unknown help topic or wrong `help` argument |
+
+`--silent` hides error messages other than argument errors, but it does not change the exit code.
 
 ## Self-Validation
 
