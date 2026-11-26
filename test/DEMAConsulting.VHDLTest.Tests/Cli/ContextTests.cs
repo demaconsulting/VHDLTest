@@ -25,6 +25,11 @@ namespace DEMAConsulting.VHDLTest.Tests.Cli;
 /// <summary>
 /// Tests for the Context class
 /// </summary>
+/// <remarks>
+/// Serialized via the <c>ConsoleTests</c> collection because some tests replace
+/// <see cref="Console.Out"/>.
+/// </remarks>
+[Collection("ConsoleTests")]
 public class ContextTests
 {
     /// <summary>

@@ -25,6 +25,11 @@ namespace DEMAConsulting.VHDLTest.Tests;
 /// <summary>
 /// Unit tests for <see cref="Program"/> class.
 /// </summary>
+/// <remarks>
+/// Serialized via the <c>ConsoleTests</c> collection because some tests replace
+/// <see cref="Console.Out"/> and set <see cref="Environment.ExitCode"/>.
+/// </remarks>
+[Collection("ConsoleTests")]
 public class ProgramTests
 {
     /// <summary>
