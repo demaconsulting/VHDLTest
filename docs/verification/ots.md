@@ -4,10 +4,10 @@
 
 VHDLTest verifies OTS software items through two complementary approaches:
 
-1. **Integration tests** — For runtime OTS dependencies (YamlDotNet, DemaConsulting.TestResults),
-   integration tests in the main test project exercise the actual OTS API through the VHDLTest
-   unit under test. These tests prove that the required OTS features work correctly within the
-   VHDLTest integration context.
+1. **Integration tests** — For runtime OTS dependencies (YamlDotNet, DemaConsulting.TestResults,
+   DemaConsulting.HelpCards), integration tests in the main test project exercise the actual OTS
+   API through the VHDLTest unit under test. These tests prove that the required OTS features work
+   correctly within the VHDLTest integration context.
 
 2. **CI pipeline validation** — For build and analysis tools, verification is provided by the
    tool's successful execution in CI. Non-zero exit codes from any tool step fail the pipeline.
@@ -21,6 +21,7 @@ VHDLTest verifies OTS software items through two complementary approaches:
 | --- | --- | --- |
 | YamlDotNet | Runtime | Integration tests via ConfigDocument |
 | DemaConsulting.TestResults | Runtime | Unit and integration tests via TestResults |
+| DemaConsulting.HelpCards | Runtime | Unit and integration tests via HelpCommand |
 | xUnit v3 | Build | Implicit — test suite execution |
 | DemaConsulting.BuildMark | Build | CI pipeline execution and self-validation |
 | DemaConsulting.VersionMark | Build | CI pipeline execution and self-validation |

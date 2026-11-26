@@ -20,6 +20,7 @@ flowchart TD
         Context
         ConfigDocument
         Options
+        HelpCommand
     end
 
     subgraph Simulators
@@ -73,7 +74,21 @@ flowchart TD
   and a positional test-filter list. Accepted values for `--simulator`: `ghdl`, `nvc`, `modelsim`,
   `questasim`, `vivado`, `activehdl`, `mock`. Test-filter names are supplied as positional arguments
   after all options or after a `--` separator. Writes results and diagnostics to stdout/stderr.
-- *Constraints*: Unknown options cause an error; missing config file causes an error and prints usage.
+  The `help` command is accepted as the first argument (see *Help Command*).
+- *Constraints*: Unknown options and missing option values cause an error and exit code 1; they are
+  found before `--silent` and `--log` take effect, so they are always printed and never logged.
+  A missing config file path causes an error and prints usage.
+
+**Help Command**: Built-in help, answered from help cards embedded in the tool assembly.
+
+- *Type*: CLI
+- *Role*: Provider (the tool answers the `help` command from the shell)
+- *Contract*: `vhdltest help` prints the topic index and `vhdltest help <topic>` prints a topic
+  card with its examples; HelpCards adds `--example`, `--search`, and `--json`. Returns exit code 0
+  for success, 2 for a wrong help argument or an unknown topic, and 70 for a defective card catalog.
+- *Constraints*: `help` must be the first argument; elsewhere it is a test-bench name. It is
+  answered before the options are parsed, so `--silent` and `--log` do not apply and no banner is
+  printed.
 
 **Configuration File**: YAML file specifying simulator settings and test list.
 
@@ -116,6 +131,8 @@ flowchart TD
   Integration Design*
 - **DemaConsulting.TestResults**: used for writing TRX and JUnit test results files — see
   *DemaConsulting.TestResults Integration Design*
+- **DemaConsulting.HelpCards**: used for loading, validating, and serving the built-in help cards
+  for the `help` command — see *HelpCards Integration Design*
 
 ## Risk Control Measures
 
@@ -125,22 +142,27 @@ N/A - not a safety-classified software item.
 
 Data moves through VHDLTest in the following sequence:
 
-1. `Program.Main` receives raw command-line arguments and creates a `Context` (Cli subsystem).
-2. `Program.Run` inspects `Context` flags; for a test run it calls `SimulatorFactory.Get` to
+1. `Program.Main` first offers the raw command-line arguments to `HelpCommand.TryRun` (Cli
+   subsystem). When the first argument is `help`, the help command writes the topic index or a
+   topic card to the console, `Program.Main` sets `Environment.ExitCode` to its exit code, and the
+   invocation ends without creating a `Context`. Otherwise `HelpCommand.TryRun` returns at once
+   without building the card catalog, and the steps below apply.
+2. `Program.Main` creates a `Context` from the raw command-line arguments (Cli subsystem).
+3. `Program.Run` inspects `Context` flags; for a test run it calls `SimulatorFactory.Get` to
    select the active simulator (Simulators subsystem).
-3. `Options.Parse` calls `ConfigDocument.ReadFile` to deserialize the YAML configuration file into a
+4. `Options.Parse` calls `ConfigDocument.ReadFile` to deserialize the YAML configuration file into a
    `ConfigDocument` instance (using YamlDotNet), then constructs an `Options` record (Cli subsystem).
-4. `TestResults.Execute` calls `simulator.Compile` to build the VHDL sources in the order they are
+5. `TestResults.Execute` calls `simulator.Compile` to build the VHDL sources in the order they are
    declared in the configuration file; if compilation produces an Error-severity result, execution
    halts with `InvalidOperationException("Build Failed")`.
-5. On build success, `TestResults.Execute` iterates over the configured tests; for each test it
+6. On build success, `TestResults.Execute` iterates over the configured tests; for each test it
    delegates to the active simulator which invokes `RunProgram` to spawn the simulator process and
    `RunProcessor` to classify each output line (Run subsystem). Each classified line is accumulated
    into `RunResults`, from which pass/fail `TestResult` records are created and collected into
    `TestResults` (Results subsystem).
-6. `TestResults.PrintSummary` writes the summary to the `Context` output stream.
-7. If a results file path is present, `TestResults.SaveResults` writes the TRX or JUnit file.
-8. `Program.Main` sets `Environment.ExitCode` from `context.ExitCode`. When `--exit-0` is
+7. `TestResults.PrintSummary` writes the summary to the `Context` output stream.
+8. If a results file path is present, `TestResults.SaveResults` writes the TRX or JUnit file.
+9. `Program.Main` sets `Environment.ExitCode` from `context.ExitCode`. When `--exit-0` is
    active, `Context.ExitCode` always reports 0 regardless of test failures, so the exit
    code written to `Environment.ExitCode` is always 0 in that mode.
 
@@ -155,7 +177,7 @@ When `--validate` is specified, data flows through a re-entrant self-test path:
    VHDLTest_TestFails); for each scenario it calls back into `Program.Run` in-process
    with a freshly created Context using the simulator name from the outer invocation
    (pass `--simulator mock` to use the built-in mock simulator).
-4. Each re-entrant `Program.Run` call follows the normal 8-step data flow above using
+4. Each re-entrant `Program.Run` call follows the normal data flow above (steps 3 to 8) using
    `MockSimulator` in place of a real simulator.
 5. `Validation` collects the per-scenario `RunResults`, formats a Markdown validation
    report at the configured heading depth — including system information (VHDLTest Version,
@@ -179,7 +201,9 @@ When `--validate` is specified, data flows through a re-entrant self-test path:
 | Error Condition | Detection | Response |
 | --- | --- | --- |
 | Compilation error | Error-severity result from Compile | `InvalidOperationException` thrown; exits non-zero |
-| Unknown CLI option | `Context.Create` encounters unknown flag | Writes error and usage; exits non-zero |
+| Unknown CLI option | `Context.Create` encounters unknown flag | `Program.Main` writes the error; exits 1 |
+| Unknown help topic or help argument | HelpCards rejects the `help` arguments | Writes the error; exits 2 |
+| Defective help card catalog | HelpCards fails to build the catalog | Writes the error; exits 70 |
 | Missing config file path | `Context.ConfigFile` is null | Writes "Error: Missing arguments"; exits non-zero |
 | Missing config file on disk | `ReadFile` throws `FileNotFoundException` | Writes error; exits non-zero |
 | Invalid configuration YAML | `ReadFile` throws `InvalidOperationException` | Writes error; exits non-zero |
@@ -189,3 +213,5 @@ When `--validate` is specified, data flows through a re-entrant self-test path:
 
 **Note**: All console error output (produced via `Context.WriteError`) is suppressed when
 `--silent` is active. Log-file output to the `--log` file is unaffected by `--silent` mode.
+Argument errors from `Context.Create` are printed by `Program.Main` before any `Context` exists, so
+`--silent` and `--log` do not apply to them; neither do they apply to the help command.

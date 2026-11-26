@@ -25,6 +25,7 @@ OTS items:
 
 - **YamlDotNet**: integration and usage design.
 - **DemaConsulting.TestResults**: integration and usage design.
+- **DemaConsulting.HelpCards**: integration and usage design.
 - **xUnit**: integration and usage design.
 - **DemaConsulting.ReqStream**: integration and usage design.
 - **DemaConsulting.BuildMark**: integration and usage design.
@@ -84,7 +85,9 @@ src/DEMAConsulting.VHDLTest/
 ├── Cli/
 │   ├── Context.cs              — command-line argument parser and I/O owner
 │   ├── ConfigDocument.cs       — YAML configuration document parser
-│   └── Options.cs              — parsed options holder
+│   ├── Options.cs              — parsed options holder
+│   └── HelpCommand.cs          — built-in help command
+├── Help/                       — help cards served by the help command
 ├── Simulators/
 │   ├── Simulator.cs            — base class for all simulators
 │   ├── SimulatorFactory.cs     — creates simulator instances

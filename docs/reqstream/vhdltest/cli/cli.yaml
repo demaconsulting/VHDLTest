@@ -33,3 +33,15 @@ sections:
               - VHDLTest-Cli-Options-NoConfig
               - VHDLTest-Cli-Options-MissingConfig
               - VHDLTest-Cli-Options-InvalidPath
+
+          - id: VHDLTest-Cli-HelpTopics
+            title: VHDLTest shall answer the help command from built-in help cards.
+            justification: |
+              Users and AI agents need help topics with worked examples from the installed
+              tool, without requiring external resources.
+            tests:
+              - CliSubsystem_HelpCommand_TopicRequested_PrintsTopic
+            children:
+              - VHDLTest-Cli-HelpCommand-HelpVerb
+              - VHDLTest-Cli-HelpCommand-ValidCards
+              - VHDLTest-Cli-HelpCommand-LineWidth

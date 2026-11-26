@@ -33,5 +33,6 @@ package VHDLTest {
 
         part yamlDotNet : YamlDotNet;
         part demaConsultingTestResults : DemaConsultingTestResults;
+        part helpCards : HelpCards;
     }
 }

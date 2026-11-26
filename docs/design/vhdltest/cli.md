@@ -6,7 +6,8 @@
 
 The Cli subsystem implements command-line interface handling for VHDLTest. It encompasses
 all logic for parsing command-line arguments, reading configuration files, and managing
-output channels. It contains three units: Context, ConfigDocument, and Options.
+output channels. It also answers the built-in `help` command. It contains four units: Context,
+ConfigDocument, Options, and HelpCommand.
 
 ### Interfaces
 
@@ -49,20 +50,41 @@ into a ConfigDocument.
   config file path cannot be resolved to a containing directory. Throws `FileNotFoundException`
   (propagated from `ConfigDocument.ReadFile`) if the specified configuration file does not exist.
 
+**HelpCommand.TryRun**: Answers the `help` command from the help cards embedded in the tool
+assembly.
+
+- *Type*: In-process .NET instance method (on the shared `HelpCommand.Default` instance)
+- *Role*: Provider
+- *Contract*: `bool TryRun(string[] args, out int exitCode)` — when the first argument is `help`,
+  writes the answer to the console, returns `true`, and sets the exit code (see *Help Command* in
+  the system design); otherwise returns `false` without writing anything or building the catalog.
+- *Constraints*: Does not throw for user input.
+
+**HelpCommand.Footer**: The sentence that points a reader of the usage text to the help command.
+
+- *Type*: In-process .NET instance property
+- *Role*: Provider
+- *Contract*: Returns the one-line pointer that HelpCards supplies, without building the catalog.
+
 ### Dependencies
 
 `ConfigDocument.ReadFile` uses **YamlDotNet** for YAML parsing. See *YamlDotNet
-Integration Design* for the YamlDotNet integration design.
+Integration Design* for the YamlDotNet integration design. `HelpCommand` uses
+**DemaConsulting.HelpCards** to serve the help cards. See *HelpCards Integration Design*.
 
 ### Design
 
 The Cli subsystem assembles as follows:
 
-1. `Context.Create(args)` receives the raw argument array, parses all flags and positional
+1. `Program.Main` first offers the raw argument array to `HelpCommand.TryRun`. When the first
+   argument is `help`, `HelpCommand` answers from the help cards and the invocation ends with its
+   exit code; no `Context` is created. `HelpCommand` therefore writes its answers to the console
+   itself, and `Context` and `HelpCommand` do not call each other.
+2. `Context.Create(args)` receives the raw argument array, parses all flags and positional
    arguments, and returns an initialized `Context` instance. If `--log` was provided, a
    `StreamWriter` is opened for the log file and owned by the `Context`.
-2. For a normal test run, `Options.Parse(context)` reads `Context.ConfigFile`, calls
+3. For a normal test run, `Options.Parse(context)` reads `Context.ConfigFile`, calls
    `ConfigDocument.ReadFile` to deserialize the YAML configuration, and resolves the
    working directory from the absolute path of the configuration file.
-3. `Context.ExitCode` returns `1` if any errors were reported via `WriteError`; callers
+4. `Context.ExitCode` returns `1` if any errors were reported via `WriteError`; callers
    apply this to `Environment.ExitCode` before exiting.

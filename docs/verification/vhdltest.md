@@ -55,6 +55,21 @@ This scenario is tested by `IntegrationTest_HelpQuestionFlag_DisplaysUsageAndRet
 usage information and returns exit code 0.
 This scenario is tested by `IntegrationTest_HelpLongFlag_DisplaysUsageAndReturnsSuccess`.
 
+**HelpTopics_HelpVerb_ListsTopics**: Verifies that `vhdltest help` lists the command of every
+help topic, returns exit code 0, and prints no banner, confirming that the built-in help is
+answered before the options are parsed.
+This scenario is tested by `VHDLTest_HelpTopics_HelpVerb_ListsTopics`.
+
+**HelpTopics_UnknownTopic_ReturnsUsageError**: Verifies that `vhdltest help no-such-topic`
+returns exit code 2 and names the unknown topic, so scripts can tell a mistyped topic from a
+failed tool run.
+This scenario is tested by `VHDLTest_HelpTopics_UnknownTopic_ReturnsUsageError`.
+
+**HelpExamples_AllCommandExamples_GiveStatedResults**: Runs every command example of the help
+cards against the built tool in a scratch folder that holds the example input files, and
+verifies that each gives the exit code and output that its card states.
+This scenario is tested by `VHDLTest_HelpExamples_AllCommandExamples_GiveStatedResults`.
+
 **VersionShortFlag_DisplaysVersionAndReturnsSuccess**: Verifies that `-v` writes a
 version string matching the semantic version pattern and returns exit code 0.
 This scenario is tested by `IntegrationTest_VersionShortFlag_DisplaysVersionAndReturnsSuccess`.

@@ -9,6 +9,7 @@ includes:
   - docs/reqstream/vhdltest/cli/context.yaml
   - docs/reqstream/vhdltest/cli/config-document.yaml
   - docs/reqstream/vhdltest/cli/options.yaml
+  - docs/reqstream/vhdltest/cli/help-command.yaml
   - docs/reqstream/vhdltest/simulators.yaml
   - docs/reqstream/vhdltest/simulators/simulator.yaml
   - docs/reqstream/vhdltest/simulators/simulator-factory.yaml
@@ -42,6 +43,7 @@ includes:
   - docs/reqstream/ots/sonarmark.yaml
   - docs/reqstream/ots/yamldotnet.yaml
   - docs/reqstream/ots/demaconsulting-testresults.yaml
+  - docs/reqstream/ots/help-cards.yaml
   - docs/reqstream/ots/reviewmark.yaml
   - docs/reqstream/ots/pandoctool.yaml
   - docs/reqstream/ots/weasyprinttool.yaml

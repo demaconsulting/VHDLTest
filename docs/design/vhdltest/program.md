@@ -4,9 +4,9 @@
 
 ### Purpose
 
-`Program.cs` is the application entry point for VHDLTest. It creates a `Context` from the raw
-command-line argument array, dispatches to the appropriate handler based on the parsed flags, and
-sets the process exit code on return.
+`Program.cs` is the application entry point for VHDLTest. It hands the `help` command to
+`HelpCommand`, otherwise creates a `Context` from the raw command-line argument array, dispatches to
+the appropriate handler based on the parsed flags, and sets the process exit code on return.
 
 ### Data Model
 
@@ -22,10 +22,14 @@ sets the process exit code on return.
 - *Preconditions*: none.
 - *Postconditions*: `Environment.ExitCode` is 0 on success or non-zero on failure.
 
-Creates a `Context` from `args`, delegates to `Run`, then assigns `context.ExitCode` to
-`Environment.ExitCode`. Catches `InvalidOperationException` to print a red error message and exit
-with code 1. Catches all other exceptions to print the full exception text in red and re-throw so
-the runtime records the unhandled exception.
+First calls `HelpCommand.Default.TryRun(args, out exitCode)`. The `help` command is not an option,
+so `Context.Create` would treat it as a test-bench name; when the help command answers, `Main` sets
+`Environment.ExitCode` to its exit code and returns without creating a `Context` (see *Help
+Command* in the system design). Otherwise `Main` creates a `Context` from `args`, delegates to
+`Run`, then assigns `context.ExitCode` to `Environment.ExitCode`. Catches
+`InvalidOperationException` to print a red error message and exit with code 1. Catches all other
+exceptions to print the full exception text in red and re-throw so the runtime records the
+unhandled exception.
 
 **Run**: Executes the dispatched operation for a given context.
 
@@ -62,6 +66,10 @@ benches are executed.
 - *Preconditions*: `context` is not null.
 - *Postconditions*: usage text has been written to the context.
 
+The usage lines are built from `HelpCommand.ToolName` (`Usage: vhdltest [options] [tests]` and
+`vhdltest help [topic]`), and the text ends with a blank line and `HelpCommand.Default.Footer`,
+the pointer to the help command.
+
 ### Error Handling
 
 `Main` catches `InvalidOperationException` (expected operational errors such as missing simulator)
@@ -78,6 +86,8 @@ propagate to the outer exception handlers.
 ### Dependencies
 
 - **Context** — provides parsed command-line flags and I/O channels.
+- **HelpCommand** — answers the `help` command before the options are parsed, and supplies the
+  tool name and the footer of the usage text.
 - **Options** — holds the parsed test configuration loaded from the YAML file.
 - **SimulatorFactory** — resolves the named simulator instance.
 - **TestResults** — executes the VHDL tests and serializes results.

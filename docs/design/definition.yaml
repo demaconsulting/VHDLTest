@@ -19,6 +19,7 @@ input-files:
   - docs/design/vhdltest/cli/context.md
   - docs/design/vhdltest/cli/config-document.md
   - docs/design/vhdltest/cli/options.md
+  - docs/design/vhdltest/cli/help-command.md
   - docs/design/vhdltest/simulators.md
   - docs/design/vhdltest/simulators/simulator.md
   - docs/design/vhdltest/simulators/simulator-factory.md
@@ -47,6 +48,7 @@ input-files:
   - docs/design/ots.md
   - docs/design/ots/yamldotnet.md
   - docs/design/ots/demaconsulting-testresults.md
+  - docs/design/ots/help-cards.md
   - docs/design/ots/xunit.md
   - docs/design/ots/buildmark.md
   - docs/design/ots/versionmark.md
