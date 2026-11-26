@@ -21,6 +21,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using DemaConsulting.HelpCards.Catalog;
+using DemaConsulting.HelpCards.Testing;
+using DEMAConsulting.VHDLTest.Cli;
 
 namespace DEMAConsulting.VHDLTest.Tests;
 
@@ -54,7 +57,7 @@ public partial class IntegrationTests
         // Assert: verify error exit code and usage message
         Assert.NotEqual(0, exitCode);
         Assert.Contains("Error: Missing arguments", output);
-        Assert.Contains("Usage: VHDLTest", output);
+        Assert.Contains("Usage: vhdltest", output);
     }
 
     /// <summary>
@@ -74,7 +77,7 @@ public partial class IntegrationTests
 
         // Assert: verify success and usage message
         Assert.Equal(0, exitCode);
-        Assert.Contains("Usage: VHDLTest", output);
+        Assert.Contains("Usage: vhdltest", output);
     }
 
     /// <summary>
@@ -94,7 +97,7 @@ public partial class IntegrationTests
 
         // Assert: verify success and usage message
         Assert.Equal(0, exitCode);
-        Assert.Contains("Usage: VHDLTest", output);
+        Assert.Contains("Usage: vhdltest", output);
     }
 
     /// <summary>
@@ -114,7 +117,7 @@ public partial class IntegrationTests
 
         // Assert: verify success and usage message
         Assert.Equal(0, exitCode);
-        Assert.Contains("Usage: VHDLTest", output);
+        Assert.Contains("Usage: vhdltest", output);
     }
 
     /// <summary>
@@ -886,6 +889,87 @@ public partial class IntegrationTests
             DeleteDirectoryIfExists(simulatorDirectory);
             DeleteFileIfExists(configFile);
         }
+    }
+
+    /// <summary>
+    /// Test that the help verb lists the help topics
+    /// </summary>
+    [Fact]
+    public void VHDLTest_HelpTopics_HelpVerb_ListsTopics()
+    {
+        // Arrange: (none — application is invoked directly)
+
+        // Act: run the tool with the help verb
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "help");
+
+        // Assert: every topic is listed with its command, without the banner
+        Assert.Equal(0, exitCode);
+        foreach (var topic in HelpCommand.RootCardIds)
+        {
+            Assert.Contains($"{HelpCommand.ToolName} help {topic}", output);
+        }
+
+        Assert.DoesNotContain("VHDL Test Bench Runner", output);
+    }
+
+    /// <summary>
+    /// Test that an unknown help topic returns the usage-error exit code
+    /// </summary>
+    [Fact]
+    public void VHDLTest_HelpTopics_UnknownTopic_ReturnsUsageError()
+    {
+        // Arrange: (none — application is invoked directly)
+
+        // Act: ask for a topic that does not exist
+        var exitCode = Runner.Run(
+            out var output,
+            "dotnet",
+            "DEMAConsulting.VHDLTest.dll",
+            "help",
+            "no-such-topic");
+
+        // Assert: exit code 2 and a message that names the topic
+        Assert.Equal(2, exitCode);
+        Assert.Contains("no-such-topic", output);
+    }
+
+    /// <summary>
+    /// Test that every command example in the help cards gives the result that its card states
+    /// </summary>
+    [Fact]
+    public void VHDLTest_HelpExamples_AllCommandExamples_GiveStatedResults()
+    {
+        // Arrange: the catalog the tool ships, the absolute path of the tool (the examples run in a
+        // scratch folder), and the configuration files that the examples read
+        var catalog = HelpCatalog.Create(HelpCommand.CreateOptions().GetCatalogConfiguration());
+        var dllPath = Path.Combine(AppContext.BaseDirectory, "DEMAConsulting.VHDLTest.dll");
+        var exampleFiles = Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "TestData", "HelpExamples"));
+
+        // Act: run every command example against the built tool in the runner's scratch folder; the runner
+        // compares the exit codes and the 'expect' fragments. The input files are copied in before every
+        // command, so that a command that overwrites a file cannot affect the next one.
+        var report = HelpExampleRunner.Run(catalog, invocation =>
+        {
+            foreach (var file in exampleFiles)
+            {
+                File.Copy(file, Path.Combine(invocation.WorkingDirectory, Path.GetFileName(file)), true);
+            }
+
+            var exitCode = Runner.RunInDirectory(
+                out var output,
+                invocation.WorkingDirectory,
+                "dotnet",
+                [dllPath, .. invocation.Arguments]);
+            return new HelpExampleOutcome(exitCode, output);
+        });
+
+        // Assert: the cards hold command examples, and every one gave the result its card states
+        Assert.True(report.CommandsRun > 0, "The help cards contain no command examples.");
+        report.AssertSucceeded();
     }
 
     /// <summary>

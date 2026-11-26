@@ -1,0 +1,20 @@
+---
+# VHDLTest configuration: the VHDL files to compile and the test benches
+# to run. Paths are relative to this file.
+
+# VHDL files, compiled in this order: put each file after the files
+# that it uses.
+files:
+  - half_adder.vhd
+  - full_adder.vhd
+  - half_adder_pass_tb.vhd
+  - half_adder_fail_tb.vhd
+  - full_adder_pass_tb.vhd
+  - full_adder_fail_tb.vhd
+
+# Test-bench entities to run, in this order.
+tests:
+  - half_adder_pass_tb
+  - half_adder_fail_tb
+  - full_adder_pass_tb
+  - full_adder_fail_tb

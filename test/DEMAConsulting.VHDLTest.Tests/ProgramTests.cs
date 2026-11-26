@@ -116,7 +116,7 @@ public class ProgramTests
 
             // Assert: verify usage text was written to the log
             var output = File.ReadAllText(logFile);
-            Assert.True(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
+            Assert.True(output.Contains("Usage: vhdltest"), $"Expected 'Usage: vhdltest' in output:\n{output}");
         }
         finally
         {
@@ -166,13 +166,45 @@ public class ProgramTests
                 Program.Run(context);
             }
 
-            // Assert: verify help text was written to the log
+            // Assert: verify help text, the help usage line, and the help footer were written to the log
             var output = File.ReadAllText(logFile);
-            Assert.True(output.Contains("Usage: VHDLTest"), $"Expected 'Usage: VHDLTest' in output:\n{output}");
+            Assert.True(output.Contains("Usage: vhdltest"), $"Expected 'Usage: vhdltest' in output:\n{output}");
+            Assert.Contains($"{HelpCommand.ToolName} help [topic]", output);
+            Assert.EndsWith(HelpCommand.Default.Footer, output.TrimEnd());
         }
         finally
         {
             File.Delete(logFile);
+        }
+    }
+
+    /// <summary>
+    ///     Test that Main answers the help verb from the help cards before the options are parsed.
+    /// </summary>
+    [Fact]
+    public void Program_Main_WithHelpVerb_PrintsHelpIndex()
+    {
+        // Arrange: capture console output and remember the process exit code
+        var originalOut = Console.Out;
+        var originalExitCode = Environment.ExitCode;
+        try
+        {
+            using var outWriter = new StringWriter();
+            Console.SetOut(outWriter);
+
+            // Act: invoke Main with the help verb, which is not an option
+            Program.Main(["help"]);
+
+            // Assert: the topic index is printed without the banner, and the exit code is success
+            var output = outWriter.ToString();
+            Assert.Equal(0, Environment.ExitCode);
+            Assert.Contains($"{HelpCommand.ToolName} help {HelpCommand.RootCardIds[0]}", output);
+            Assert.DoesNotContain("VHDL Test Bench Runner", output);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Environment.ExitCode = originalExitCode;
         }
     }
 

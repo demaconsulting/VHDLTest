@@ -1,0 +1,6 @@
+---
+# A configuration with a misspelled key: "test" instead of "tests".
+files:
+  - full_adder.vhd
+test:
+  - full_adder_pass_tb

@@ -56,6 +56,44 @@ internal static class Runner
         IReadOnlyDictionary<string, string>? environmentVariables,
         params string[] arguments)
     {
+        return RunCore(out output, workingDirectory: null, program, environmentVariables, arguments);
+    }
+
+    /// <summary>
+    /// Run the specified program in a working directory
+    /// </summary>
+    /// <param name="output">Program output</param>
+    /// <param name="workingDirectory">Working directory for the process, or null for the current directory</param>
+    /// <param name="program">Program name</param>
+    /// <param name="arguments">Program arguments</param>
+    /// <returns>Program exit code</returns>
+    /// <exception cref="InvalidOperationException">On program start error</exception>
+    public static int RunInDirectory(
+        out string output,
+        string? workingDirectory,
+        string program,
+        params string[] arguments)
+    {
+        return RunCore(out output, workingDirectory, program, environmentVariables: null, arguments);
+    }
+
+    /// <summary>
+    /// Run the specified program with an optional working directory and environment variables
+    /// </summary>
+    /// <param name="output">Program output</param>
+    /// <param name="workingDirectory">Working directory for the process, or null for the current directory</param>
+    /// <param name="program">Program name</param>
+    /// <param name="environmentVariables">Environment variables to apply to the child process, or null</param>
+    /// <param name="arguments">Program arguments</param>
+    /// <returns>Program exit code</returns>
+    /// <exception cref="InvalidOperationException">On program start error</exception>
+    private static int RunCore(
+        out string output,
+        string? workingDirectory,
+        string program,
+        IReadOnlyDictionary<string, string>? environmentVariables,
+        string[] arguments)
+    {
         // Construct the start information
         var startInfo = new ProcessStartInfo(program)
         {
@@ -64,6 +102,12 @@ internal static class Runner
             UseShellExecute = false,
             CreateNoWindow = true
         };
+
+        // Set the working directory if one was provided
+        if (workingDirectory != null)
+        {
+            startInfo.WorkingDirectory = workingDirectory;
+        }
 
         // Apply any requested environment overrides
         if (environmentVariables is not null)
