@@ -34,6 +34,10 @@ not given.
 compiles all files with `ghdl -a --std=08` into the library `work` in
 `VHDLTest.out/GHDL`, using the response file `compile.rsp` there. For
 each bench it runs `ghdl -e` and then `ghdl -r` with the same options.
+With the LLVM or GCC backend, `ghdl -e` links each bench into a program
+named after the bench in lowercase, with `e~<bench>.o` beside it, in
+the folder of the configuration file; add both to `.gitignore` (see
+[[configuration]]). The mcode backend writes no such files.
 
 **Results.** While compiling, a message with a file position is an
 error unless it is a `warning:`, and so are `:error:` and

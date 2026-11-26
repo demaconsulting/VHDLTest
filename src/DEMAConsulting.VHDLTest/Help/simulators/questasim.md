@@ -1,6 +1,8 @@
 ---
 title: QuestaSim
 summary: Run the test benches with the QuestaSim simulator from Siemens.
+aliases:
+  - questa
 tags:
   - reference
 order: 3
@@ -22,8 +24,8 @@ examples:
     content: |
       export VHDLTEST_QUESTASIM_PATH=/opt/questasim/bin
 ---
-QuestaSim is a commercial HDL simulator from Siemens. Select it with
-`--simulator questasim` ([[#run]]).
+QuestaSim, also called Questa, is a commercial HDL simulator from
+Siemens. Select it with `--simulator questasim` ([[#run]]).
 
 **Finding it.** The tool runs `vsim` from the folder in
 `VHDLTEST_QUESTASIM_PATH` ([[#set-path]]), or else from `PATH`.

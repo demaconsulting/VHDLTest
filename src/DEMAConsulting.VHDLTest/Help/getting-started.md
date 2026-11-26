@@ -6,6 +6,8 @@ aliases:
   - quickstart
   - examples
   - install
+  - ci
+  - github-actions
 tags:
   - tutorial
 order: 1
@@ -78,9 +80,11 @@ examples:
 {{tool}} {{version}} is a .NET tool.
 It compiles the VHDL files that a configuration file lists, runs each
 test bench with a simulator, and exits 1 when a bench fails. It writes
-only the files that options name, the simulator files in a
-`VHDLTest.out` folder beside the configuration file, and, during
-`--validate`, a `validation.tmp` folder that it removes afterwards.
+the files that options name, the simulator files in a `VHDLTest.out`
+folder beside the configuration file, and, during `--validate`, a
+`validation.tmp` folder that it removes afterwards. Some simulators
+also leave files beside the configuration file; [[configuration]] lists
+them and the `.gitignore` entries to add.
 
 1. **Install it.** The tool needs the .NET 10 SDK or later. For a
    repository or CI, install it as a local tool. Run the commands

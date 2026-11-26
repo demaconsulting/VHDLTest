@@ -10,7 +10,9 @@ aliases:
   - nvc
   - modelsim
   - questasim
+  - questa
   - vivado
+  - xsim
   - activehdl
   - active-hdl
 tags:

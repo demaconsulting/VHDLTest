@@ -1,6 +1,8 @@
 ---
 title: Vivado
 summary: Run the test benches with the simulator of the AMD Vivado design suite.
+aliases:
+  - xsim
 tags:
   - reference
 order: 4
@@ -20,8 +22,8 @@ examples:
     content: |
       export VHDLTEST_VIVADO_PATH=/opt/Xilinx/Vivado/2024.2/bin
 ---
-Vivado is the FPGA design suite of AMD (formerly Xilinx); its simulator
-runs from the `xvhdl` and `xelab` programs. Select it with
+Vivado is the FPGA design suite of AMD (formerly Xilinx); its simulator,
+XSim, runs from the `xvhdl` and `xelab` programs. Select it with
 `--simulator vivado` ([[#run]]).
 
 **Finding it.** The tool looks for `vivado` in the folder in

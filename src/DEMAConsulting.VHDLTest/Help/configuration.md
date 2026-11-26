@@ -6,6 +6,7 @@ aliases:
   - config-file
   - tests-file
   - yaml
+  - tests
 tags:
   - reference
 order: 3
@@ -70,10 +71,26 @@ other key, such as `test:` instead of `tests:`, or text that is not
 valid YAML, is the error `Configuration document <file> is invalid`.
 
 **Folders.** The tool keeps the libraries and scripts of the simulator
-in a `VHDLTest.out` folder beside the configuration file. GHDL, NVC,
-and Active-HDL run in the folder of the configuration file; ModelSim,
-QuestaSim, and Vivado run in their folder below `VHDLTest.out`. Add
-`VHDLTest.out` to `.gitignore`.
+in a `VHDLTest.out` folder beside the configuration file. ModelSim,
+QuestaSim, and Vivado run in their folder below `VHDLTest.out`, so their
+files stay there. GHDL, NVC, and Active-HDL run in the folder of the
+configuration file, so a file that they write without a folder name
+lands beside the configuration file:
+
+| Simulator | Files beside the configuration file |
+| --- | --- |
+| GHDL, mcode backend | None. |
+| GHDL, LLVM or GCC backend | `<bench>` and `e~<bench>.o` for each bench. |
+| NVC | None; it keeps its files in `VHDLTest.out/NVC`. |
+| Active-HDL | Any file that `vsimsa` writes to its working folder. |
+
+With LLVM or GCC, `ghdl -e` links each bench into a program named after
+the bench in lowercase, with `.exe` on Windows. A bench that opens a
+file by a relative name also reads or writes it relative to the folder
+that the simulator runs in. Add `VHDLTest.out/` to `.gitignore`; with
+GHDL on LLVM or GCC, also add `e~*.o` and the bench programs, such as
+`*_tb` and `*_tb.exe` for benches named `*_tb`. After a first run,
+`git status` shows any other new file.
 
 The command that [[#run]] prints runs the sample with the mock
 simulator, which passes or fails a bench by its name. As with a real

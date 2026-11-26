@@ -67,6 +67,7 @@ words:
   - nickg
   - nolog
   - PATHEXT
+  - questa
   - runall
   - sarif
   - Sarif
@@ -88,6 +89,7 @@ words:
   - vsimsa
   - worklib
   - xelab
+  - xsim
   - xvhdl
   - yamldotnet
   - yamlfix

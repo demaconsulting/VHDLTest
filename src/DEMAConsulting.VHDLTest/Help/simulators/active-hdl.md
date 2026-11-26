@@ -35,7 +35,9 @@ Active-HDL, from the folder in `VHDLTEST_ACTIVEHDL_PATH`
 `VHDLTest.out/ActiveHDL/compile.do` and runs `vsimsa -do` with it. The
 script creates the library `work` with `alib` and compiles each file
 with `acom -2008 -dbg`. For each bench it writes `test.do`, which loads
-the bench with `asim` and runs it with `run -all`.
+the bench with `asim` and runs it with `run -all`. Because `vsimsa`
+runs in the folder of the configuration file, any file that it writes
+to its working folder lands there (see [[configuration]]).
 
 **Results.** While compiling, `Error:` and `RUNTIME: Fatal Error` lines
 are errors and `KERNEL: Warning:` lines are warnings. While running a
