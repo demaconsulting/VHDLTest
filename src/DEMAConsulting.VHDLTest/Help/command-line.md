@@ -64,13 +64,11 @@ Options start with `-` or `--` and may be given in any order.
 | `-l`, `--log <file>` | Also write the output to a file. |
 | `-c`, `--config <file>` | The configuration file; see [[configuration]]. |
 | `-s`, `--simulator <name>` | The simulator; see [[simulators]]. |
-| `-r`, `--results <file>` | Save the results; see [[test-results]]. |
+| `-r`, `--result`, `--results <file>` | Save the results as `.trx` or `.xml`; see [[test-results]]. |
 | `-0`, `--exit-0` | Exit 0 even when test benches fail. |
 | `--validate` | Run the self-tests; see [[self-validation]]. |
 | `--depth <n>` | First heading level of the self-test report, 1 or more; default 1. |
 | `--` | Every later word is a test-bench name. |
-
-`--result` is another name for `--results`.
 
 **Test benches.** Any word that is not an option is a test-bench name.
 The names replace the `tests` list of the configuration file and run in

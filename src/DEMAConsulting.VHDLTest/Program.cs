@@ -227,9 +227,10 @@ public static class Program
               --depth <n>                  Validation report depth (default: 1)
               -l, --log <log.txt>          Log output to file
               -c, --config <config.yaml>   Specify configuration
-              -r, --results <out.trx>      Specify test results file
+              -r, --result, --results <file>
+                                           Specify test results file (.trx or .xml)
               -s, --simulator <name>       Specify simulator
-              -0, --exit-0                 Exit with code 0 if test fail
+              -0, --exit-0                 Exit with code 0 if tests fail
               --                           End of options
 
             Arguments:
